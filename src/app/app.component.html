@@ -1,5 +1,8 @@
-<app-side-bar (onToggleSideNav)="onToggleSideNav($event)"></app-side-bar>
-<app-body
-    [collapsed]="isSideNavCollapsed"
-    [screenWidth]="screenWidth"
-></app-body>
+
+<div class="d-flex">
+    <app-side-bar id=""></app-side-bar>
+    <div class="main">
+        <app-header></app-header>
+        <router-outlet></router-outlet>
+    </div>
+</div>

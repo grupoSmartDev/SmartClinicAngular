@@ -10,4 +10,25 @@
 body {
     position: relative;
     font-family: 'Roboto', sans-serif;
+    height: 100%;
+    background: #000;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    min-height: 90vh;
+    width: 100%;
+    overflow: hidden;
+    transition: all 0.35s ease-in-out;
+    background-color: #fff;
+    min-width: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
 }
