@@ -9,6 +9,8 @@ import { SidenavComponent } from './_components/side-bar/side-bar.component';
 import { SublevelMenuComponent } from './_components/side-bar/sublevel-menu.component';
 import { BodyComponent } from './_components/body/body.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ListarComponent } from './_pages/status/listar/listar.component';
+import { LabelNomeComponent } from './_components/label-nome/label-nome.component';
 
 
 @NgModule({
@@ -18,7 +20,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HeaderComponent,    
     SidenavComponent,
     SublevelMenuComponent,
-    BodyComponent
+    BodyComponent,
+    ListarComponent,
+    LabelNomeComponent
   ],
   imports: [
     BrowserModule,
