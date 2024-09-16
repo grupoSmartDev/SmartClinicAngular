@@ -9,7 +9,7 @@ import { ResponseModel } from '../_module/ResponseModule';
 })
 export class StatusServerService {
 
-  baseURL: string = 'https://localhost:7036/api/Status/';
+  baseURL: string = 'https://localhost:44308/api/Status/';
 
   constructor(private http: HttpClient) { }
 
@@ -22,10 +22,10 @@ export class StatusServerService {
   }
 
   AtualizarStatus(id: number, status: Status): Observable<ResponseModel<Status>> {
-    return this.http.put<ResponseModel<Status>>(`${this.baseURL}AtualizarStatus/${id}`, status);
+    return this.http.put<ResponseModel<Status>>(`${this.baseURL}EditarStatus`, status);
   }
 
   DeletarStatus(id: number): Observable<ResponseModel<void>> {
-    return this.http.delete<ResponseModel<void>>(`${this.baseURL}DeletarStatus/${id}`);
+    return this.http.delete<ResponseModel<void>>(`${this.baseURL}DeleteStatus/${id}`);
   }
 }

@@ -46,7 +46,7 @@
                 <tr>
                   <td>{{ status.id }}</td>
                   <td>{{ status.status }}</td>
-                  <td><input type="color" value="{{ status.cor }}"></td>
+                  <td><input type="color" readonly disabled="true" value="{{ status.cor }}"></td>
                   <td>{{ status.legenda }}</td>
                   <td class="text-end">
                     <a
@@ -57,7 +57,7 @@
                       <i class="bi bi-pencil"></i
                     ></a>
                     <a
-                      href="javascript: void(0);"
+                      (click)="ExcluirStatus(status?.id ?? '')"
                       class="action-icon"
                     >
                       <i class="bi bi-trash3"></i

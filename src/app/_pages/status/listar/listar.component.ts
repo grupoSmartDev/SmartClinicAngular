@@ -42,7 +42,6 @@ export class ListarComponent implements OnInit {
 
   // Abre o modal e passa o objeto paciente
   openModal(status: any) {
-    debugger
     if (status.id) {
       this.modalPacienteComponent.status = status;
       this.modalPacienteComponent.carregarStatus(status);
@@ -54,5 +53,28 @@ export class ListarComponent implements OnInit {
     }
   }
 
+  ExcluirStatus(id: string) {
+    // Confirmação de exclusão
+    let confirmar = confirm('Deseja realmente excluir esse status?');
+    if (!confirmar) {
+      return;
+    }
+  
+    // Chama o serviço de exclusão
+    this.statusService.DeletarStatus(parseInt(id)).subscribe({
+      next: (response) => {
+        console.log('Status excluído com sucesso:', response);
+        // Aqui você pode adicionar a lógica para remover o status da lista local
+        // Se você estiver usando uma lista de status, algo como:
+        this.statusList = this.statusList.filter(status => status.id !== id);
+        alert('Status excluído com sucesso.');
+      },
+      error: (err) => {
+        console.error('Erro ao excluir status:', err);
+        alert('Ocorreu um erro ao tentar excluir o status.');
+      }
+    });
+  }
+  
 
 }
