@@ -1,6 +1,6 @@
 export interface Status{
-    Id: number;
-    Status:string;
-    Legenda: string;
-    Cor: string;
+    id?: string;
+    status:string;
+    legenda: string;
+    cor: string;
 }

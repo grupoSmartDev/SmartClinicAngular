@@ -11,6 +11,10 @@ import { BodyComponent } from './_components/body/body.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ListarComponent } from './_pages/status/listar/listar.component';
 import { LabelNomeComponent } from './_components/label-nome/label-nome.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ModalStatusComponent } from './_pages/status/modal-status/modal-status.component';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 
 @NgModule({
@@ -22,12 +26,15 @@ import { LabelNomeComponent } from './_components/label-nome/label-nome.componen
     SublevelMenuComponent,
     BodyComponent,
     ListarComponent,
-    LabelNomeComponent
+    LabelNomeComponent,
+    ModalStatusComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

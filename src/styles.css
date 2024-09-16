@@ -216,3 +216,12 @@ main {
 .h-80vh{
     height : 80vh !important;
 }
+
+
+.showModal{
+    display: block;
+}
+
+.hideModal{
+    display: none;
+}
