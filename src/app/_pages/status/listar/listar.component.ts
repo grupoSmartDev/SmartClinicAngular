@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { StatusServerService } from '../../../_services/status-server.service';
 import { Status } from '../../../_module/statusModule';
 import { ModalStatusComponent } from '../modal-status/modal-status.component';
 import * as bootstrap from 'bootstrap';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-listar',
@@ -11,12 +12,13 @@ import * as bootstrap from 'bootstrap';
 })
 export class ListarComponent implements OnInit {
 
-  constructor(private statusService: StatusServerService) {
+  @ViewChild(ModalStatusComponent) modalPacienteComponent!: ModalStatusComponent;
 
-
-  }
   statusList: Status[] = [];
   errorMessage: string = '';
+
+  constructor(private statusService: StatusServerService, private toast: ToastrService) { }
+
   ngOnInit(): void {
     this.getStatus();
   }
@@ -26,7 +28,6 @@ export class ListarComponent implements OnInit {
       next: (data) => {
         if (data.dados) {
           this.statusList = data.dados;
-
         }
       },
       error: (err) => {
@@ -36,11 +37,6 @@ export class ListarComponent implements OnInit {
     });
   }
 
-
-
-  @ViewChild(ModalStatusComponent) modalPacienteComponent!: ModalStatusComponent;
-
-  // Abre o modal e passa o objeto paciente
   openModal(status: any) {
     if (status.id) {
       this.modalPacienteComponent.status = status;
@@ -54,27 +50,27 @@ export class ListarComponent implements OnInit {
   }
 
   ExcluirStatus(id: string) {
-    // Confirmação de exclusão
     let confirmar = confirm('Deseja realmente excluir esse status?');
     if (!confirmar) {
       return;
     }
-  
-    // Chama o serviço de exclusão
+
     this.statusService.DeletarStatus(parseInt(id)).subscribe({
       next: (response) => {
         console.log('Status excluído com sucesso:', response);
-        // Aqui você pode adicionar a lógica para remover o status da lista local
-        // Se você estiver usando uma lista de status, algo como:
         this.statusList = this.statusList.filter(status => status.id !== id);
-        alert('Status excluído com sucesso.');
+        this.toast.success('Status excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
         console.error('Erro ao excluir status:', err);
-        alert('Ocorreu um erro ao tentar excluir o status.');
+        this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir um status');
       }
     });
   }
-  
+
+  // Método para recarregar a lista após criação/atualização
+  atualizarLista(): void {
+    this.getStatus(); // Chama o método para buscar os status novamente
+  }
 
 }

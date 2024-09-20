@@ -14,6 +14,7 @@ import { LabelNomeComponent } from './_components/label-nome/label-nome.componen
 import { HttpClientModule } from '@angular/common/http';
 import { ModalStatusComponent } from './_pages/status/modal-status/modal-status.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
 
 
 
@@ -34,7 +35,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
