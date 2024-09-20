@@ -8,6 +8,10 @@ import * as bootstrap from 'bootstrap';
 })
 export class ConfirmDialogComponent {
   @Input() message: string = "Tem certeza que deseja excluir este item?";
+  @Input() title: string = "Confirmação";
+  @Input() confirmText: string = "Confirmar";
+  @Input() cancelText: string = "Cancelar";
+  
   @Output() onConfirm = new EventEmitter<void>();
   @Output() onCancel = new EventEmitter<void>();
 

@@ -46,7 +46,14 @@
                 <tr>
                   <td>{{ status.id }}</td>
                   <td>{{ status.status }}</td>
-                  <td><input type="color" readonly disabled="true" value="{{ status.cor }}"></td>
+                  <td>
+                    <input
+                      type="color"
+                      readonly
+                      disabled="true"
+                      value="{{ status.cor }}"
+                    />
+                  </td>
                   <td>{{ status.legenda }}</td>
                   <td class="text-end">
                     <a
@@ -54,13 +61,14 @@
                       (click)="openModal(status)"
                       class="action-icon"
                     >
-                      <i class="bi bi-pencil"></i
+                      <i class="bi bi-pencil text-success"></i
                     ></a>
                     <a
+                      href="javascript: void(0);"
                       (click)="promptDelete(status.id ?? '')"
                       class="action-icon"
                     >
-                      <i class="bi bi-trash3"></i
+                      <i class="bi bi-trash3 text-danger"></i
                     ></a>
                   </td>
                 </tr>
@@ -77,4 +85,8 @@
 <!-- listar.component.html -->
 <app-modal-status (statusAtualizado)="atualizarLista()"></app-modal-status>
 
-<app-confirm-dialog #confirmDialog (onConfirm)="confirmDelete()" (onCancel)="cancelDelete()"></app-confirm-dialog>
+<app-confirm-dialog
+  #confirmDialog
+  (onConfirm)="confirmDelete()"
+  (onCancel)="cancelDelete()"
+></app-confirm-dialog>

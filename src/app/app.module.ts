@@ -16,6 +16,9 @@ import { ModalStatusComponent } from './_pages/status/modal-status/modal-status.
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { ConfirmDialogComponent } from './_components/confirm-dialog/confirm-dialog.component';
+import { ListarTipoPagamentoComponent } from './_pages/tipoPagamento/listar-tipo-pagamento/listar-tipo-pagamento.component';
+import { ModalTipoPagamentoComponent } from './_pages/tipoPagamento/modal-tipo-pagamento/modal-tipo-pagamento.component';
+import { TabelaComponent } from './_components/tabela/tabela.component';
 
 
 
@@ -30,7 +33,10 @@ import { ConfirmDialogComponent } from './_components/confirm-dialog/confirm-dia
     ListarComponent,
     LabelNomeComponent,
     ModalStatusComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ListarTipoPagamentoComponent,
+    ModalTipoPagamentoComponent,
+    TabelaComponent
   ],
   imports: [
     BrowserModule,

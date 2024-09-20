@@ -207,11 +207,16 @@ main {
 /*botoes padrões do sistema*/
 
 
-.action-icon {
-    color: #8a969c;
+.action-icon {    
     font-size: 1.2rem;
     display: inline-block;
-    padding: 0 3px;
+    padding: 0 0.5rem;
+    margin-right: 4px;
+}
+
+.action-icon:hover{
+    background-color: #ffffff90;
+    border-radius: 50%;
 }
 
 .h-80vh{
