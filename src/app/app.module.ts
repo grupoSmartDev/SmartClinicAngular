@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ModalStatusComponent } from './_pages/status/modal-status/modal-status.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+import { ConfirmDialogComponent } from './_components/confirm-dialog/confirm-dialog.component';
 
 
 
@@ -28,7 +29,8 @@ import { ToastrModule } from 'ngx-toastr';
     BodyComponent,
     ListarComponent,
     LabelNomeComponent,
-    ModalStatusComponent
+    ModalStatusComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,

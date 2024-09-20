@@ -4,6 +4,7 @@ import { Status } from '../../../_module/statusModule';
 import { ModalStatusComponent } from '../modal-status/modal-status.component';
 import * as bootstrap from 'bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-listar',
@@ -13,9 +14,10 @@ import { ToastrService } from 'ngx-toastr';
 export class ListarComponent implements OnInit {
 
   @ViewChild(ModalStatusComponent) modalPacienteComponent!: ModalStatusComponent;
-
+  @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
   statusList: Status[] = [];
   errorMessage: string = '';
+  idParaExcluir!: string;
 
   constructor(private statusService: StatusServerService, private toast: ToastrService) { }
 
@@ -50,11 +52,6 @@ export class ListarComponent implements OnInit {
   }
 
   ExcluirStatus(id: string) {
-    let confirmar = confirm('Deseja realmente excluir esse status?');
-    if (!confirmar) {
-      return;
-    }
-
     this.statusService.DeletarStatus(parseInt(id)).subscribe({
       next: (response) => {
         console.log('Status excluído com sucesso:', response);
@@ -73,4 +70,16 @@ export class ListarComponent implements OnInit {
     this.getStatus(); // Chama o método para buscar os status novamente
   }
 
+  promptDelete(id: string) {
+    this.idParaExcluir = id;
+    this.confirmDialog.openDialog();
+  }
+
+  confirmDelete() {
+    this.ExcluirStatus(this.idParaExcluir);
+  }
+
+  cancelDelete() {
+    this.idParaExcluir = '';
+  }
 }

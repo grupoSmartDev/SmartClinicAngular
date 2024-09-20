@@ -57,7 +57,7 @@
                       <i class="bi bi-pencil"></i
                     ></a>
                     <a
-                      (click)="ExcluirStatus(status?.id ?? '')"
+                      (click)="promptDelete(status.id ?? '')"
                       class="action-icon"
                     >
                       <i class="bi bi-trash3"></i
@@ -77,3 +77,4 @@
 <!-- listar.component.html -->
 <app-modal-status (statusAtualizado)="atualizarLista()"></app-modal-status>
 
+<app-confirm-dialog #confirmDialog (onConfirm)="confirmDelete()" (onCancel)="cancelDelete()"></app-confirm-dialog>
