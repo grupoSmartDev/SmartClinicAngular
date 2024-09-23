@@ -19,6 +19,8 @@ import { ConfirmDialogComponent } from './_components/confirm-dialog/confirm-dia
 import { ListarTipoPagamentoComponent } from './_pages/tipoPagamento/listar-tipo-pagamento/listar-tipo-pagamento.component';
 import { ModalTipoPagamentoComponent } from './_pages/tipoPagamento/modal-tipo-pagamento/modal-tipo-pagamento.component';
 import { TabelaComponent } from './_components/tabela/tabela.component';
+import { ListarFormaPagamentoComponent } from './_pages/formaPagamento/listar-forma-pagamento/listar-forma-pagamento.component';
+import { ModalFormaPagamentoComponent } from './_pages/formaPagamento/modal-forma-pagamento/modal-forma-pagamento.component';
 
 
 
@@ -36,7 +38,9 @@ import { TabelaComponent } from './_components/tabela/tabela.component';
     ConfirmDialogComponent,
     ListarTipoPagamentoComponent,
     ModalTipoPagamentoComponent,
-    TabelaComponent
+    TabelaComponent,
+    ListarFormaPagamentoComponent,
+    ModalFormaPagamentoComponent
   ],
   imports: [
     BrowserModule,
