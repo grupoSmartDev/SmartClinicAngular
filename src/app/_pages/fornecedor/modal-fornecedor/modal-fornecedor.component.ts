@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 import { ToastrService } from 'ngx-toastr';
 import { FornecedorService } from '../../../_services/fornecedor.service';
 import { Fornecedor } from '../../../_module/fornecedorModule';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ResponseModel } from '../../../_module/ResponseModule';
 import { BuscarCepService } from '../../../_services/buscar-cep.service';
 
@@ -27,14 +27,14 @@ export class ModalFornecedorComponent {
     id: new FormControl(),
     razao: new FormControl(),
     fantasia: new FormControl(),
-    tipo: new FormControl(),
+    tipo: new FormControl('F'),
     estadoCivil: new FormControl(),
     sexo: new FormControl(),
     ie: new FormControl(),
     im: new FormControl(),
     cpf: new FormControl(),
     cnpj: new FormControl(),
-    pais: new FormControl(),
+    pais: new FormControl('Brasil'),
     uf: new FormControl(),
     cidade: new FormControl(),
     bairro: new FormControl(),
@@ -51,6 +51,8 @@ export class ModalFornecedorComponent {
     chavePIX: new FormControl(),
     email: new FormControl(),
     dataNascimento: new FormControl(), // Campo opcional
+    observacao: new FormControl(),
+    nome : new FormControl()
   });
 
   onSubmit() {
@@ -121,4 +123,20 @@ export class ModalFornecedorComponent {
       );
     }
   }
+
+  onTipoChange() {
+    const tipo = this.formulario.get('tipo')?.value;
+  
+    if (tipo === 'F') {
+      this.formulario.get('cpf')?.setValidators([Validators.required]);
+      this.formulario.get('cnpj')?.clearValidators();
+    } else {
+      this.formulario.get('cnpj')?.setValidators([Validators.required]);
+      this.formulario.get('cpf')?.clearValidators();
+    }
+  
+    this.formulario.get('cpf')?.updateValueAndValidity();
+    this.formulario.get('cnpj')?.updateValueAndValidity();
+  }
+  
 }

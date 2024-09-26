@@ -2,6 +2,7 @@ export interface Fornecedor {
     id: string;
     razao: string;
     fantasia: string;
+    nome: string;
     tipo: string;
     estadoCivil: string;
     sexo: string;
@@ -26,5 +27,7 @@ export interface Fornecedor {
     chavePIX: string;
     email: string;
     dataNascimento?: Date; // O "?" indica que é opcional
+    observacao: string;
+    status: string;
   }
   

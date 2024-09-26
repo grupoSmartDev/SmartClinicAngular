@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { TabService } from './_services/tabs.service';
 
 interface SideNavToggle {
@@ -30,5 +30,14 @@ export class AppComponent {
   closeTab(index: number) {
     const tab = this.tabService.tabs[index]; // Pega a aba do TabService
     this.tabService.closeTab(index);         // Chama o closeTab apenas com o índice
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any): string {
+    const confirmationMessage = 'Você tem certeza que deseja recarregar a página? Isso pode fazer você perder os dados não salvos.';
+
+    // Exibe o popup de confirmação
+    $event.returnValue = confirmationMessage;
+    return confirmationMessage;
   }
 }

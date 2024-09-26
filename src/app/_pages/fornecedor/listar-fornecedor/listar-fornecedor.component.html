@@ -47,7 +47,7 @@
                     {{ fornecedor.id }}
                   </td>
                   <td>
-                    {{ fornecedor.fantasia }}
+                    {{ fornecedor.tipo == "J" ? fornecedor.fantasia : fornecedor.nome }}
                   </td>
                   <td>
                     {{

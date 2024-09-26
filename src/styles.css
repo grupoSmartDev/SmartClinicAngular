@@ -75,23 +75,29 @@ main {
 
 
 .btn-danger {
-    background-color: #fa5c7c !important;
+    color: #fa5c7c !important;
+    /* background-color: #fa5c7c !important; */
     border-color: #fa5c7c !important;
 }
 
 .btn-danger:hover {
+    color: #fff !important;
     background-color: #e75573 !important;
     border-color: #e75573 !important;
 }
 
-
+.btn{
+    background-color: transparent !important;
+    
+}
 
 /*botoes padrões do sistema*/
 
 .btn-success {
-    color: #fff !important;
+    color: #0acf97 !important;
     /* --ct-btn-color */
-    background-color: #0acf97 !important;
+    /* background-color: #0acf97 !important; */
+    background-color: transparent !important;
     /* --ct-btn-bg */
     border-color: #0acf97 !important;
     /* --ct-btn-border-color */
@@ -134,11 +140,12 @@ main {
 
 
 .btn-warning {
-    color: #fff;
+    color: #ffc35a !important;
     /* Variável: --ct-btn-color */
-    background-color: #ffc35a;
+    /* background-color: #ffc35a; */
+    
     /* Variável: --ct-btn-bg */
-    border-color: #ffc35a;
+    border-color: #ffc35a !important;
     /* Variável: --ct-btn-border-color */
 }
 
@@ -178,8 +185,8 @@ main {
 
 
 .btn-primary {
-    color: #fff;
-    background-color: #727cf5;
+    color: #727cf5 !important  ;
+    /* background-color: #727cf5; */
     border-color: #727cf5;
 }
 
@@ -208,15 +215,16 @@ main {
 
 
 .btn-secondary {
-    color: #fff;
-    background-color: #6c757d;
+    color: #6c757d !important;
+    /* background-color: #6c757d; */
+    background-color: transparent !important;
     border-color: #6c757d;
 }
 
 .btn-secondary:hover {
-    color: #fff;
-    background-color: #646c74;
-    border-color: #646c74;
+    color: #fff !important;
+    background-color: #646c74  !important;
+    border-color: #646c74 !important;
 }
 
 .btn-secondary:focus {
@@ -281,14 +289,10 @@ input[readonly]:hover {
 
 }
 
-input:focus {
-    border-color: #28a745!important; /* Cor verde para a borda */
-    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important; /* Sombra suave com tom de verde */
-    outline: none !important; /* Remove o outline padrão do navegador */
-  }
-
-  select:focus {
-    border-color: #28a745!important; /* Cor verde para a borda */
-    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important; /* Sombra suave com tom de verde */
-    outline: none !important; /* Remove o outline padrão do navegador */
-  }
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #28a745 !important; /* Cor verde para a borda */
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important; /* Sombra suave com tom de verde */
+  outline: none !important; /* Remove o outline padrão do navegador */
+}
