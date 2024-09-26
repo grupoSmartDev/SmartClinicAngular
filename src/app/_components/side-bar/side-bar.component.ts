@@ -3,6 +3,7 @@ import { Component, Output, EventEmitter, OnInit, HostListener } from '@angular/
 import { Router } from '@angular/router';
 import { fadeInOut, INavbarData } from './helper';
 import { navbarData } from './nav-data';
+import { TabService } from '../../_services/tabs.service';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -44,7 +45,7 @@ export class SidenavComponent implements OnInit {
     }
   }
 
-  constructor(public router: Router) {}
+  constructor(public router: Router,private tabService: TabService) {}
 
   ngOnInit(): void {
       this.screenWidth = window.innerWidth;
@@ -77,5 +78,11 @@ export class SidenavComponent implements OnInit {
         }
       }
     }
+  }
+
+  
+  // Método para abrir uma nova aba
+  openTab(path: string, title: string) {
+    this.tabService.openTab({ path, title });
   }
 }

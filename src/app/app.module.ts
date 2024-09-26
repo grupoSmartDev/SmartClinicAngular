@@ -21,6 +21,11 @@ import { ModalTipoPagamentoComponent } from './_pages/tipoPagamento/modal-tipo-p
 import { TabelaComponent } from './_components/tabela/tabela.component';
 import { ListarFormaPagamentoComponent } from './_pages/formaPagamento/listar-forma-pagamento/listar-forma-pagamento.component';
 import { ModalFormaPagamentoComponent } from './_pages/formaPagamento/modal-forma-pagamento/modal-forma-pagamento.component';
+import { ListarFornecedorComponent } from './_pages/fornecedor/listar-fornecedor/listar-fornecedor.component';
+import { ModalFornecedorComponent } from './_pages/fornecedor/modal-fornecedor/modal-fornecedor.component';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { SelectSexComponent } from './_components/select-sex/select-sex.component';
+
 
 
 
@@ -40,7 +45,10 @@ import { ModalFormaPagamentoComponent } from './_pages/formaPagamento/modal-form
     ModalTipoPagamentoComponent,
     TabelaComponent,
     ListarFormaPagamentoComponent,
-    ModalFormaPagamentoComponent
+    ModalFormaPagamentoComponent,
+    ListarFornecedorComponent,
+    ModalFornecedorComponent,
+    SelectSexComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,9 +56,11 @@ import { ModalFormaPagamentoComponent } from './_pages/formaPagamento/modal-form
     BrowserAnimationsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    NgxMaskDirective
+
   ],
-  providers: [],
+  providers: [ provideNgxMask(),],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

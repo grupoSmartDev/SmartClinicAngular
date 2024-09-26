@@ -1,9 +1,45 @@
 <div class="d-flex">
+  <!-- Sidebar -->
   <app-side-bar></app-side-bar>
+
+  <!-- Main content -->
   <div class="main">
+    <!-- Header -->
     <app-header></app-header>
+
+    <!-- Corpo principal com abas -->
     <app-body>
-      <router-outlet></router-outlet>
+      <!-- Renderização dinâmica de abas -->
+      <div class="tabs-container">
+        <ul class="nav nav-tabs">
+          <li
+            class="nav-item"
+            *ngFor="let tab of tabService.tabs; let i = index"
+          >
+            <a
+              class="nav-link"
+              [ngClass]="{ active: tabService.activeTab === i }"
+              (click)="tabService.selectTab(i)"
+              href="javascript:void(0)"
+            >
+              {{ tab.title }}
+              <button
+                type="button"
+                class="btn-close ms-2"
+                (click)="closeTab(i)"
+              ></button>
+            </a>
+          </li>
+        </ul>
+
+        <div class="tab-content mt-3">
+          <ng-container *ngFor="let tab of tabService.tabs; let i = index">
+            <div *ngIf="tabService.activeTab === i">
+              <router-outlet></router-outlet>
+            </div>
+          </ng-container>
+        </div>
+      </div>
     </app-body>
   </div>
 </div>

@@ -1,0 +1,270 @@
+<!-- Modal -->
+<div
+  #modalFornecedor
+  class="modal fade"
+  id="modalFornecedor"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="statusModalLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Fornecedor</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row g-3">
+            <div class="col-md-2">
+              <label for="id" class="form-label">Cód.</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="Id"
+                readonly
+                formControlName="id"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="fantasia" class="form-label">Fantasia</label>
+              <input
+                type="text"
+                required
+                class="form-control form-control-sm required"
+                formControlName="fantasia"
+              />
+            </div>
+
+            <!-- Novos Inputs -->
+            <div class="col-md-6">
+              <label for="razao" class="form-label">Razão Social</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="razao"
+              />
+            </div>
+            <div class="col-md-3">
+                <label for="tipo" class="form-label">Tipo</label>
+                <select class="form-select form-select-sm" formControlName="tipo">
+                  <option value="F">Física</option>
+                  <option value="J">Jurídica</option>
+                </select>
+              </div>
+            <div class="col-md-3">
+                <label for="estadoCivil" class="form-label">Estado Civil</label>
+                <select class="form-select form-select-sm" formControlName="estadoCivil">
+                  <option value="C">Casado(a)</option>
+                  <option value="S">Soltairo(a)</option>
+                  <option value="D">Divorciado(a)</option>
+                  <option value="O">Outros</option>
+                </select>
+              </div>
+            <div class="col-md-3">
+                <label for="sexo" class="form-label">Sexo</label>
+                <select class="form-select form-select-sm" formControlName="sexo">
+                  <option value="M">Masculino</option>
+                  <option value="F">Feminino</option>
+                  <option value="O">Outros</option>
+                </select>
+              </div>
+              
+            <div class="col-md-3">
+              <label for="dataNascimento" class="form-label"
+                >Data de Nascimento</label
+              >
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                formControlName="dataNascimento"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="cpf" class="form-label">CPF</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="cpf"
+                mask="000.000.000-00"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="cnpj" class="form-label">CNPJ</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="cnpj"
+                mask="00.000.000/0000-00"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="pais" class="form-label">País</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="pais"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="uf" class="form-label">UF</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="uf"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="cidade" class="form-label">Cidade</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="cidade"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="bairro" class="form-label">Bairro</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="bairro"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="logradouro" class="form-label">Logradouro</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="logradouro"
+              />
+            </div>
+            <div class="col-md-3">
+              <label for="nrLogradouro" class="form-label">Número</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="nrLogradouro"
+              />
+            </div>
+            <div class="col-md-3">
+              <label for="cep" class="form-label">CEP</label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="cep"
+                  id="cep"
+                  mask="00000-000"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="buscarCEP()"
+                >
+                  <i class="bi bi-search"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="celular" class="form-label">Celular</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="celular"
+                mask="(00) 0 0000-0000"
+              />
+            </div>
+            <div class="col-md-6">
+              <label for="telefoneFixo" class="form-label">Telefone Fixo</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="telefoneFixo"
+                mask="(00) 0000-0000"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="banco" class="form-label">Banco</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="banco"
+                mask="000"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="agencia" class="form-label">Agência</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="agencia"
+                mask="0000"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="conta" class="form-label">Conta</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="conta"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="tipoPIX" class="form-label">Tipo PIX</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="tipoPIX"
+              />
+            </div>
+            <div class="col-md-8">
+              <label for="chavePIX" class="form-label">Chave PIX</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="chavePIX"
+              />
+            </div>
+            <div class="col-md-12">
+              <label for="email" class="form-label">E-mail</label>
+              <input
+                type="email"
+                class="form-control form-control-sm"
+                formControlName="email"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          (click)="onSubmit()"
+          class="btn btn-success"
+          id="btn_salvar_editar"
+        >
+          <i class="bi bi-check"></i> Confirmar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="btnCancelar"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="fecharModal()"
+        >
+          <i class="bi bi-x"></i>Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
