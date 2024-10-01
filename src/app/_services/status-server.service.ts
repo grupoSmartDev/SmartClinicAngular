@@ -13,19 +13,19 @@ export class StatusServerService {
 
   constructor(private http: HttpClient) { }
 
-  ListarStatus(): Observable<ResponseModel<Status[]>> {
-    return this.http.get<ResponseModel<Status[]>>(`${this.baseURL}ListarStatus`);
+  Listar(): Observable<ResponseModel<Status[]>> {
+    return this.http.get<ResponseModel<Status[]>>(`${this.baseURL}Listar`);
   }
 
-  CriarStatus(status: Status): Observable<ResponseModel<Status>> {
-    return this.http.post<ResponseModel<Status>>(`${this.baseURL}CriarStatus`, status);
+  Criar(status: Status): Observable<ResponseModel<Status>> {
+    return this.http.post<ResponseModel<Status>>(`${this.baseURL}Criar`, status);
   }
 
-  AtualizarStatus(id: number, status: Status): Observable<ResponseModel<Status>> {
-    return this.http.put<ResponseModel<Status>>(`${this.baseURL}EditarStatus`, status);
+  Atualizar(id: number, status: Status): Observable<ResponseModel<Status>> {
+    return this.http.put<ResponseModel<Status>>(`${this.baseURL}Editar`, status);
   }
 
-  DeletarStatus(id: number): Observable<ResponseModel<void>> {
-    return this.http.delete<ResponseModel<void>>(`${this.baseURL}DeleteStatus/${id}`);
+  Deletar(id: number): Observable<ResponseModel<void>> {
+    return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
 }

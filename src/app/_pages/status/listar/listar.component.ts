@@ -26,7 +26,7 @@ export class ListarComponent implements OnInit {
   }
 
   getStatus(): void {
-    this.statusService.ListarStatus().subscribe({
+    this.statusService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
           this.statusList = data.dados;
@@ -52,7 +52,7 @@ export class ListarComponent implements OnInit {
   }
 
   ExcluirStatus(id: string) {
-    this.statusService.DeletarStatus(parseInt(id)).subscribe({
+    this.statusService.Deletar(parseInt(id)).subscribe({
       next: (response) => {
         console.log('Status excluído com sucesso:', response);
         this.statusList = this.statusList.filter(status => status.id !== id);

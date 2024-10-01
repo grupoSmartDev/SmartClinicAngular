@@ -33,7 +33,7 @@ export class ModalStatusComponent {
     if (this.formulario.valid) {
       const statusToSave: Status = this.formulario.value as Status;
       if (statusToSave.id) {
-        this.statusService.AtualizarStatus(parseInt(statusToSave.id), statusToSave).subscribe({
+        this.statusService.Atualizar(parseInt(statusToSave.id), statusToSave).subscribe({
           next: (response: ResponseModel<Status>) => {
             this.toast.success('Status atualizado com Sucesso', 'Parabéns');
             this.statusAtualizado.emit(); // Emita o evento após a atualização
@@ -45,7 +45,7 @@ export class ModalStatusComponent {
           }
         });
       } else {
-        this.statusService.CriarStatus(statusToSave).subscribe({
+        this.statusService.Criar(statusToSave).subscribe({
           next: (response: ResponseModel<Status>) => {
             this.toast.success('Status Criado com sucesso', 'Parabéns');
             this.statusAtualizado.emit(); // Emita o evento após a criação

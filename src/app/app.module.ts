@@ -25,6 +25,8 @@ import { ListarFornecedorComponent } from './_pages/fornecedor/listar-fornecedor
 import { ModalFornecedorComponent } from './_pages/fornecedor/modal-fornecedor/modal-fornecedor.component';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { SelectSexComponent } from './_components/select-sex/select-sex.component';
+import { ListarSalasComponent } from './_pages/sala/listar-salas/listar-salas.component';
+import { ModalSalasComponent } from './_pages/sala/modal-salas/modal-salas.component';
 
 
 
@@ -49,6 +51,8 @@ import { SelectSexComponent } from './_components/select-sex/select-sex.componen
     ListarFornecedorComponent,
     ModalFornecedorComponent,
     SelectSexComponent,
+    ListarSalasComponent,
+    ModalSalasComponent,
   ],
   imports: [
     BrowserModule,
