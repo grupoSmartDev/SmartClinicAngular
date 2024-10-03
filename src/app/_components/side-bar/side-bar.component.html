@@ -1,92 +1,95 @@
-<aside id="sidebar" class="expand">
-    <div class="d-flex">
-        <button class="toggle-btn" type="button">
-            <i class="lni lni-grid-alt"></i>
-        </button>
-        <div class="sidebar-logo">
-            <a href="#">SmartClinic</a>
-        </div>
+<aside id="sidebar" [ngClass]="{'expand': isExpanded}">
+  <div class="d-flex">
+    <button class="toggle-btn" type="button" (click)="toggleSidebar()">
+      <i class="lni lni-grid-alt"></i>
+    </button>
+    <div class="sidebar-logo">
+      <a href="#">SmartClinic</a>
     </div>
-    <ul class="sidebar-nav" id="menuSideBar">
+  </div>
+  
+  <ul class="sidebar-nav" id="menuSideBar">
+    <li class="sidebar-item">
+      <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('cadastro')" data-bs-toggle="collapse">
+        <i class="lni lni-layout"></i>
+        <span>Cadastro</span>
+      </a>
+      <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['cadastro'], 'show': isMenuOpen['cadastro']}" id="cadastro"  data-bs-toggle="collapse"
+        data-bs-target="#cadastro">
         <li class="sidebar-item">
-            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-               data-bs-target="#cadastro" aria-expanded="false" aria-controls="cadastro">
-                <i class="lni lni-layout"></i>
-                <span>Cadastro</span>
-            </a>
-            <ul id="cadastro" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <li class="sidebar-item" mid="usuario">
-                    <a class="sidebar-link" (click)="openTab('/usuario/listar', 'Usuário')">Usuário</a>
-                </li>
-                <li class="sidebar-item" mid="fornecedor">
-                    <a class="sidebar-link" (click)="openTab('/fornecedor/listar', 'Fornecedor')">Fornecedor</a>
-                </li>
-                <li class="sidebar-item" mid="status">
-                    <a class="sidebar-link" (click)="openTab('/status/listar', 'Status')">Status</a>
-                </li>
-                <li class="sidebar-item" mid="convenio">
-                    <a class="sidebar-link" (click)="openTab('/convenio/listar', 'Convênio')">Convênio</a>
-                </li>
-                <li class="sidebar-item" mid="conselhos">
-                    <a class="sidebar-link" (click)="openTab('/conselhos/listar', 'Conselho')">Conselho</a>
-                </li>
-                <li class="sidebar-item" mid="sala">
-                    <a class="sidebar-link" (click)="openTab('/sala/listar', 'Sala')">Sala</a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse"
-                       data-bs-target="#financeiro" aria-expanded="false" aria-controls="financeiro">
-                        Financeiro
-                    </a>
-                    <ul id="financeiro" class="sidebar-dropdown list-unstyled collapse">
-                        <li class="sidebar-item" mid="TipoPagamento">
-                            <a class="sidebar-link" (click)="openTab('/tipoPagamento/listar', 'Tipo de pagamento')">Tipo de pagamento</a>
-                        </li>
-                        <li class="sidebar-item" mid="FormaPagamento">
-                            <a class="sidebar-link" (click)="openTab('/formaPagamento/listar', 'Forma de pagamento')">Forma de pagamento</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-        <li class="sidebar-item" mid="pacientes">
-            <a class="sidebar-link" (click)="openTab('/pacientes/listar', 'Pacientes')">
-                <i class="lni lni-user"></i>
-                <span>Pacientes</span>
-            </a>
-        </li>
-        <li class="sidebar-item" mid="agenda">
-            <a class="sidebar-link" (click)="openTab('/agenda/listar', 'Agenda')">
-                <i class="lni lni-calendar"></i>
-                <span>Agenda</span>
-            </a>
+          <a class="sidebar-link" (click)="openTab('/usuario/listar', 'Usuário')">Usuário</a>
         </li>
         <li class="sidebar-item">
-            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-               data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
-                <i class="lni lni-files"></i>
-                <span>Relatórios</span>
-            </a>
-            <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <li class="sidebar-item">
-                    <a class="sidebar-link" (click)="openTab('/relatorios/pacientes', 'Relatório de Pacientes')">Pacientes</a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" (click)="openTab('/relatorios/contasPagar', 'Contas a Pagar')">Contas a Pagar</a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" (click)="openTab('/relatorios/contasReceber', 'Contas a Receber')">Contas a Receber</a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" (click)="openTab('/relatorios/tipoPagamento', 'Tipo de Pagamento')">Tipo de Pagamento</a>
-                </li>
-            </ul>
+          <a class="sidebar-link" (click)="openTab('/fornecedor/listar', 'Fornecedor')">Fornecedor</a>
         </li>
-    </ul>
-    <div class="sidebar-footer">
-        <a href="#" class="sidebar-link">
-            <i class="lni lni-exit"></i>
-            <span>Logout</span>
-        </a>
-    </div>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/status/listar', 'Status')">Status</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/convenio/listar', 'Convênio')">Convênio</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/conselhos/listar', 'Conselho')">Conselho</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/sala/listar', 'Sala')">Sala</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('financeiro')" data-bs-toggle="collapse">
+            Financeiro
+          </a>
+          <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['financeiro'], 'show': isMenuOpen['financeiro']}" id="financeiro">
+            <li class="sidebar-item">
+              <a class="sidebar-link" (click)="openTab('/tipoPagamento/listar', 'Tipo de pagamento')">Tipo de pagamento</a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" (click)="openTab('/formaPagamento/listar', 'Forma de pagamento')">Forma de pagamento</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li class="sidebar-item">
+      <a class="sidebar-link" (click)="openTab('/pacientes/listar', 'Pacientes')">
+        <i class="lni lni-user"></i>
+        <span>Pacientes</span>
+      </a>
+    </li>
+
+    <li class="sidebar-item">
+      <a class="sidebar-link" (click)="openTab('/agenda/listar', 'Agenda')">
+        <i class="lni lni-calendar"></i>
+        <span>Agenda</span>
+      </a>
+    </li>
+
+    <li class="sidebar-item">
+      <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('auth')" data-bs-toggle="collapse"> 
+        <i class="lni lni-files"></i>
+        <span>Relatórios</span>
+      </a>
+      <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['auth'], 'show': isMenuOpen['auth']}" id="auth">
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/relatorios/pacientes', 'Relatório de Pacientes')">Pacientes</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/relatorios/contasPagar', 'Contas a Pagar')">Contas a Pagar</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/relatorios/contasReceber', 'Contas a Receber')">Contas a Receber</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/relatorios/tipoPagamento', 'Tipo de Pagamento')">Tipo de Pagamento</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <div class="sidebar-footer">
+    <a href="#" class="sidebar-link">
+      <i class="lni lni-exit"></i>
+      <span>Logout</span>
+    </a>
+  </div>
 </aside>

@@ -35,6 +35,9 @@ export class SidenavComponent implements OnInit {
   screenWidth = 0;
   navData = navbarData;
   multiple: boolean = false;
+  isExpanded = true;
+  isMenuOpen: { [key: string]: boolean } = {};
+
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -46,6 +49,16 @@ export class SidenavComponent implements OnInit {
   }
 
   constructor(public router: Router,private tabService: TabService) {}
+
+    // Alterna a expansão da sidebar
+  
+    toggleSidebar(): void {
+      this.isExpanded = !this.isExpanded;
+    }
+  
+    toggleSubmenu(menu: string): void {
+      this.isMenuOpen[menu] = !this.isMenuOpen[menu];
+    }
 
   ngOnInit(): void {
       this.screenWidth = window.innerWidth;
