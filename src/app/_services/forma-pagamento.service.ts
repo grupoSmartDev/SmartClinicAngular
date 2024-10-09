@@ -14,19 +14,19 @@ export class FormaPagamentoService {
   baseURL: string = 'https://localhost:44308/api/FormaPagamento/';
 
   Listar(): Observable<ResponseModel<FormaPagamento[]>> {
-    return this.http.get<ResponseModel<FormaPagamento[]>>(`${this.baseURL}ListarFormaPagamento`);
+    return this.http.get<ResponseModel<FormaPagamento[]>>(`${this.baseURL}Listar`);
   }
 
   Criar(formaPagamento: FormaPagamento): Observable<ResponseModel<FormaPagamento>> {
-    return this.http.post<ResponseModel<FormaPagamento>>(`${this.baseURL}CriarFormaPagamento`, formaPagamento);
+    return this.http.post<ResponseModel<FormaPagamento>>(`${this.baseURL}Criar`, formaPagamento);
   }
 
   Atualizar(formaPagamento: FormaPagamento): Observable<ResponseModel<FormaPagamento>> {
-    return this.http.put<ResponseModel<FormaPagamento>>(`${this.baseURL}EditarFormaPagamento`, formaPagamento);
+    return this.http.put<ResponseModel<FormaPagamento>>(`${this.baseURL}Editar`, formaPagamento);
   }
 
   Deletar(id: string): Observable<ResponseModel<void>> {
-    return this.http.delete<ResponseModel<void>>(`${this.baseURL}DeleteFormaPagamento/${id}`);
+    return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
 
 }

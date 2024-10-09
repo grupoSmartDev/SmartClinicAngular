@@ -27,6 +27,9 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { SelectSexComponent } from './_components/select-sex/select-sex.component';
 import { ListarSalasComponent } from './_pages/sala/listar-salas/listar-salas.component';
 import { ModalSalasComponent } from './_pages/sala/modal-salas/modal-salas.component';
+import { ModalConvenioComponent } from './_pages/convenio/modal-convenio/modal-convenio.component';
+import { ListarConvenioComponent } from './_pages/convenio/listar-convenio/listar-convenio.component';
+import { TabelaListarGenericaComponent } from './_components/tabela-listar-generica/tabela-listar-generica.component';
 
 
 
@@ -53,6 +56,9 @@ import { ModalSalasComponent } from './_pages/sala/modal-salas/modal-salas.compo
     SelectSexComponent,
     ListarSalasComponent,
     ModalSalasComponent,
+    ModalConvenioComponent,
+    ListarConvenioComponent,
+    TabelaListarGenericaComponent,
   ],
   imports: [
     BrowserModule,

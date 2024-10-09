@@ -11,7 +11,7 @@ export class SalasService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/Salas/';
+  baseURL: string = 'https://localhost:44308/api/Sala/';
 
   Listar(): Observable<ResponseModel<Sala[]>> {
     return this.http.get<ResponseModel<Sala[]>>(`${this.baseURL}Listar`);

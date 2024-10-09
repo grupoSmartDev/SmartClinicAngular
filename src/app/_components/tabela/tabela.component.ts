@@ -6,17 +6,17 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './tabela.component.css'
 })
 export class TabelaComponent {
-  @Input() colunas: { header: string, field: string }[] = [];
-  @Input() data : any[] = [];
-  @Output() onEdit = new EventEmitter<any>();
-  @Output() onDelete = new EventEmitter<any>();
+  @Input() data: any[] = []; // Lista de objetos dinâmicos
+  @Input() columns: { header: string, field: string }[] = []; // Configuração das colunas (th, td)
+  @Output() edit = new EventEmitter<any>(); // Evento de editar
+  @Output() delete = new EventEmitter<any>(); // Evento de deletar
 
-  editItem(item: any) {
-    debugger
-    this.onEdit.emit(item);
+  onEdit(item: any) {
+    this.edit.emit(item);
   }
 
-  deleteItem(item: any) {
-    this.onDelete.emit(item);
+  onDelete(item: any) {
+    debugger
+    this.delete.emit(item);
   }
 }

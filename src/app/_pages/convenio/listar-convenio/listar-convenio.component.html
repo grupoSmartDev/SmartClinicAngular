@@ -1,0 +1,35 @@
+<app-label-nome [nomeTela]="'Convenio'"></app-label-nome>
+
+<app-tabela-listar-generica
+  [titulo]="'Convenio'"
+  [data]="convenios"
+  [columns]="colunasConvenios"
+  [actions]="[
+    { icon: 'bi bi-gear', label: '', class: 'btn-success', action: 'gear' },
+    {
+      icon: 'bi bi-arrow-down-circle',
+      label: 'Import',
+      class: 'btn-light',
+      action: 'import'
+    },
+    {
+      icon: 'bi bi-arrow-up-circle',
+      label: 'Export',
+      class: 'btn-light',
+      action: 'export'
+    }
+  ]"
+  (createNew)="openModal('')"
+  (edit)="openModal($event)"
+  (delete)="ExcluirConvenio($event)"
+  (customAction)="acaoCustomizada($event)"
+>
+</app-tabela-listar-generica>
+
+<app-modal-convenio (convenioAtualizado)="atualizarConvenio()"></app-modal-convenio>
+
+<app-confirm-dialog
+  #confirmDialog
+  (onConfirm)="confirmDelete()"
+  (onCancel)="cancelDelete()"
+></app-confirm-dialog>

@@ -14,18 +14,18 @@ export class TipoPagamentoService {
   baseURL: string = 'https://localhost:44308/api/TipoPagamento/';
 
   ListarTipoPagamento(): Observable<ResponseModel<TipoPagamento[]>> {
-    return this.http.get<ResponseModel<TipoPagamento[]>>(`${this.baseURL}ListarTipoPagamento`)
+    return this.http.get<ResponseModel<TipoPagamento[]>>(`${this.baseURL}Listar`)
   }
 
   CriarTipoPagamento(tipoPagamento: TipoPagamento): Observable<ResponseModel<TipoPagamento>> {
-    return this.http.post<ResponseModel<TipoPagamento>>(`${this.baseURL}CriarTipoPagamento`, tipoPagamento);
+    return this.http.post<ResponseModel<TipoPagamento>>(`${this.baseURL}Criar`, tipoPagamento);
   }
 
   EditarTipoPagamento(tipoPagamento: TipoPagamento): Observable<ResponseModel<TipoPagamento>> {
-    return this.http.put<ResponseModel<TipoPagamento>>(`${this.baseURL}EditarTipoPagamento`, tipoPagamento);
+    return this.http.put<ResponseModel<TipoPagamento>>(`${this.baseURL}Editar`, tipoPagamento);
   }
 
   DeletarTipoPagamento(id : string) : Observable<ResponseModel<TipoPagamento>>{
-    return this.http.delete<ResponseModel<TipoPagamento>>(`${this.baseURL}DeleteTipoPagamento/${id}`)
+    return this.http.delete<ResponseModel<TipoPagamento>>(`${this.baseURL}Delete/${id}`)
   }
 }
