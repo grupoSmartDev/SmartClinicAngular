@@ -30,6 +30,8 @@ import { ModalSalasComponent } from './_pages/sala/modal-salas/modal-salas.compo
 import { ModalConvenioComponent } from './_pages/convenio/modal-convenio/modal-convenio.component';
 import { ListarConvenioComponent } from './_pages/convenio/listar-convenio/listar-convenio.component';
 import { TabelaListarGenericaComponent } from './_components/tabela-listar-generica/tabela-listar-generica.component';
+import { ListarConselhoComponent } from './_pages/conselho/listar-conselho/listar-conselho.component';
+import { ModalConselhoComponent } from './_pages/conselho/modal-conselho/modal-conselho.component';
 
 
 
@@ -59,6 +61,8 @@ import { TabelaListarGenericaComponent } from './_components/tabela-listar-gener
     ModalConvenioComponent,
     ListarConvenioComponent,
     TabelaListarGenericaComponent,
+    ListarConselhoComponent,
+    ModalConselhoComponent,
   ],
   imports: [
     BrowserModule,

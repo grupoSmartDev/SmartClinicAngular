@@ -1,0 +1,36 @@
+<app-label-nome [nomeTela]="'Conselho'"></app-label-nome>
+
+
+<app-tabela-listar-generica
+  [titulo]="'Conselho'"
+  [data]="conselhos"
+  [columns]="colunasConselho"
+  [actions]="[
+    { icon: 'bi bi-gear', label: '', class: 'btn-success', action: 'gear' },
+    {
+      icon: 'bi bi-arrow-down-circle',
+      label: 'Import',
+      class: 'btn-light',
+      action: 'import'
+    },
+    {
+      icon: 'bi bi-arrow-up-circle',
+      label: 'Export',
+      class: 'btn-light',
+      action: 'export'
+    }
+  ]"
+  (createNew)="openModal('')"
+  (edit)="openModal($event)"
+  (delete)="ExcluirConselho($event)"
+  (customAction)="acaoCustomizada($event)"
+>
+</app-tabela-listar-generica>
+
+<app-modal-conselho (conselhoapp-modal-conselhoAtualizado)="atualizarConselho()"></app-modal-conselho>
+
+<app-confirm-dialog
+  #confirmDialog
+  (onConfirm)="confirmDelete()"
+  (onCancel)="cancelDelete()"
+></app-confirm-dialog>

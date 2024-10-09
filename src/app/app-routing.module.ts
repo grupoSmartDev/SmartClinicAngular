@@ -6,6 +6,7 @@ import { ListarFormaPagamentoComponent } from './_pages/formaPagamento/listar-fo
 import { ListarFornecedorComponent } from './_pages/fornecedor/listar-fornecedor/listar-fornecedor.component';
 import { ListarSalasComponent } from './_pages/sala/listar-salas/listar-salas.component';
 import { ListarConvenioComponent } from './_pages/convenio/listar-convenio/listar-convenio.component';
+import { ListarConselhoComponent } from './_pages/conselho/listar-conselho/listar-conselho.component';
 
 const routes: Routes = [
   {path:'', component: ListarComponent},
@@ -15,6 +16,7 @@ const routes: Routes = [
   {path:'fornecedor/listar', component: ListarFornecedorComponent},
   {path:'sala/listar', component: ListarSalasComponent},
   {path:'convenio/listar', component: ListarConvenioComponent},
+  {path:'conselho/listar', component: ListarConselhoComponent},
 ];
 
 @NgModule({
