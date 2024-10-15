@@ -32,7 +32,7 @@
           </li>
         </ul>
 
-        <div class="mt-3">
+        <div class="mt-3 card p-3">
           <ng-container *ngFor="let tab of tabService.tabs; let i = index">
             <div *ngIf="tabService.activeTab === i">
               <router-outlet></router-outlet>

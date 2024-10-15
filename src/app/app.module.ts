@@ -32,6 +32,11 @@ import { ListarConvenioComponent } from './_pages/convenio/listar-convenio/lista
 import { TabelaListarGenericaComponent } from './_components/tabela-listar-generica/tabela-listar-generica.component';
 import { ListarConselhoComponent } from './_pages/conselho/listar-conselho/listar-conselho.component';
 import { ModalConselhoComponent } from './_pages/conselho/modal-conselho/modal-conselho.component';
+import { AgendaComponent } from './_pages/agenda/agenda.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid'; // Plugin de visualização DayGrid
+import timeGridPlugin from '@fullcalendar/timegrid'; // Plugin de visualização TimeGrid
+import interactionPlugin from '@fullcalendar/interaction'; // Plugin para 
 
 
 
@@ -63,6 +68,7 @@ import { ModalConselhoComponent } from './_pages/conselho/modal-conselho/modal-c
     TabelaListarGenericaComponent,
     ListarConselhoComponent,
     ModalConselhoComponent,
+    AgendaComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,8 +77,9 @@ import { ModalConselhoComponent } from './_pages/conselho/modal-conselho/modal-c
     HttpClientModule,
     ReactiveFormsModule,
     ToastrModule.forRoot(),
-    NgxMaskDirective
-
+    NgxMaskDirective,
+    FullCalendarModule 
+    
   ],
   providers: [ provideNgxMask(),],
   bootstrap: [AppComponent]
