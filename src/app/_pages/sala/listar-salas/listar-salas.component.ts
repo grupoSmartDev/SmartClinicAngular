@@ -19,6 +19,13 @@ export class ListarSalasComponent {
   listaDeSalas: Sala[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
+  salaParaExcluir!: Sala;
+
+  colunaTabela= [
+    { header: 'Cód.', field: 'id' },
+    { header: 'Nome', field: 'nome' },
+    { header: 'Capacidade', field: 'capacidade' },
+  ]
 
   constructor(private salaService: SalasService , private toast: ToastrService) { }
 
@@ -52,7 +59,8 @@ export class ListarSalasComponent {
     }
   }
 
-  ExcluirSala(id: string) {
+  ExcluirSala(sala : Sala) {
+    let id = sala.id;
     this.salaService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Sala excluído com sucesso:', response);
@@ -76,7 +84,7 @@ export class ListarSalasComponent {
   }
 
   confirmDelete() {
-    this.ExcluirSala(this.idParaExcluir);
+    this.ExcluirSala(this.salaParaExcluir);
   }
 
   cancelDelete() {

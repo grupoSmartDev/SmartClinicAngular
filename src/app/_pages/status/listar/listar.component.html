@@ -1,22 +1,11 @@
 
-  <app-label-nome [nomeTela]="'Status'"></app-label-nome>
+  <app-label-nome [nomeTela]="'Status'" (adicionarClicked)="openModal('')"></app-label-nome>
 
 
 <div class="row">
   <div class="col-12">
     <div class="">
       <div class="card-body">
-        <div class="row mb-2">
-          <div class="col-sm-5">
-          </div>
-          <div class="col-sm-7">
-            <div class="text-sm-end">
-              
-            </div>
-          </div>
-          <!-- end col-->
-        </div>
-
         <div class="row">
           <div class="col-12">
             @if (statusList.length > 0) {

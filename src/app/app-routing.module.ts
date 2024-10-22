@@ -8,9 +8,10 @@ import { ListarSalasComponent } from './_pages/sala/listar-salas/listar-salas.co
 import { ListarConvenioComponent } from './_pages/convenio/listar-convenio/listar-convenio.component';
 import { ListarConselhoComponent } from './_pages/conselho/listar-conselho/listar-conselho.component';
 import { AgendaComponent } from './_pages/agenda/agenda.component';
+import { DashboardComponent } from './_pages/dashboard/dashboard.component';
 
 const routes: Routes = [
-  {path:'', component: ListarComponent},
+  {path:'', component: DashboardComponent},
   {path:'status/listar', component: ListarComponent},
   {path:'tipoPagamento/listar', component: ListarTipoPagamentoComponent},
   {path:'formaPagamento/listar', component: ListarFormaPagamentoComponent},
@@ -19,6 +20,7 @@ const routes: Routes = [
   {path:'convenio/listar', component: ListarConvenioComponent},
   {path:'conselho/listar', component: ListarConselhoComponent},
   {path:'agenda/listar', component: AgendaComponent},
+  {path:'dashboard', component: DashboardComponent},
 ];
 
 @NgModule({

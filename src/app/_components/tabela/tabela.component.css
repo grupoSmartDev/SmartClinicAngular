@@ -1,0 +1,10 @@
+.table-responsive {
+    width: 100% !important;
+    overflow-x: auto !important; /* Permite o scroll horizontal */
+    -webkit-overflow-scrolling: touch !important; /* Suporte para scroll suave em dispositivos touch */
+  }
+  
+  .table {
+    min-width: 600px !important; /* Largura mínima para evitar colapsos em telas pequenas */
+  }
+  

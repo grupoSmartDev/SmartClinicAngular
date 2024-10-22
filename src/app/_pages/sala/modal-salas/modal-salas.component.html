@@ -19,7 +19,7 @@
               </div>
               <div class="col-md-4">
                   <label for="localizacao" class="form-label">Localização</label>
-                  <input type="text" required class="form-control form-control-sm" formControlName="localizacao" />
+                  <input type="text" required class="form-control form-control-sm" formControlName="local" />
               </div>
               <div class="col-md-2">
                   <label for="capacidade" class="form-label">Capacidade</label>
@@ -39,6 +39,10 @@
                     <option value="C">Reunião</option> 
                 </select>
             </div>
+            <div class="col-md-4">
+              <label for="horarioFincionamento" class="form-label">Horario de Funcionamento</label>
+              <input type="text" required class="form-control form-control-sm" formControlName="horarioFincionamento" />
+          </div>
             <div class="col-md-12">
                 <label for="observacao" class="form-label">Observação</label>
                 <textarea name="observacao"class='form-control form-control-sm' formControlName="observacao" cols="30" rows="10"></textarea>

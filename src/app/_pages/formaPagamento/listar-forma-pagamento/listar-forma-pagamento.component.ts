@@ -20,6 +20,13 @@ export class ListarFormaPagamentoComponent implements OnInit {
   formaPagamentoLista: FormaPagamento[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
+  formaPagamentoParaExcluir!: FormaPagamento
+
+  colunaTabela = [
+    { header: 'Cód.', field: 'id' },
+    { header: 'Descricão', field: 'descricao' },
+    { header: 'Parcelas', field: 'parcelas' },
+  ]
 
   ngOnInit(): void {
     this.getFormaPagamento();
@@ -51,7 +58,8 @@ export class ListarFormaPagamentoComponent implements OnInit {
     }
   }
 
-  ExcluirStatus(id: string) {
+  ExcluirStatus(formaPagamento : FormaPagamento) {
+    let id = formaPagamento.id;
     this.formaPagamentoService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Status excluído com sucesso:', response);
@@ -76,7 +84,7 @@ export class ListarFormaPagamentoComponent implements OnInit {
   }
 
   confirmDelete() {
-    this.ExcluirStatus(this.idParaExcluir);
+    this.ExcluirStatus(this.formaPagamentoParaExcluir);
   }
 
   cancelDelete() {

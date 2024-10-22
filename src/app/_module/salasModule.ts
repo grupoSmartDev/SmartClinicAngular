@@ -6,4 +6,5 @@ export interface Sala{
     local: string;
     status: string;
     observacao: string;
+    horarioFincionamento : string;
 }

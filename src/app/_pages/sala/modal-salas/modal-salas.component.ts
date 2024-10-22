@@ -27,6 +27,7 @@ export class ModalSalasComponent {
     local: new FormControl(),
     status: new FormControl(),
     observacao: new FormControl(),
+    horarioFincionamento : new FormControl()
   });
 
   carregarSala(sala: any) {

@@ -1,0 +1,45 @@
+<div class="filters row align-items-end">
+  <div class="col-md-2 col-12">
+    <label for="profissional">Profissional</label>
+    <select
+      id="profissional"
+      [(ngModel)]="selectedProfissional"
+      class="form-select form-select-sm"
+    >
+      <option *ngFor="let prof of profissionais" [value]="prof.id">
+        {{ prof.nome }}
+      </option>
+    </select>
+  </div>
+  <div class="col-md-2 col-12">
+    <label for="date-range">Período</label>
+    <input
+      type="date"
+      class="form-control form-control-sm"
+      [(ngModel)]="startDate"
+    />
+  </div>
+
+  <div class="col-md-2 col-12">
+
+    <input
+      type="date"
+      class="form-control form-control-sm"
+      [(ngModel)]="endDate"
+    />
+  </div>
+
+  <div class="col-12 col-md-2">
+    <button class="btn btn-sm btn-primary" (click)="atualizarGraficos()">
+      Atualizar
+    </button>
+  </div>
+</div>
+
+<div class="charts my-5">
+  <app-cliente-charts
+    [endDate]="endDate"
+    [startDate]="startDate"
+    [profissionalId]="selectedProfissional"
+  ></app-cliente-charts>
+</div>

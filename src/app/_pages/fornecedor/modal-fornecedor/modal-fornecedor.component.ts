@@ -27,14 +27,14 @@ export class ModalFornecedorComponent {
     id: new FormControl(),
     razao: new FormControl(),
     fantasia: new FormControl(),
-    tipo: new FormControl('F'),
+    tipo: new FormControl(),
     estadoCivil: new FormControl(),
     sexo: new FormControl(),
     ie: new FormControl(),
     im: new FormControl(),
     cpf: new FormControl(),
     cnpj: new FormControl(),
-    pais: new FormControl('Brasil'),
+    pais: new FormControl(),
     uf: new FormControl(),
     cidade: new FormControl(),
     bairro: new FormControl(),
@@ -56,6 +56,7 @@ export class ModalFornecedorComponent {
   });
 
   onSubmit() {
+    debugger
     const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
     if (this.formulario.valid) {
       const fornecedorToSave: Fornecedor = this.formulario.value as Fornecedor;

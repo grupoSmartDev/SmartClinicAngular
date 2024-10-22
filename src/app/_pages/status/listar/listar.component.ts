@@ -18,6 +18,7 @@ export class ListarComponent implements OnInit {
   statusList: Status[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
+  statusParaExcluir! : Status;
 
   constructor(private statusService: StatusServerService, private toast: ToastrService) { }
 

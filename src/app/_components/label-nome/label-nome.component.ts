@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-label-nome',
@@ -7,4 +7,9 @@ import { Component, Input } from '@angular/core';
 })
 export class LabelNomeComponent {
   @Input() nomeTela : string = ""
+  @Output() adicionarClicked: EventEmitter<void> = new EventEmitter<void>();
+
+  onAdicionarClick(): void {
+    this.adicionarClicked.emit();
+  }
 }

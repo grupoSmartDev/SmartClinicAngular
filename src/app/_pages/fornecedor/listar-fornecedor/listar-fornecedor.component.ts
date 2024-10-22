@@ -21,6 +21,13 @@ export class ListarFornecedorComponent {
   fornecedors: Fornecedor[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
+  fornecedorParaExcluir!:Fornecedor;
+
+  colunasTabela = [
+    { header: 'Cód.', field: 'id' },
+    { header: 'Nome', field: 'nome' },
+    { header: 'CPF/CNPJ', field: 'cpf' },
+  ]
 
   ngOnInit(): void {
     this.getFornecedors();
@@ -38,7 +45,8 @@ export class ListarFornecedorComponent {
     });
   }
 
-  ExcluirFornecedor(id: string) {
+  ExcluirFornecedor(fornecedor: Fornecedor) {
+    let id = fornecedor.id
     this.fornecedorService.Deletar(id).subscribe({
       next: (data) => {
         this.toast.success('Fornecedor excluído com sucesso!');
@@ -59,7 +67,7 @@ export class ListarFornecedorComponent {
   }
 
   confirmDelete() {
-    this.ExcluirFornecedor(this.idParaExcluir);
+    this.ExcluirFornecedor(this.fornecedorParaExcluir);
   }
 
   cancelDelete() {
@@ -67,6 +75,7 @@ export class ListarFornecedorComponent {
   }
 
   openModal(fornecedor: any) {
+    
     if (fornecedor.id) {
       this.modalFornecedorComponent.fornecedor = fornecedor;
       this.modalFornecedorComponent.carregarFornecedor(fornecedor);

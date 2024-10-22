@@ -14,7 +14,10 @@ interface SideNavToggle {
 export class AppComponent {
   title = 'sidenav-with-multilevel-menu';
 
-  constructor(public tabService: TabService) {}
+  constructor(public tabService: TabService) {
+    this.tabService.openDefaultTab();  // Garante que a aba padrão será aberta na inicialização
+  }
+
   isSideNavCollapsed = false;
   screenWidth = 0;
 

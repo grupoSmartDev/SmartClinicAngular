@@ -19,6 +19,7 @@ export class FornecedorService {
   }
 
   Criar(fornecedor: Fornecedor): Observable<ResponseModel<Fornecedor>> {
+    debugger
     return this.http.post<ResponseModel<Fornecedor>>(`${this.baseURL}Criar`, fornecedor);
   }
 

@@ -8,6 +8,9 @@
     flex-direction: column;
     height: 100%;
     border-radius: 0rem 1rem 1rem 0rem;
+
+    z-index: 1050; /* Aumente o z-index */
+    position: relative; /* Se o menu precisa ser posicionado relativo ao pai */
 }
 
     #sidebar.expand {
@@ -103,7 +106,8 @@ a.sidebar-link:hover {
    /* max-height: 15em;*/
     width: 100%;
     opacity: 1;
-    background-color: #389d8cab;
+    background-color: #389d8cde;
+    z-index: 1060; 
 }
 
 #sidebar.expand .sidebar-link[data-bs-toggle="collapse"]::after {

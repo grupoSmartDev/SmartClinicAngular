@@ -13,7 +13,9 @@ export class TabService {
   tabs: Tab[] = [];
   activeTab: number = 0;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    this.openDefaultTab(); // Abre a aba padrão ao iniciar
+  }
 
   openTab(tab: Tab) {
     const existingTabIndex = this.tabs.findIndex(t => t.path === tab.path);
@@ -28,6 +30,7 @@ export class TabService {
 
   selectTab(index: number) {
     this.activeTab = index;
+    this.router.navigate([this.tabs[this.activeTab].path]);  // Navega para a aba selecionada
   }
 
   closeTab(index: number) {
@@ -38,7 +41,12 @@ export class TabService {
     if (this.tabs.length > 0) {
       this.router.navigate([this.tabs[this.activeTab].path]); // Navega para a aba ativa
     } else {
-      this.router.navigate(['/']); // Volta para a página inicial se não houver abas
+      this.openDefaultTab();  // Se todas as abas forem fechadas, abre a aba padrão
     }
+  }
+
+  openDefaultTab() {
+    const defaultTab: Tab = { path: '/dashboard', title: 'Dashboard' };
+    this.openTab(defaultTab); // Abre a aba do Dashboard como padrão
   }
 }

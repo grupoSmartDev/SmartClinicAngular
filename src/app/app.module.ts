@@ -13,7 +13,7 @@ import { ListarComponent } from './_pages/status/listar/listar.component';
 import { LabelNomeComponent } from './_components/label-nome/label-nome.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ModalStatusComponent } from './_pages/status/modal-status/modal-status.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { ConfirmDialogComponent } from './_components/confirm-dialog/confirm-dialog.component';
 import { ListarTipoPagamentoComponent } from './_pages/tipoPagamento/listar-tipo-pagamento/listar-tipo-pagamento.component';
@@ -36,7 +36,12 @@ import { AgendaComponent } from './_pages/agenda/agenda.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid'; // Plugin de visualização DayGrid
 import timeGridPlugin from '@fullcalendar/timegrid'; // Plugin de visualização TimeGrid
-import interactionPlugin from '@fullcalendar/interaction'; // Plugin para 
+import interactionPlugin from '@fullcalendar/interaction';
+import { DashboardComponent } from './_pages/dashboard/dashboard.component';
+import { ClienteChartsComponent } from './_components/cliente-charts/cliente-charts.component';
+import { AgendamentoChartsComponent } from './_components/agendamento-charts/agendamento-charts.component';
+import { GeneroChartsComponent } from './_components/genero-charts/genero-charts.component'; // Plugin para 
+import { NgxChartsModule } from '@swimlane/ngx-charts'; 
 
 
 
@@ -69,6 +74,10 @@ import interactionPlugin from '@fullcalendar/interaction'; // Plugin para
     ListarConselhoComponent,
     ModalConselhoComponent,
     AgendaComponent,
+    DashboardComponent,
+    ClienteChartsComponent,
+    AgendamentoChartsComponent,
+    GeneroChartsComponent,
   ],
   imports: [
     BrowserModule,
@@ -78,7 +87,9 @@ import interactionPlugin from '@fullcalendar/interaction'; // Plugin para
     ReactiveFormsModule,
     ToastrModule.forRoot(),
     NgxMaskDirective,
-    FullCalendarModule 
+    FullCalendarModule,
+    NgxChartsModule,
+    FormsModule     
     
   ],
   providers: [ provideNgxMask(),],

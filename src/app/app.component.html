@@ -7,15 +7,10 @@
     <!-- Header -->
     <app-header></app-header>
 
-    <!-- Corpo principal com abas -->
     <app-body>
-      <!-- Renderização dinâmica de abas -->
       <div class="tabs-container">
         <ul class="nav nav-tabs">
-          <li
-            class="nav-item"
-            *ngFor="let tab of tabService.tabs; let i = index"
-          >
+          <li class="nav-item" *ngFor="let tab of tabService.tabs; let i = index">
             <a
               class="nav-link"
               [ngClass]="{ active: tabService.activeTab === i }"
@@ -31,15 +26,13 @@
             </a>
           </li>
         </ul>
-
+    
+        <!-- Router outlet fora do *ngFor para renderizar o conteúdo do componente corretamente -->
         <div class="mt-3 card p-3">
-          <ng-container *ngFor="let tab of tabService.tabs; let i = index">
-            <div *ngIf="tabService.activeTab === i">
-              <router-outlet></router-outlet>
-            </div>
-          </ng-container>
+          <router-outlet></router-outlet>
         </div>
       </div>
     </app-body>
+    
   </div>
 </div>

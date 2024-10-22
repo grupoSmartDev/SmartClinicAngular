@@ -21,8 +21,10 @@ export class ListarTipoPagamentoComponent {
   tipoPagamentoLista: TipoPagamento[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
+  tipoPagamentoParaExcluir!: TipoPagamento;
 
-  pagamentoColunas = [
+
+  colunaTabela = [
     { header: 'Cód', field: 'id' },
     { header: 'Descrição', field: 'descricao' },
   ];
@@ -69,7 +71,7 @@ export class ListarTipoPagamentoComponent {
   }
 
   confirmDelete() {
-    this.ExcluirTipoPagamento(this.idParaExcluir);
+    this.ExcluirTipoPagamento(this.tipoPagamentoParaExcluir);
   }
 
   cancelDelete() {
@@ -77,7 +79,8 @@ export class ListarTipoPagamentoComponent {
   }
 
 
-  ExcluirTipoPagamento(id: string) {
+  ExcluirTipoPagamento(tipoPagamento : TipoPagamento) {
+    let id = tipoPagamento.id;
     this.tipoPagamentoService.DeletarTipoPagamento(id).subscribe({
       next: (response) => {
         this.tipoPagamentoLista = this.tipoPagamentoLista.filter(tipoPagamento => tipoPagamento.id !== id);
