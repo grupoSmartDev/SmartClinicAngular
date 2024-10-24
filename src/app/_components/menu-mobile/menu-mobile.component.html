@@ -1,0 +1,81 @@
+<!-- Botão Hamburger para telas pequenas -->
+<button
+  class="navbar-toggler d-md-none text-danger"
+  type="button"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#offcanvasMenu"
+  aria-controls="offcanvasMenu"
+>
+  <span class="navbar-toggler-icon"></span>
+</button>
+
+<!-- Offcanvas Sidebar -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasMenuLabel">SmartClinic</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  
+  <div class="offcanvas-body">
+    <ul class="sidebar-nav">
+      <!-- Cadastro -->
+      <li class="sidebar-item">
+        <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('cadastro')" data-bs-toggle="collapse">
+          <i class="lni lni-layout"></i>
+          <span>Cadastro</span>
+        </a>
+        <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['cadastro'], 'show': isMenuOpen['cadastro']}" id="cadastro">
+          <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/usuario/listar', 'Usuário')" data-bs-dismiss="offcanvas">Usuário</a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/fornecedor/listar', 'Fornecedor')" data-bs-dismiss="offcanvas">Fornecedor</a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/status/listar', 'Status')" data-bs-dismiss="offcanvas">Status</a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Pacientes -->
+      <li class="sidebar-item">
+        <a class="sidebar-link" (click)="openTab('/pacientes/listar', 'Pacientes')" data-bs-dismiss="offcanvas">
+          <i class="lni lni-user"></i>
+          <span>Pacientes</span>
+        </a>
+      </li>
+
+      <!-- Agenda -->
+      <li class="sidebar-item">
+        <a class="sidebar-link" (click)="openTab('/agenda/listar', 'Agenda')" data-bs-dismiss="offcanvas">
+          <i class="lni lni-calendar"></i>
+          <span>Agenda</span>
+        </a>
+      </li>
+
+      <!-- Relatórios -->
+      <li class="sidebar-item">
+        <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('relatorios')" data-bs-toggle="collapse">
+          <i class="lni lni-files"></i>
+          <span>Relatórios</span>
+        </a>
+        <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['relatorios'], 'show': isMenuOpen['relatorios']}" id="relatorios">
+          <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/relatorios/pacientes', 'Pacientes')" data-bs-dismiss="offcanvas">Pacientes</a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/relatorios/contasPagar', 'Contas a Pagar')" data-bs-dismiss="offcanvas">Contas a Pagar</a>
+          </li>
+        </ul>
+      </li>
+
+      <!-- Logout -->
+      <li class="sidebar-item">
+        <a href="#" class="sidebar-link">
+          <i class="lni lni-exit"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

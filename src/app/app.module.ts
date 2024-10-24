@@ -44,6 +44,7 @@ import { GeneroChartsComponent } from './_components/genero-charts/genero-charts
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { MainLayoutComponent } from './main-layout/main-layout.component'; 
 import { LoginComponent } from './_pages/login/login.component';
+import { MenuMobileComponent } from './_components/menu-mobile/menu-mobile.component';
 
 
 
@@ -81,7 +82,8 @@ import { LoginComponent } from './_pages/login/login.component';
     AgendamentoChartsComponent,
     GeneroChartsComponent,
     MainLayoutComponent,
-    LoginComponent
+    LoginComponent,
+    MenuMobileComponent
   ],
   imports: [
     BrowserModule,
