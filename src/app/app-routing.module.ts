@@ -9,18 +9,30 @@ import { ListarConvenioComponent } from './_pages/convenio/listar-convenio/lista
 import { ListarConselhoComponent } from './_pages/conselho/listar-conselho/listar-conselho.component';
 import { AgendaComponent } from './_pages/agenda/agenda.component';
 import { DashboardComponent } from './_pages/dashboard/dashboard.component';
+import { LoginComponent } from './_pages/login/login.component';
+import { MainLayoutComponent } from './main-layout/main-layout.component'; // Importa o novo layout
+
 
 const routes: Routes = [
-  {path:'', component: DashboardComponent},
-  {path:'status/listar', component: ListarComponent},
-  {path:'tipoPagamento/listar', component: ListarTipoPagamentoComponent},
-  {path:'formaPagamento/listar', component: ListarFormaPagamentoComponent},
-  {path:'fornecedor/listar', component: ListarFornecedorComponent},
-  {path:'sala/listar', component: ListarSalasComponent},
-  {path:'convenio/listar', component: ListarConvenioComponent},
-  {path:'conselho/listar', component: ListarConselhoComponent},
-  {path:'agenda/listar', component: AgendaComponent},
-  {path:'dashboard', component: DashboardComponent},
+  { path: 'login', component: LoginComponent }, // Rota para a página de login
+
+  {
+    path: '', component: MainLayoutComponent, // Usa o MainLayoutComponent como pai
+    children: [
+      { path: '', component: DashboardComponent }, // Página inicial
+      { path: 'status/listar', component: ListarComponent },
+      { path: 'tipoPagamento/listar', component: ListarTipoPagamentoComponent },
+      { path: 'formaPagamento/listar', component: ListarFormaPagamentoComponent },
+      { path: 'fornecedor/listar', component: ListarFornecedorComponent },
+      { path: 'sala/listar', component: ListarSalasComponent },
+      { path: 'convenio/listar', component: ListarConvenioComponent },
+      { path: 'conselho/listar', component: ListarConselhoComponent },
+      { path: 'agenda/listar', component: AgendaComponent },
+      { path: 'dashboard', component: DashboardComponent },
+    ]
+  },
+
+  { path: '**', redirectTo: 'login' } // Redireciona para login caso a rota não seja encontrada
 ];
 
 @NgModule({

@@ -41,7 +41,9 @@ import { DashboardComponent } from './_pages/dashboard/dashboard.component';
 import { ClienteChartsComponent } from './_components/cliente-charts/cliente-charts.component';
 import { AgendamentoChartsComponent } from './_components/agendamento-charts/agendamento-charts.component';
 import { GeneroChartsComponent } from './_components/genero-charts/genero-charts.component'; // Plugin para 
-import { NgxChartsModule } from '@swimlane/ngx-charts'; 
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { MainLayoutComponent } from './main-layout/main-layout.component'; 
+import { LoginComponent } from './_pages/login/login.component';
 
 
 
@@ -78,6 +80,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     ClienteChartsComponent,
     AgendamentoChartsComponent,
     GeneroChartsComponent,
+    MainLayoutComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

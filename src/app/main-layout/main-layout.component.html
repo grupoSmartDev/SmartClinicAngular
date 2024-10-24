@@ -1,0 +1,39 @@
+<div class="d-flex">
+    <!-- Sidebar -->
+    <app-side-bar></app-side-bar>
+  
+    <!-- Main content -->
+    <div class="main">
+      <!-- Header -->
+      <app-header></app-header>
+  
+      <app-body>
+        <div class="tabs-container">
+          <ul class="nav nav-tabs">
+            <li class="nav-item" *ngFor="let tab of tabService.tabs; let i = index">
+              <a
+                class="nav-link"
+                [ngClass]="{ active: tabService.activeTab === i }"
+                (click)="tabService.selectTab(i)"
+                href="javascript:void(0)"
+              >
+                {{ tab.title }}
+                <button
+                  type="button"
+                  class="btn-close ms-2"
+                  (click)="closeTab(i)"
+                ></button>
+              </a>
+            </li>
+          </ul>
+      
+          <!-- Router outlet fora do *ngFor para renderizar o conteúdo do componente corretamente -->
+          <div class="mt-3 card p-3">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </app-body>
+      
+    </div>
+  </div>
+  
