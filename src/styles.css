@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
 @import 'ngx-toastr/toastr';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 * {
     margin: 0;
@@ -10,7 +11,7 @@
 
 body {
     position: relative;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Montserrat", sans-serif;
     height: 100%;
 }
 
@@ -85,9 +86,9 @@ main {
     border-color: #e75573 !important;
 }
 
-.btn{
+.btn {
     background-color: transparent !important;
-    
+
 }
 
 /*botoes padrões do sistema*/
@@ -142,7 +143,7 @@ main {
     color: #ffc35a !important;
     /* Variável: --ct-btn-color */
     /* background-color: #ffc35a; */
-    
+
     /* Variável: --ct-btn-bg */
     border-color: #ffc35a !important;
     /* Variável: --ct-btn-border-color */
@@ -184,7 +185,7 @@ main {
 
 
 .btn-primary {
-    color: #727cf5 !important  ;
+    color: #727cf5 !important;
     /* background-color: #727cf5; */
     border-color: #727cf5;
 }
@@ -222,7 +223,7 @@ main {
 
 .btn-secondary:hover {
     color: #fff !important;
-    background-color: #646c74  !important;
+    background-color: #646c74 !important;
     border-color: #646c74 !important;
 }
 
@@ -291,7 +292,10 @@ input[readonly]:hover {
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: #28a745 !important; /* Cor verde para a borda */
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important; /* Sombra suave com tom de verde */
-  outline: none !important; /* Remove o outline padrão do navegador */
+    border-color: #28a745 !important;
+    /* Cor verde para a borda */
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+    /* Sombra suave com tom de verde */
+    outline: none !important;
+    /* Remove o outline padrão do navegador */
 }

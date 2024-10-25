@@ -1,0 +1,24 @@
+
+
+.hero-section {
+    background-color: #f9f9f9;
+  }
+  
+  .hero-section h1 {
+    color: #27c7a3;
+    font-weight: 700;
+    font-size: 2.8rem;
+  }
+  
+  .hero-section .lead {
+    color: #5a5a5a;
+  }
+  
+  .hero-section img {
+    max-width: 100%;
+  }
+
+  strong {
+    color: #27c7a3;
+    font-weight: 700;
+}

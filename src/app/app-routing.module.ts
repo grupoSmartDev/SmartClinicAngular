@@ -11,10 +11,12 @@ import { AgendaComponent } from './_pages/agenda/agenda.component';
 import { DashboardComponent } from './_pages/dashboard/dashboard.component';
 import { LoginComponent } from './_pages/login/login.component';
 import { MainLayoutComponent } from './main-layout/main-layout.component'; // Importa o novo layout
+import { LandinPageComponent } from './landin-page/landin-page.component';
 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent }, // Rota para a página de login
+  {path:'lp', component: LandinPageComponent},
 
   {
     path: '', component: MainLayoutComponent, // Usa o MainLayoutComponent como pai

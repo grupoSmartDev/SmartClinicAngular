@@ -1,0 +1,15 @@
+ 
+  /* Benefícios */
+  .benefits-section {
+    background-color: #f9f9f9;
+  }
+  
+  .benefits-section .card {
+    border: none;
+    border-radius: 10px;
+  }
+  
+  .benefits-section img {
+    max-width: 50px;
+  }
+  

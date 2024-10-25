@@ -45,6 +45,10 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { MainLayoutComponent } from './main-layout/main-layout.component'; 
 import { LoginComponent } from './_pages/login/login.component';
 import { MenuMobileComponent } from './_components/menu-mobile/menu-mobile.component';
+import { LandinPageComponent } from './landin-page/landin-page.component';
+import { HeaderLPComponent } from './landin-page/components/header-lp/header-lp.component';
+import { HeroLpComponent } from './landin-page/components/hero-lp/hero-lp.component';
+import { BeneficiosLPComponent } from './landin-page/components/beneficios-lp/beneficios-lp.component';
 
 
 
@@ -83,7 +87,12 @@ import { MenuMobileComponent } from './_components/menu-mobile/menu-mobile.compo
     GeneroChartsComponent,
     MainLayoutComponent,
     LoginComponent,
-    MenuMobileComponent
+    MenuMobileComponent,
+    LandinPageComponent,
+    HeaderLPComponent,
+    HeroLpComponent,
+    BeneficiosLPComponent
+    
   ],
   imports: [
     BrowserModule,
