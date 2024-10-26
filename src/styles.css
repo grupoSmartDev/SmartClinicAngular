@@ -103,6 +103,11 @@ main {
     /* --ct-btn-border-color */
 }
 
+.bg-success-aba{
+    background-color: #389D8D !important;
+    color: #fff;
+}
+
 .btn-success:hover {
     color: #fff !important;
     /* --ct-btn-hover-color */

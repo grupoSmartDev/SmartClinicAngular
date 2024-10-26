@@ -15,14 +15,14 @@
             <li class="nav-item" *ngFor="let tab of tabService.tabs; let i = index">
               <a
                 class="nav-link"
-                [ngClass]="{ active: tabService.activeTab === i }"
+                [ngClass]="{ 'bg-success-aba text-white': tabService.activeTab === i, 'text-success': tabService.activeTab !== i }"
                 (click)="tabService.selectTab(i)"
                 href="javascript:void(0)"
               >
                 {{ tab.title }}
                 <button
                   type="button"
-                  class="btn-close ms-2"
+                  class="btn-close text-white ms-2"
                   (click)="closeTab(i)"
                 ></button>
               </a>

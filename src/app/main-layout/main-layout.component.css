@@ -1,0 +1,10 @@
+/* Estilo para aba ativa */
+.sidebar-link.active {
+    background-color: green; /* bg-success */
+    color: white; /* text-white */
+}
+
+/* Estilo para aba inativa */
+.sidebar-link.inactive {
+    color: var(--bs-success); /* text-success */
+}
