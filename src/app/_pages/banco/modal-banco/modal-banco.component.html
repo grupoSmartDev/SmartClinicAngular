@@ -1,0 +1,89 @@
+<!-- Modal -->
+<div #modalBanco class="modal fade" id="modalBanco" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Banco</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="formulario">
+            <div class="row g-3">
+              <div class="col-md-2">
+                <label for="id" class="form-label">Cód.</label>
+                <input type="text" class="form-control form-control-sm" id="id" readonly formControlName="id" />
+              </div>
+              <div class="col-md-4">
+                <label for="nomeBanco" class="form-label">Nome Banco</label>
+                <input type="text" required class="form-control form-control-sm" formControlName="nomeBanco" />
+              </div>
+              <div class="col-md-3">
+                <label for="codigo" class="form-label">Código</label>
+                <input type="text" class="form-control form-control-sm" formControlName="codigo" />
+              </div>
+              <div class="col-md-3">
+                <label for="agencia" class="form-label">Agência</label>
+                <input type="text" class="form-control form-control-sm" formControlName="agencia" />
+              </div>
+              <div class="col-md-4">
+                <label for="numeroConta" class="form-label">Número da Conta</label>
+                <input type="text" class="form-control form-control-sm" formControlName="numeroConta" />
+              </div>
+              <div class="col-md-4">
+                <label for="tipoConta" class="form-label">Tipo de Conta</label>
+                <select class="form-select form-select-sm" formControlName="tipoConta">
+                  <option value="Poupanca">Poupança</option>
+                  <option value="Corrente">Conta Corrente</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="nomeTitular" class="form-label">Nome do Titular</label>
+                <input type="text" class="form-control form-control-sm" formControlName="nomeTitular" />
+              </div>
+              <div class="col-md-4">
+                <label for="documentoTitular" class="form-label">Documento do Titular</label>
+                <input type="text" class="form-control form-control-sm" formControlName="documentoTitular" />
+              </div>
+              <div class="col-md-4">
+                <label for="saldoInicial" class="form-label">Saldo Inicial</label>
+                <input type="number" class="form-control form-control-sm" formControlName="saldoInicial" />
+              </div>
+              <div class="col-md-2">
+                <label for="ativo" class="form-label">Ativo</label>
+                <input type="checkbox" class="form-check-input" formControlName="ativo" />
+              </div>
+              <div class="col-md-4">
+                <label for="codigoConvenio" class="form-label">Código Convênio</label>
+                <input type="text" class="form-control form-control-sm" formControlName="codigoConvenio" />
+              </div>
+              <div class="col-md-4">
+                <label for="carteira" class="form-label">Carteira</label>
+                <input type="text" class="form-control form-control-sm" formControlName="carteira" />
+              </div>
+              <div class="col-md-4">
+                <label for="variacaoCarteira" class="form-label">Variação Carteira</label>
+                <input type="text" class="form-control form-control-sm" formControlName="variacaoCarteira" />
+              </div>
+              <div class="col-md-4">
+                <label for="codigoBeneficiario" class="form-label">Código Beneficiário</label>
+                <input type="text" class="form-control form-control-sm" formControlName="codigoBeneficiario" />
+              </div>
+              <div class="col-md-4">
+                <label for="numeroContrato" class="form-label">Número do Contrato</label>
+                <input type="text" class="form-control form-control-sm" formControlName="numeroContrato" />
+              </div>
+              <div class="col-md-4">
+                <label for="codigoTransmissao" class="form-label">Código de Transmissão</label>
+                <input type="text" class="form-control form-control-sm" formControlName="codigoTransmissao" />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="onSubmit()" class="btn btn-success"><i class="bi bi-check"></i> Confirmar</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="fecharModal()"><i class="bi bi-x"></i> Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

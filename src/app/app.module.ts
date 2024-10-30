@@ -49,6 +49,12 @@ import { LandinPageComponent } from './landin-page/landin-page.component';
 import { HeaderLPComponent } from './landin-page/components/header-lp/header-lp.component';
 import { HeroLpComponent } from './landin-page/components/hero-lp/hero-lp.component';
 import { BeneficiosLPComponent } from './landin-page/components/beneficios-lp/beneficios-lp.component';
+import { ListarBancoComponent } from './_pages/banco/listar-banco/listar-banco.component';
+import { ModalBancoComponent } from './_pages/banco/modal-banco/modal-banco.component';
+import { ListarCentroDeCustoComponent } from './_pages/centroDeCusto/listar-centro-de-custo/listar-centro-de-custo.component';
+import { ModalCentroDeCustoComponent } from './_pages/centroDeCusto/modal-centro-de-custo/modal-centro-de-custo.component';
+import { ModalSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/modal-sub-centro-de-custo/modal-sub-centro-de-custo.component';
+import { ListarSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/listar-sub-centro-de-custo/listar-sub-centro-de-custo.component';
 
 
 
@@ -91,7 +97,13 @@ import { BeneficiosLPComponent } from './landin-page/components/beneficios-lp/be
     LandinPageComponent,
     HeaderLPComponent,
     HeroLpComponent,
-    BeneficiosLPComponent
+    BeneficiosLPComponent,
+    ListarBancoComponent,
+    ModalBancoComponent,
+    ListarCentroDeCustoComponent,
+    ModalCentroDeCustoComponent,
+    ModalSubCentroDeCustoComponent,
+    ListarSubCentroDeCustoComponent
     
   ],
   imports: [

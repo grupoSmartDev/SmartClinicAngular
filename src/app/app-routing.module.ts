@@ -12,6 +12,9 @@ import { DashboardComponent } from './_pages/dashboard/dashboard.component';
 import { LoginComponent } from './_pages/login/login.component';
 import { MainLayoutComponent } from './main-layout/main-layout.component'; // Importa o novo layout
 import { LandinPageComponent } from './landin-page/landin-page.component';
+import { ListarBancoComponent } from './_pages/banco/listar-banco/listar-banco.component';
+import { ListarCentroDeCustoComponent } from './_pages/centroDeCusto/listar-centro-de-custo/listar-centro-de-custo.component';
+import { ListarSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/listar-sub-centro-de-custo/listar-sub-centro-de-custo.component';
 
 
 const routes: Routes = [
@@ -31,6 +34,9 @@ const routes: Routes = [
       { path: 'conselho/listar', component: ListarConselhoComponent },
       { path: 'agenda/listar', component: AgendaComponent },
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'banco/listar', component: ListarBancoComponent },
+      { path: 'centroDeCusto/listar', component: ListarCentroDeCustoComponent },
+      { path: 'SubcentroDeCusto/listar', component: ListarSubCentroDeCustoComponent },
     ]
   },
 

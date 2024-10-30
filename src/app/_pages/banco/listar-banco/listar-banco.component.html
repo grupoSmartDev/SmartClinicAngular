@@ -1,0 +1,21 @@
+<app-label-nome [nomeTela]="'Banco'"
+(adicionarClicked)="openModal('')"
+>
+</app-label-nome>
+
+<app-tabela-listar-generica
+  [titulo]="'Banco'"
+  [data]="listaDeBancos"
+  [columns]="colunaTabela"
+  (edit)="openModal($event)"
+  (delete)="ExcluirBanco($event)"
+>
+</app-tabela-listar-generica>
+
+<app-modal-banco (bancoAtualizado)="atualizarLista()"></app-modal-banco>
+
+<app-confirm-dialog
+  #confirmDialog
+  (onConfirm)="confirmDelete()"
+  (onCancel)="cancelDelete()"
+></app-confirm-dialog>

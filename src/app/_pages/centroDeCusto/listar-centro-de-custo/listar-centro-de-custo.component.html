@@ -1,19 +1,20 @@
 <app-label-nome
-  [nomeTela]="'Sala'"
+  [nomeTela]="'Centro de Custo'"
   (adicionarClicked)="openModal('')"
-></app-label-nome>
+>
+</app-label-nome>
 
 <app-tabela-listar-generica
-  [titulo]="'Sala'"
-  [data]="listaDeSalas"
+  [titulo]="'Centro de Custo'"
+  [data]="listaCentroDeCusto"
   [columns]="colunaTabela"
   (edit)="openModal($event)"
-  (delete)="ExcluirSala($event)"
+  (delete)="Exluir($event)"
 >
 </app-tabela-listar-generica>
 
-<!-- listar.component.html -->
-<app-modal-salas (statusAtualizado)="atualizarLista()"></app-modal-salas>
+<app-modal-centro-de-custo (dataAtualizado)="atualizarLista()">
+</app-modal-centro-de-custo>
 
 <app-confirm-dialog
   #confirmDialog
