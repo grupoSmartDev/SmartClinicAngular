@@ -55,6 +55,8 @@ import { ListarCentroDeCustoComponent } from './_pages/centroDeCusto/listar-cent
 import { ModalCentroDeCustoComponent } from './_pages/centroDeCusto/modal-centro-de-custo/modal-centro-de-custo.component';
 import { ModalSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/modal-sub-centro-de-custo/modal-sub-centro-de-custo.component';
 import { ListarSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/listar-sub-centro-de-custo/listar-sub-centro-de-custo.component';
+import { ListarContasAPagarComponent } from './_pages/contasAPagar/listar-contas-apagar/listar-contas-apagar.component';
+import { ModalContasAPagarComponent } from './_pages/contasAPagar/modal-contas-apagar/modal-contas-apagar.component';
 
 
 
@@ -103,7 +105,9 @@ import { ListarSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/lista
     ListarCentroDeCustoComponent,
     ModalCentroDeCustoComponent,
     ModalSubCentroDeCustoComponent,
-    ListarSubCentroDeCustoComponent
+    ListarSubCentroDeCustoComponent,
+    ListarContasAPagarComponent,
+    ModalContasAPagarComponent
     
   ],
   imports: [
