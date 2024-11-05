@@ -1,0 +1,37 @@
+.card-hover {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+  }
+  
+  .card-hover:hover {
+    background-color: #389D8D ;
+    color: #ffffff;
+    border: 1px solid #389D8D;
+  }
+  
+  .icon-box {
+    background-color: #d1e7dd;
+    color: #086f59;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .card-hover:hover .icon-box {
+    background-color: #0c7d71;
+    color: #ffffff;
+  }
+  
+  .card-hover h6, .card-hover h3 {
+    margin: 0;
+    font-weight: bold;
+  }
+  
+  .card-hover:hover h6, .card-hover:hover h3 {
+    color: #ffffff;
+  }
+  

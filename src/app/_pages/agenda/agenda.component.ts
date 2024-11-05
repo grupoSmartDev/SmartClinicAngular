@@ -12,12 +12,13 @@ import interactionPlugin from '@fullcalendar/interaction';
 })
 export class AgendaComponent {
   calendarOptions: CalendarOptions = {
+    themeSystem: 'bootstrap',
     initialView: 'dayGridMonth', // Visualização inicial do calendário
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin], // Plugins ativos
     editable: true, // Permite que eventos sejam movidos
     selectable: true, // Permite seleção de intervalos no calendário
     locale: 'pt-br', // Define o idioma para português do Brasil
-    height: '70vh',
+    height: '60vh',
     events: [ // Exemplo de eventos mock
       { title: 'Consulta João', date: '2024-10-07' },
       { title: 'Consulta Maria', date: '2024-10-08' },

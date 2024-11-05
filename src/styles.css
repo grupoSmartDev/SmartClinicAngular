@@ -104,7 +104,7 @@ main {
 }
 
 .bg-success-aba{
-    background-color: #389D8D !important;
+    background-color: #87d4b2 !important;
     color: #fff;
 }
 
@@ -304,3 +304,6 @@ textarea:focus {
     outline: none !important;
     /* Remove o outline padrão do navegador */
 }
+
+
+

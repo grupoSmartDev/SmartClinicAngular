@@ -1,0 +1,32 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Profissional } from '../_module/profissionalModule';
+import { ResponseModel } from '../_module/ResponseModule';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ProfissionalService {
+
+  constructor(private http: HttpClient) { }
+
+  baseURL: string = 'https://localhost:44308/api/Profissional/';
+
+  Listar(): Observable<ResponseModel<Profissional[]>> {
+    return this.http.get<ResponseModel<Profissional[]>>(`${this.baseURL}Listar`);
+  }
+
+  Criar(profissonal: Profissional): Observable<ResponseModel<Profissional>> {
+    debugger
+    return this.http.post<ResponseModel<Profissional>>(`${this.baseURL}Criar`, profissonal);
+  }
+
+  Atualizar(profissonal: Profissional): Observable<ResponseModel<Profissional>> {
+    return this.http.put<ResponseModel<Profissional>>(`${this.baseURL}Editar`, profissonal);
+  }
+
+  Deletar(id: string): Observable<ResponseModel<void>> {
+    return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
+  }
+}

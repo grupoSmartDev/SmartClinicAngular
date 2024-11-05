@@ -9,6 +9,7 @@ export class DashboardComponent {
   selectedProfissional: number  = 0;  // ID do profissional selecionado
   startDate: string;  // Data de início do filtro
   endDate: string;    // Data de término do filtro
+  isHovered = false;
 
   // Lista mockada de profissionais (apenas para fins de teste)
   profissionais = [

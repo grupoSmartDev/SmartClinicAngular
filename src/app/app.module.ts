@@ -57,6 +57,9 @@ import { ModalSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/modal-
 import { ListarSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/listar-sub-centro-de-custo/listar-sub-centro-de-custo.component';
 import { ListarContasAPagarComponent } from './_pages/contasAPagar/listar-contas-apagar/listar-contas-apagar.component';
 import { ModalContasAPagarComponent } from './_pages/contasAPagar/modal-contas-apagar/modal-contas-apagar.component';
+import { ListarProfissionalComponent } from './_pages/profissional/listar-profissional/listar-profissional.component';
+import { ModalProfissionalComponent } from './_pages/profissional/modal-profissional/modal-profissional.component';
+import { CardDadosComponent } from './_components/card-dados/card-dados.component';
 
 
 
@@ -107,7 +110,10 @@ import { ModalContasAPagarComponent } from './_pages/contasAPagar/modal-contas-a
     ModalSubCentroDeCustoComponent,
     ListarSubCentroDeCustoComponent,
     ListarContasAPagarComponent,
-    ModalContasAPagarComponent
+    ModalContasAPagarComponent,
+    ListarProfissionalComponent,
+    ModalProfissionalComponent,
+    CardDadosComponent
     
   ],
   imports: [

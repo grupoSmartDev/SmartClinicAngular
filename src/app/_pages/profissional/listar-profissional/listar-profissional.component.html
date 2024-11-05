@@ -1,0 +1,24 @@
+<app-label-nome
+  [nomeTela]="'Profissional'"
+  (adicionarClicked)="openModal('')"
+>
+</app-label-nome>
+
+<app-tabela-listar-generica
+  [titulo]="'Profissional'"
+  [data]="lista"
+  [columns]="colunaTabela"
+  (edit)="openModal($event)"
+  (delete)="Exluir($event)"
+>
+</app-tabela-listar-generica>
+
+<app-modal-profissional (dataAtualizado)="atualizarLista()">
+</app-modal-profissional>
+
+<app-confirm-dialog
+  #confirmDialog
+  (onConfirm)="confirmDelete()"
+  (onCancel)="cancelDelete()"
+>
+</app-confirm-dialog>

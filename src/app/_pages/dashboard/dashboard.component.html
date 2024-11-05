@@ -21,7 +21,6 @@
   </div>
 
   <div class="col-md-2 col-12">
-
     <input
       type="date"
       class="form-control form-control-sm"
@@ -36,10 +35,41 @@
   </div>
 </div>
 
+<div class="row my-2">
+  <app-card-dados
+    class="col-md-3 col-12"
+    [icone]="'bi bi-calendar'"
+    [dados]="335"
+    [nomeLabel]="'Agendamentos'"
+  ></app-card-dados>
+  <app-card-dados
+    class="col-md-3 col-12"
+    [icone]="'bi bi-calendar-check'"
+    [dados]="335"
+    [nomeLabel]="'Atendidos'"
+  ></app-card-dados>
+  <app-card-dados
+    class="col-md-3 col-12"
+    [icone]="'bi bi-calendar-x'"
+    [dados]="335"
+    [nomeLabel]="'Não compareceram'"
+  ></app-card-dados>
+  <app-card-dados
+    class="col-md-3 col-12"
+    [icone]="'bi bi-person-plus'"
+    [dados]="335"
+    [nomeLabel]="'Clientes Novos'"
+  ></app-card-dados>
+</div>
+
 <div class="charts my-5">
+  <app-agenda> </app-agenda>
+</div>
+
+<!-- <div class="charts my-5">
   <app-cliente-charts
     [endDate]="endDate"
     [startDate]="startDate"
     [profissionalId]="selectedProfissional"
   ></app-cliente-charts>
-</div>
+</div> -->
