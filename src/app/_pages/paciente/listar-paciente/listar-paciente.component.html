@@ -1,0 +1,24 @@
+<app-label-nome
+  [nomeTela]="'Pacientes'"
+  (adicionarClicked)="openModal('')"
+>
+</app-label-nome>
+
+<app-tabela-listar-generica
+  [titulo]="'Pacientes'"
+  [data]="lista"
+  [columns]="colunaTabela"
+  (edit)="openModal($event)"
+  (delete)="Exluir($event)"
+>
+</app-tabela-listar-generica>
+
+<app-modal-paciente (dataAtualizado)="atualizarLista()">
+</app-modal-paciente>
+
+<app-confirm-dialog
+  #confirmDialog
+  (onConfirm)="confirmDelete()"
+  (onCancel)="cancelDelete()"
+>
+</app-confirm-dialog>

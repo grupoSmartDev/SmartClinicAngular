@@ -15,6 +15,8 @@ import { LandinPageComponent } from './landin-page/landin-page.component';
 import { ListarBancoComponent } from './_pages/banco/listar-banco/listar-banco.component';
 import { ListarCentroDeCustoComponent } from './_pages/centroDeCusto/listar-centro-de-custo/listar-centro-de-custo.component';
 import { ListarSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/listar-sub-centro-de-custo/listar-sub-centro-de-custo.component';
+import { ListarProfissionalComponent } from './_pages/profissional/listar-profissional/listar-profissional.component';
+import { ListarPacienteComponent } from './_pages/paciente/listar-paciente/listar-paciente.component';
 
 
 const routes: Routes = [
@@ -37,6 +39,8 @@ const routes: Routes = [
       { path: 'banco/listar', component: ListarBancoComponent },
       { path: 'centroDeCusto/listar', component: ListarCentroDeCustoComponent },
       { path: 'SubcentroDeCusto/listar', component: ListarSubCentroDeCustoComponent },
+      { path: 'profissional/listar', component: ListarProfissionalComponent },
+      { path: 'pacientes/listar', component: ListarPacienteComponent },
     ]
   },
 

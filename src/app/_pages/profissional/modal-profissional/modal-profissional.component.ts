@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { Profissional } from '../../../_module/profissionalModule';
 import { ResponseModel } from '../../../_module/ResponseModule';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-modal-profissional',
@@ -16,19 +16,45 @@ export class ModalProfissionalComponent {
     private profissionalService: ProfissionalService,
     private toast: ToastrService,
     private router: Router,
+    private fb: FormBuilder
   ) { }
 
   @ViewChild('modalEditar') modalSubCentroDeCusto?: ElementRef;
   @Input() profissional = {} as Profissional;
-  @Output() dataAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
+  @Output() dataAtualizado = new EventEmitter<void>(); 
 
   lista: Profissional[] = [];
 
   formulario = new FormGroup({
     id: new FormControl(),
+    email: new FormControl(),
     nome: new FormControl(),
-    centroCustoId: new FormControl()
-  })
+    cpf: new FormControl(),
+    celular: new FormControl(),
+    sexo: new FormControl(),
+    conselhoId: new FormControl(),
+    registroConselho: new FormControl(),
+    ufConselho: new FormControl(),
+    profissaoId: new FormControl(),
+    cbo: new FormControl(),
+    rqe: new FormControl(),
+    cnes: new FormControl(),
+  
+    // Propriedades para pagamento
+    tipoPagamento: new FormControl(),
+    chavePix: new FormControl(),
+    bancoNome: new FormControl(),
+    bancoAgencia: new FormControl(),
+    bancoConta: new FormControl(),
+    bancoTipoConta: new FormControl(),
+    bancoCpfTitular: new FormControl(),
+  
+    // Propriedade para controle de acesso
+    ehUsuario: new FormControl(),
+  
+    // Data de cadastro
+    dataCadastro: new FormControl()
+  });
 
   ngOnInit() {
     this.carregarCC();

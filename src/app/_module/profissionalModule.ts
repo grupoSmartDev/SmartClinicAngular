@@ -26,5 +26,5 @@ export interface Profissional {
     ehUsuario: boolean; // Identifica se o profissional é um usuário do sistema
 
     // Data de cadastro
-    dataCadastro?: Date; // Guarda a data de criação do registro
+    dataCadastro: Date; // Guarda a data de criação do registro
 }

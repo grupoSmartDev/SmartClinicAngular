@@ -20,6 +20,9 @@
           <a class="sidebar-link" (click)="openTab('/usuario/listar', 'Usuário')">Usuário</a>
         </li>
         <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/profissional/listar', 'Profissional')">Profissional</a>
+        </li>
+        <li class="sidebar-item">
           <a class="sidebar-link" (click)="openTab('/fornecedor/listar', 'Fornecedor')">Fornecedor</a>
         </li>
         <li class="sidebar-item">
@@ -37,31 +40,34 @@
         <li class="sidebar-item">
           <a class="sidebar-link" (click)="openTab('/banco/listar', 'Banco')">Banco</a>
         </li>
+      </ul>
+    </li>
+
+    <li class="sidebar-item">
+      
+      <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('financeiro')" data-bs-toggle="collapse">
+        <i class="bi bi-cash"></i>
+        <span>Financeiro</span>
+      </a>
+      <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['financeiro'], 'show': isMenuOpen['financeiro']}" id="financeiro">
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/tipoPagamento/listar', 'Tipo de pagamento')">Tipo de pagamento</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/formaPagamento/listar', 'Forma de pagamento')">Forma de pagamento</a>
+        </li>
         <li class="sidebar-item">
           <a class="sidebar-link" (click)="openTab('/centroDeCusto/listar', 'Centro de Custo')">Centro de Custo</a>
         </li>
         <li class="sidebar-item">
-          <a class="sidebar-link" (click)="openTab('/SubcentroDeCusto/listar', 'Sub Centro de Custo')">Centro de Custo</a>
-        </li>
-        <li class="sidebar-item">
-          <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('financeiro')" data-bs-toggle="collapse">
-            Financeiro
-          </a>
-          <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['financeiro'], 'show': isMenuOpen['financeiro']}" id="financeiro">
-            <li class="sidebar-item">
-              <a class="sidebar-link" (click)="openTab('/tipoPagamento/listar', 'Tipo de pagamento')">Tipo de pagamento</a>
-            </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link" (click)="openTab('/formaPagamento/listar', 'Forma de pagamento')">Forma de pagamento</a>
-            </li>
-          </ul>
+          <a class="sidebar-link" (click)="openTab('/SubcentroDeCusto/listar', 'Sub Centro de Custo')">Sub Centro de Custo</a>
         </li>
       </ul>
     </li>
 
     <li class="sidebar-item">
       <a class="sidebar-link" (click)="openTab('/pacientes/listar', 'Pacientes')">
-        <i class="lni lni-user"></i>
+        <i class="bi bi-person"></i>
         <span>Pacientes</span>
       </a>
     </li>

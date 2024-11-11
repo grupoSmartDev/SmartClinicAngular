@@ -48,7 +48,7 @@ export class ListarProfissionalComponent {
       this.modalProfissional.profissional = profissional;
       this.modalProfissional.carregarData(profissional);
     }
-    const modalElement = document.getElementById('modalEditar');
+    const modalElement = document.getElementById('modalEditarCriar');
     if (modalElement) {
       const modal = new bootstrap.Modal(modalElement);
       modal.show();

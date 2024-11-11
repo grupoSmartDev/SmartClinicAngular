@@ -1,31 +1,36 @@
 <section class="benefits-section py-5 bg-padrao-lp">
-    <div class="container">
-      <h2 class="text-center mb-4">Sua Clinica mais <strong>SMART</strong></h2>
-      <div class="row text-center">
-        <div class="col-md-3">
-          <div class="card shadow-sm">
-            <img src="assets/icons/organization.png" alt="Organização" class="mb-3">
-            <p><strong>Precisa de mais organização?</strong> Tenha todos os registros da clínica em um único lugar, organizados e sempre acessíveis para consultas rápidas.</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card shadow-sm">
-            <img src="assets/icons/planning.png" alt="Planejamento" class="mb-3">
-            <p><strong>Facilite o planejamento e a gestão</strong> da sua clínica com ferramentas que simplificam processos e melhoram a eficiência.</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card shadow-sm">
-            <img src="assets/icons/goals.png" alt="Metas" class="mb-3">
-            <p><strong>Defina metas claras</strong> e acompanhe o progresso da sua clínica para garantir um crescimento constante e sustentável.</p>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card shadow-sm">
-            <img src="assets/icons/goals.png" alt="Acessivel" class="mb-3">
-            <p><strong>Acesse a plataforma de qualquer dispositivo</strong>, a qualquer hora, e mantenha sua clínica ao seu alcance sempre que precisar.</p>
-          </div>
-        </div>
+  <div class="container">
+    <h2 class="text-center mb-4">Sua Clinica mais <strong>SMART</strong></h2>
+    <div class="row text-center justify-content-center">
+      <div class="col-md-3">
+        <app-card-beneficios
+          [icone]="'bi bi-calendar'"
+          [subtitulo]="''"
+          [descricao]="
+            ' Cada dia com gestão ineficiente é um dia de potencial perdido.'"
+          [tituloCard]="'Eficiência'"
+        ></app-card-beneficios>
+      </div>
+
+      <div class="col-md-3">
+        <app-card-beneficios
+        [icone]="'bi bi-calendar'"
+        [subtitulo]="''"
+        [descricao]="
+          'O primeiro passo para o futuro da sua clínica é simples e rápido.'"
+        [tituloCard]="'Simplicidade'"
+      ></app-card-beneficios>
+      </div>
+      <div class="col-md-3">
+        <app-card-beneficios
+        [icone]="'bi bi-calendar'"
+        [subtitulo]="''"
+        [descricao]="
+          ' Comece agora e veja a diferença na sua rotina.'"
+        [tituloCard]="'Transformação'"
+      ></app-card-beneficios>
+    
       </div>
     </div>
-  </section>
+  </div>
+</section>

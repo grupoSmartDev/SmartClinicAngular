@@ -60,6 +60,14 @@ import { ModalContasAPagarComponent } from './_pages/contasAPagar/modal-contas-a
 import { ListarProfissionalComponent } from './_pages/profissional/listar-profissional/listar-profissional.component';
 import { ModalProfissionalComponent } from './_pages/profissional/modal-profissional/modal-profissional.component';
 import { CardDadosComponent } from './_components/card-dados/card-dados.component';
+import { ListarPacienteComponent } from './_pages/paciente/listar-paciente/listar-paciente.component';
+import { ModalPacienteComponent } from './_pages/paciente/modal-paciente/modal-paciente.component';
+import { CardBeneficiosComponent } from './landin-page/components/card-beneficios/card-beneficios.component';
+import { PerguntaDorComponent } from './landin-page/components/pergunta-dor/pergunta-dor.component';
+import { DuvidasFaqComponent } from './landin-page/components/duvidas-faq/duvidas-faq.component';
+import { DobraCobrancaComponent } from './landin-page/components/dobra-cobranca/dobra-cobranca.component';
+import { InformSolucaoComponent } from './landin-page/components/inform-solucao/inform-solucao.component';
+
 
 
 
@@ -113,7 +121,15 @@ import { CardDadosComponent } from './_components/card-dados/card-dados.componen
     ModalContasAPagarComponent,
     ListarProfissionalComponent,
     ModalProfissionalComponent,
-    CardDadosComponent
+    CardDadosComponent,
+    ListarPacienteComponent,
+    ModalPacienteComponent,
+    CardBeneficiosComponent,
+    PerguntaDorComponent,
+    DuvidasFaqComponent,
+    DobraCobrancaComponent,
+    InformSolucaoComponent,
+    
     
   ],
   imports: [
