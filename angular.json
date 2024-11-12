@@ -39,7 +39,6 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/bootswatch/dist/minty/bootstrap.min.css",
               "src/styles.css"
             ],
             "scripts": [
