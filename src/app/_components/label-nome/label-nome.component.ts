@@ -6,7 +6,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './label-nome.component.css'
 })
 export class LabelNomeComponent {
-  @Input() nomeTela : string = ""
+  @Input() nomeTela : string = "";
+  @Input() exibirBotaoAdicionar : boolean = true;
   @Output() adicionarClicked: EventEmitter<void> = new EventEmitter<void>();
 
   onAdicionarClick(): void {

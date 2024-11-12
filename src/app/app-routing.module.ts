@@ -17,6 +17,7 @@ import { ListarCentroDeCustoComponent } from './_pages/centroDeCusto/listar-cent
 import { ListarSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/listar-sub-centro-de-custo/listar-sub-centro-de-custo.component';
 import { ListarProfissionalComponent } from './_pages/profissional/listar-profissional/listar-profissional.component';
 import { ListarPacienteComponent } from './_pages/paciente/listar-paciente/listar-paciente.component';
+import { ListarLogComponent } from './_pages/log/listar-log/listar-log.component';
 
 
 const routes: Routes = [
@@ -41,6 +42,7 @@ const routes: Routes = [
       { path: 'SubcentroDeCusto/listar', component: ListarSubCentroDeCustoComponent },
       { path: 'profissional/listar', component: ListarProfissionalComponent },
       { path: 'pacientes/listar', component: ListarPacienteComponent },
+      { path: 'log/listar', component: ListarLogComponent },
     ]
   },
 

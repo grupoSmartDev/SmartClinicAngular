@@ -67,6 +67,12 @@ import { PerguntaDorComponent } from './landin-page/components/pergunta-dor/perg
 import { DuvidasFaqComponent } from './landin-page/components/duvidas-faq/duvidas-faq.component';
 import { DobraCobrancaComponent } from './landin-page/components/dobra-cobranca/dobra-cobranca.component';
 import { InformSolucaoComponent } from './landin-page/components/inform-solucao/inform-solucao.component';
+import { InformAgendaComponent } from './landin-page/components/inform-agenda/inform-agenda.component';
+import { PrecosComponent } from './landin-page/components/precos/precos.component';
+import { ListarLogComponent } from './_pages/log/listar-log/listar-log.component';
+import { Precov0Component } from './landin-page/components/precov0/precov0.component';
+import { PacienteCompletoComponent } from './_pages/paciente/paciente-completo/paciente-completo.component';
+
 
 
 
@@ -129,6 +135,12 @@ import { InformSolucaoComponent } from './landin-page/components/inform-solucao/
     DuvidasFaqComponent,
     DobraCobrancaComponent,
     InformSolucaoComponent,
+    InformAgendaComponent,
+    PrecosComponent,
+    ListarLogComponent,
+    Precov0Component,
+    PacienteCompletoComponent,
+    
     
     
   ],

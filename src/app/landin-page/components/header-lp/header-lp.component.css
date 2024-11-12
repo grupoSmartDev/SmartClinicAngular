@@ -5,3 +5,7 @@ li a:hover{
 li{
     margin-right: 0.5rem;
 }
+
+a{
+    font-weight: bold;
+}

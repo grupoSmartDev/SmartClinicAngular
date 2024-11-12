@@ -1,0 +1,32 @@
+<div class="container py-5">
+    <div class="row justify-content-center">
+      <div *ngFor="let plan of plans" class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-success-preco" style="position: relative;">
+          
+          <!-- Badge de destaque -->
+          <span *ngIf="plan.badge" class="badge bg-success position-absolute top-0 end-0 m-3">{{ plan.badge }}</span>
+          
+          <div class="card-body">
+            <h5 class="card-title text-uppercase">{{ plan.name }}</h5>
+            <h2 class="display-4">R$ {{ plan.price.toString().replace(".", ",") }}</h2>
+            <p class="text-muted">por usuário</p>
+            <button [ngClass]="plan.buttonClass" class="w-100 mb-3">Testar agora</button>
+  
+            <!-- Nota adicional sobre o plano -->
+            <p *ngIf="plan.note" class="text-success fw-bold">{{ plan.note }}</p>
+            
+            <!-- Categorias e Itens de recursos -->
+            <div *ngFor="let feature of plan.features">
+              <h6 class="fw-bold">{{ feature.category }}</h6>
+              <ul class="list-group list-group-flush mb-4">
+                <li class="list-group-item" *ngFor="let item of feature.items">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i>{{ item }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
