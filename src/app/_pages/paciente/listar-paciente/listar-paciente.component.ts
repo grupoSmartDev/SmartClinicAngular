@@ -5,6 +5,8 @@ import { ModalPacienteComponent } from '../modal-paciente/modal-paciente.compone
 import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
 import { Paciente } from '../../../_module/pacienteModule';
 import * as bootstrap from 'bootstrap';
+import { Router } from '@angular/router';
+import { PacienteCompletoComponent } from '../paciente-completo/paciente-completo.component';
 
 @Component({
   selector: 'app-listar-paciente',
@@ -12,11 +14,12 @@ import * as bootstrap from 'bootstrap';
   styleUrl: './listar-paciente.component.css'
 })
 export class ListarPacienteComponent {
-  constructor(private pacienteService:PacienteService, private toast: ToastrService) { }
+  constructor(private pacienteService:PacienteService, private toast: ToastrService, private router: Router) { }
 
   @ViewChild(ModalPacienteComponent) modalPacienteComponent!: ModalPacienteComponent;
+  @ViewChild(PacienteCompletoComponent) modalPacienteCompletoComponent!: PacienteCompletoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
-
+  
   lista: Paciente[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
@@ -58,6 +61,18 @@ export class ListarPacienteComponent {
     }
   }
 
+  openModalDetalhado(paciente: any) {
+    // if (paciente.id) {
+    //   this.modalPacienteCompletoComponent.paciente = paciente;
+    //   this.modalPacienteComponent.carregarData(paciente);
+    // }
+    const modalElement = document.getElementById('modalPacienteDetalhado');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
   Exluir(paciente : Paciente) {
     let id = paciente.id;
     this.pacienteService.Deletar(id.toString()).subscribe({
@@ -71,6 +86,15 @@ export class ListarPacienteComponent {
         this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir um Paciente');
       }
     });
+  }
+
+  pacienteCompleto(paciente: Paciente): void {
+    // Verifica se o paciente possui um id antes de navegar
+    if (paciente && paciente.id) {
+      this.router.navigate(['/paciente', paciente.id]);
+    } else {
+      console.error('Paciente inválido ou sem ID.');
+    }
   }
 
   atualizarLista(): void {

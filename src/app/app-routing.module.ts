@@ -18,11 +18,12 @@ import { ListarSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/lista
 import { ListarProfissionalComponent } from './_pages/profissional/listar-profissional/listar-profissional.component';
 import { ListarPacienteComponent } from './_pages/paciente/listar-paciente/listar-paciente.component';
 import { ListarLogComponent } from './_pages/log/listar-log/listar-log.component';
+import { PacienteCompletoComponent } from './_pages/paciente/paciente-completo/paciente-completo.component';
 
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent }, // Rota para a página de login
-  {path:'lp', component: LandinPageComponent},
+  { path: 'lp', component: LandinPageComponent },
 
   {
     path: '', component: MainLayoutComponent, // Usa o MainLayoutComponent como pai
@@ -43,11 +44,13 @@ const routes: Routes = [
       { path: 'profissional/listar', component: ListarProfissionalComponent },
       { path: 'pacientes/listar', component: ListarPacienteComponent },
       { path: 'log/listar', component: ListarLogComponent },
+      { path: 'paciente/:id', component: PacienteCompletoComponent }, // Atualizado para aceitar o ID do paciente
     ]
   },
 
   { path: '**', redirectTo: 'login' } // Redireciona para login caso a rota não seja encontrada
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

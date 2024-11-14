@@ -10,6 +10,7 @@ export class TabelaListarGenericaComponent {
   @Input() data: any[] = []; // Os dados da tabela
   @Input() columns: { header: string, field: string }[] = []; // As colunas da tabela
   @Input() actions: { icon: string, label: string, class: string, action: string }[] = []; // Botões de ação
+  @Input() btnAcessar: boolean = false
 
   @Output() createNew = new EventEmitter<void>(); // Evento para criar novo item
   @Output() edit = new EventEmitter<any>(); // Evento para editar
@@ -25,6 +26,7 @@ export class TabelaListarGenericaComponent {
   }
 
   onEdit(item: any) {
+    debugger
     this.edit.emit(item);
   }
 

@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class PacienteCompletoComponent {
 
+  onSubmit(){
+    alert('submitando')
+  }
+
+  fecharModal(){
+    alert('fechando')
+  }
+
 }

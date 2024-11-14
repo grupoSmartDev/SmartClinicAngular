@@ -23,6 +23,7 @@ export class PacienteService {
   }
 
   Atualizar(paciente: Paciente): Observable<ResponseModel<Paciente>> {
+    debugger
     return this.http.put<ResponseModel<Paciente>>(`${this.baseURL}Editar`, paciente);
   }
 

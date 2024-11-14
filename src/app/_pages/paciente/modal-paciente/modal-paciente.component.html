@@ -13,7 +13,9 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Dados do Paciente</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          Dados do Paciente
+        </h1>
         <button
           type="button"
           class="btn-close"
@@ -57,7 +59,10 @@
 
               <div class="col-md-3">
                 <label for="sexo" class="form-label">Sexo</label>
-                <select class="form-select form-select-sm" formControlName="sexo">
+                <select
+                  class="form-select form-select-sm"
+                  formControlName="sexo"
+                >
                   <option value="M">Masculino</option>
                   <option value="F">Feminino</option>
                   <option value="O">Outro</option>
@@ -65,7 +70,9 @@
               </div>
 
               <div class="col-md-3">
-                <label for="dataNascimento" class="form-label">Data de Nascimento</label>
+                <label for="dataNascimento" class="form-label"
+                  >Data de Nascimento</label
+                >
                 <input
                   type="date"
                   class="form-control form-control-sm"
@@ -79,10 +86,10 @@
                   class="form-select form-select-sm"
                   formControlName="estadoCivil"
                 >
-                  <option value="Solteiro">Solteiro</option>
-                  <option value="Casado">Casado</option>
-                  <option value="Divorciado">Divorciado</option>
-                  <option value="Viúvo">Viúvo</option>
+                  <option value="S">Solteiro</option>
+                  <option value="C">Casado</option>
+                  <option value="D">Divorciado</option>
+                  <option value="V">Viúvo</option>
                 </select>
               </div>
 
@@ -136,25 +143,25 @@
           <div class="mb-3">
             <h5 class="border-bottom pb-2">Endereço</h5>
             <div class="row g-3">
-                <div class="col-md-3">
-                    <label for="cep" class="form-label">CEP</label>
-                    <div class="input-group input-group-sm">
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        formControlName="cep"
-                        id="cep"
-                        mask="00000-000"
-                      />
-                      <button
-                        class="btn btn-outline-secondary"
-                        type="button"
-                        (click)="buscarCEP()"
-                      >
-                        <i class="bi bi-search"></i>
-                      </button>
-                    </div>
-                  </div>
+              <div class="col-md-3">
+                <label for="cep" class="form-label">CEP</label>
+                <div class="input-group input-group-sm">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="cep"
+                    id="cep"
+                    mask="00000-000"
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="buscarCEP()"
+                  >
+                    <i class="bi bi-search"></i>
+                  </button>
+                </div>
+              </div>
 
               <div class="col-md-3">
                 <label for="bairro" class="form-label">Bairro</label>
@@ -175,7 +182,7 @@
               </div>
 
               <div class="col-md-3">
-                <label for="uf" class="form-label">Estado</label>
+                <label for="uf" class="form-label">UF</label>
                 <input
                   type="text"
                   class="form-control form-control-sm"
@@ -200,14 +207,48 @@
             <div class="row g-3">
               <div class="col-md-6">
                 <label for="convenioId" class="form-label">Convênio</label>
-                <select class="form-select form-select-sm" formControlName="convenioId">
+                <select
+                  class="form-select form-select-sm"
+                  formControlName="convenioId"
+                >
                   <option value="">Selecione...</option>
-                  <!-- As opções devem ser carregadas dinamicamente -->
+                  @for (item of convenios; track $index) {
+                  <option value="{{ item.id }}">{{ item.nome }}</option>
+                  }
                 </select>
               </div>
-
               <div class="col-md-6">
-                <label for="comoConheceu" class="form-label">Como Conheceu</label>
+                <label for="comoConheceu" class="form-label">Plano</label>
+                <select
+                  formControlName="planoId"
+                  class="form-select form-select-sm"
+                  id=""
+                >
+                  <option value="">Selecione...</option>
+                  @for (item of planos; track $index) {
+                  <option value="{{ item.id }}">{{ item.nome }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="comoConheceu" class="form-label"
+                  >Profissional</label
+                >
+                <select
+                  formControlName="profissionalId"
+                  class="form-select form-select-sm"
+                  id=""
+                >
+                  <option value="">Selecione...</option>
+                  @for (item of profissionais; track $index) {
+                  <option value="{{ item.id }}">{{ item.nome }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="comoConheceu" class="form-label"
+                  >Como Conheceu</label
+                >
                 <input
                   type="text"
                   class="form-control form-control-sm"
@@ -222,19 +263,23 @@
             <h5 class="border-bottom pb-2">Preferências</h5>
             <div class="row g-3">
               <div class="col-md-6">
-                <label for="preferenciaDeContato" class="form-label">Preferência de Contato</label>
+                <label for="preferenciaDeContato" class="form-label"
+                  >Preferência de Contato</label
+                >
                 <select
                   class="form-select form-select-sm"
                   formControlName="preferenciaDeContato"
                 >
-                  <option value="Telefone">Telefone</option>
-                  <option value="Email">E-mail</option>
-                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="T">Telefone</option>
+                  <option value="E">E-mail</option>
+                  <option value="W">WhatsApp</option>
                 </select>
               </div>
 
               <div class="col-md-6">
-                <label for="permitirLembretes" class="form-label">Permitir Lembretes</label>
+                <label for="permitirLembretes" class="form-label"
+                  >Permitir Lembretes</label
+                >
                 <select
                   class="form-select form-select-sm"
                   formControlName="permitirLembretes"
@@ -243,16 +288,34 @@
                   <option value="false">Não</option>
                 </select>
               </div>
+              <div class="col-md-6">
+                <label for="breveDiagnostico" class="form-label"
+                  >Breve Diagnostico</label
+                >
+                <textarea
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="breveDiagnostico"
+                >
+                </textarea>
+              </div>
+              <div class="col-md-6">
+                <label for="medicamento" class="form-label"
+                  >Medicamento</label
+                >
+                <textarea
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="medicamento"
+                >
+                </textarea>
+              </div>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer justify-content-end">
-        <button
-          type="button"
-          (click)="onSubmit()"
-          class="btn btn-success"
-        >
+        <button type="button" (click)="onSubmit()" class="btn btn-success">
           <i class="bi bi-check"></i> Confirmar
         </button>
         <button

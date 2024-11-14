@@ -7,4 +7,37 @@
   .table {
     min-width: 600px !important; /* Largura mínima para evitar colapsos em telas pequenas */
   }
+
+  .btn-tooltip {
+    position: relative;
+    cursor: pointer;
+  }
   
+
+  .tooltip-text {
+    font: 0.6em sans-serif;
+    visibility: hidden;
+    width: 8rem;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+  
+    /* Posicionamento */
+    position: absolute;
+    right: -160%;
+    bottom: 125%; /* Ajuste a posição da tooltip */
+    
+    transform: translateX(-50%);
+    z-index: 1;
+  
+    /* Animação */
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .btn-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }

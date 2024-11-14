@@ -48,6 +48,7 @@ export class ListarSalasComponent {
   }
 
   openModal(sala: any) {
+    debugger
     if (sala.id) {
       this.modalSalaComponent.sala = sala;
       this.modalSalaComponent.carregarSala(sala);
