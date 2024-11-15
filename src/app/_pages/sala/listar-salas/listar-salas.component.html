@@ -3,14 +3,71 @@
   (adicionarClicked)="openModal('')"
 ></app-label-nome>
 
-<app-tabela-listar-generica
-  [titulo]="'Sala'"
-  [data]="listaDeSalas"
-  [columns]="colunaTabela"
-  (edit)="openModal($event)"
-  (delete)="ExcluirSala($event)"
->
-</app-tabela-listar-generica>
+<div class="row">
+  <div class="col-12">
+    <div class="">
+      <div class="card-body">
+        <div class="row mb-2"></div>
+
+        <div class="row">
+          <div class="col-12">
+            @if (lista.length > 0) {
+            <div class="table-responsive">
+              <table class="table table-striped table-centered mb-0">
+                <thead>
+                  <tr>
+                    <th>Cód.</th>
+                    <th>Nome</th>
+                    <th>Capaciadade</th>
+                    <th class="text-end"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of lista">
+                    <!-- Renderiza dinamicamente as células com base nas colunas -->
+                    <td>
+                      {{ item.id }}
+                    </td>
+                    <td>
+                      {{ item.nome }}
+                    </td>
+                    <td>
+                      {{ item.capacidade }} 
+                    </td>
+                    <td class="text-end">
+                      <a
+                        href="javascript:void(0);"
+                        (click)="openModal(item)"
+                        class="action-icon btn-tooltip"
+                      >
+                        <i class="bi bi-pencil text-warning"></i>
+                        <span class="tooltip-text">Edição rapida</span>
+                      </a>
+                      <a
+                        href="javascript:void(0);"
+                        (click)="Excluir(item)"
+                        class="action-icon btn-tooltip"
+                      >
+                        <i class="bi bi-trash3 text-danger"></i>
+                        <span class="tooltip-text">Excluir</span>
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            } @else {
+            <div class="alert alert-danger" role="alert">
+              Nenhum registro encontrado
+            </div>
+            <img src="public\image\semRegistro.svg" alt="" />
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- listar.component.html -->
 <app-modal-salas (salaAtualizado)="atualizarLista()"></app-modal-salas>

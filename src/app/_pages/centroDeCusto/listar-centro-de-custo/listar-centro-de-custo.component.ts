@@ -16,7 +16,7 @@ export class ListarCentroDeCustoComponent {
   constructor(private centroDeCustoService: CentroDeCustoService , private toast: ToastrService) { }
   @ViewChild(ModalCentroDeCustoComponent) modalCentroDeCusto! : ModalCentroDeCustoComponent;
   @ViewChild('confirmDialog') confirmDialog! : ConfirmDialogComponent;
-  listaCentroDeCusto : CentroDeCusto[] = []
+  lista : CentroDeCusto[] = []
   errorMessage : string = '';
   idParaExcluir! : string;
   centroDeCustoParaExcluir! : CentroDeCusto
@@ -34,7 +34,7 @@ export class ListarCentroDeCustoComponent {
     this.centroDeCustoService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
-          this.listaCentroDeCusto = data.dados;
+          this.lista = data.dados;
         }
       },
       error: (err) => {
@@ -56,12 +56,12 @@ export class ListarCentroDeCustoComponent {
     }
   }
 
-  Exluir(centroDeCusto : CentroDeCusto) {
+  Excluir(centroDeCusto : CentroDeCusto) {
     let id = centroDeCusto.id;
     this.centroDeCustoService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Centro De Custo excluído com sucesso:', response);
-        this.listaCentroDeCusto = this.listaCentroDeCusto.filter(centroDeCusto => centroDeCusto.id !== id);
+        this.lista = this.lista.filter(centroDeCusto => centroDeCusto.id !== id);
         this.toast.success('Centro De Custo  excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
@@ -81,7 +81,7 @@ export class ListarCentroDeCustoComponent {
   }
 
   confirmDelete() {
-    this.Exluir(this.centroDeCustoParaExcluir);
+    this.Excluir(this.centroDeCustoParaExcluir);
   }
 
   cancelDelete() {

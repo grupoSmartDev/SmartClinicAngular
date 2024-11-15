@@ -23,7 +23,7 @@ export class ModalPacienteComponent {
     private router: Router,
     private cepService: BuscarCepService,
     private profissionalService: ProfissionalService,
-    private convenioService : ConvenioService
+    private convenioService: ConvenioService
 
   ) { }
 
@@ -33,60 +33,66 @@ export class ModalPacienteComponent {
 
   lista: Paciente[] = [];
   //fazer a lista de convenio para rodar no select
-  convenios : Convenio[] = [];
+  convenios: Convenio[] = [];
   //fazer lista de profissionais para rodar no select
-  profissionais : Profissional[] = [];
+  profissionais: Profissional[] = [];
   //fazer lista de planos para rodar no select
-  planos : any[] = [
-    {nome: 'Plano 1', id: 1},
-    {nome: 'Plano 2', id: 2},
-    {nome: 'Plano 3', id: 3},
+  planos: any[] = [
+    { nome: 'Plano 1', id: 1 },
+    { nome: 'Plano 2', id: 2 },
+    { nome: 'Plano 3', id: 3 },
+    { nome: 'Plano 4', id: 4},
   ];
-  
+
 
   fb = new FormBuilder();
   // Inicialize o formulário usando o FormBuilder
   formulario: FormGroup = this.fb.group({
-    // Identificação e informações pessoais do paciente
-    id: new FormControl<number | null>(null),
-    nome: new FormControl<string | null>(''),
-    cpf: new FormControl<string | null>(''),
-    rg: new FormControl<string | null>(null),
-    dataNascimento: new FormControl<Date | null>(null),
-    sexo: new FormControl<string | null>(null),
-    estadoCivil: new FormControl<string | null>(null),
-    responsavel: new FormControl<boolean | null>(false),
+    id: new FormControl(),
+    nome: new FormControl(),
+    cpf: new FormControl(),
+    rg: new FormControl(),
+    dataNascimento: new FormControl(),
+    sexo: new FormControl(),
+    estadoCivil: new FormControl(),
+    responsavel: new FormControl(),
 
-    // Informações de contato
-    celular: new FormControl<string | null>(''),
-    telefone: new FormControl<string | null>(null),
-    email: new FormControl<string | null>(''),
+    celular: new FormControl(),
+    telefone: new FormControl(),
+    email: new FormControl(),
 
-    // Endereço
-    cep: new FormControl<string | null>(''),
-    logradouro: new FormControl<string | null>(''),
-    numero: new FormControl<number | null>(null),
-    complemento: new FormControl<string | null>(null),
-    bairro: new FormControl<string | null>(''),
-    cidade: new FormControl<string | null>(''),
-    uf: new FormControl<string | null>(''),
-    pais: new FormControl<string>('Brasil'),
+    cep: new FormControl(),
+    logradouro: new FormControl(),
+    numero: new FormControl(),
+    complemento: new FormControl(),
+    bairro: new FormControl(),
+    cidade: new FormControl(),
+    uf: new FormControl(),
+    pais: new FormControl(),
 
-    // Informações de emprego e profissionais de saúde
-    profissao: new FormControl<string | null>(null),
-    profissionalId: new FormControl<string | null>(null),
-    medicamento: new FormControl<string | null>(null),
-    breveDiagnostico: new FormControl<string | null>(null),
+    profissao: new FormControl(),
+    profissionalId: new FormControl(),
+    medicamento: new FormControl(),
+    breveDiagnostico: new FormControl(),
 
-    // Preferências e lembretes
-    preferenciaDeContato: new FormControl<string | null>(null),
-    permitirLembretes: new FormControl<boolean | null>(false),
+    preferenciaDeContato: new FormControl(),
+    permitirLembretes: new FormControl(),
 
-    // Informações adicionais
-    convenioId: new FormControl<number | null>(null),
-    comoConheceu: new FormControl<string | null>(null),
-    planoId: new FormControl<number | null>(null),
+    convenioId: new FormControl(),
+    comoConheceu: new FormControl(),
+    planoId: new FormControl(),
+
+    // Campos de cobrança adicionais
+    // formaPagamentoId: new FormControl(),
+    // dataVencimento: new FormControl(),
+    // valorAberto: new FormControl(),
+    // dataUltimoPagamento: new FormControl(),
+
+    // Campo de data do último atendimento
+    // dataUltimoAtendimento: new FormControl(),
   });
+
+
 
   ngOnInit() {
     this.carregarCC();
@@ -96,10 +102,17 @@ export class ModalPacienteComponent {
 
   onSubmit() {
     const btnCancelar = document.querySelector('#btnCancelar') as HTMLElement;
-    
+
     if (this.formulario.valid) {
       const dataToSave: Paciente = this.formulario.value as Paciente;
-  
+
+      dataToSave.responsavel == "false" ? dataToSave.responsavel = false : dataToSave.responsavel = true;
+      dataToSave.permitirLembretes == "false" ? dataToSave.permitirLembretes = false : dataToSave.permitirLembretes = true;
+      dataToSave.profissionalId == 0 ? null : dataToSave.profissionalId;
+      dataToSave.profissionalId == undefined ? null : dataToSave.profissionalId;
+      dataToSave.convenioId == 0 ? null : dataToSave.convenioId;
+      dataToSave.planoId == 0 ? null : dataToSave.planoId;
+
       if (dataToSave.id) {
         this.pacienteService.Atualizar(dataToSave).subscribe({
           next: (response: ResponseModel<Paciente>) => {
@@ -132,7 +145,7 @@ export class ModalPacienteComponent {
       this.logInvalidFields();
     }
   }
-  
+
   // Marca todos os campos do formulário como "touched" para exibir mensagens de erro
   private markAllFieldsAsTouched(): void {
     Object.keys(this.formulario.controls).forEach(field => {
@@ -140,21 +153,21 @@ export class ModalPacienteComponent {
       control?.markAsTouched({ onlySelf: true });
     });
   }
-  
+
   // Percorre o formulário e exibe os campos inválidos no console
   private logInvalidFields(): void {
-    const invalidFields : any[] = [];
-    
+    const invalidFields: any[] = [];
+
     Object.keys(this.formulario.controls).forEach(field => {
       const control = this.formulario.get(field);
       if (control && control.invalid) {
         invalidFields.push({ field, errors: control.errors });
       }
     });
-  
+
     console.error('Campos inválidos:', invalidFields);
   }
-  
+
 
   carregarData(centroDeCusto: any) {
     this.formulario.patchValue(this.paciente);

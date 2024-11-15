@@ -18,7 +18,7 @@ export class ListarFornecedorComponent {
   @ViewChild(ModalFornecedorComponent) modalFornecedorComponent!: ModalFornecedorComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
-  fornecedors: Fornecedor[] = [];
+  lista: Fornecedor[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   fornecedorParaExcluir!:Fornecedor;
@@ -36,7 +36,7 @@ export class ListarFornecedorComponent {
   getFornecedors(): void {
     this.fornecedorService.Listar().subscribe({
       next: (data) => {
-        this.fornecedors = data.dados;
+        this.lista = data.dados;
       },
       error: (err) => {
         (this.errorMessage = err),
@@ -45,7 +45,7 @@ export class ListarFornecedorComponent {
     });
   }
 
-  ExcluirFornecedor(fornecedor: Fornecedor) {
+  Excluir(fornecedor: Fornecedor) {
     let id = fornecedor.id
     this.fornecedorService.Deletar(id).subscribe({
       next: (data) => {
@@ -67,7 +67,7 @@ export class ListarFornecedorComponent {
   }
 
   confirmDelete() {
-    this.ExcluirFornecedor(this.fornecedorParaExcluir);
+    this.Excluir(this.fornecedorParaExcluir);
   }
 
   cancelDelete() {

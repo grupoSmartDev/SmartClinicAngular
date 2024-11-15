@@ -14,7 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 export class ListarConvenioComponent implements OnInit {
 constructor(private convenioService: ConvenioService, private toast: ToastrService) {}
 
-  convenios : Convenio[] = [];
+  lista : Convenio[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   convenioParaExcluir!: Convenio;
@@ -39,7 +39,7 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
     this.convenioService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
-          this.convenios = data.dados;
+          this.lista = data.dados;
         }
       },
       error: (err) => {
@@ -53,13 +53,13 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
     console.log('Editando item:', item);
   }
 
-  ExcluirConvenio(convenio : Convenio) {
+  Excluir(convenio : Convenio) {
     let id = convenio.id;
     debugger
     this.convenioService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Convênio excluído com sucesso:', response);
-        this.convenios = this.convenios.filter(convenio => convenio.id !== id);
+        this.lista = this.lista.filter(convenio => convenio.id !== id);
         this.toast.success('Convênio excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
@@ -94,7 +94,7 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
   }
 
   confirmDelete() {
-    this.ExcluirConvenio(this.convenioParaExcluir);
+    this.Excluir(this.convenioParaExcluir);
   }
 
   cancelDelete() {

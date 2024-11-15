@@ -25,7 +25,8 @@ export class SalasService {
     return this.http.put<ResponseModel<Sala>>(`${this.baseURL}Editar`, sala);
   }
 
-  Deletar(id: string): Observable<ResponseModel<void>> {
+  Deletar(id: number): Observable<ResponseModel<void>> {
+    debugger
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
 }

@@ -15,7 +15,7 @@ export class ListarConselhoComponent implements OnInit{
 
 
   constructor(private conselhoService: ConselhoService, private toast: ToastrService) {}
-  conselhos : Conselho[] = [];
+  lista : Conselho[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   conselhoParaExcluir!: Conselho;
@@ -23,11 +23,7 @@ export class ListarConselhoComponent implements OnInit{
   @ViewChild(ModalConselhoComponent) modalConselhoComponent!: ModalConselhoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
-  colunasConselho = [
-    { header: 'Cód.', field: 'id' },
-    { header: 'Nome', field: 'nome' },
-    { header: 'Sigla', field: 'Sigla' },
-  ];
+
 
   ngOnInit(): void {
     this.getConselho();
@@ -37,7 +33,7 @@ export class ListarConselhoComponent implements OnInit{
     this.conselhoService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
-          this.conselhos = data.dados;
+          this.lista = data.dados;
         }
       },
       error: (err) => {
@@ -51,13 +47,13 @@ export class ListarConselhoComponent implements OnInit{
     console.log('Editando item:', item);
   }
 
-  ExcluirConselho(conselho : Conselho) {
+  Excluir(conselho : Conselho) {
     let id = conselho.id;
     debugger
     this.conselhoService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Conselho excluído com sucesso:', response);
-        this.conselhos = this.conselhos.filter(conselho => conselho.id !== id);
+        this.lista = this.lista.filter(conselho => conselho.id !== id);
         this.toast.success('Conselho excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
@@ -93,7 +89,7 @@ export class ListarConselhoComponent implements OnInit{
   }
 
   confirmDelete() {
-    this.ExcluirConselho(this.conselhoParaExcluir);
+    this.Excluir(this.conselhoParaExcluir);
   }
 
   cancelDelete() {

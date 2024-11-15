@@ -181,7 +181,7 @@
                 />
               </div>
 
-              <div class="col-md-3">
+              <div class="col-md-1 col-6">
                 <label for="uf" class="form-label">UF</label>
                 <input
                   type="text"
@@ -189,8 +189,16 @@
                   formControlName="uf"
                 />
               </div>
+              <div class="col-md-2 col-6">
+                <label for="pais" class="form-label">País</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="pais"
+                />
+              </div>
 
-              <div class="col-md-6">
+              <div class="col-md-3">
                 <label for="complemento" class="form-label">Complemento</label>
                 <input
                   type="text"
@@ -198,14 +206,31 @@
                   formControlName="complemento"
                 />
               </div>
+              <div class="col-md-6">
+                <label for="logradouro" class="form-label">Logradouro</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="logradouro"
+                />
+              </div>
+              <div class="col-md-2">
+                <label for="numero" class="form-label">Número</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="numero"
+                />
+              </div>
+          
             </div>
           </div>
 
           <!-- Convênio -->
           <div class="mb-3">
-            <h5 class="border-bottom pb-2">Convênio e Como Conheceu</h5>
+            <h5 class="border-bottom pb-2">Convênio</h5>
             <div class="row g-3">
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label for="convenioId" class="form-label">Convênio</label>
                 <select
                   class="form-select form-select-sm"
@@ -217,20 +242,20 @@
                   }
                 </select>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label for="comoConheceu" class="form-label">Plano</label>
                 <select
                   formControlName="planoId"
                   class="form-select form-select-sm"
                   id=""
                 >
-                  <option value="">Selecione...</option>
+                  <option value=0>Selecione...</option>
                   @for (item of planos; track $index) {
                   <option value="{{ item.id }}">{{ item.nome }}</option>
                   }
                 </select>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label for="comoConheceu" class="form-label"
                   >Profissional</label
                 >
@@ -239,30 +264,25 @@
                   class="form-select form-select-sm"
                   id=""
                 >
-                  <option value="">Selecione...</option>
+                  <!-- <option value="">Selecione...</option>
                   @for (item of profissionais; track $index) {
                   <option value="{{ item.id }}">{{ item.nome }}</option>
-                  }
+                  } -->
+                  <option value="">Selecione...</option>
+                  <option value="1">Profissional 1</option>
+                  <option value="2">Profissional 2</option>
+                  <option value="3">Profissional 3</option>
                 </select>
               </div>
-              <div class="col-md-6">
-                <label for="comoConheceu" class="form-label"
-                  >Como Conheceu</label
-                >
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  formControlName="comoConheceu"
-                />
-              </div>
+             
             </div>
           </div>
 
           <!-- Preferência de Contato e Lembretes -->
           <div class="mb-3">
-            <h5 class="border-bottom pb-2">Preferências</h5>
+            <h5 class="border-bottom pb-2">Preferências e Como Conheceu</h5>
             <div class="row g-3">
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label for="preferenciaDeContato" class="form-label"
                   >Preferência de Contato</label
                 >
@@ -276,7 +296,7 @@
                 </select>
               </div>
 
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label for="permitirLembretes" class="form-label"
                   >Permitir Lembretes</label
                 >
@@ -287,6 +307,16 @@
                   <option value="true">Sim</option>
                   <option value="false">Não</option>
                 </select>
+              </div>
+              <div class="col-md-4">
+                <label for="comoConheceu" class="form-label"
+                  >Como Conheceu</label
+                >
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="comoConheceu"
+                />
               </div>
               <div class="col-md-6">
                 <label for="breveDiagnostico" class="form-label"
@@ -300,9 +330,7 @@
                 </textarea>
               </div>
               <div class="col-md-6">
-                <label for="medicamento" class="form-label"
-                  >Medicamento</label
-                >
+                <label for="medicamento" class="form-label">Medicamento</label>
                 <textarea
                   type="text"
                   class="form-control form-control-sm"
@@ -310,6 +338,79 @@
                 >
                 </textarea>
               </div>
+            </div>
+          </div>
+          <!-- Informações de Cobrança -->
+          <!-- <div class="mb-3">
+            <h5 class="border-bottom pb-2">Cobrança</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="formaPagamentoId" class="form-label"
+                  >Forma de Pagamento</label
+                >
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="formaPagamentoId"
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="dataVencimento" class="form-label"
+                  >Data de Vencimento</label
+                >
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  formControlName="dataVencimento"
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="valorAberto" class="form-label"
+                  >Valor em Aberto</label
+                >
+                <input
+                  type="number"
+                  class="form-control form-control-sm"
+                  formControlName="valorAberto"
+                />
+              </div>
+              <div class="col-md-6">
+                <label for="dataUltimoPagamento" class="form-label"
+                  >Data do Último Pagamento</label
+                >
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  formControlName="dataUltimoPagamento"
+                />
+              </div>
+            </div>
+          </div> -->
+
+          <!-- Outros Campos -->
+          <div class="mb-3">
+            <h5 class="border-bottom pb-2">Outros</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="responsavel" class="form-label">Responsável</label>
+                <select
+                  class="form-select form-select-sm"
+                  formControlName="responsavel"
+                >
+                  <option value="true">Sim</option>
+                  <option value="false">Não</option>
+                </select>
+              </div>
+              <!-- <div class="col-md-6">
+                <label for="dataUltimoAtendimento" class="form-label"
+                  >Data do Último Atendimento</label
+                >
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  formControlName="dataUltimoAtendimento"
+                />
+              </div> -->
             </div>
           </div>
         </form>
@@ -322,6 +423,7 @@
           type="button"
           class="btn btn-danger"
           data-bs-dismiss="modal"
+          id="btnCancelar"
           (click)="fecharModal()"
         >
           <i class="bi bi-x"></i> Cancelar

@@ -14,30 +14,24 @@ import * as bootstrap from 'bootstrap';
 })
 export class ListarSalasComponent {
 
-  @ViewChild(ModalStatusComponent) modalSalaComponent!: ModalSalasComponent;
+  @ViewChild(ModalSalasComponent) modalSalaComponent!: ModalSalasComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
-  listaDeSalas: Sala[] = [];
+  lista: Sala[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   salaParaExcluir!: Sala;
 
-  colunaTabela= [
-    { header: 'Cód.', field: 'id' },
-    { header: 'Nome', field: 'nome' },
-    { header: 'Capacidade', field: 'capacidade' },
-  ]
-
   constructor(private salaService: SalasService , private toast: ToastrService) { }
 
   ngOnInit(): void {
-    this.getSalas();
+    this.getDados();
   } 
 
-  getSalas(): void {
+  getDados(): void {
     this.salaService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
-          this.listaDeSalas = data.dados;
+          this.lista = data.dados;
         }
       },
       error: (err) => {
@@ -60,12 +54,13 @@ export class ListarSalasComponent {
     }
   }
 
-  ExcluirSala(sala : Sala) {
+  Excluir(sala : Sala) {
+    debugger
     let id = sala.id;
-    this.salaService.Deletar(id).subscribe({
+    this.salaService.Deletar(parseInt(id)).subscribe({
       next: (response) => {
         console.log('Sala excluído com sucesso:', response);
-        this.listaDeSalas = this.listaDeSalas.filter(sala => sala.id !== id);
+        this.lista = this.lista.filter(sala => sala.id !== id);
         this.toast.success('Sala excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
@@ -76,7 +71,7 @@ export class ListarSalasComponent {
   }
   
   atualizarLista(): void {
-    this.getSalas(); // Chama o método para buscar os status novamente
+    this.getDados(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -85,7 +80,7 @@ export class ListarSalasComponent {
   }
 
   confirmDelete() {
-    this.ExcluirSala(this.salaParaExcluir);
+    this.Excluir(this.salaParaExcluir);
   }
 
   cancelDelete() {

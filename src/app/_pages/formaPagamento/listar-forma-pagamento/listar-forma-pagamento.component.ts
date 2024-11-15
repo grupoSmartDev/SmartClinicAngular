@@ -17,7 +17,7 @@ export class ListarFormaPagamentoComponent implements OnInit {
 
   @ViewChild(ModalFormaPagamentoComponent) modalFormaPagamentoComponent!: ModalFormaPagamentoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
-  formaPagamentoLista: FormaPagamento[] = [];
+  lista: FormaPagamento[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   formaPagamentoParaExcluir!: FormaPagamento
@@ -29,14 +29,14 @@ export class ListarFormaPagamentoComponent implements OnInit {
   ]
 
   ngOnInit(): void {
-    this.getFormaPagamento();
+    this.getDados();
   }
 
-  getFormaPagamento(): void {
+  getDados(): void {
     this.formaPagamentoService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
-          this.formaPagamentoLista = data.dados;
+          this.lista = data.dados;
         }
       },
       error: (err) => {
@@ -58,12 +58,12 @@ export class ListarFormaPagamentoComponent implements OnInit {
     }
   }
 
-  ExcluirStatus(formaPagamento : FormaPagamento) {
+  Excluir(formaPagamento : FormaPagamento) {
     let id = formaPagamento.id;
     this.formaPagamentoService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Status excluído com sucesso:', response);
-        this.formaPagamentoLista = this.formaPagamentoLista.filter(formaPagamento => formaPagamento.id !== id);
+        this.lista = this.lista.filter(formaPagamento => formaPagamento.id !== id);
         this.toast.success('Forma de pagamento excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
@@ -75,7 +75,7 @@ export class ListarFormaPagamentoComponent implements OnInit {
 
   // Método para recarregar a lista após criação/atualização
   atualizarLista(): void {
-    this.getFormaPagamento(); // Chama o método para buscar os status novamente
+    this.getDados(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -84,7 +84,7 @@ export class ListarFormaPagamentoComponent implements OnInit {
   }
 
   confirmDelete() {
-    this.ExcluirStatus(this.formaPagamentoParaExcluir);
+    this.Excluir(this.formaPagamentoParaExcluir);
   }
 
   cancelDelete() {

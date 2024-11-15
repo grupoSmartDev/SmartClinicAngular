@@ -18,7 +18,7 @@ export class ListarTipoPagamentoComponent {
 
   @ViewChild(ModalTipoPagamentoComponent) modalTipoPagamento!: ModalTipoPagamentoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
-  tipoPagamentoLista: TipoPagamento[] = [];
+  lista: TipoPagamento[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   tipoPagamentoParaExcluir!: TipoPagamento;
@@ -41,7 +41,7 @@ export class ListarTipoPagamentoComponent {
     this.tipoPagamentoService.ListarTipoPagamento().subscribe({
       next: (data) => {
         if (data.dados) {
-          this.tipoPagamentoLista = data.dados;
+          this.lista = data.dados;
         }
       },
       error: (err) => {
@@ -71,7 +71,7 @@ export class ListarTipoPagamentoComponent {
   }
 
   confirmDelete() {
-    this.ExcluirTipoPagamento(this.tipoPagamentoParaExcluir);
+    this.Excluir(this.tipoPagamentoParaExcluir);
   }
 
   cancelDelete() {
@@ -79,11 +79,11 @@ export class ListarTipoPagamentoComponent {
   }
 
 
-  ExcluirTipoPagamento(tipoPagamento : TipoPagamento) {
+  Excluir(tipoPagamento : TipoPagamento) {
     let id = tipoPagamento.id;
     this.tipoPagamentoService.DeletarTipoPagamento(id).subscribe({
       next: (response) => {
-        this.tipoPagamentoLista = this.tipoPagamentoLista.filter(tipoPagamento => tipoPagamento.id !== id);
+        this.lista = this.lista.filter(tipoPagamento => tipoPagamento.id !== id);
         this.toast.success('Tipo de pagamento excluido com sucesso!', 'Excluído');
       },
       error: () => {
