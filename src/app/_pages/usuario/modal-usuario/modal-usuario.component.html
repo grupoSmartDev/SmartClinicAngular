@@ -1,0 +1,69 @@
+<!-- Modal -->
+<div #modalEditarCriar class="modal fade" id="modalEditarCriar" data-bs-backdrop="static" data-bs-keyboard="false"
+  tabindex="-1" aria-labelledby="statusModalLabel" aria-modal="true" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Usuário</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control form-control-sm" formControlName="nome" id="nome" placeholder="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control form-control-sm" formControlName="email" id="email" placeholder="">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="senha" class="form-label">Senha</label>
+                <input type="password" class="form-control form-control-sm" formControlName="senha" id="senha" placeholder="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="telefone" class="form-label">Telefone</label>
+                <input type="text" class="form-control form-control-sm" formControlName="telefone" id="telefone" placeholder="">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="dataNascimento" class="form-label">Data de Nascimento</label>
+                <input type="date" class="form-control form-control-sm" formControlName="dataNascimento" id="dataNascimento"
+                  placeholder="">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="perfil" class="form-label">Perfil</label>
+                <select class="form-select form-select-sm" formControlName="perfil" id="perfil">
+                  <option value="admin">Admin</option>
+                  <option value="user">User</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="onSubmit()" class="btn btn-success" id="btn_salvar_editar"><i
+            class="bi bi-check"></i> Confirmar</button>
+        <button type="button" class="btn btn-danger" id="btnCancelar" data-bs-dismiss="modal" aria-label="Close"
+          (click)="fecharModal()"><i class="bi bi-x"></i>Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+
+<app-label-nome [nomeTela]="'Usuário'" (adicionarClicked)="openModal('')"></app-label-nome>
+
+<div class="row">
+    <div class="col-12">
+      @if (lista.length > 0) {
+      <div class="table-responsive">
+        <table class="table table-striped table-centered mb-0">
+          <thead>
+            <tr>
+              <th>Cód.</th>
+              <th>Descrição</th>
+              <th class="text-end"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of lista">
+              <!-- Renderiza dinamicamente as células com base nas colunas -->
+              <td>
+                {{ item.id }}
+              </td>
+              <td>
+                {{ item.nome }}
+              </td>
+
+              <td class="text-end">
+                <a
+                  href="javascript:void(0);"
+                  (click)="openModal(item)"
+                  class="action-icon btn-tooltip"
+                >
+                  <i class="bi bi-pencil text-warning"></i>
+                  <span class="tooltip-text">Edição rapida</span>
+                </a>
+                <a
+                  href="javascript:void(0);"
+                  (click)="Excluir(item)"
+                  class="action-icon btn-tooltip"
+                >
+                  <i class="bi bi-trash3 text-danger"></i>
+                  <span class="tooltip-text">Excluir</span>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      } @else {
+      <div class="alert alert-danger" role="alert">
+        Nenhum registro encontrado
+      </div>
+      <img src="public\image\semRegistro.svg" alt="" />
+      }
+    </div>
+  </div>
+
+  <app-modal-usuario (dadosAtualizado)="atualizarLista()"></app-modal-usuario>
+
+  <app-confirm-dialog
+  #confirmDialog
+  (onConfirm)="confirmDelete()"
+  (onCancel)="cancelDelete()">
+</app-confirm-dialog>

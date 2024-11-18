@@ -72,6 +72,8 @@ import { PrecosComponent } from './landin-page/components/precos/precos.componen
 import { ListarLogComponent } from './_pages/log/listar-log/listar-log.component';
 import { Precov0Component } from './landin-page/components/precov0/precov0.component';
 import { PacienteCompletoComponent } from './_pages/paciente/paciente-completo/paciente-completo.component';
+import { ListarUsuarioComponent } from './_pages/usuario/listar-usuario/listar-usuario.component';
+import { ModalUsuarioComponent } from './_pages/usuario/modal-usuario/modal-usuario.component';
 
 
 
@@ -140,6 +142,8 @@ import { PacienteCompletoComponent } from './_pages/paciente/paciente-completo/p
     ListarLogComponent,
     Precov0Component,
     PacienteCompletoComponent,
+    ListarUsuarioComponent,
+    ModalUsuarioComponent,
     
     
     
