@@ -74,6 +74,7 @@ import { Precov0Component } from './landin-page/components/precov0/precov0.compo
 import { PacienteCompletoComponent } from './_pages/paciente/paciente-completo/paciente-completo.component';
 import { ListarUsuarioComponent } from './_pages/usuario/listar-usuario/listar-usuario.component';
 import { ModalUsuarioComponent } from './_pages/usuario/modal-usuario/modal-usuario.component';
+import { ModalAgendaComponent } from './_pages/agenda/modal-agenda/modal-agenda.component';
 
 
 
@@ -144,6 +145,7 @@ import { ModalUsuarioComponent } from './_pages/usuario/modal-usuario/modal-usua
     PacienteCompletoComponent,
     ListarUsuarioComponent,
     ModalUsuarioComponent,
+    ModalAgendaComponent,
     
     
     

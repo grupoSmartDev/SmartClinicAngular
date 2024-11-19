@@ -10,47 +10,40 @@
       <div class="modal-body">
         <form [formGroup]="formulario">
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <div class="mb-3">
                 <label for="nome" class="form-label">Nome</label>
                 <input type="text" class="form-control form-control-sm" formControlName="nome" id="nome" placeholder="">
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
               <div class="mb-3">
-                <label for="dataNascimento" class="form-label">Data de Nascimento</label>
-                <input type="date" class="form-control form-control-sm" formControlName="dataNascimento" id="dataNascimento"
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control form-control-sm" formControlName="email" id="email"
                   placeholder="">
               </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label for="dataNascimento" class="form-label">Data de Nascimento</label>
+                <input type="date" class="form-control form-control-sm" formControlName="dataNascimento"
+                  id="dataNascimento" placeholder="">
+              </div>
+            </div>
+            <div class="col-md-3">
               <div class="mb-3">
                 <label for="cpf" class="form-label">CPF</label>
-                <input type="text" class="form-control form-control-sm" formControlName="cpf" id="cpf" placeholder="" mask="000.000.000-00">
+                <input type="text" class="form-control form-control-sm" formControlName="cpf" id="cpf" placeholder=""
+                  mask="000.000.000-00">
               </div>
             </div>
             <div class="col-md-3">
               <div class="mb-3">
                 <label for="celular" class="form-label">Celular</label>
-                <input type="text" class="form-control form-control-sm" formControlName="celular" id="celular" placeholder="" [mask]="'(00) 0 0000-0000'">
+                <input type="text" class="form-control form-control-sm" formControlName="celular" id="celular"
+                  placeholder="" [mask]="'(00) 0 0000-0000'">
               </div>
             </div>
-
-          </div>
-          <div class="row">
-            <div class="col-md-3">
-              <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control form-control-sm" formControlName="email" id="email" placeholder="">
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="mb-3">
-                <label for="senha" class="form-label">Senha</label>
-                <input type="password" class="form-control form-control-sm" formControlName="senha" id="senha" placeholder="">
-              </div>
-            </div>
-    
             <div class="col-md-3">
               <div class="mb-3">
                 <label for="perfil" class="form-label">Perfil</label>
@@ -60,6 +53,18 @@
                 </select>
               </div>
             </div>
+          </div>
+          <div class="row">
+
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label for="senha" class="form-label">Senha</label>
+                <input type="password" class="form-control form-control-sm" formControlName="senha" id="senha"
+                  placeholder="">
+              </div>
+            </div>
+
+        
           </div>
         </form>
 
