@@ -55,7 +55,7 @@ export class ListarProfissionalComponent {
     }
   }
 
-  Exluir(profissional : Profissional) {
+  Excluir(profissional : Profissional) {
     let id = profissional.id;
     this.profissionalService.Deletar(id).subscribe({
       next: (response) => {
@@ -80,7 +80,7 @@ export class ListarProfissionalComponent {
   }
 
   confirmDelete() {
-    this.Exluir(this.dataParaExcluir);
+    this.Excluir(this.dataParaExcluir);
   }
 
   cancelDelete() {

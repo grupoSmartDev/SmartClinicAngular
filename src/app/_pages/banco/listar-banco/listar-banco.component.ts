@@ -17,7 +17,7 @@ export class ListarBancoComponent {
 
   @ViewChild(ModalBancoComponent) modalBancoComponent! : ModalBancoComponent;
   @ViewChild('confirmDialog') confirmDialog! : ConfirmDialogComponent;
-  listaDeBancos : Banco[] = [];
+  lista : Banco[] = [];
   errorMessage : string = '';
   idParaExcluir! : string;
   bancoParaExcluir ! : Banco;
@@ -37,7 +37,7 @@ export class ListarBancoComponent {
     this.BancoService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
-          this.listaDeBancos = data.dados;
+          this.lista = data.dados;
         }
       },
       error: (err) => {
@@ -60,12 +60,12 @@ export class ListarBancoComponent {
     }
   }
 
-  ExcluirBanco(banco : Banco) {
+  Excluir(banco : Banco) {
     let id = banco.id;
     this.BancoService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Banco excluído com sucesso:', response);
-        this.listaDeBancos = this.listaDeBancos.filter(banco => banco.id !== id);
+        this.lista = this.lista.filter(banco => banco.id !== id);
         this.toast.success('Banco excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
@@ -85,7 +85,7 @@ export class ListarBancoComponent {
   }
 
   confirmDelete() {
-    this.ExcluirBanco(this.bancoParaExcluir);
+    this.Excluir(this.bancoParaExcluir);
   }
 
   cancelDelete() {

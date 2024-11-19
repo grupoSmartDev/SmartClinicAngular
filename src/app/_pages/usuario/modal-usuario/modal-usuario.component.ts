@@ -33,7 +33,7 @@ export class ModalUsuarioComponent {
     nome: new FormControl(),
     email: new FormControl(),
     senha: new FormControl(),
-    telefone: new FormControl(),
+    celular: new FormControl(),
     dataNascimento: new FormControl(),
     perfil: new FormControl(),
     cpf : new FormControl(),

@@ -20,12 +20,12 @@ export class ModalConvenioComponent {
 
   formulario = new FormGroup({
     id: new FormControl(),
-    nome: new FormControl('', [Validators.required]),
+    nome: new FormControl(''),
     registroAvs: new FormControl(''),
     periodoCarencia: new FormControl(''),
     telefone: new FormControl(''),
     email: new FormControl(''),
-    ativo: new FormControl(false, [Validators.requiredTrue]),
+    ativo: new FormControl(false),
 
   })
 
