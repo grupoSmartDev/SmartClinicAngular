@@ -4,6 +4,7 @@ export interface Agenda{
     dataCompomisso : Date,
     horaInicio : Date,
     DataCompromissoFim : Date,
+    dataCancelamento? : Date,
     pacienteId? : string,
     profissionalId? : string,    
     convenioId? : string,
@@ -11,7 +12,13 @@ export interface Agenda{
     statusId? : string,
     salaId? : string,
     pacoteId? : string,
+    financReceberId? : string,
+    observacao? : string,
     lembrete : boolean,
-    vinculoComAgenda : boolean
+    vinculoComAgenda : boolean,
+    usuarioCriacaoId : string,
+    dataCriacao : Date,
+    usuarioAlteracaoId? : string,
+    dataAlteracao? : Date,
 }
 
