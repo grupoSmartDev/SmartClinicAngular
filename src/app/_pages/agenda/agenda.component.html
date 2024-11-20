@@ -1,1 +1,5 @@
 <full-calendar [options]="calendarOptions"></full-calendar>
+<app-modal-agenda
+  #modalAgenda
+  (onSave)="handleAgendamentoSave($event)">
+</app-modal-agenda>
