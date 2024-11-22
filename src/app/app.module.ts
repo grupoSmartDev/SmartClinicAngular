@@ -75,6 +75,7 @@ import { PacienteCompletoComponent } from './_pages/paciente/paciente-completo/p
 import { ListarUsuarioComponent } from './_pages/usuario/listar-usuario/listar-usuario.component';
 import { ModalUsuarioComponent } from './_pages/usuario/modal-usuario/modal-usuario.component';
 import { ModalAgendaComponent } from './_pages/agenda/modal-agenda/modal-agenda.component';
+import { CommonModule } from '@angular/common';
 
 
 
@@ -160,8 +161,8 @@ import { ModalAgendaComponent } from './_pages/agenda/modal-agenda/modal-agenda.
     NgxMaskDirective,
     FullCalendarModule,
     NgxChartsModule,
-    FormsModule     
-    
+    FormsModule,    
+    CommonModule
   ],
   providers: [ provideNgxMask(),],
   bootstrap: [AppComponent]
