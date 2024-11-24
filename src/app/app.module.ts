@@ -76,6 +76,8 @@ import { ListarUsuarioComponent } from './_pages/usuario/listar-usuario/listar-u
 import { ModalUsuarioComponent } from './_pages/usuario/modal-usuario/modal-usuario.component';
 import { ModalAgendaComponent } from './_pages/agenda/modal-agenda/modal-agenda.component';
 import { CommonModule } from '@angular/common';
+import { ModalExercicioComponent } from './_pages/exercicios/modal-exercicio/modal-exercicio.component';
+import { ListarExerciciosComponent } from './_pages/exercicios/listar-exercicios/listar-exercicios.component';
 
 
 
@@ -147,6 +149,8 @@ import { CommonModule } from '@angular/common';
     ListarUsuarioComponent,
     ModalUsuarioComponent,
     ModalAgendaComponent,
+    ListarExerciciosComponent,
+    ModalExercicioComponent,
     
     
     
