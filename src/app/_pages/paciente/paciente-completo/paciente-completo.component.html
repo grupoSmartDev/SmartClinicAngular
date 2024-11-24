@@ -92,7 +92,7 @@
             <!-- Atendimentos -->
             <div class="tab-pane fade" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
               <h5>Histórico de Atendimentos</h5>
-              <button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addAppointmentModal">Novo Atendimento</button>
+              <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addAppointmentModal"> <i class="bi bi-plus"></i> Evolução</button>
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -105,7 +105,7 @@
                   <tr>
                     <td>05/02/2023</td>
                     <td>Fisioterapia</td>
-                    <td><button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addProgressModal">Adicionar Evolução</button></td>
+                    <td><button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addProgressModal">Ver Evolução</button></td>
                   </tr>
                 </tbody>
               </table>
@@ -114,7 +114,7 @@
             <!-- Planos -->
             <div class="tab-pane fade" id="plans" role="tabpanel" aria-labelledby="plans-tab">
               <h5>Planos do Paciente</h5>
-              <button class="btn btn-success mb-2">Cadastrar Novo Plano</button>
+              <button class="btn btn-success mb-2"><i class="bi bi-plus"></i> Plano</button>
               <!-- Lista de planos cadastrados -->
               <table class="table table-striped">
                 <thead>
@@ -138,11 +138,11 @@
         </div>
         
         <!-- Modal para Novo Atendimento -->
-        <div class="modal fade" id="addAppointmentModal" tabindex="-1" aria-labelledby="addAppointmentModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addAppointmentModal" tabindex="-12" aria-labelledby="addAppointmentModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="addAppointmentModalLabel">Novo Atendimento</h5>
+                <h5 class="modal-title" id="addAppointmentModalLabel">Nova Evolução</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -170,7 +170,7 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="addProgressModalLabel">Adicionar Evolução</h5>
+                <h5 class="modal-title" id="addProgressModalLabel">Evolução - data XXXXXXXXXXX</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
