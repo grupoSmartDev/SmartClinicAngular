@@ -4,6 +4,7 @@ import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/conf
 import { ModalExercicioComponent } from '../modal-exercicio/modal-exercicio.component';
 import { ToastrService } from 'ngx-toastr';
 import { ExercicioService } from '../../../_services/exercicio.service';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-listar-exercicios',
@@ -43,7 +44,7 @@ export class ListarExerciciosComponent {
   openModal(exercicio: any) {
     debugger
     if (exercicio.id) {
-      this.modalComponent.exercicio = exercicio;
+      this.modalComponent.data = exercicio;
       this.modalComponent.carregarDados(exercicio);
     }
     const modalElement = document.getElementById('modalEditarCriar');
