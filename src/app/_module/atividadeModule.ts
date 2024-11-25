@@ -3,4 +3,5 @@ export interface Atividade{
     titulo : string,
     descricao : string,
     tempo : number,
+    evolucaoId : number
 }
