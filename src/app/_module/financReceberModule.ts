@@ -3,6 +3,7 @@ import { CentroDeCusto } from "./centroDeCustoModule"
 import { FormaPagamento } from "./formaPagamentoModule"
 import { Fornecedor } from "./fornecedorModule"
 import { Paciente } from "./pacienteModule"
+import { SubFinancReceber } from "./subFinancReceberModule"
 import { TipoPagamento } from "./tipoPagamentoModule"
 
 export interface FinancReceber{
@@ -35,5 +36,6 @@ export interface FinancReceber{
     formaPagamento : FormaPagamento
     bancoId : string
     banco : Banco
+    subFinancReceber : SubFinancReceber[]
 
 }
