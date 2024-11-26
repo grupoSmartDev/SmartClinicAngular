@@ -12,16 +12,16 @@ export interface FinancReceber{
     dataEmissao : string
     dataVencimento : string
     dataPagamento : string
-    valorOriginal : string
-    valorPago : string
+    valorOriginal : number
+    valorPago : number
     status : string
     notaFiscal : string
     descricao : string
     parcela : string
     classificacao : string
-    desconto : string
-    juros : string
-    multa : string
+    desconto : number
+    juros : number
+    multa : number
     observacao : string
     pacienteId : string
     paciente : Paciente
@@ -35,4 +35,5 @@ export interface FinancReceber{
     formaPagamento : FormaPagamento
     bancoId : string
     banco : Banco
+
 }
