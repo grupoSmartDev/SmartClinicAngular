@@ -1,5 +1,6 @@
 import { Atendimento } from "./atendimentoModule";
 import { Evolucao } from "./evolucaoModule";
+import { FinancReceber } from "./financReceberModule";
 
 export interface Paciente {
   id: number; 
@@ -34,5 +35,7 @@ export interface Paciente {
   historicoAtendimentos?: Atendimento[]; 
   evolucoes?: Evolucao[];
   dataUltimoAtendimento?: string | null;
+
+  financReceber?: FinancReceber[];
 }
 

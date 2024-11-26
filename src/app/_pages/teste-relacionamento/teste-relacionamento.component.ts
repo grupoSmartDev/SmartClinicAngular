@@ -21,13 +21,7 @@ export class TesteRelacionamentoComponent implements OnInit {
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.formPrincipal = this.fb.group({
-      id: [''],
-      descricao: [''],
-      pacienteId: [''],
-      profissionalId: [''],
-      segundaClasseParaTeste: this.fb.array<segundaClasseParaTeste>([]),
-    });
+    this.criarFormulario();
   }
 
   // Getter para acessar o FormArray
@@ -62,4 +56,14 @@ export class TesteRelacionamentoComponent implements OnInit {
     }
   }
   
+  private criarFormulario(): void {
+    this.formPrincipal = this.fb.group({
+      id: [''],
+      descricao: [''],
+      pacienteId: [''],
+      profissionalId: [''],
+      segundaClasseParaTeste: this.fb.array<segundaClasseParaTeste>([]),
+    });
+  }
+
 }

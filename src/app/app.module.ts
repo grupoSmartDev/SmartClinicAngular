@@ -79,6 +79,7 @@ import { CommonModule } from '@angular/common';
 import { ModalExercicioComponent } from './_pages/exercicios/modal-exercicio/modal-exercicio.component';
 import { ListarExerciciosComponent } from './_pages/exercicios/listar-exercicios/listar-exercicios.component';
 import { TesteRelacionamentoComponent } from './_pages/teste-relacionamento/teste-relacionamento.component';
+import { TesteNovosComponentsComponent } from './_pages/teste-novos-components/teste-novos-components.component';
 
 
 
@@ -153,6 +154,7 @@ import { TesteRelacionamentoComponent } from './_pages/teste-relacionamento/test
     ListarExerciciosComponent,
     ModalExercicioComponent,
     TesteRelacionamentoComponent,
+    TesteNovosComponentsComponent,
     
     
     

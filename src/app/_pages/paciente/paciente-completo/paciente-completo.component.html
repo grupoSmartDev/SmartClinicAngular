@@ -1,25 +1,11 @@
 <!-- Modal Paciente -->
-<div
-  #modalPacienteDetalhado
-  class="modal fade"
-  id="modalPacienteDetalhado"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
-  tabindex="-1"
-  aria-labelledby="statusModalLabel"
-  aria-modal="true"
-  role="dialog"
->
+<div #modalPacienteDetalhado class="modal fade" id="modalPacienteDetalhado" data-bs-backdrop="static"
+  data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-modal="true" role="dialog">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Gerenciamento do Paciente</h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
 
@@ -27,45 +13,128 @@
           <!-- Nav Tabs -->
           <ul class="nav nav-tabs" id="patientTabs" role="tablist">
             <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">
+              <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button"
+                role="tab" aria-controls="info" aria-selected="true">
                 Informações do Paciente
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="finance-tab" data-bs-toggle="tab" data-bs-target="#finance" type="button" role="tab" aria-controls="finance" aria-selected="false">
+              <button class="nav-link" id="finance-tab" data-bs-toggle="tab" data-bs-target="#finance" type="button"
+                role="tab" aria-controls="finance" aria-selected="false">
                 Financeiro
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="false">
+              <button class="nav-link" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments"
+                type="button" role="tab" aria-controls="appointments" aria-selected="false">
                 Atendimentos
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="plans-tab" data-bs-toggle="tab" data-bs-target="#plans" type="button" role="tab" aria-controls="plans" aria-selected="false">
+              <button class="nav-link" id="plans-tab" data-bs-toggle="tab" data-bs-target="#plans" type="button"
+                role="tab" aria-controls="plans" aria-selected="false">
                 Planos
               </button>
             </li>
           </ul>
-        
+
           <!-- Tab Content -->
           <div class="tab-content mt-3" id="patientTabsContent">
             <!-- Informações do Paciente -->
             <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
-              <h5>Informações do Paciente</h5>
               <form>
-                <div class="mb-3">
-                  <label for="patientName" class="form-label">Nome do Paciente</label>
-                  <input type="text" class="form-control" id="patientName" placeholder="Nome Completo">
+                <div class="row justify-content-space-between">
+                  <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-success-preco">
+                      <div class="card-body">
+                        <p class="titulo-pequeno">Paciênte</p>
+                        <h3 class="descricao-grande">Jhonatan Willian Faelis</h3>
+                        <p>Idade 29 anos</p>
+                        <p><i class="bi bi-whatsapp"></i> (19) 99926-5677</p>
+                        <p><i class="bi bi-envelope"></i> jhonatanfaelisgmail.com</p>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  <div class="col-md-4">
+                    <!--vai virar um componente-->
+                    <div class="card h-100 shadow-sm border-success-preco">
+                      <div class="card-body">
+                        <p class="titulo-pequeno">
+                          Histórico
+                        </p>
+                        <!--Vai virar um component, esse quadrado com as informaç~oes de numero e texto-->
+                        <div class="row">
+                          <div class="col-6">
+                            <p class="descricao-grande">
+                              6
+                            </p>
+                            <p class="descricao-medio">
+                              Agendamentos
+                            </p>
+                            <hr>
+                          </div>
+                          <div class="col-6">
+                            <p class="descricao-grande">
+                              1
+                            </p>
+                            <p class="descricao-medio">
+                              Cancelamentos
+                            </p>
+                            <hr>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-6">
+                            <p class="descricao-grande">
+                              Plano A
+                            </p>
+                            <p class="descricao-medio">
+                              Tipo de plano
+                            </p>
+                            <hr>
+                          </div>
+                          <div class="col-6">
+                            <p class="descricao-grande">
+                              Convênio ABC
+                            </p>
+                            <p class="descricao-medio">
+                              Convênio
+                            </p>
+                            <hr>
+                          </div>
+                        </div>
+                        <div>
+                          <p class="descricao-grande">
+                            R$ 265,00
+                          </p>
+                          <p class="descricao-medio">
+                            em receita
+                          </p>
+                          <hr>
+                        </div>
+                      
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-success-preco ">
+                      <div class="card-body">
+                        <p class="titulo-pequeno">
+                          Observação
+                        </p>
+                        <p class="descricao-medio">
+                          informações normais do paciente que virão do paciente.obs
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
-                <div class="mb-3">
-                  <label for="patientEmail" class="form-label">Email</label>
-                  <input type="email" class="form-control" id="patientEmail" placeholder="Email">
-                </div>
-                <!-- Adicione mais campos conforme necessário -->
               </form>
             </div>
-        
+
             <!-- Histórico Financeiro -->
             <div class="tab-pane fade" id="finance" role="tabpanel" aria-labelledby="finance-tab">
               <h5>Histórico Financeiro</h5>
@@ -88,11 +157,12 @@
                 </tbody>
               </table>
             </div>
-        
+
             <!-- Atendimentos -->
             <div class="tab-pane fade" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
               <h5>Histórico de Atendimentos</h5>
-              <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addAppointmentModal"> <i class="bi bi-plus"></i> Evolução</button>
+              <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addAppointmentModal"> <i
+                  class="bi bi-plus"></i> Evolução</button>
               <table class="table table-striped">
                 <thead>
                   <tr>
@@ -105,12 +175,13 @@
                   <tr>
                     <td>05/02/2023</td>
                     <td>Fisioterapia</td>
-                    <td><button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addProgressModal">Ver Evolução</button></td>
+                    <td><button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#addProgressModal">Ver Evolução</button></td>
                   </tr>
                 </tbody>
               </table>
             </div>
-        
+
             <!-- Planos -->
             <div class="tab-pane fade" id="plans" role="tabpanel" aria-labelledby="plans-tab">
               <h5>Planos do Paciente</h5>
@@ -136,9 +207,10 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Modal para Novo Atendimento -->
-        <div class="modal fade" id="addAppointmentModal" tabindex="-12" aria-labelledby="addAppointmentModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addAppointmentModal" tabindex="-12" aria-labelledby="addAppointmentModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -164,9 +236,10 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Modal para Evolução do Atendimento -->
-        <div class="modal fade" id="addProgressModal" tabindex="-1" aria-labelledby="addProgressModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addProgressModal" tabindex="-1" aria-labelledby="addProgressModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -190,27 +263,13 @@
         </div>
       </div>
       <div class="modal-footer justify-content-end">
-        <button
-          type="button"
-          (click)="onSubmit()"
-          class="btn btn-success"
-        >
+        <button type="button" (click)="onSubmit()" class="btn btn-success">
           <i class="bi bi-check"></i> Confirmar
         </button>
-        <button
-          type="button"
-          class="btn btn-danger"
-          data-bs-dismiss="modal"
-          (click)="fecharModal()"
-        >
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="fecharModal()">
           <i class="bi bi-x"></i> Cancelar
         </button>
       </div>
     </div>
   </div>
 </div>
-
-
-
-
-  

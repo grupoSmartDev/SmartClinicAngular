@@ -21,6 +21,7 @@ import { ListarLogComponent } from './_pages/log/listar-log/listar-log.component
 import { PacienteCompletoComponent } from './_pages/paciente/paciente-completo/paciente-completo.component';
 import { ListarUsuarioComponent } from './_pages/usuario/listar-usuario/listar-usuario.component';
 import { TesteRelacionamentoComponent } from './_pages/teste-relacionamento/teste-relacionamento.component';
+import { TesteNovosComponentsComponent } from './_pages/teste-novos-components/teste-novos-components.component';
 
 
 const routes: Routes = [
@@ -49,6 +50,7 @@ const routes: Routes = [
       { path: 'paciente/:id', component: PacienteCompletoComponent }, // Atualizado para aceitar o ID do paciente
       { path: 'usuario/listar', component: ListarUsuarioComponent }, // Atualizado para aceitar o ID do paciente
       { path: 'teste', component: TesteRelacionamentoComponent}, // pagina para testes
+      { path: 'testeComponents', component: TesteNovosComponentsComponent}, // pagina para testes
     ]
   },
 
