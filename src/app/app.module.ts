@@ -78,6 +78,7 @@ import { ModalAgendaComponent } from './_pages/agenda/modal-agenda/modal-agenda.
 import { CommonModule } from '@angular/common';
 import { ModalExercicioComponent } from './_pages/exercicios/modal-exercicio/modal-exercicio.component';
 import { ListarExerciciosComponent } from './_pages/exercicios/listar-exercicios/listar-exercicios.component';
+import { TesteRelacionamentoComponent } from './_pages/teste-relacionamento/teste-relacionamento.component';
 
 
 
@@ -151,6 +152,7 @@ import { ListarExerciciosComponent } from './_pages/exercicios/listar-exercicios
     ModalAgendaComponent,
     ListarExerciciosComponent,
     ModalExercicioComponent,
+    TesteRelacionamentoComponent,
     
     
     

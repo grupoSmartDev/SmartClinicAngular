@@ -1,0 +1,112 @@
+<form [formGroup]="formPrincipal" (ngSubmit)="onSubmit()">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label for="id" class="form-label">Cód.</label>
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          id="id"
+          readonly
+          formControlName="id"
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="descricao" class="form-label">Descrição</label>
+        <input
+          type="text"
+          required
+          class="form-control form-control-sm required"
+          formControlName="descricao"
+        />
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-md-6">
+        <label for="pacienteId">Paciente</label>
+        <select
+          class="form-select form-select-sm"
+          formControlName="pacienteId"
+        >
+          <option *ngFor="let item of listaPaciente" [value]="item.id">
+            {{ item.nome }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="profissionalId">Profissional</label>
+        <select
+          class="form-select form-select-sm"
+          formControlName="profissionalId"
+        >
+          <option *ngFor="let item of listaProfissional" [value]="item.id">
+            {{ item.nome }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <button
+    type="button"
+    class="btn btn-primary btn-sm"
+    (click)="adicionarItem()"
+  >
+    Adicionar Item
+  </button>
+  
+    <!-- FormArray para os itens -->
+    <div formArrayName="segundaClasseParaTeste">
+        <div
+          *ngFor="let item of segundaClasseParaTeste.controls; let i = index"
+          [formGroupName]="i"
+          class="border rounded p-3 mb-2"
+        >
+          <div class="row">
+            <div class="col-md-4">
+              <label for="titulo">Título</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="titulo"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="descricao">Descrição</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="descricao"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="tempo">Tempo</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="tempo"
+              />
+            </div>
+          </div>
+ 
+          <button
+            type="button"
+            class="btn btn-danger btn-sm mt-2"
+            (click)="removerItem(i)"
+          >
+            Remover
+          </button>
+        </div>
+      </div>
+      
+  
+    <div class="mt-4">
+        <button
+        type="button"
+        class="btn btn-success btn-sm"
+        (click)="onSubmit()"
+      >
+        Salvar
+      </button>
+      
+    </div>
+  </form>
+  
