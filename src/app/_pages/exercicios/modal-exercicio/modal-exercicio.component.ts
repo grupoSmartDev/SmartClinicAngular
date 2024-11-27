@@ -1,5 +1,5 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Exercicio } from '../../../_module/exercicioModule';
 import { ExercicioService } from '../../../_services/exercicio.service';
 import { ToastrService } from 'ngx-toastr';
@@ -10,18 +10,32 @@ import { ResponseModel } from '../../../_module/ResponseModule';
   templateUrl: './modal-exercicio.component.html',
   styleUrl: './modal-exercicio.component.css'
 })
-export class ModalExercicioComponent {
+export class ModalExercicioComponent implements OnInit{
   constructor(
     private exercicioService: ExercicioService,
-    private toast: ToastrService) { }
+    private toast: ToastrService,
+    private fb : FormBuilder) { }
 
   @ViewChild('modalSala') modalSala?: ElementRef;
   @Input() data = {} as Exercicio;
   @Output() exercicioAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
 
-  formulario = new FormGroup({
-   
-  });
+  formulario! : FormGroup;
+
+    ngOnInit(): void {
+      this.criarFormulario();
+    }
+
+  criarFormulario() : void{
+    this.formulario = this.fb.group({
+      id : [''],
+      titulo : ['', Validators.required],
+      descricao : [''],
+      tempo : [],
+      repeticoes : [],
+      series : []
+    })
+  }
 
   carregarDados(exercicio: any) {
     this.formulario.patchValue(this.data);
@@ -64,5 +78,9 @@ export class ModalExercicioComponent {
     } else {
       console.error('Formulário inválido');
     }
+  }
+
+  testeEnvio(){
+    console.log('dados formulario',this.formulario.value)
   }
 }

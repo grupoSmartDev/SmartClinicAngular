@@ -1,50 +1,49 @@
 import { Component, ViewChild } from '@angular/core';
-import { Exercicio } from '../../../_module/exercicioModule';
+import { ModalAtividadeComponent } from '../modal-atividade/modal-atividade.component';
 import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
-import { ModalExercicioComponent } from '../modal-exercicio/modal-exercicio.component';
+import { Atividade } from '../../../_module/atividadeModule';
+import { AtividadeService } from '../../../_services/atividade.service';
 import { ToastrService } from 'ngx-toastr';
-import { ExercicioService } from '../../../_services/exercicio.service';
 import * as bootstrap from 'bootstrap';
 
 @Component({
-  selector: 'app-listar-exercicios',
-  templateUrl: './listar-exercicios.component.html',
-  styleUrl: './listar-exercicios.component.css'
+  selector: 'app-lista-atividade',
+  templateUrl: './lista-atividade.component.html',
+  styleUrl: './lista-atividade.component.css'
 })
-export class ListarExerciciosComponent {
-
-  @ViewChild(ModalExercicioComponent) modalComponent!: ModalExercicioComponent;
+export class ListaAtividadeComponent {
+  @ViewChild(ModalAtividadeComponent) modalComponent!: ModalAtividadeComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
-  lista: Exercicio[] = [];
+  lista: Atividade[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
-  dadosParaExcluir!: Exercicio;
+  dadosParaExcluir!: Atividade;
 
-  constructor(private exercicioService: ExercicioService , private toast: ToastrService) { }
+  constructor(private atividadeService: AtividadeService , private toast: ToastrService) { }
 
   ngOnInit(): void {
     this.getDados();
   } 
 
   getDados(): void {
-    this.exercicioService.Listar().subscribe({
+    this.atividadeService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
         }
       },
       error: (err) => {
-        console.error('Erro ao buscar exercicio:', err);
-        this.errorMessage = 'Erro ao carregar as exercicios. Tente novamente mais tarde.';
+        console.error('Erro ao buscar atividades:', err);
+        this.errorMessage = 'Erro ao carregar as atividades. Tente novamente mais tarde.';
       }
     });
   }
 
-  openModal(exercicio: any) {
-    if (exercicio.id) {
-      this.modalComponent.data = exercicio;
-      this.modalComponent.carregarDados(exercicio);
+  openModal(atividade: any) {
+    if (atividade.id) {
+      this.modalComponent.data = atividade;
+      this.modalComponent.carregarDados(atividade);
     }
     const modalElement = document.getElementById('modalEditarCriar');
     if (modalElement) {
@@ -53,14 +52,13 @@ export class ListarExerciciosComponent {
     }
   }
 
-  Excluir(exercicio : Exercicio) {
-    debugger
-    let id = exercicio.id;
-    this.exercicioService.Deletar(id.toString()).subscribe({
+  Excluir(atividade : Atividade) {
+    let id = atividade.id;
+    this.atividadeService.Deletar(id.toString()).subscribe({
       next: (response) => {
-        console.log('exercicio excluído com sucesso:', response);
-        this.lista = this.lista.filter(exercicio => exercicio.id !== id);
-        this.toast.success('exercicio excluído com sucesso!', 'Excluído');
+        console.log('atividade excluído com sucesso:', response);
+        this.lista = this.lista.filter(atividade => atividade.id !== id);
+        this.toast.success('atividade excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
         console.error('Erro ao excluir sala:', err);
@@ -85,5 +83,4 @@ export class ListarExerciciosComponent {
   cancelDelete() {
     this.idParaExcluir = '';
   }
-
 }

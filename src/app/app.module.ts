@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FooterComponent } from './_components/footer/footer.component';
@@ -80,6 +82,9 @@ import { ModalExercicioComponent } from './_pages/exercicios/modal-exercicio/mod
 import { ListarExerciciosComponent } from './_pages/exercicios/listar-exercicios/listar-exercicios.component';
 import { TesteRelacionamentoComponent } from './_pages/teste-relacionamento/teste-relacionamento.component';
 import { TesteNovosComponentsComponent } from './_pages/teste-novos-components/teste-novos-components.component';
+import { ListaAtividadeComponent } from './_pages/atividade/lista-atividade/lista-atividade.component';
+import { ModalAtividadeComponent } from './_pages/atividade/modal-atividade/modal-atividade.component';
+
 
 
 
@@ -155,6 +160,9 @@ import { TesteNovosComponentsComponent } from './_pages/teste-novos-components/t
     ModalExercicioComponent,
     TesteRelacionamentoComponent,
     TesteNovosComponentsComponent,
+    ListaAtividadeComponent,
+    ModalAtividadeComponent,
+    
     
     
     
@@ -170,7 +178,8 @@ import { TesteNovosComponentsComponent } from './_pages/teste-novos-components/t
     FullCalendarModule,
     NgxChartsModule,
     FormsModule,    
-    CommonModule
+    CommonModule,
+    
   ],
   providers: [ provideNgxMask(),],
   bootstrap: [AppComponent]

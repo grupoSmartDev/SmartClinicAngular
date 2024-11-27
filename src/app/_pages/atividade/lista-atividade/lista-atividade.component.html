@@ -1,5 +1,5 @@
 <app-label-nome
-  [nomeTela]="'Exercicios'"
+  [nomeTela]="'Atividades'"
   (adicionarClicked)="openModal('')"
 ></app-label-nome>
 
@@ -17,7 +17,7 @@
                 <thead>
                   <tr>
                     <th>Cód.</th>
-                    <th>Exercício</th>
+                    <th>Atividade</th>
                     <th>Descrição</th>
                     <th class="text-end"></th>
                   </tr>
@@ -70,7 +70,7 @@
 </div>
 
 <!-- listar.component.html -->
-<app-modal-exercicio (salaAtualizado)="atualizarLista()"></app-modal-exercicio>
+<app-modal-atividade (dataAtualizada)="atualizarLista()"></app-modal-atividade>
 
 <app-confirm-dialog
   #confirmDialog

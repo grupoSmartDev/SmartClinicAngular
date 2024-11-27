@@ -8,7 +8,7 @@ export interface Exercicio{
     tempo : number,
     repeticoes : number,
     series : number,
-    evolucaoId: number,
-    evolucao : Evolucao
-
+    evolucaoId?: number,
+    evolucao?: Evolucao,
 }
+
