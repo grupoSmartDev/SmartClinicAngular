@@ -201,7 +201,7 @@
               aria-labelledby="appointments-tab"
             >
               <h5>Histórico de Atendimentos</h5>
-              <button class="btn btn-success mb-2" (click)="openDialog()">
+              <button class="btn btn-success mb-2" (click)="openDialog('')">
                 <i class="bi bi-plus"></i> Evolução
               </button>
               <table class="table table-striped">
@@ -219,8 +219,7 @@
                     <td>
                       <button
                         class="btn btn-sm btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#addProgressModal"
+                        (click)="openDialog('')"
                       >
                         Ver Evolução
                       </button>

@@ -56,7 +56,7 @@ export class ModalFornecedorComponent {
   });
 
   onSubmit() {
-    debugger
+    
     const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
     if (this.formulario.valid) {
       const fornecedorToSave: Fornecedor = this.formulario.value as Fornecedor;

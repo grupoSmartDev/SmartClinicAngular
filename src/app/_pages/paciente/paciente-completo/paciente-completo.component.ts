@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Paciente } from '../../../_module/pacienteModule';
 import { Profissional } from '../../../_module/profissionalModule';
 import { Router } from '@angular/router';
@@ -8,6 +8,9 @@ import { ProfissionalService } from '../../../_services/profissional.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Exercicio } from '../../../_module/exercicioModule';
 import { Atividade } from '../../../_module/atividadeModule';
+import { Evolucao } from '../../../_module/evolucaoModule';
+import { EvolucaoService } from '../../../_services/evolucao.service';
+import { ResponseModel } from '../../../_module/ResponseModule';
 
 @Component({
   selector: 'app-paciente-completo',
@@ -21,11 +24,14 @@ export class PacienteCompletoComponent implements OnInit {
     private toast: ToastrService,
     private router: Router,
     private profissionalService: ProfissionalService,
-    private fb : FormBuilder) {}
+    private fb : FormBuilder,
+    private evolucaoService : EvolucaoService) {}
 
   listaPacientes : Paciente[] = [];
   listaProfissional : Profissional[] = [];
   formEvolucao! : FormGroup;
+
+  @Output() evolucaoAtualizado = new EventEmitter<void>();
 
  ngOnInit(): void {
     this.preencherFormulario();
@@ -55,7 +61,7 @@ export class PacienteCompletoComponent implements OnInit {
   get atividades() : FormArray{
     return this.formEvolucao.get('atividades') as FormArray;
   }
-  openDialog() {
+  openDialog(paciente:any) {
     const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
     if (dialog) {
       dialog.showModal();
@@ -100,4 +106,44 @@ export class PacienteCompletoComponent implements OnInit {
     this.atividades.removeAt(index);
   }
 
+  carregarDados(dados: any) {
+    this.formEvolucao.patchValue(this.exercicios);
+  }
+
+
+  salvarEvolucao() {
+    
+    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
+    if (this.formEvolucao.valid) {
+      const dadosParaSalvar: Evolucao = this.formEvolucao.value as Evolucao;
+      if (dadosParaSalvar.id) {
+        this.evolucaoService.Atualizar(dadosParaSalvar).subscribe({
+          next: (response: ResponseModel<Evolucao>) => {
+            this.toast.success('Evolução atualizado com Sucesso', 'Parabéns');
+            this.evolucaoAtualizado.emit(); // Emita o evento após a atualização
+            btnCacelar.click();
+            this.fecharModal();
+          },
+          error: (err) => {
+            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar uma evolução');
+          }
+        });
+      } else {
+        this.evolucaoService.Criar(dadosParaSalvar).subscribe({
+          next: (response: ResponseModel<Evolucao>) => {
+            this.toast.success('Evolução cadastrada com sucesso', 'Parabéns');
+            this.evolucaoAtualizado.emit(); // Emita o evento após a criação
+            btnCacelar.click();
+            this.fecharModal();
+          },
+          error: (err) => {
+            console.error('Erro ao cadastrar evolução:', err);
+            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao cadastrar uma evolução');
+          }
+        });
+      }
+    } else {
+      console.error('Formulário inválido');
+    }
+  }
 }

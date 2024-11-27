@@ -1,3 +1,4 @@
+import { Evolucao } from "./evolucaoModule";
 import { Paciente } from "./pacienteModule";
 
 export interface Exercicio{
@@ -7,7 +8,7 @@ export interface Exercicio{
     tempo : number,
     repeticoes : number,
     series : number,
-    pacienteId : number,
-    paciente : Paciente
+    evolucaoId: number,
+    evolucao : Evolucao
 
 }
