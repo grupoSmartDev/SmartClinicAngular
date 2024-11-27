@@ -11,6 +11,8 @@ export interface Plano{
     valorSemestral?: number;
     valorAnual?: number;
     valorMensal?: number;
-    
+    data ?: Date;
+    pacienteId?: number; //id do paciente
+    financeiroId?: number;
     
 }
