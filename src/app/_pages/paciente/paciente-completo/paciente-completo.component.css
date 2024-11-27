@@ -43,8 +43,8 @@
     border: none; /* Remove a borda padrão do elemento <dialog> */
     border-radius: 8px; /* Adiciona o arredondamento */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Adiciona sombra para destaque */
-    overflow: hidden; /* Garante que o conteúdo respeite o arredondamento */
-    width: 50%;
+     /* Garante que o conteúdo respeite o arredondamento */
+    width: 70%;
     margin: 3rem auto;
   }
   

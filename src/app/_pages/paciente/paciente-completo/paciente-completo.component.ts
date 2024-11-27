@@ -146,4 +146,8 @@ export class PacienteCompletoComponent implements OnInit {
       console.error('Formulário inválido');
     }
   }
+
+  mandarEvolucao() : void {
+    console.log('Formulario de evolução', this.formEvolucao.value);
+  }
 }
