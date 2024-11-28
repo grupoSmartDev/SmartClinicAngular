@@ -1,0 +1,96 @@
+<!-- Modal -->
+<div
+  #modalCriarEditar
+  class="modal fade"
+  id="modalCriarEditar"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="statusModalLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Plano</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row align-items-end">
+            <div class="col-md-2">
+              <label for="id">Cód.</label>
+              <input type="text" class="form-control form-control-sm" readonly>
+            </div>
+            <div class="col-md-7">
+              <label for="descricao" class="form-label">Descrição</label>
+              <input type="text" class="form-control form-control-sm" id="descricao" placeholder="Digite a descrição"  name="descricao">
+            </div>
+
+            <div class="col-md-3">
+              <label for="tempoMinutos" class="form-label">Tempo (em minutos)</label>
+              <input type="number" class="form-control form-control-sm" id="tempoMinutos"  name="tempoMinutos">
+            </div>  
+          </div>
+ 
+
+          <!-- Valores dos Planos -->
+          <h6 class="mt-4">Valores por Período</h6>
+          <div class="row">
+            <div class="col-6 col-md-3">
+              <label for="valorMensal" class="form-label">Mensal</label>
+              <input type="number" class="form-control form-control-sm" id="valorMensal"  name="valorMensal">
+            </div>
+            <div class="col-6 col-md-3">
+              <label for="valorBimestral" class="form-label">Bimestral</label>
+              <input type="number" class="form-control form-control-sm" id="valorBimestral"  name="valorBimestral">
+            </div>
+            <div class="col-6 col-md-3">
+              <label for="valorTrimestral" class="form-label">Trimestral</label>
+              <input type="number" class="form-control form-control-sm" id="valorTrimestral"  name="valorTrimestral">
+            </div>
+            <div class="col-6 col-md-3">
+              <label for="valorQuadrimestral" class="form-label">Quadrimestral</label>
+              <input type="number" class="form-control form-control-sm" id="valorQuadrimestral"  name="valorQuadrimestral">
+            </div>
+            <div class="col-6 col-md-3">
+              <label for="valorSemestral" class="form-label">Semestral</label>
+              <input type="number" class="form-control form-control-sm" id="valorSemestral"  name="valorSemestral">
+            </div>
+            <div class="col-6 col-md-3">
+              <label for="valorAnual" class="form-label">Anual</label>
+              <input type="number" class="form-control form-control-sm" id="valorAnual"  name="valorAnual">
+            </div>
+          </div>
+          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          (click)="onSubmit()"
+          class="btn btn-success"
+          id="btn_salvar_editar"
+        >
+          <i class="bi bi-check"></i> Confirmar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="btnCancelar"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="fecharModal()"
+        >
+          <i class="bi bi-x"></i>Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

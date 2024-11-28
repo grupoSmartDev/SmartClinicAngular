@@ -84,6 +84,8 @@ import { TesteRelacionamentoComponent } from './_pages/teste-relacionamento/test
 import { TesteNovosComponentsComponent } from './_pages/teste-novos-components/teste-novos-components.component';
 import { ListaAtividadeComponent } from './_pages/atividade/lista-atividade/lista-atividade.component';
 import { ModalAtividadeComponent } from './_pages/atividade/modal-atividade/modal-atividade.component';
+import { ListarPlanosComponent } from './_pages/planos/listar-planos/listar-planos.component';
+import { ModalPlanosComponent } from './_pages/planos/modal-planos/modal-planos.component';
 
 
 
@@ -162,6 +164,8 @@ import { ModalAtividadeComponent } from './_pages/atividade/modal-atividade/moda
     TesteNovosComponentsComponent,
     ListaAtividadeComponent,
     ModalAtividadeComponent,
+    ListarPlanosComponent,
+    ModalPlanosComponent,
     
     
     

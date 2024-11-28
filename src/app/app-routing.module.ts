@@ -24,6 +24,7 @@ import { TesteRelacionamentoComponent } from './_pages/teste-relacionamento/test
 import { TesteNovosComponentsComponent } from './_pages/teste-novos-components/teste-novos-components.component';
 import { ListarExerciciosComponent } from './_pages/exercicios/listar-exercicios/listar-exercicios.component';
 import { ListaAtividadeComponent } from './_pages/atividade/lista-atividade/lista-atividade.component';
+import { ListarPlanosComponent } from './_pages/planos/listar-planos/listar-planos.component';
 
 
 const routes: Routes = [
@@ -55,6 +56,7 @@ const routes: Routes = [
       { path: 'testeComponents', component: TesteNovosComponentsComponent}, // pagina para testes
       { path: 'exercicio/listar', component: ListarExerciciosComponent}, // pagina para testes
       { path: 'atividade/listar', component: ListaAtividadeComponent}, // pagina para testes
+      { path: 'plano/listar', component: ListarPlanosComponent}, // pagina para testes
     ]
   },
 

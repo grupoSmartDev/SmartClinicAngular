@@ -1,6 +1,6 @@
 export interface Plano{
 
-    Id: number;
+    id: number;
     descricao: string;
     tempoMinutos: number;
     diasSemana: number;
@@ -11,8 +11,20 @@ export interface Plano{
     valorSemestral?: number;
     valorAnual?: number;
     valorMensal?: number;
-    data ?: Date;
+    dataInicio ?: Date;
+    dataFim? : Date;
+    ativo : boolean;
     pacienteId?: number; //id do paciente
     financeiroId?: number;
-    
+    tipoMes?: TipoMes;
 }
+
+export enum TipoMes {
+    Mensal = 'm',
+    Bimestral = 'b',
+    Trimestral = 't',
+    Quadrimestral = 'q',
+    Semestral = 's',
+    Anual = 'a'
+  }
+  
