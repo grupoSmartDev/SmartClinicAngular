@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, input } from '@angular/core';
 import { Plano } from '../../../_module/planoModule';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -11,16 +11,19 @@ import { PlanoService } from '../../../_services/plano.service';
   templateUrl: './modal-planos.component.html',
   styleUrl: './modal-planos.component.css'
 })
-export class ModalPlanosComponent {
+export class ModalPlanosComponent implements OnInit{
   @Input() data = {} as Plano;
   @Output() convenioAtualizado = new EventEmitter<void>();
 
+  
   constructor(private toast: ToastrService,
     private planoService: PlanoService,
     private fb : FormBuilder
   ) { }
 
   formulario! : FormGroup;
+  valorMensalCalculado : string = '';
+  
 
   criarFormulario(){
     this.formulario = this.fb.group({
@@ -42,6 +45,27 @@ export class ModalPlanosComponent {
 
     })
   }
+
+  
+  ngOnInit(){
+    this.criarFormulario();
+
+   
+  }
+  
+  calculoValorMensal(event:any){
+    debugger
+    this.formulario.get('valorMensal')?.valueChanges.subscribe((valorMensal: number) => {
+      if (valorMensal) {
+        this.valorMensalCalculado = (valorMensal / 12).toString(); // Calcular valor mensal
+      } else {
+        this.valorMensalCalculado = '0'; // Caso o campo esteja vazio
+      }
+    });
+  }
+  
+
+
 
   onSubmit() {
     const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;

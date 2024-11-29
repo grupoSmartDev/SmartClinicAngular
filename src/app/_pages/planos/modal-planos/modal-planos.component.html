@@ -44,8 +44,8 @@
           <h6 class="mt-4">Valores por Período</h6>
           <div class="row">
             <div class="col-6 col-md-3">
-              <label for="valorMensal" class="form-label">Mensal</label>
-              <input type="number" class="form-control form-control-sm" id="valorMensal"  name="valorMensal">
+              <label for="valorMensal" class="form-label">Mensal <span>(R$){{valorMensalCalculado}}</span></label>
+              <input type="number" class="form-control form-control-sm" id="valorMensal"  name="valorMensal" (change)="calculoValorMensal($event)">
             </div>
             <div class="col-6 col-md-3">
               <label for="valorBimestral" class="form-label">Bimestral</label>
