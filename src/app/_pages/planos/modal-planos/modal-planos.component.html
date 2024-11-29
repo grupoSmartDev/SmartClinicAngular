@@ -22,20 +22,25 @@
         ></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form [formGroup]="formulario">
           <div class="row align-items-end">
             <div class="col-md-2">
               <label for="id">Cód.</label>
               <input type="text" class="form-control form-control-sm" readonly>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-4">
               <label for="descricao" class="form-label">Descrição</label>
-              <input type="text" class="form-control form-control-sm" id="descricao" placeholder="Digite a descrição"  name="descricao">
+              <input type="text" class="form-control form-control-sm" id="descricao" placeholder="Digite a descrição"  name="descricao" formControlName="descricao">
             </div>
 
             <div class="col-md-3">
+              <label for="diasSemana" class="form-label">Dias</label>
+              <input type="number" class="form-control form-control-sm" id="diasSemana"  name="diasSemana"  formControlName="diasSemana">
+            </div> 
+
+            <div class="col-md-3">
               <label for="tempoMinutos" class="form-label">Tempo (em minutos)</label>
-              <input type="number" class="form-control form-control-sm" id="tempoMinutos"  name="tempoMinutos">
+              <input type="number" class="form-control form-control-sm" id="tempoMinutos"  name="tempoMinutos"  formControlName="tempoMinutos">
             </div>  
           </div>
  
@@ -45,27 +50,28 @@
           <div class="row">
             <div class="col-6 col-md-3">
               <label for="valorMensal" class="form-label">Mensal <span>(R$){{valorMensalCalculado}}</span></label>
-              <input type="number" class="form-control form-control-sm" id="valorMensal"  name="valorMensal" (change)="calculoValorMensal($event)">
+              <input type="number" class="form-control form-control-sm" id="valorMensal"
+                name="valorMensal" (change)="calculoValorMensal($event)" formControlName="valorMensal">
             </div>
             <div class="col-6 col-md-3">
               <label for="valorBimestral" class="form-label">Bimestral</label>
-              <input type="number" class="form-control form-control-sm" id="valorBimestral"  name="valorBimestral">
+              <input type="number" class="form-control form-control-sm" id="valorBimestral"  name="valorBimestral" formControlName="valorBimestral">
             </div>
             <div class="col-6 col-md-3">
               <label for="valorTrimestral" class="form-label">Trimestral</label>
-              <input type="number" class="form-control form-control-sm" id="valorTrimestral"  name="valorTrimestral">
+              <input type="number" class="form-control form-control-sm" id="valorTrimestral"  name="valorTrimestral" formControlName="valorTrimestral">
             </div>
             <div class="col-6 col-md-3">
               <label for="valorQuadrimestral" class="form-label">Quadrimestral</label>
-              <input type="number" class="form-control form-control-sm" id="valorQuadrimestral"  name="valorQuadrimestral">
+              <input type="number" class="form-control form-control-sm" id="valorQuadrimestral"  name="valorQuadrimestral" formControlName="valorQuadrimestral">
             </div>
             <div class="col-6 col-md-3">
               <label for="valorSemestral" class="form-label">Semestral</label>
-              <input type="number" class="form-control form-control-sm" id="valorSemestral"  name="valorSemestral">
+              <input type="number" class="form-control form-control-sm" id="valorSemestral"  name="valorSemestral" formControlName="valorSemestral">
             </div>
             <div class="col-6 col-md-3">
               <label for="valorAnual" class="form-label">Anual</label>
-              <input type="number" class="form-control form-control-sm" id="valorAnual"  name="valorAnual">
+              <input type="number" class="form-control form-control-sm" id="valorAnual"  name="valorAnual" formControlName="valorAnual">
             </div>
           </div>
           
