@@ -86,6 +86,10 @@ import { ListaAtividadeComponent } from './_pages/atividade/lista-atividade/list
 import { ModalAtividadeComponent } from './_pages/atividade/modal-atividade/modal-atividade.component';
 import { ListarPlanosComponent } from './_pages/planos/listar-planos/listar-planos.component';
 import { ModalPlanosComponent } from './_pages/planos/modal-planos/modal-planos.component';
+import { ModalProcedimentoComponent } from './_pages/procedimento/modal-procedimento/modal-procedimento.component';
+import { ListarCategoriaComponent } from './_pages/categoria/listar-categoria/listar-categoria.component';
+import { ModalCategoriaComponent } from './_pages/categoria/modal-categoria/modal-categoria.component';
+import { ListaProcedimentoComponent } from './_pages/procedimento/lista-procedimento/lista-procedimento.component';
 
 
 
@@ -166,6 +170,10 @@ import { ModalPlanosComponent } from './_pages/planos/modal-planos/modal-planos.
     ModalAtividadeComponent,
     ListarPlanosComponent,
     ModalPlanosComponent,
+    ModalProcedimentoComponent,
+    ListarCategoriaComponent,
+    ModalCategoriaComponent,
+    ListaProcedimentoComponent,
     
     
     

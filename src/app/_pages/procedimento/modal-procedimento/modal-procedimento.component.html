@@ -1,0 +1,118 @@
+<!-- Modal -->
+<div
+  #modalCriarEditar
+  class="modal fade"
+  id="modalCriarEditar"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="statusModalLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Procedimento</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row align-items-end">
+            <div class="col-md-2">
+              <label for="id">Cód.</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                readonly
+                formControlName="id"
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="nome" class="form-label">Nome</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="nome"
+                placeholder="Digite a descrição"
+                name="nome"
+                formControlName="nome"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label for="valor" class="form-label">Valor</label>
+              <input
+                type="number"
+                class="form-control form-control-sm"
+                id="valor"
+                placeholder="Digite o valor"
+                name="valor"
+                formControlName="valor"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <label for="duracao" class="form-label"
+                >Tempo (em minutos)</label
+              >
+              <input
+                type="number"
+                class="form-control form-control-sm"
+                id="duracao"
+                name="duracao"
+                formControlName="duracao"
+              />
+            </div>
+          </div>
+
+          <!-- Valores dos Planos -->
+          <div class="col-md-6">
+            <label for="descricao" class="form-label">Descrição</label>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              id="descricao"
+              placeholder="Digite a descrição"
+              name="descricao"
+              formControlName="descricao"
+            />
+          </div>
+          <div class="col-md-3">
+            <label for="categoria" class="form-label">Categorias</label>
+            <select name="categoriaId" id="">
+              @for (item of listaCategorias; track item.id) {
+                <option value="{{item.id}}">{{item.descricao}}</option>
+              }
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          (click)="onSubmit()"
+          class="btn btn-success"
+          id="btn_salvar_editar"
+        >
+          <i class="bi bi-check"></i> Confirmar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="btnCancelar"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="fecharModal()"
+        >
+          <i class="bi bi-x"></i>Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
