@@ -70,27 +70,30 @@
               />
             </div>
           </div>
+          <div class="row align-items-end">
+        <!-- Valores dos Planos -->
+        <div class="col-md-6">
+          <label for="descricao" class="form-label">Descrição</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="descricao"
+            placeholder="Digite a descrição"
+            name="descricao"
+            formControlName="descricao"
+          />
+        </div>
+        <div class="col-md-3">
+          <label for="categoria" class="form-label">Categorias</label>
+          <select name="categoriaId" id="" class="form-select form-select-sm">
+            @for (item of listaCategorias; track item.id) {
+              <option value="{{item.id}}">{{item.descricao}}</option>
+            }
+          </select>
+        </div>
+          </div>
 
-          <!-- Valores dos Planos -->
-          <div class="col-md-6">
-            <label for="descricao" class="form-label">Descrição</label>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              id="descricao"
-              placeholder="Digite a descrição"
-              name="descricao"
-              formControlName="descricao"
-            />
-          </div>
-          <div class="col-md-3">
-            <label for="categoria" class="form-label">Categorias</label>
-            <select name="categoriaId" id="">
-              @for (item of listaCategorias; track item.id) {
-                <option value="{{item.id}}">{{item.descricao}}</option>
-              }
-            </select>
-          </div>
+  
         </form>
       </div>
       <div class="modal-footer">

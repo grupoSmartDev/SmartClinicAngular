@@ -12,7 +12,7 @@ export class PlanoService {
     
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/Planos/';
+  baseURL: string = 'https://localhost:44308/api/Plano/';
 
   Listar(): Observable<ResponseModel<Plano[]>> {
     return this.http.get<ResponseModel<Plano[]>>(`${this.baseURL}Listar`);

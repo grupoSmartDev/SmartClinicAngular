@@ -13,7 +13,7 @@ import { PlanoService } from '../../../_services/plano.service';
 })
 export class ModalPlanosComponent implements OnInit{
   @Input() data = {} as Plano;
-  @Output() convenioAtualizado = new EventEmitter<void>();
+  @Output() dadosAtualizados = new EventEmitter<void>();
 
   
   constructor(private toast: ToastrService,
@@ -30,7 +30,7 @@ export class ModalPlanosComponent implements OnInit{
       id : [''],
       descricao : [''],
       tempoMinutos : [0],
-      diasSemana : [0],
+      diasSemana : [1],
       centroDeCustoId : [''],
       valorBimestral : [0],
       valorTrimestral : [0],
@@ -41,7 +41,7 @@ export class ModalPlanosComponent implements OnInit{
       data : [''],
       pacienteId : [''],
       financeiroId : [''],
-      tipoMes : ['']
+      tipoMes : ['a']
 
     })
   }
@@ -54,7 +54,6 @@ export class ModalPlanosComponent implements OnInit{
   }
   
   calculoValorMensal(event:any){
-    debugger
     this.formulario.get('valorMensal')?.valueChanges.subscribe((valorMensal: number) => {
       if (valorMensal) {
         this.valorMensalCalculado = (valorMensal / 12).toString(); // Calcular valor mensal
@@ -71,30 +70,30 @@ export class ModalPlanosComponent implements OnInit{
     const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
     console.log(this.formulario.value);
     if (this.formulario.valid) {
-      const convenioToSave: Plano = this.formulario.value as Plano;
-      if (convenioToSave.id) {
-        this.planoService.Atualizar(convenioToSave).subscribe({
+      const dadosToSave: Plano = this.formulario.value as Plano;
+      if (dadosToSave.id) {
+        this.planoService.Atualizar(dadosToSave).subscribe({
           next: (response: ResponseModel<Plano>) => {
-            this.toast.success('Convênio atualizado com Sucesso', 'Parabéns');
-            this.convenioAtualizado.emit(); // Emita o evento após a atualização
+            this.toast.success('plano atualizado com Sucesso', 'Parabéns');
+            this.dadosAtualizados.emit(); // Emita o evento após a atualização
             btnCacelar.click();
             this.fecharModal();
           },
           error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um Convênio');
+            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um plano');
           }
         });
       } else {
-        this.planoService.Criar(convenioToSave).subscribe({
+        this.planoService.Criar(dadosToSave).subscribe({
           next: (response: ResponseModel<Plano>) => {
-            this.toast.success('Convênio Criado com sucesso', 'Parabéns');
-            this.convenioAtualizado.emit(); // Emita o evento após a criação
+            this.toast.success('plano Criado com sucesso', 'Parabéns');
+            this.dadosAtualizados.emit(); // Emita o evento após a criação
             btnCacelar.click();
             this.fecharModal();
           },
           error: (err) => {
-            console.error('Erro ao criar Convênio:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um Convênio');
+            console.error('Erro ao criar plano:', err);
+            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um plano');
           }
         });
       }

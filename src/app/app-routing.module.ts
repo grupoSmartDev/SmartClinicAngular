@@ -26,6 +26,7 @@ import { ListarExerciciosComponent } from './_pages/exercicios/listar-exercicios
 import { ListaAtividadeComponent } from './_pages/atividade/lista-atividade/lista-atividade.component';
 import { ListarPlanosComponent } from './_pages/planos/listar-planos/listar-planos.component';
 import { ListaProcedimentoComponent } from './_pages/procedimento/lista-procedimento/lista-procedimento.component';
+import { ListarCategoriaComponent } from './_pages/categoria/listar-categoria/listar-categoria.component';
 
 
 const routes: Routes = [
@@ -59,6 +60,7 @@ const routes: Routes = [
       { path: 'atividade/listar', component: ListaAtividadeComponent}, // pagina para testes
       { path: 'plano/listar', component: ListarPlanosComponent}, // pagina para testes
       { path: 'procedimento/listar', component: ListaProcedimentoComponent}, // pagina para testes
+      { path: 'categoria/listar', component: ListarCategoriaComponent}, // pagina para testes
     ]
   },
 

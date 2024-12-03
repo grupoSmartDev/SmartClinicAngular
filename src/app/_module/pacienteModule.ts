@@ -32,7 +32,6 @@ export interface Paciente {
   telefone?: string; 
   planoId?: number | null; 
 
-  historicoAtendimentos?: Atendimento[]; 
   evolucoes?: Evolucao[];
   dataUltimoAtendimento?: string | null;
 
