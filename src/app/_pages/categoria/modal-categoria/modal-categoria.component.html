@@ -1,1 +1,32 @@
-<p>modal-categoria works!</p>
+  <!-- Modal -->
+  <div #modalEditarCriar class="modal fade" id="modalEditarCriar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">{{nomeModal}}</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="formulario">
+            <div class="row g-3">
+              <div class="col-md-2">
+                  <label for="Id" class="form-label">Cód.</label>
+                  <input type="text" class="form-control form-control-sm" id="Id" readonly formControlName="id" />
+              </div>
+              <div class="col-md-10">
+                  <label for="descricao" class="form-label">Descrição</label>
+                  <input type="text" required class="form-control form-control-sm required" formControlName="descricao" />
+              </div>
+        
+          </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button"  (click)="onSubmit()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>
+            <button type="button" class="btn btn-danger" id="btnCancelar" data-bs-dismiss="modal" aria-label="Close" (click)="fecharModal()"><i class="bi bi-x"></i>Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
