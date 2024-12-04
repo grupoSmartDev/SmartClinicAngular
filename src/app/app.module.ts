@@ -90,6 +90,8 @@ import { ModalProcedimentoComponent } from './_pages/procedimento/modal-procedim
 import { ListarCategoriaComponent } from './_pages/categoria/listar-categoria/listar-categoria.component';
 import { ModalCategoriaComponent } from './_pages/categoria/modal-categoria/modal-categoria.component';
 import { ListaProcedimentoComponent } from './_pages/procedimento/lista-procedimento/lista-procedimento.component';
+import { ListarFinancReceberComponent } from './_pages/financReceber/listar-financ-receber/listar-financ-receber.component';
+import { ModalFinancReceberComponent } from './_pages/FinancReceber/modal-financ-receber/modal-financ-receber.component';
 
 
 
@@ -174,6 +176,8 @@ import { ListaProcedimentoComponent } from './_pages/procedimento/lista-procedim
     ListarCategoriaComponent,
     ModalCategoriaComponent,
     ListaProcedimentoComponent,
+    ListarFinancReceberComponent,
+    ModalFinancReceberComponent,
     
     
     
