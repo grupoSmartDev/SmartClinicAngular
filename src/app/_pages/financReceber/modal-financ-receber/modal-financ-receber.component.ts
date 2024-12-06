@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { FinancReceberService } from '../../../_services/financ-receber.service';
 import { FinancReceber } from '../../../_module/financReceberModule';
@@ -14,7 +14,19 @@ export class ModalFinanceiroReceber {
   constructor(
     private financReceberService: FinancReceberService,
     private toast: ToastrService,
-    private fb : FormBuilder) { }
+    private fb : FormBuilder) {
+      this.formulario = this.fb.group({
+        id :[],
+        paciente: ['', Validators.required], // Nome do paciente
+        centroCusto: ['', Validators.required], // Centro de custo
+        dataEmissao: ['', Validators.required], // Data de emissão
+        descricao: ['', Validators.required], // Descrição
+        observacao: [''], // Observação geral
+        valorTotal: [0, [Validators.required, Validators.min(1)]], // Valor total
+        parcelas: [1, [Validators.required, Validators.min(1)]], // Número de parcelas
+        subFinancReceber: this.fb.array([]), // Lista de parcelas
+      });
+     }
 
   @ViewChild('modalComponent') modalComponent?: ElementRef;
   @Input() data = {} as FinancReceber;
@@ -23,22 +35,9 @@ export class ModalFinanceiroReceber {
   formulario! : FormGroup;
 
   listaCliente = [{ id: 1, nome: 'Cliente 1', cpf : '12341' }, { id: 2, nome: 'Cliente 2', cpf : '12341' }];
-  listaCentroDeCusto = [{ id: 1, tipo: 'Centro de Custo 1' }, { id: 2, tipo: 'Centro de Custo 2' }];
+  listaCentroDeCusto = [{ id: 1, descricao: 'Centro de Custo 1' }, { id: 2, descricao: 'Centro de Custo 2' }];
+  listaFormaPagamento =[{ id: 1, descricao: 'Forma de Pagamento 1' }, { id: 2, descricao: 'Forma de Pagamento 2' }]
 
-    ngOnInit(): void {
-      this.criarFormulario();
-    }
-
-  criarFormulario() : void{
-    this.formulario = this.fb.group({
-      id : [''],
-      titulo : ['', Validators.required],
-      descricao : [''],
-      tempo : [],
-      repeticoes : [],
-      series : []
-    })
-  }
 
   carregarDados(financReceber: any) {
     this.formulario.patchValue(this.data);
@@ -85,5 +84,52 @@ export class ModalFinanceiroReceber {
 
   testeEnvio(){
     console.log('dados formulario',this.formulario.value)
+  }
+
+ 
+
+  ngOnInit(): void {}
+
+  get subFinancReceber(): FormArray {
+    return this.formulario.get('subFinancReceber') as FormArray;
+  }
+
+  gerarParcelas(): void {
+    const valorTotal = this.formulario.get('valorTotal')?.value || 0;
+    const quantidadeParcelas = this.formulario.get('parcelas')?.value || 1;
+
+    // Limpa parcelas existentes
+    this.subFinancReceber.clear();
+
+    // Gera novas parcelas
+    const valorParcela = parseFloat((valorTotal / quantidadeParcelas).toFixed(2));
+    for (let i = 0; i < quantidadeParcelas; i++) {
+      const dataVencimento = new Date();
+      dataVencimento.setMonth(dataVencimento.getMonth() + i); // Simula vencimentos mensais
+
+      this.subFinancReceber.push(
+        this.fb.group({
+          dataVencimento: [dataVencimento.toISOString().split('T')[0], Validators.required],
+          valor: [valorParcela, [Validators.required, Validators.min(0)]],
+          observacao: ['']
+        })
+      );
+    }
+  }
+
+  onValorTotalChange(): void {
+    if (this.formulario.get('parcelas')?.value > 0) {
+      this.gerarParcelas();
+    }
+  }
+
+  testeEnvios(): void {
+    if (this.formulario.valid) {
+      console.log('Formulário enviado:', this.formulario.value);
+      alert('Formulário enviado com sucesso!');
+      // Aqui você pode enviar os dados para o backend
+    } else {
+      alert('Por favor, corrija os erros no formulário antes de enviar.');
+    }
   }
 }

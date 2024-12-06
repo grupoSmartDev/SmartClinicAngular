@@ -1,64 +1,175 @@
   <!-- Modal -->
   <div #modalEditarCriar class="modal fade" id="modalEditarCriar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Contas a receber</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form [formGroup]="formulario">
-            <div class="row g-3">
-
-              <div class="col-md-2">
-                  <label for="Id" class="form-label">Cód.</label>
-                  <input type="text" class="form-control form-control-sm" id="Id" readonly formControlName="id" />
+            <form [formGroup]="formulario" (ngSubmit)="testeEnvios()">
+              <!-- Informações Gerais -->
+              <div class="row">
+                <div class="col-md-9">
+                  <label for="descricao" class="form-label">Descrição</label>
+                  <input
+                    id="descricao"
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="descricao"
+                    placeholder="Digite a descrição do financeiro"
+                  />
+                </div>
+                <div class="col-md-3 justify-self-end">
+                  <label for="dataEmissao" class="form-label">Data de Emissão</label>
+                  <input
+                    id="dataEmissao"
+                    type="date"
+                    class="form-control form-control-sm"
+                    formControlName="dataEmissao"
+                  />
+                </div>
               </div>
-              <div class="col-md-6">
-                  <label for="nome" class="form-label">Descrição</label>
-                  <input type="text" required class="form-control form-control-sm required" formControlName="descricao" />
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="paciente" class="form-label">Nome do Paciente</label>
+                  <input
+                    id="paciente"
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="paciente"
+                    placeholder="Digite o nome do paciente"
+                  />
+                  <inpute type="hidden" formControlName="pacienteId" />
+                </div>
+                  <div class="col-md-4">
+                    <label for="" class="form-label">CPF</label>
+                    <input
+                    id="cpf"
+                    type="text"
+                    class="form-control form-control-sm"
+                    placeholder="3 números para pesquisa"
+                    [attr.readonly]="!!formulario.get('id')?.value"
+                  />                  
+                  </div>
+                <div class="col-md-4">
+                  <label for="centroCusto" class="form-label">Centro de Custo</label>
+                 <select name="" id="" class="form-select form-select-sm">
+                  <option value="">Selecione uma opção</option>
+                  @for (item of listaCentroDeCusto; track $index) {
+                    <option value="{{item.id}}">{{item.descricao}}</option>
+                  }
+                 </select>
+                </div>
+              </div> 
+              <div class="row">
+              
+              </div>        
+              <!-- Informações Financeiras -->
+              <div class="row">
+                <div class="col-md-3">
+                  <label for="" class="form-label">N° Documento</label>
+                  <input type="text" class="form-control form-control-sm"
+                  formControlName="nrDocto"
+                  readonly
+                  >
+                </div>
+                <div class="col-md-3">
+                  <label for="" class="form-label">Nota Fiscal</label>
+                  <input type="text" class="form-control form-control-sm"
+                  formControlName="notaFiscal"
+                  readonly
+                  >
+                </div>
+                <div class="col-md-3">
+                  <label for="valorTotal" class="form-label">Valor Total</label>
+                  <input
+                    id="valorTotal"
+                    type="number"
+                    class="form-control form-control-sm"
+                    formControlName="valorTotal"
+                    (change)="onValorTotalChange()"
+                    placeholder="Informe o valor total"
+                  />
+                </div>
+                <div class="col-md-3">
+                  <label for="parcelas" class="form-label">Parcelas</label>
+                  <input
+                    id="parcelas"
+                    type="number"
+                    class="form-control form-control-sm"
+                    formControlName="parcelas"
+                    (change)="gerarParcelas()"
+                    placeholder="Informe a quantidade de parcelas"
+                  />
+                </div>
               </div>
 
-
-              <div class="col-md-4">
-                  <label for="capacidade" class="form-label">Cliente</label>
-                  <select name="" class="form-select form-select-sm" id="">
-                      <option value="">Selecione</option>
-                      @for (item of listaCliente; track $index) {
-                        <option value="{{item.id}}">{{item.nome}} - {{item.cpf}}</option>
+              <div class="row">
+                <div class="col-md-12">
+                  <label class="form-label">
+                    Observação
+                  </label>
+                  <textarea name=""
+                   class="form-control form-control-sm"
+                    formControlName="observacao"
+                    rows="3"
+                    placeholder="Adicione uma observação"></textarea>
+                </div>
+              </div>
+          
+              <!-- Tabela de Parcelas -->
+              <div *ngIf="subFinancReceber.controls.length > 0">
+                <h5>Parcelas Geradas</h5>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Data de Vencimento</th>
+                      <th>Valor</th>
+                      <th>Forma de Pagamento</th>
+                      <th>Observação</th>
+                    </tr>
+                  </thead>
+                  <tbody formArrayName="subFinancReceber">
+                    <tr *ngFor="let parcela of subFinancReceber.controls; let i = index" [formGroupName]="i">
+                      <td>{{ i + 1 }}</td>
+                      <td>
+                        <input
+                          type="date"
+                          class="form-control form-control-sm"
+                          formControlName="dataVencimento"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="form-control form-control-sm"
+                          formControlName="valor"
+                        />
+                      </td>
+                      <td>
+                     <select name="" id="" class="form-select form-select-sm">
+                      @for (item of listaFormaPagamento; track item.id) {
+                        <option value="{{item.id}}">{{item.descricao}}</option>
                       }
-                  </select>
+                     </select>
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          class="form-control form-control-sm"
+                          formControlName="observacao"
+                          placeholder="Digite observação"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-
-              <div class="col-md-3">
-                <label for="" class="form-label">Data Emissão</label>
-                <input type="date" class="form-control form-control-sm" formControlName="dataEmissao" />
-              </div>
-              <div class="col-md-3">
-                <label for="" class="form-label">Data Vencimento</label>
-                <input type="date" class="form-control form-control-sm" formControlName="dataVencimento" />
-              </div>
-              <div class="col-md-3">
-                <label for="" class="form-label">Data Pagamento</label>
-                <input readonly type="date" class="form-control form-control-sm" formControlName="dataVencimento" />
-              </div>
-              <div class="col-md-3">
-                <label for="capacidade" class="form-label">Centro de Custo</label>
-                <select name="" class="form-select form-select-sm" id="">
-                    <option value="">Selecione</option>
-                    @for (item of listaCentroDeCusto; track $index) {
-                      <option value="{{item.id}}">{{item.tipo}}</option>
-                    }
-                </select>
-            </div>
+            </form>
 
           
-          <div class="col-md-12">
-            <label for="localizacao" class="form-label">Descrição</label>
-            <input type="text" required class="form-control form-control-sm" formControlName="descricao" />
-        </div>
-          </div>
-          </form>
         </div>
         <div class="modal-footer">
             <button type="button"  (click)="testeEnvio()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>

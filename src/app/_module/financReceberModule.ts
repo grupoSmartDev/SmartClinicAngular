@@ -6,36 +6,39 @@ import { Paciente } from "./pacienteModule"
 import { SubFinancReceber } from "./subFinancReceberModule"
 import { TipoPagamento } from "./tipoPagamentoModule"
 
-export interface FinancReceber{
-    id: string
-    idOrigem : string
-    nrDocto : string
-    dataEmissao : string
-    dataVencimento : string
-    dataPagamento : string
-    valorOriginal : number
-    valorPago : number
-    status : string
-    notaFiscal : string
-    descricao : string
-    parcela : string
-    classificacao : string
-    desconto : number
-    juros : number
-    multa : number
-    observacao : string
-    pacienteId : string
-    paciente : Paciente
-    fornecedorId : string
-    fornecedor : Fornecedor
-    centroCustoId : string
-    centroCusto : CentroDeCusto
-    tipoPagamentoId : string
-    tipoPagamento : TipoPagamento
-    formaPagamentoId : string
-    formaPagamento : FormaPagamento
-    bancoId : string
-    banco : Banco
-    subFinancReceber : SubFinancReceber[]
+export interface FinancReceber {
+    id: string;
+    idOrigem: string; //ok
+    nrDocto: string; //ok
+    dataEmissao: Date;//ok
+    dataVencimento: Date;
+    valorOriginal: number;
+    valorPago: number;
+    desconto: number;
+    juros: number;
+    multa: number;
+    parcelas: number;
+    status: StatusPagamento; // Enumeração
+    notaFiscal: string; //ok
+    descricao: string; //ok
+    classificacao: string;
+    observacao: string; //ok
+    pacienteId: string; //ok
+    paciente: Paciente; //ok
+    fornecedorId: string; 
+    fornecedor: Fornecedor;
+    centroCustoId: string; //ok
+    centroCusto: CentroDeCusto; //ok
+    bancoId: string;
+    banco: Banco;
+    subFinancReceber: SubFinancReceber[];
+    usuarioResponsavelId: string; // Quem criou/modificou
+    dataUltimaAtualizacao: Date; // Última modificação
+}
 
+export enum StatusPagamento {
+    PENDENTE = 'pendente',
+    PAGO = 'pago',
+    ATRASADO = 'atrasado',
+    CANCELADO = 'cancelado'
 }
