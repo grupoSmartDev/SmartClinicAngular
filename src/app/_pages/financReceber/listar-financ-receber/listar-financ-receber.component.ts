@@ -1,10 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
-import { ModalFinancReceberComponent } from '../modal-financ-receber/modal-financ-receber.component';
 import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
-import { FinancReceber } from '../../../_module/financReceberModule';
+
 import { FinancReceberService } from '../../../_services/financ-receber.service';
 import { ToastrService } from 'ngx-toastr';
 import * as bootstrap from 'bootstrap';
+
+import { FinancReceber } from '../../../_module/financReceberModule';
+import { ModalFinanceiroReceber } from '../modal-financ-receber/modal-financ-receber.component';
 
 @Component({
   selector: 'app-listar-financ-receber',
@@ -12,7 +14,7 @@ import * as bootstrap from 'bootstrap';
   styleUrl: './listar-financ-receber.component.css'
 })
 export class ListarFinancReceberComponent {
-  @ViewChild(ModalFinancReceberComponent) modalComponent!: ModalFinancReceberComponent;
+  @ViewChild(ModalFinanceiroReceber) modalComponent!: ModalFinanceiroReceber;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
   lista: FinancReceber[] = [];
