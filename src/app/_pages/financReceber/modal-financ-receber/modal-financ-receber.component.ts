@@ -22,6 +22,9 @@ export class ModalFinanceiroReceber {
 
   formulario! : FormGroup;
 
+  listaCliente = [{ id: 1, nome: 'Cliente 1', cpf : '12341' }, { id: 2, nome: 'Cliente 2', cpf : '12341' }];
+  listaCentroDeCusto = [{ id: 1, tipo: 'Centro de Custo 1' }, { id: 2, tipo: 'Centro de Custo 2' }];
+
     ngOnInit(): void {
       this.criarFormulario();
     }

@@ -3,32 +3,56 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Exercício</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Contas a receber</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="formulario">
             <div class="row g-3">
+
               <div class="col-md-2">
                   <label for="Id" class="form-label">Cód.</label>
                   <input type="text" class="form-control form-control-sm" id="Id" readonly formControlName="id" />
               </div>
+              <div class="col-md-6">
+                  <label for="nome" class="form-label">Descrição</label>
+                  <input type="text" required class="form-control form-control-sm required" formControlName="descricao" />
+              </div>
+
+
               <div class="col-md-4">
-                  <label for="nome" class="form-label">Exercício</label>
-                  <input type="text" required class="form-control form-control-sm required" formControlName="titulo" />
+                  <label for="capacidade" class="form-label">Cliente</label>
+                  <select name="" class="form-select form-select-sm" id="">
+                      <option value="">Selecione</option>
+                      @for (item of listaCliente; track $index) {
+                        <option value="{{item.id}}">{{item.nome}} - {{item.cpf}}</option>
+                      }
+                  </select>
               </div>
-              <div class="col-md-2">
-                  <label for="capacidade" class="form-label">tempo</label>
-                  <input type="number" class="form-control form-control-sm" formControlName="tempo">
+
+              <div class="col-md-3">
+                <label for="" class="form-label">Data Emissão</label>
+                <input type="date" class="form-control form-control-sm" formControlName="dataEmissao" />
               </div>
-              <div class="col-md-2">
-                <label for="capacidade" class="form-label">Repetições</label>
-                <input type="number" class="form-control form-control-sm" formControlName="repeticoes">
+              <div class="col-md-3">
+                <label for="" class="form-label">Data Vencimento</label>
+                <input type="date" class="form-control form-control-sm" formControlName="dataVencimento" />
+              </div>
+              <div class="col-md-3">
+                <label for="" class="form-label">Data Pagamento</label>
+                <input readonly type="date" class="form-control form-control-sm" formControlName="dataVencimento" />
+              </div>
+              <div class="col-md-3">
+                <label for="capacidade" class="form-label">Centro de Custo</label>
+                <select name="" class="form-select form-select-sm" id="">
+                    <option value="">Selecione</option>
+                    @for (item of listaCentroDeCusto; track $index) {
+                      <option value="{{item.id}}">{{item.tipo}}</option>
+                    }
+                </select>
             </div>
-            <div class="col-md-2">
-              <label for="capacidade" class="form-label">Séries</label>
-              <input type="number" class="form-control form-control-sm" formControlName="series">
-          </div>
+
+          
           <div class="col-md-12">
             <label for="localizacao" class="form-label">Descrição</label>
             <input type="text" required class="form-control form-control-sm" formControlName="descricao" />

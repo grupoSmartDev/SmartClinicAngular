@@ -93,6 +93,18 @@
         <span>Agenda</span>
       </a>
     </li>
+    <li class="sidebar-item">
+      <a class="sidebar-link" (click)="openTab('/financPagar/listar', 'Pagar')">
+        <i class="lni lni-calendar"></i>
+        <span>Contas a pagar</span>
+      </a>
+    </li>
+    <li class="sidebar-item">
+      <a class="sidebar-link" (click)="openTab('/FinancReceber/listar', 'Receber')">
+        <i class="lni lni-calendar"></i>
+        <span>Contas a receber</span>
+      </a>
+    </li>
 
     <li class="sidebar-item">
       <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('auth')" data-bs-toggle="collapse"> 
