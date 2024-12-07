@@ -11,7 +11,6 @@ export interface FinancReceber {
     idOrigem: string; //ok
     nrDocto: string; //ok
     dataEmissao: Date;//ok
-    dataVencimento: Date;
     valorOriginal: number;
     valorPago: number;
     desconto: number;
@@ -32,8 +31,8 @@ export interface FinancReceber {
     bancoId: string;
     banco: Banco;
     subFinancReceber: SubFinancReceber[];
-    usuarioResponsavelId: string; // Quem criou/modificou
-    dataUltimaAtualizacao: Date; // Última modificação
+    usuarioResponsavelId: string;
+    dataUltimaAtualizacao: Date; 
 }
 
 export enum StatusPagamento {

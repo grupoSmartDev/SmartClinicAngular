@@ -34,6 +34,7 @@ export class ModalFinanceiroReceber {
 
   formulario! : FormGroup;
 
+  //apos validar, trocar pelo listar
   listaCliente = [{ id: 1, nome: 'Cliente 1', cpf : '12341' }, { id: 2, nome: 'Cliente 2', cpf : '12341' }];
   listaCentroDeCusto = [{ id: 1, descricao: 'Centro de Custo 1' }, { id: 2, descricao: 'Centro de Custo 2' }];
   listaFormaPagamento =[{ id: 1, descricao: 'Forma de Pagamento 1' }, { id: 2, descricao: 'Forma de Pagamento 2' }]

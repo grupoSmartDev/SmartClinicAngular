@@ -6,6 +6,7 @@ export interface SubFinancReceber{
     financReceberId : string
     parcela : string
     valor : number
+    dataVencimento: Date;
     dataPagamento : Date
     observacao : string
     formaPagamentoId : string
