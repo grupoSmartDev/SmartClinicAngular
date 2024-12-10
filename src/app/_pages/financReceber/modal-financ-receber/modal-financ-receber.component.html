@@ -32,14 +32,25 @@
               </div>
               <div class="row">
                 <div class="col-md-4">
-                  <label for="paciente" class="form-label">Nome do Paciente</label>
-                  <input
-                    id="paciente"
-                    type="text"
-                    class="form-control form-control-sm"
-                    formControlName="paciente"
-                    placeholder="Digite o nome do paciente"
-                  />
+                  <div>
+                    <label for="paciente" class="form-label">Paciente</label>
+                    <input
+                      id="paciente"
+                      type="text"
+                      [formControl]="myControl"
+                      (focus)="onInputFocus()"
+                      (blur)="onInputBlur()"
+                      (input)="filterOptions()"
+                      class="form-control form-control-sm"
+                      placeholder="Pesquise o paciente"
+                      autocomplete="off"
+                    />
+                    <ul *ngIf="isDropdownOpen && filteredOptions.length > 0" class="dropdown-menu">
+                      <li *ngFor="let option of filteredOptions" (click)="selectOption(option)">
+                        {{ option }}
+                      </li>
+                    </ul>
+                  </div>  
                   <inpute type="hidden" formControlName="pacienteId" />
                 </div>
                   <div class="col-md-4">
@@ -117,10 +128,6 @@
                     placeholder="Adicione uma observação"></textarea>
                 </div>
               </div>
-
-              <div class="row">
-               
-              </div>
           
               <!-- Tabela de Parcelas -->
               <div *ngIf="subFinancReceber.controls.length > 0">
@@ -176,7 +183,7 @@
           
         </div>
         <div class="modal-footer">
-            <button type="button"  (click)="testeEnvio()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>
+            <button type="button"  (click)="testeEnvios()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>
             <button type="button" class="btn btn-danger" id="btnCancelar" data-bs-dismiss="modal" aria-label="Close" (click)="fecharModal()"><i class="bi bi-x"></i>Cancelar</button>
         </div>
       </div>

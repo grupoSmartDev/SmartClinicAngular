@@ -28,4 +28,9 @@ export class FinancReceberService {
   Deletar(id: string): Observable<ResponseModel<void>> {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
+
+  buscarClientes(query: string): Observable<any[]> {
+    return this.http.get<any[]>(`https://api.example.com/clientes?nome=${query}`);
+  }
+  
 }

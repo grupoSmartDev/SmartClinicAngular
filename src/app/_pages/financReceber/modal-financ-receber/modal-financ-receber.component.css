@@ -1,5 +1,5 @@
 .dropdown-menu {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  
+  display: block;
+  position: absolute;
+  z-index: 1000;
+}
