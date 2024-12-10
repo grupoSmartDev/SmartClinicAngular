@@ -92,6 +92,8 @@ import { ModalCategoriaComponent } from './_pages/categoria/modal-categoria/moda
 import { ListaProcedimentoComponent } from './_pages/procedimento/lista-procedimento/lista-procedimento.component';
 import { ListarFinancReceberComponent } from './_pages/financReceber/listar-financ-receber/listar-financ-receber.component';
 import { ModalFinanceiroReceber } from './_pages/financReceber/modal-financ-receber/modal-financ-receber.component';
+import { ListarFinancPagarComponent } from './_pages/financPagar/listar-financ-pagar/listar-financ-pagar.component';
+import { ModalFinancPagarComponent } from './_pages/financPagar/modal-financ-pagar/modal-financ-pagar.component';
 
 
 
@@ -179,6 +181,8 @@ import { ModalFinanceiroReceber } from './_pages/financReceber/modal-financ-rece
     ListaProcedimentoComponent,
     ListarFinancReceberComponent,
     ModalFinanceiroReceber,
+    ListarFinancPagarComponent,
+    ModalFinancPagarComponent,
     
     
     
