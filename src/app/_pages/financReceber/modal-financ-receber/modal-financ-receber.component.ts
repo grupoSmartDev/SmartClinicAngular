@@ -165,7 +165,7 @@ export class ModalFinanceiroReceber implements OnInit {
   }
 
   onValorTotalChange(): void {
-    if (this.formulario.get('parcelas')?.value > 0) {
+    if (this.formulario.get('parcela')?.value > 0) {
       this.gerarParcelas();
     }
   }

@@ -4,6 +4,7 @@ import { ModalFinancPagarComponent } from '../modal-financ-pagar/modal-financ-pa
 import { FinancPagar } from '../../../_module/financPagarModule';
 import { FinancPagarService } from '../../../_services/financ-pagar.service';
 import { ToastrService } from 'ngx-toastr';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-listar-financ-pagar',
