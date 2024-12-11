@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { FinancReceberService } from '../../../_services/financ-receber.service';
@@ -17,7 +17,7 @@ import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
   templateUrl: './modal-financ-receber.component.html',
   styleUrls: ['./modal-financ-receber.component.css']
 })
-export class ModalFinanceiroReceber {
+export class ModalFinanceiroReceber implements OnInit {
   @ViewChild('modalComponent') modalComponent?: ElementRef;
   @Input() data = {} as FinancReceber;
   @Output() dadosAtualizado = new EventEmitter<void>();
@@ -45,13 +45,22 @@ export class ModalFinanceiroReceber {
   ) {
     this.formulario = this.fb.group({
       id: [],
-      paciente: ['', Validators.required],
-      centroCusto: ['', Validators.required],
+      idOrigem : [''],
+      nrDocto : [''],
       dataEmissao: ['', Validators.required],
+      valorOriginal : [''],
+      valorPago : [''],
+      parcela: [1, [Validators.required, Validators.min(1)]],
+      valor: [0, [Validators.required, Validators.min(1)]],
+      status : [''],
+      notaFiscal : [''],
       descricao: ['', Validators.required],
+      classificacao : [''],
       observacao: [''],
-      valorTotal: [0, [Validators.required, Validators.min(1)]],
-      parcelas: [1, [Validators.required, Validators.min(1)]],
+      pacienteId: [''],
+      fornecedorId : [''],
+      centroCustoId: [''],
+      bancoId : [''],
       subFinancReceber: this.fb.array([]),
     });
 
@@ -59,6 +68,11 @@ export class ModalFinanceiroReceber {
     this.myControl.valueChanges.subscribe(() => {
       this.filterOptions();
     });
+  }
+  ngOnInit(): void {
+    this.buscarCC();
+    this.buscarFP();
+    this.buscarTP();
   }
 
   filterOptions(): void {
@@ -121,8 +135,8 @@ export class ModalFinanceiroReceber {
   }
 
   gerarParcelas(): void {
-    const valorTotal = this.formulario.get('valorTotal')?.value || 0;
-    const quantidadeParcelas = this.formulario.get('parcelas')?.value || 1;
+    const valorTotal = this.formulario.get('valor')?.value || 0;
+    const quantidadeParcelas = this.formulario.get('parcela')?.value || 1;
 
     this.subFinancReceber.clear();
 
@@ -133,9 +147,18 @@ export class ModalFinanceiroReceber {
 
       this.subFinancReceber.push(
         this.fb.group({
-          dataVencimento: [dataVencimento.toISOString().split('T')[0], Validators.required],
+          id: [null],
+          financReceberId: [null],
+          parcela: [i + 1],
           valor: [valorParcela, [Validators.required, Validators.min(0)]],
-          observacao: ['']
+          dataVencimento: [dataVencimento.toISOString().split('T')[0], Validators.required],
+          dataPagamento: [''],
+          observacao: [''],
+          desconto: [0],
+          juros: [0],
+          multa : [0],
+          formaPagamentoId : [''],
+          tipoPagamentoId : [''],
         })
       );
     }
@@ -148,6 +171,7 @@ export class ModalFinanceiroReceber {
   }
 
   testeEnvios(): void {
+    debugger
     if (this.formulario.valid) {
       console.log('Formulário enviado:', this.formulario.value);
       alert('Formulário enviado com sucesso!');
@@ -211,9 +235,6 @@ export class ModalFinanceiroReceber {
     })
   }
 
-  ngInit(): void{
-    this.buscarCC();
-    this.buscarFP();
-  }
+ 
 
 }

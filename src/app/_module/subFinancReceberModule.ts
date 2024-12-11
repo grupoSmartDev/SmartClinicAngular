@@ -9,6 +9,9 @@ export interface SubFinancReceber{
     dataVencimento: Date;
     dataPagamento : Date
     observacao : string
+    desconto: number;
+    juros: number;
+    multa: number;
     formaPagamentoId : string
     formaPagamento : FormaPagamento
     tipoPagamentoId: string;
