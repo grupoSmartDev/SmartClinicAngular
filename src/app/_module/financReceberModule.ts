@@ -13,10 +13,8 @@ export interface FinancReceber {
     dataEmissao: Date;//ok
     valorOriginal: number;
     valorPago: number;
-    desconto: number;
-    juros: number;
-    multa: number;
-    parcelas: number;
+    parcela: number;
+    valor : number;
     status: StatusPagamento; // Enumeração
     notaFiscal: string; //ok
     descricao: string; //ok

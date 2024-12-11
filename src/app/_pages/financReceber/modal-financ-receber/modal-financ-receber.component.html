@@ -65,8 +65,9 @@
                   </div>
                 <div class="col-md-4">
                   <label for="centroCusto" class="form-label">Centro de Custo</label>
-                 <select name="" id="" class="form-select form-select-sm">
-                  <option value="">Selecione uma opção</option>
+                 <select name="" id="" class="form-select form-select-sm"
+                  formControlName="centroCustoId">
+                  <option value="0">Selecione uma opção</option>
                   @for (item of listaCentroDeCusto; track $index) {
                     <option value="{{item.id}}">{{item.descricao}}</option>
                   }
@@ -93,23 +94,23 @@
                   >
                 </div>
                 <div class="col-md-3">
-                  <label for="valorTotal" class="form-label">Valor Total</label>
+                  <label for="valor" class="form-label">Valor Total</label>
                   <input
-                    id="valorTotal"
+                    id="valor"
                     type="number"
                     class="form-control form-control-sm"
-                    formControlName="valorTotal"
+                    formControlName="valor"
                     (change)="onValorTotalChange()"
                     placeholder="Informe o valor total"
                   />
                 </div>
                 <div class="col-md-3">
-                  <label for="parcelas" class="form-label">Parcelas</label>
+                  <label for="parcela" class="form-label">Parcelas</label>
                   <input
                     id="parcelas"
                     type="number"
                     class="form-control form-control-sm"
-                    formControlName="parcelas"
+                    formControlName="parcela"
                     (change)="gerarParcelas()"
                     placeholder="Informe a quantidade de parcelas"
                   />
@@ -137,8 +138,10 @@
                     <tr>
                       <th>#</th>
                       <th>Data de Vencimento</th>
+                      <th>Data de Pagamento</th>
                       <th>Valor</th>
                       <th>Forma de Pagamento</th>
+                      <th>Tipo de Pagamento</th>
                       <th>Observação</th>
                     </tr>
                   </thead>
@@ -154,17 +157,33 @@
                       </td>
                       <td>
                         <input
+                          type="date"
+                          class="form-control form-control-sm"
+                          formControlName="dataPagamento"
+                        />
+                      </td>
+                      <td>
+                        <input
                           type="number"
                           class="form-control form-control-sm"
                           formControlName="valor"
                         />
                       </td>
                       <td>
-                     <select name="" id="" class="form-select form-select-sm">
-                      @for (item of listaFormaPagamento; track item.id) {
-                        <option value="{{item.id}}">{{item.descricao}}</option>
-                      }
-                     </select>
+                        <select name="" id="" class="form-select form-select-sm"
+                        formControlName="formaPagamentoId">
+                          @for (item of listaFormaPagamento; track item.id) {
+                            <option value="{{item.id}}">{{item.descricao}}</option>
+                          }
+                        </select>
+                      </td>
+                      <td>
+                        <select name="" id="" class="form-select form-select-sm"
+                        formControlName="tipoPagamentoId">
+                          @for (item of listaTipoPagamento; track item.id) {
+                            <option value="{{item.id}}">{{item.descricao}}</option>
+                          }
+                        </select>
                       </td>
                       <td>
                         <input
@@ -183,7 +202,7 @@
           
         </div>
         <div class="modal-footer">
-            <button type="button"  (click)="testeEnvios()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>
+            <button type="button"  (click)="onSubmit()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>
             <button type="button" class="btn btn-danger" id="btnCancelar" data-bs-dismiss="modal" aria-label="Close" (click)="fecharModal()"><i class="bi bi-x"></i>Cancelar</button>
         </div>
       </div>
