@@ -31,53 +31,43 @@ export class ModalProcedimentoComponent {
     this.criarFormulario();
   }
    
-  onSubmit() {
-    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    console.log(this.formulario.value);
-    if (this.formulario.valid) {
-      const convenioToSave: Procedimento = this.formulario.value as Procedimento;
-      if (convenioToSave.id) {
-        this.procedimentoService.Atualizar(convenioToSave).subscribe({
-
-          next: (response: ResponseModel<Procedimento>) => {
-            this.toast.success('procedimento atualizado com Sucesso', 'Parabéns');
-            this.dadosAtualizados.emit(); // Emita o evento após a atualização
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um procedimento');
-          }
-        });
-      } else {
-        this.procedimentoService.Criar(convenioToSave).subscribe({
-          next: (response: ResponseModel<Procedimento>) => {
-            this.toast.success('procedimento Criado com sucesso', 'Parabéns');
-            this.dadosAtualizados.emit(); // Emita o evento após a criação
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            console.error('Erro ao criar procedimento:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um procedimento');
-          }
-        });
-      }
-    } else {
-      console.error('Formulário inválido');
+  onSubmit(){
+    if(this.formulario.invalid){
+      this.formulario.markAllAsTouched();
+      this.toast.error('Por favor, preencha todos os campos obrigatórios', 'Erro');
+      return;
     }
+
+    const dataToSave = this.formulario.value as Procedimento;
+
+    const saveOperation = dataToSave.id
+    ? this.procedimentoService.Atualizar(dataToSave)
+    : this.procedimentoService.Criar(dataToSave);
+
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Centro de custo ${action} com sucesso!`, 'Parabéns');
+        this.dadosAtualizados.emit();
+        this.fecharModal();
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
+
   }
 
 
   criarFormulario(){
     this.formulario = this.fb.group({
-      id : [''],
-      descricao : ['', Validators.required],
-      nome: ['', Validators.required],
-      valor : ['', Validators.required],
-      duracao : ['', Validators.required],
-      ativo : [null, Validators.required],
-      categoriaID : ['', Validators.required],
+      id : [null],
+      descricao : [null, Validators.required],
+      nome: [null, Validators.required],
+      valor : [null, Validators.required],
+      duracao : [null],
+      ativo : [null],
+      categoriaID : [null],
     })
   }
 

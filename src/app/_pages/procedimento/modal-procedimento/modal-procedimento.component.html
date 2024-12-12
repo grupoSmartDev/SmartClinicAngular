@@ -23,9 +23,9 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="formulario">
-          <div class="row align-items-end">
+          <div class="row align-items-baseline">
             <div class="col-md-2">
-              <label for="id">Cód.</label>
+              <label for="id" class="form-label">Cód.</label>
               <input
                 type="text"
                 class="form-control form-control-sm"
@@ -42,7 +42,11 @@
                 placeholder="Digite a descrição"
                 name="nome"
                 formControlName="nome"
+                [ngClass]="{'is-invalid' : formulario.get('nome')?.invalid && formulario.get('nome')?.touched}"
               />
+              <div *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="invalid-feedback">
+                O campo nome é obrigatório.
+              </div>
             </div>
 
             <div class="col-md-3">
@@ -54,7 +58,11 @@
                 placeholder="Digite o valor"
                 name="valor"
                 formControlName="valor"
-              />
+                [ngClass]="{'is-invalid' : formulario.get('valor')?.invalid && formulario.get('valor')?.touched}"
+                />
+                <div *ngIf="formulario.get('valor')?.invalid && formulario.get('valor')?.touched" class="invalid-feedback">
+                  O campo valor é obrigatório.
+                </div>
             </div>
 
             <div class="col-md-3">
@@ -70,7 +78,7 @@
               />
             </div>
           </div>
-          <div class="row align-items-end">
+          <div class="row align-items-baseline">
         <!-- Valores dos Planos -->
         <div class="col-md-6">
           <label for="descricao" class="form-label">Descrição</label>
@@ -81,7 +89,11 @@
             placeholder="Digite a descrição"
             name="descricao"
             formControlName="descricao"
-          />
+            [ngClass]="{'is-invalid' : formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched}"
+            />
+            <div *ngIf="formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched" class="invalid-feedback">
+              O campo descrição é obrigatório.
+            </div>
         </div>
         <div class="col-md-3">
           <label for="categoria" class="form-label">Categorias</label>
