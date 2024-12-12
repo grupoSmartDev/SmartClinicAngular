@@ -16,15 +16,24 @@
               </div>
               <div class="col-md-4">
                 <label for="nome" class="form-label">Nome</label>
-                <input type="text" required class="form-control form-control-sm" formControlName="nome" />
+                <input type="text" required class="form-control form-control-sm" formControlName="nome"
+                [ngClass]="{'is-invalid': formulario.get('nome')?.invalid && formulario.get('nome')?.touched}" />
+                <div *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="invalid-feedback">
+                  O campo nome é obrigatório
+                </div>
               </div>
               <div class="col-md-6">
                 <label for="descricao" class="form-label">Centro de Custo</label>
-                <select formControlName="centroCustoId" class="form-select form-select-sm">
+                <select formControlName="centroCustoId" class="form-select form-select-sm"
+                [ngClass]="{'is-invalid': formulario.get('centroCustoId')?.invalid && formulario.get('centroCustoId')?.touched}">
+                <option value="">Selecione um centro de custo</option>
                     @for (item of listaCentroDeCusto; track $index) {
                         <option value="{{item.id}}">{{item.tipo}}</option>
                     }
                 </select>
+                <div *ngIf="formulario.get('centroCustoId')?.invalid && formulario.get('centroCustoId')?.touched" class="invalid-feedback">
+                  O campo centro de custo é obrigatório
+                </div>
               </div>
             </div>
           </form>

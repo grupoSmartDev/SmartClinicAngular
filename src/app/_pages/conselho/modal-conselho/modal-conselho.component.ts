@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Conselho } from '../../../_module/conselhoModule';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConselhoService } from '../../../_services/conselho.service';
 import { ToastrService } from 'ngx-toastr';
 import { ResponseModel } from '../../../_module/ResponseModule';
@@ -13,51 +13,45 @@ import { ResponseModel } from '../../../_module/ResponseModule';
 export class ModalConselhoComponent {
   @Input() conselho = {} as Conselho;
   @Output() ConselhoAtualizado = new EventEmitter<void>();
+  formulario: FormGroup;
 
   constructor(private toast: ToastrService,
-    private conselhoService: ConselhoService
-  ) { }
+    private conselhoService: ConselhoService,
+    private fb: FormBuilder
+  ) {
+    this.formulario = this.fb.group({
+      id: [null],
+      nome: [null, Validators.required],
+      sigla: [null, Validators.required],
+    });
+  }
 
-  formulario = new FormGroup({
-    id: new FormControl(),
-    nome: new FormControl('', [Validators.required]),
-    sigla : new FormControl('', [Validators.required]),
-  })
 
   onSubmit() {
-    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    console.log(this.formulario.value);
-    if (this.formulario.valid) {
-      const conselhoToSave: Conselho = this.formulario.value as Conselho;
-      if (conselhoToSave.id) {
-        this.conselhoService.Atualizar(conselhoToSave).subscribe({
-          next: (response: ResponseModel<Conselho>) => {
-            this.toast.success('Convênio atualizado com Sucesso', 'Parabéns');
-            this.ConselhoAtualizado.emit(); // Emita o evento após a atualização
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um Convênio');
-          }
-        });
-      } else {
-        this.conselhoService.Criar(conselhoToSave).subscribe({
-          next: (response: ResponseModel<Conselho>) => {
-            this.toast.success('Convênio Criado com sucesso', 'Parabéns');
-            this.ConselhoAtualizado.emit(); // Emita o evento após a criação
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            console.error('Erro ao criar Convênio:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um Convênio');
-          }
-        });
-      }
-    } else {
-      console.error('Formulário inválido');
+    if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
+      this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
+      return;
     }
+
+    const dataToSave = this.formulario.value as Conselho;
+
+    const saveOperation = dataToSave.id
+    ? this.conselhoService.Atualizar(dataToSave)
+    : this.conselhoService.Criar(dataToSave);
+
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Conselho ${action} com sucesso!`, 'Parabéns');
+        this.ConselhoAtualizado.emit();
+        this.fecharModal();
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
+
   }
 
   carregarConselho(conselho: any) {

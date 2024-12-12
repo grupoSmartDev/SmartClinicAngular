@@ -350,3 +350,9 @@ textarea:focus {
     visibility: visible;
     opacity: 1;
   }
+
+  table {
+    width: 100% !important;
+    word-wrap: break-word;
+  }
+  

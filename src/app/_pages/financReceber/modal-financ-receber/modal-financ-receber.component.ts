@@ -96,38 +96,30 @@ export class ModalFinanceiroReceber implements OnInit {
     this.formulario.reset();
   }
 
-  onSubmit() {
-    const btnCancelar = document.querySelector('#btnCancelar') as HTMLElement;
-    if (this.formulario.valid) {
-      const dadosToSave: FinancReceber = this.formulario.value as FinancReceber;
-      if (dadosToSave.id) {
-        this.financReceberService.Atualizar(dadosToSave).subscribe({
-          next: () => {
-            this.toast.success('Conta a receber atualizada com sucesso', 'Parabéns');
-            this.dadosAtualizado.emit();
-            btnCancelar.click();
-            this.fecharModal();
-          },
-          error: () => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar');
-          }
-        });
-      } else {
-        this.financReceberService.Criar(dadosToSave).subscribe({
-          next: () => {
-            this.toast.success('Conta a receber criada com sucesso', 'Parabéns');
-            this.dadosAtualizado.emit();
-            btnCancelar.click();
-            this.fecharModal();
-          },
-          error: () => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar');
-          }
-        });
-      }
-    } else {
-      console.error('Formulário inválido');
+  onSubmit(){
+    if(this.formulario.invalid){
+      this.formulario.markAllAsTouched();
+      this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
+      return;
     }
+
+    const dataToSave = this.formulario.value as FinancReceber;
+
+    const saveOperation = dataToSave.id
+      ? this.financReceberService.Atualizar(dataToSave)
+      : this.financReceberService.Criar(dataToSave);
+
+      saveOperation.subscribe({
+        next: () => {
+          const action = dataToSave.id ? 'atualizado' : 'criado';
+          this.toast.success(`Contas a receber ${action} com sucesso!`, 'Parabéns');
+          this.dadosAtualizado.emit();
+          this.fecharModal();
+        },
+        error: () => {
+          this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+        },
+      });
   }
 
   get subFinancReceber(): FormArray {
@@ -221,6 +213,7 @@ export class ModalFinanceiroReceber implements OnInit {
       }
     })
   }
+
   buscarTP() : void{
     this.tipoPagamentoService.ListarTipoPagamento().subscribe({
       next: (data) => {

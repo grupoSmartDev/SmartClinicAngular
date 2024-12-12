@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Status } from '../../../_module/statusModule';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { ResponseModel } from '../../../_module/ResponseModule';
 import { StatusServerService } from '../../../_services/status-server.service';
 import { ToastrService } from 'ngx-toastr';
@@ -15,53 +15,48 @@ export class ModalStatusComponent {
   constructor(
     private statusService: StatusServerService,
     private toast: ToastrService,
-    private router: Router) { }
+    private router: Router,
+    private fb: FormBuilder) {
+    this.formulario = this.fb.group({
+      id: [null],
+      cor: [null, Validators.required],
+      legenda: [null, Validators.required],
+      status: [null, Validators.required],
+    });
+  }
 
   @ViewChild('modalStatus') modalStatus?: ElementRef;
   @Input() status = {} as Status;
   @Output() statusAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
+  formulario: FormGroup;
 
-  formulario = new FormGroup({
-    id: new FormControl(),
-    cor: new FormControl(),
-    legenda: new FormControl(),
-    status: new FormControl()
-  });
-
-  onSubmit() {
-    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    if (this.formulario.valid) {
-      const statusToSave: Status = this.formulario.value as Status;
-      if (statusToSave.id) {
-        this.statusService.Atualizar(parseInt(statusToSave.id), statusToSave).subscribe({
-          next: (response: ResponseModel<Status>) => {
-            this.toast.success('Status atualizado com Sucesso', 'Parabéns');
-            this.statusAtualizado.emit(); // Emita o evento após a atualização
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um status');
-          }
-        });
-      } else {
-        this.statusService.Criar(statusToSave).subscribe({
-          next: (response: ResponseModel<Status>) => {
-            this.toast.success('Status Criado com sucesso', 'Parabéns');
-            this.statusAtualizado.emit(); // Emita o evento após a criação
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            console.error('Erro ao criar status:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um status');
-          }
-        });
+  onSubmit(){
+    if(this.formulario.invalid){
+        this.formulario.markAllAsTouched();
+        this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
+        return;
       }
-    } else {
-      console.error('Formulário inválido');
-    }
+
+      const dataToSave: Status = this.formulario.value as Status;
+
+      const saveOperation = dataToSave.id
+        ? this.statusService.Atualizar(parseInt(dataToSave.id), dataToSave)
+        : this.statusService.Criar(dataToSave);
+
+        saveOperation.subscribe({
+          next: () => {
+            const action = dataToSave.id ? 'atualizado' : 'criado';
+            this.toast.success(`Status ${action} com sucesso!`, 'Parabéns');
+            this.statusAtualizado.emit();
+            this.fecharModal();
+          },
+          error: () => {
+            this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+          },
+        });
+
   }
+
 
   carregarStatus(status: any) {
     this.formulario.patchValue(this.status);

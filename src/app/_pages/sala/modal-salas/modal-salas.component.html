@@ -15,29 +15,47 @@
               </div>
               <div class="col-md-3">
                   <label for="nome" class="form-label">Nome</label>
-                  <input type="text" required class="form-control form-control-sm required" formControlName="nome" />
+                  <input type="text" required class="form-control form-control-sm required" formControlName="nome" 
+                  [ngClass]="{'is-invalid': formulario.get('nome')?.invalid && formulario.get('nome')?.touched}"/>
+                  <div *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="invalid-feedback">
+                    O campo nome é obrigatório.
+                  </div>
               </div>
               <div class="col-md-4">
-                  <label for="localizacao" class="form-label">Localização</label>
-                  <input type="text" required class="form-control form-control-sm" formControlName="local" />
+                  <label for="local" class="form-label">Local</label>
+                  <input type="text" required class="form-control form-control-sm" formControlName="local" 
+                  />
+
               </div>
               <div class="col-md-2">
                   <label for="capacidade" class="form-label">Capacidade</label>
-                  <input type="number" class="form-control form-control-sm" formControlName="capacidade">
+                  <input type="number" class="form-control form-control-sm" formControlName="capacidade" 
+                  [ngClass]="{'is-invalid': formulario.get('capacidade')?.invalid && formulario.get('capacidade')?.touched}">
+                  <div *ngIf="formulario.get('capacidade')?.invalid && formulario.get('capacidade')?.touched" class="invalid-feedback">
+                    O campo capacidade é obrigatório.
+                  </div>
               </div>
               <div class="col-md-3">
                 <label for="status" class="form-label">Status</label>
-                <select name="status" class="form-select form-select-sm" formControlName="status" id="">
+                <select name="status" class="form-select form-select-sm" formControlName="status" id=""
+                [ngClass]="{'is-invalid': formulario.get('status')?.invalid && formulario.get('status')?.touched}">
                     <option value="A">Ativo</option>
                     <option value="I">Inativo</option>
                 </select>
+                <div *ngIf="formulario.get('status')?.invalid && formulario.get('status')?.touched" class="invalid-feedback">
+                  O campo status é obrigatório.
+                </div>
             </div>
             <div class="col-md-3">
                 <label for="tipo" class="form-label">Tipo</label>
-                <select name="tipo" class="form-select form-select-sm" formControlName="tipo" id="">
+                <select name="tipo" class="form-select form-select-sm" formControlName="tipo" id=""
+                [ngClass]="{'is-invalid': formulario.get('tipo')?.invalid && formulario.get('tipo')?.touched}">
                     <option value="S">Atendimento</option>
                     <option value="C">Reunião</option> 
                 </select>
+                <div *ngIf="formulario.get('tipo')?.invalid && formulario.get('tipo')?.touched" class="invalid-feedback">
+                  O campo tipo é obrigatório.
+                </div>
             </div>
             <div class="col-md-4">
               <label for="horarioFincionamento" class="form-label">Horario de Funcionamento</label>
@@ -45,7 +63,11 @@
           </div>
             <div class="col-md-12">
                 <label for="observacao" class="form-label">Observação</label>
-                <textarea name="observacao"class='form-control form-control-sm' formControlName="observacao" cols="30" rows="10"></textarea>
+                <textarea name="observacao"class='form-control form-control-sm' formControlName="observacao" cols="30" rows="10"
+                [ngClass]="{'is-invalid': formulario.get('observacao')?.invalid && formulario.get('observacao')?.touched}"></textarea>
+                <div *ngIf="formulario.get('observacao')?.invalid && formulario.get('observacao')?.touched" class="invalid-feedback">
+                  O campo observação é obrigatório.
+                </div>
             </div>
           </div>
           </form>

@@ -3,7 +3,7 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
 import { ToastrService } from 'ngx-toastr';
 import { FormaPagamento } from '../../../_module/formaPagamentoModule';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ResponseModel } from '../../../_module/ResponseModule';
 
 @Component({
@@ -14,53 +14,45 @@ import { ResponseModel } from '../../../_module/ResponseModule';
 export class ModalFormaPagamentoComponent {
   constructor(
     private toast: ToastrService,
-    private formaPagamentoService: FormaPagamentoService
-  ) { }
+    private formaPagamentoService: FormaPagamentoService,
+    private fb : FormBuilder
+  ) { 
+    this.formulario = this.fb.group({
+      id : [null],
+      parcelas : [null,Validators.required],
+      descricao :[null, Validators.required]
+    })
+  }
 
   @ViewChild('modalFormaPagamento') modalFormaPagamento?: ElementRef;
   @Input() formaPagamento = {} as FormaPagamento;
   @Output() formaPagamentoAtualizado = new EventEmitter<void>();
+  formulario : FormGroup;
 
-  formulario = new FormGroup({
-    id: new FormControl(),
-    parcelas: new FormControl(),
-    descricao: new FormControl()
-  });
-
-
-  onSubmit() {
-    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    if (this.formulario.valid) {
-      const formaPagamentoToSave: FormaPagamento = this.formulario.value as FormaPagamento;
-      if (formaPagamentoToSave.id) {
-        this.formaPagamentoService.Atualizar(formaPagamentoToSave).subscribe({
-          next: (response: ResponseModel<FormaPagamento>) => {
-            this.toast.success('Forma de Pagamento atualizado com Sucesso', 'Parabéns');
-            this.formaPagamentoAtualizado.emit(); // Emita o evento após a atualização
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um Forma de Pagamento');
-          }
-        });
-      } else {
-        this.formaPagamentoService.Criar(formaPagamentoToSave).subscribe({
-          next: (response: ResponseModel<FormaPagamento>) => {
-            this.toast.success('Forma de Pagamento Criado com sucesso', 'Parabéns');
-            this.formaPagamentoAtualizado.emit(); // Emita o evento após a criação
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            console.error('Erro ao criar Forma de Pagamento:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um Forma de Pagamento');
-          }
-        });
-      }
-    } else {
-      console.error('Formulário inválido');
+  onSubmit(){
+    if(this.formulario.invalid){
+      this.formulario.markAsTouched();
+      this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
+      return;
     }
+
+    const formaPagamentoToSave : FormaPagamento = this.formulario.value as FormaPagamento;
+
+    const saveOperation = formaPagamentoToSave.id
+    ? this.formaPagamentoService.Atualizar(formaPagamentoToSave)
+    : this.formaPagamentoService.Criar(formaPagamentoToSave);
+
+    saveOperation.subscribe({
+      next: () => {
+        const action = formaPagamentoToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Forma de pagamento ${action} com sucesso!`, 'Parabéns');
+        this.formaPagamentoAtualizado.emit();
+        this.fecharModal();
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    })
   }
 
   carregarFormaPagamento(formaPagamento : any) {

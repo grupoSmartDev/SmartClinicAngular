@@ -15,15 +15,28 @@
               </div>
               <div class="col-md-3">
                   <label for="Status" class="form-label">Status</label>
-                  <input type="text" required class="form-control form-control-sm required" formControlName="status" />
+                  <input type="text" required class="form-control form-control-sm required" formControlName="status" 
+                  [ngClass]="{'is-invalid': formulario.get('status')?.invalid && formulario.get('status')?.touched}"
+                  />
+                  <div *ngIf="formulario.get('status')?.invalid && formulario.get('status')?.touched" class="invalid-feedback">
+                    O campo status é obrigatório.
+                  </div>
               </div>
               <div class="col-md-4">
                   <label for="Legenda" class="form-label">Legenda</label>
-                  <input type="text" required class="form-control form-control-sm" formControlName="legenda" />
+                  <input type="text" required class="form-control form-control-sm" formControlName="legenda"
+                  [ngClass]="{'is-invalid': formulario.get('legenda')?.invalid && formulario.get('legenda')?.touched}" />
+                  <div *ngIf="formulario.get('legenda')?.invalid && formulario.get('legenda')?.touched" class="invalid-feedback">
+                    O campo legenda é obrigatório.
+                  </div>
               </div>
               <div class="col-md-3">
                   <label for="Cor" class="form-label">Cor</label>
-                  <input type="color" class="form-control form-control-sm" formControlName="cor">
+                  <input type="color" class="form-control form-control-sm" formControlName="cor"
+                  [ngClass]="{'is-invalid': formulario.get('cor')?.invalid && formulario.get('cor')?.touched}">
+                  <div *ngIf="formulario.get('cor')?.invalid && formulario.get('cor')?.touched" class="invalid-feedback">
+                    O campo cor é obrigatório.
+                  </div>
               </div>
           </div>
           </form>

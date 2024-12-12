@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 import { SalasService } from '../../../_services/salas.service';
 import { ToastrService } from 'ngx-toastr';
 import { Sala } from '../../../_module/salasModule';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ResponseModel } from '../../../_module/ResponseModule';
 
 @Component({
@@ -13,22 +13,25 @@ import { ResponseModel } from '../../../_module/ResponseModule';
 export class ModalSalasComponent {
   constructor(
     private salaService: SalasService,
-    private toast: ToastrService) { }
+    private toast: ToastrService,
+    private fb : FormBuilder) {
+      this.formulario = this.fb.group({
+        id: [null],
+        nome: [null, Validators.required],
+        capacidade: [null, Validators.required],
+        tipo: [null, Validators.required],
+        local: [null],
+        status: [null, Validators.required],
+        horarioFincionamento : [null],
+        observacao: [null, Validators.required],
+
+      })
+   }
 
   @ViewChild('modalSala') modalSala?: ElementRef;
   @Input() sala = {} as Sala;
-  @Output() salaAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
-
-  formulario = new FormGroup({
-    id: new FormControl(),
-    nome: new FormControl(),
-    capacidade: new FormControl(),
-    tipo: new FormControl(),
-    local: new FormControl(),
-    status: new FormControl(),
-    observacao: new FormControl(),
-    horarioFincionamento : new FormControl()
-  });
+  @Output() dataAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
+  formulario : FormGroup;
 
   carregarSala(sala: any) {
     this.formulario.patchValue(this.sala);
@@ -38,39 +41,32 @@ export class ModalSalasComponent {
     this.formulario.reset();
   }
 
-  onSubmit() {
-    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    if (this.formulario.valid) {
-      const salaToSave: Sala = this.formulario.value as Sala;
-      if (salaToSave.id) {
-        this.salaService.Atualizar(salaToSave).subscribe({
-          next: (response: ResponseModel<Sala>) => {
-            this.toast.success('Sala atualizado com Sucesso', 'Parabéns');
-            this.salaAtualizado.emit(); // Emita o evento após a atualização
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar uma Sala');
-          }
-        });
-      } else {
-        this.salaService.Criar(salaToSave).subscribe({
-          next: (response: ResponseModel<Sala>) => {
-            this.toast.success('Status Criado com sucesso', 'Parabéns');
-            this.salaAtualizado.emit(); // Emita o evento após a criação
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            console.error('Erro ao criar sala:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar uma sala');
-          }
-        });
-      }
-    } else {
-      console.error('Formulário inválido');
+  onSubmit(){
+    if(this.formulario.invalid){
+      this.formulario.markAllAsTouched();
+      this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
+      return;
     }
+
+    const dataToSave : Sala = this.formulario.value as Sala;
+
+    const saveOperation = dataToSave.id
+    ? this.salaService.Atualizar(dataToSave)
+    : this.salaService.Criar(dataToSave);
+
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Sala ${action} com sucesso!`, 'Parabéns');
+        this.dataAtualizado.emit();
+        this.fecharModal();
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    })
+
   }
+
 
 }

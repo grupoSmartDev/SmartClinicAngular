@@ -3,7 +3,7 @@ import { SubCentroDeCustoService } from '../../../_services/sub-centro-de-custo.
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { SubCentroDeCusto } from '../../../_module/subCentroDeCustoModule';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ResponseModel } from '../../../_module/ResponseModule';
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
@@ -18,60 +18,53 @@ export class ModalSubCentroDeCustoComponent {
     private subCentroDeCustoService: SubCentroDeCustoService,
     private toast: ToastrService,
     private router: Router,
-    private centroDeCustoService: CentroDeCustoService
-  ) { }
+    private centroDeCustoService: CentroDeCustoService,
+    private fb : FormBuilder
+  ) { 
+    this.formulario = fb.group({
+      id: [null],
+      nome: [null, Validators.required],
+      centroCustoId: [null, Validators.required]
+    })
+  }
 
   @ViewChild('modalSubCentroDeCusto') modalSubCentroDeCusto?: ElementRef;
   @Input() subCentroDeCusto = {} as SubCentroDeCusto;
   @Output() dataAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
-
+  formulario : FormGroup;
   listaCentroDeCusto: CentroDeCusto[] = [];
 
-  formulario = new FormGroup({
-    id: new FormControl(),
-    nome: new FormControl(),
-    centroCustoId: new FormControl()
-  })
 
   ngOnInit() {
     this.carregarCC();
   }
 
-  onSubmit() {
-    
-    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    if (this.formulario.valid) {
-      const subCentroDeCustoToSave: SubCentroDeCusto = this.formulario.value as SubCentroDeCusto;
-      if (subCentroDeCustoToSave.id) {
-        this.subCentroDeCustoService.Atualizar(subCentroDeCustoToSave).subscribe({
-          next: (response: ResponseModel<SubCentroDeCusto>) => {
-            this.toast.success('Centro de custo atualizado com Sucesso', 'Parabéns');
-            this.dataAtualizado.emit(); // Emita o evento após a atualização
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar Centro de custo');
-          }
-        });
-      } else {
-        this.subCentroDeCustoService.Criar(subCentroDeCustoToSave).subscribe({
-          next: (response: ResponseModel<SubCentroDeCusto>) => {
-            this.toast.success('Centro de custo Criado com sucesso', 'Parabéns');
-            this.dataAtualizado.emit(); // Emita o evento após a criação
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            console.error('Erro ao criar Centro de custo:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar Centro de custo');
-          }
-        });
-      }
-    } else {
-      console.error('Formulário inválido');
+  onSubmit(){
+    if(this.formulario.invalid){
+      this.formulario.markAllAsTouched();
+      this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');
+      return;
     }
+
+    const dataToSave : SubCentroDeCusto = this.formulario.value as SubCentroDeCusto;
+
+    const saveOperation = dataToSave.id
+      ? this.subCentroDeCustoService.Atualizar(dataToSave)
+      : this.subCentroDeCustoService.Criar(dataToSave);
+
+      saveOperation.subscribe({
+        next: () => {
+          const action = dataToSave.id ? 'atualizado' : 'criado';
+          this.toast.success(`Sub Centro de custo ${action} com sucesso!`, 'Parabéns');
+          this.dataAtualizado.emit();
+          this.fecharModal();
+        },
+        error: () => {
+          this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+        },
+      })
   }
+
 
   carregarData(centroDeCusto: any) {
     this.formulario.patchValue(this.subCentroDeCusto);

@@ -2,9 +2,10 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 import { BancoService } from '../../../_services/banco.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Banco } from '../../../_module/bancoModule';
 import { ResponseModel } from '../../../_module/ResponseModule';
+import { id } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-modal-banco',
@@ -15,30 +16,59 @@ export class ModalBancoComponent {
   constructor(
     private bancoService: BancoService,
     private toast: ToastrService,
-    private router: Router) { }
+    private router: Router, 
+  private fb : FormBuilder) {
+    this.formulario = fb.group({
+      id : [null],
+      nomeBanco: [null, Validators.required],
+      codigo : [null, Validators.required],
+      agencia : [null, Validators.required],
+      numeroConta : [null, Validators.required],
+      tipoConta: [null, Validators.required],
+      nomeTitular: [null, Validators.required],
+      documentoTitular: [null, Validators.required],
+      saldoInicial: [null, Validators.required],
+      ativo: [null, Validators.required],
+      codigoConvenio: [null],
+      carteira: [null],
+      variacaoCarteira: [null],
+      codigoBeneficiario: [null],
+      numeroContrato: [null],
+      codigoTransmissao: [null],
+    })
+   }
 
   @ViewChild('modalBanco') modalBanco?: ElementRef;
   @Input() banco = {} as Banco;
   @Output() bancoAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
+  formulario : FormGroup;
 
-  formulario = new FormGroup({
-    id: new FormControl(),
-    nomeBanco: new FormControl(),
-    codigo: new FormControl(),
-    agencia: new FormControl(),
-    numeroConta: new FormControl(),
-    tipoConta: new FormControl(),
-    nomeTitular: new FormControl(),
-    documentoTitular: new FormControl(),
-    saldoInicial: new FormControl(),
-    ativo: new FormControl(),
-    codigoConvenio: new FormControl(),
-    carteira: new FormControl(),
-    variacaoCarteira: new FormControl(),
-    codigoBeneficiario: new FormControl(),
-    numeroContrato: new FormControl(),
-    codigoTransmissao: new FormControl(),
-  });
+   onSubmi(){
+    if(this.formulario.invalid){
+      this.formulario.markAllAsTouched();
+      this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
+      return;
+    }
+
+    const dataToSave : Banco = this.formulario.value as Banco;
+
+    const saveOperation = dataToSave.id 
+    ? this.bancoService.Atualizar(dataToSave) 
+    : this.bancoService.Criar(dataToSave);
+
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Banco ${action} com sucesso!`, 'Parabéns');
+        this.bancoAtualizado.emit();
+        this.fecharModal();
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
+
+   }
 
   onSubmit() {
     const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;

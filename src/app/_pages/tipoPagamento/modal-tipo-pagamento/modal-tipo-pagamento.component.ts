@@ -3,7 +3,7 @@ import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service'
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ResponseModel } from '../../../_module/ResponseModule';
 
 @Component({
@@ -12,54 +12,57 @@ import { ResponseModel } from '../../../_module/ResponseModule';
   styleUrl: './modal-tipo-pagamento.component.css'
 })
 export class ModalTipoPagamentoComponent {
+  @ViewChild('modalTipoPagamento') modalTipoPagamento?: ElementRef;
+  @Input() tipoPagamento = {} as TipoPagamento;
+  @Output() tipoDePagamentoAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
+  formulario : FormGroup;
+
+
   constructor(
     private tipoPagamentoService: TipoPagamentoService,
     private toast: ToastrService,
-    private router: Router) { }
+    private router: Router,
+    private fb : FormBuilder) {
+      this.formulario = this.fb.group({
+        id: [null],
+        descricao: [null, Validators.required]
+      });
+     }
 
-    @ViewChild('modalTipoPagamento') modalTipoPagamento?: ElementRef;
-    @Input() tipoPagamento = {} as TipoPagamento;
-    @Output() tipoDePagamentoAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
-  
-    formulario = new FormGroup({
-      id: new FormControl(),
-      descricao: new FormControl()
-    });
-
-    onSubmit() {
-      const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-      if (this.formulario.valid) {
-        const tipoPagamentoToSave: TipoPagamento = this.formulario.value as TipoPagamento;
-        if (tipoPagamentoToSave.id) {
-          this.tipoPagamentoService.EditarTipoPagamento(tipoPagamentoToSave).subscribe({
-            next: (response: ResponseModel<TipoPagamento>) => {
-              this.toast.success('Tipo de pagamento atualizado com Sucesso', 'Parabéns');
-              this.tipoDePagamentoAtualizado.emit(); // Emita o evento após a atualização
-              btnCacelar.click();
-              this.fecharModal();
-            },
-            error: (err) => {
-              this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um Tipo de pagamento');
-            }
-          });
-        } else {
-          this.tipoPagamentoService.CriarTipoPagamento(tipoPagamentoToSave).subscribe({
-            next: (response: ResponseModel<TipoPagamento>) => {
-              this.toast.success('Tipo de pagamento Criado com sucesso', 'Parabéns');
-              this.tipoDePagamentoAtualizado.emit(); // Emita o evento após a criação
-              btnCacelar.click();
-              this.fecharModal();
-            },
-            error: (err) => {
-              console.error('Erro ao criar status:', err);
-              this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um Tipo de pagamento');
-            }
-          });
-        }
-      } else {
-        console.error('Formulário inválido');
+     onSubmit(){
+      //no submit, primeiro começamos com uma validação do formulario
+      //marcamos os campos como tocados para exibir o erro 
+      //chamamos o toast com mensagem de erro de preenchimento obrigatio. 
+      if (this.formulario.invalid) {
+        this.formulario.markAllAsTouched(); // Marca todos os campos como tocados para exibir os erros.
+        this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');
+        return;
       }
-    }
+
+      //criamos uma variavel do tipo que vamos salvar e passamos o formularios para ela
+      const dataToSave : TipoPagamento = this.formulario.value as TipoPagamento;
+
+      //verificamos se dataToSave possui um id, se sim, ele recebe o editar, se nao o criar e passa a data como parametro
+      const saveOperation = dataToSave.id
+        ? this.tipoPagamentoService.EditarTipoPagamento(dataToSave)
+        : this.tipoPagamentoService.CriarTipoPagamento(dataToSave);
+
+        //trabalhamos com o subscribe depois de ver se vai criar ou editar
+
+        saveOperation.subscribe({
+          next: () => {
+            const action = dataToSave.id ? 'atualizado' : 'criado';
+            this.toast.success(`Tipo de pagamento ${action} com sucesso!`, 'Parabéns');
+            this.tipoDePagamentoAtualizado.emit();
+            this.fecharModal();
+          },
+          error: () => {
+            this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+          },
+        });
+
+      
+     }
 
     carregarTipoPagamento(tipoPagamento: any) {
       this.formulario.patchValue(this.tipoPagamento);

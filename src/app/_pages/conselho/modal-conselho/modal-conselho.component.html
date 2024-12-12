@@ -41,7 +41,11 @@
                 required
                 class="form-control form-control-sm required"
                 formControlName="nome"
+                [ngClass]="{'is-invalid' : formulario.get('nome')?.invalid && formulario.get('nome')?.touched}"
               />
+              <div *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="invalid-feedback">
+                O campo nome é obrigatório.
+              </div>
             </div>
             <div class="col-md-3">
               <label for="sigla" class="form-label">Sigla</label>
@@ -50,7 +54,11 @@
                 required
                 class="form-control form-control-sm"
                 formControlName="sigla"
+                [ngClass]="{'is-invalid' : formulario.get('sigla')?.invalid && formulario.get('sigla')?.touched}"
               />
+              <div *ngIf="formulario.get('sigla')?.invalid && formulario.get('sigla')?.touched" class="invalid-feedback">
+                O campo sigla é obrigatório.
+              </div>
             </div>
             
           </div>

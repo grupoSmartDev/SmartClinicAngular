@@ -3,7 +3,7 @@ import { CategoriaService } from '../../../_services/categoria.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { Categoria } from '../../../_module/categoriaModule';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ResponseModel } from '../../../_module/ResponseModule';
 
 @Component({
@@ -15,52 +15,41 @@ export class ModalCategoriaComponent {
   constructor(
     private categoriaService: CategoriaService,
     private toast: ToastrService,
-    private router: Router) { }
+    private router: Router,
+    private fb : FormBuilder) {
+      this.formulario = this.fb.group({
+        id: [null],
+        descricao: [null, Validators.required]
+      });
+     }
 
     @ViewChild('modalCategoria') modalCategoria?: ElementRef;
     @Input() categoria = {} as Categoria;
     @Input() nomeModal? : string;
     @Output() DadosAtualizados = new EventEmitter<void>(); // Adicione este EventEmitter
-  
-    formulario = new FormGroup({
-      id: new FormControl(),
-      descricao: new FormControl()
-    });
+    formulario : FormGroup;
 
-    onSubmit() {
-      const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-      if (this.formulario.valid) {
-        const dadosToSave: Categoria = this.formulario.value as Categoria;
-        if (dadosToSave.id) {
-          this.categoriaService.Atualizar(dadosToSave).subscribe({
-            next: (response: ResponseModel<Categoria>) => {
-              this.toast.success('Tipo de pagamento atualizado com Sucesso', 'Parabéns');
-              this.DadosAtualizados.emit(); // Emita o evento após a atualização
-              btnCacelar.click();
-              this.fecharModal();
-            },
-            error: (err) => {
-              this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um Tipo de pagamento');
-            }
-          });
-        } else {
-          this.categoriaService.Criar(dadosToSave).subscribe({
-            next: (response: ResponseModel<Categoria>) => {
-              this.toast.success('Tipo de pagamento Criado com sucesso', 'Parabéns');
-              this.DadosAtualizados.emit(); // Emita o evento após a criação
-              btnCacelar.click();
-              this.fecharModal();
-            },
-            error: (err) => {
-              console.error('Erro ao criar status:', err);
-              this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um Tipo de pagamento');
-            }
-          });
-        }
-      } else {
-        console.error('Formulário inválido');
+     onSubmit(){
+      if(this.formulario.invalid){
+        this.formulario.markAllAsTouched();
+        this.toast.error('Por favor, preencha todos os campos obrigatórios', 'Erro');
+        return;
       }
-    }
+      const dataToSave : Categoria = this.formulario.value as Categoria;
+      const saveOperation = dataToSave.id ? this.categoriaService.Atualizar(dataToSave) : this.categoriaService.Criar(dataToSave);
+
+      saveOperation.subscribe({
+        next: () => {
+          const action = dataToSave.id ? 'atualizado' : 'criado';
+          this.toast.success(`Categoria ${action} com sucesso!`, 'Parabéns');
+          this.DadosAtualizados.emit();
+          this.fecharModal();
+        },
+        error: () => {
+          this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+        },
+      });
+     }
 
     carregarDados(categoria: any) {
       this.formulario.patchValue(this.categoria);

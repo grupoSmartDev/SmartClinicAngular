@@ -15,42 +15,81 @@
               </div>
               <div class="col-md-4">
                 <label for="nomeBanco" class="form-label">Nome Banco</label>
-                <input type="text" required class="form-control form-control-sm" formControlName="nomeBanco" />
+                <input type="text" required class="form-control form-control-sm" formControlName="nomeBanco" 
+                [ngClass]="{ 'is-invalid': formulario.get('nomeBanco')?.invalid && formulario.get('nomeBanco')?.touched }"/>
+                <div *ngIf="formulario.get('nomeBanco')?.invalid && formulario.get('nomeBanco')?.touched" class="invalid-feedback">
+                  O campo nome é obrigatório.
+                </div>
               </div>
               <div class="col-md-3">
                 <label for="codigo" class="form-label">Código</label>
-                <input type="text" class="form-control form-control-sm" formControlName="codigo" />
+                <input type="text" class="form-control form-control-sm" formControlName="codigo" 
+                [ngClass]="{ 'is-invalid': formulario.get('codigo')?.invalid && formulario.get('codigo')?.touched }"/>
+                <div *ngIf="formulario.get('codigo')?.invalid && formulario.get('codigo')?.touched" class="invalid-feedback">
+                  O campo código é obrigatório.
+                </div>
               </div>
               <div class="col-md-3">
                 <label for="agencia" class="form-label">Agência</label>
-                <input type="text" class="form-control form-control-sm" formControlName="agencia" />
+                <input type="text" class="form-control form-control-sm" formControlName="agencia" 
+                [ngClass]="{ 'is-invalid': formulario.get('agencia')?.invalid && formulario.get('agencia')?.touched }"/>
+                <div *ngIf="formulario.get('agencia')?.invalid && formulario.get('agencia')?.touched" class="invalid-feedback">
+                  O campo agência é obrigatório.
+                </div>
               </div>
               <div class="col-md-4">
                 <label for="numeroConta" class="form-label">Número da Conta</label>
-                <input type="text" class="form-control form-control-sm" formControlName="numeroConta" />
+                <input type="text" class="form-control form-control-sm" formControlName="numeroConta" 
+                [ngClass]="{ 'is-invalid': formulario.get('numeroConta')?.invalid && formulario.get('numeroConta')?.touched }"/>
+                   <div *ngIf="formulario.get('numeroConta')?.invalid && formulario.get('numeroConta')?.touched" class="invalid-feedback">
+                  O campo número da conta é obrigatório.
+                </div>
               </div>
               <div class="col-md-4">
                 <label for="tipoConta" class="form-label">Tipo de Conta</label>
-                <select class="form-select form-select-sm" formControlName="tipoConta">
+                <select class="form-select form-select-sm" formControlName="tipoConta"
+                [ngClass]="{ 'is-invalid': formulario.get('tipoConta')?.invalid && formulario.get('tipoConta')?.touched }">
                   <option value="Poupanca">Poupança</option>
                   <option value="Corrente">Conta Corrente</option>
                 </select>
+                <div *ngIf="formulario.get('tipoConta')?.invalid && formulario.get('tipoConta')?.touched" class="invalid-feedback">
+                  O campo tipo é obrigatório.
+                </div>
               </div>
               <div class="col-md-4">
                 <label for="nomeTitular" class="form-label">Nome do Titular</label>
-                <input type="text" class="form-control form-control-sm" formControlName="nomeTitular" />
+                <input type="text" class="form-control form-control-sm" formControlName="nomeTitular" 
+                [ngClass]="{ 'is-invalid': formulario.get('nomeTitular')?.invalid && formulario.get('nomeTitular')?.touched }"/>
+                <div *ngIf="formulario.get('nomeTitular')?.invalid && formulario.get('nomeTitular')?.touched" class="invalid-feedback">
+                  O campo nome do titular é obrigatório.
+                </div>
               </div>
               <div class="col-md-4">
                 <label for="documentoTitular" class="form-label">Documento do Titular</label>
-                <input type="text" class="form-control form-control-sm" formControlName="documentoTitular" />
+                <input type="text" class="form-control form-control-sm" formControlName="documentoTitular" 
+                placeholder="Digite o CPF"
+                mask="000.000.000-00"
+                [ngClass]="{ 'is-invalid': formulario.get('documentoTitular')?.invalid && formulario.get('documentoTitular')?.touched }"/>
+                <div *ngIf="formulario.get('documentoTitular')?.invalid && formulario.get('documentoTitular')?.touched" class="invalid-feedback">
+                  O campo documento titular é obrigatório.
+                </div>
               </div>
               <div class="col-md-4">
                 <label for="saldoInicial" class="form-label">Saldo Inicial</label>
-                <input type="number" class="form-control form-control-sm" formControlName="saldoInicial" />
+                <input type="number" class="form-control form-control-sm" formControlName="saldoInicial" 
+               
+                [ngClass]="{ 'is-invalid': formulario.get('saldoInicial')?.invalid && formulario.get('saldoInicial')?.touched }"/>
+                <div *ngIf="formulario.get('saldoInicial')?.invalid && formulario.get('saldoInicial')?.touched" class="invalid-feedback">
+                  O campo saldo inicial é obrigatório.
+                </div>
               </div>
               <div class="col-md-2">
                 <label for="ativo" class="form-label">Ativo</label>
-                <input type="checkbox" class="form-check-input" formControlName="ativo" />
+                <input type="checkbox" class="form-check-input" formControlName="ativo" 
+                [ngClass]="{ 'is-invalid': formulario.get('ativo')?.invalid && formulario.get('ativo')?.touched }"/>
+                <div *ngIf="formulario.get('ativo')?.invalid && formulario.get('ativo')?.touched" class="invalid-feedback">
+                  O campo é obrigatório.
+                </div>
               </div>
               <div class="col-md-4">
                 <label for="codigoConvenio" class="form-label">Código Convênio</label>

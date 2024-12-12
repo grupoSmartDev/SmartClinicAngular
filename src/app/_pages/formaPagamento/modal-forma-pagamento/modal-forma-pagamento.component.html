@@ -15,11 +15,25 @@
               </div>
               <div class="col-md-3">
                   <label for="parcelas" class="form-label">Parcelas</label>
-                  <input type="text" required class="form-control form-control-sm required" formControlName="parcelas" />
+                  <input type="text"
+                   required class="form-control form-control-sm required"
+                   formControlName="parcelas"
+                   [ngClass]="{'is-invalid' : formulario.get('parcelas')?.invalid && formulario.get('parcelas')?.touched}" />
+                  <div *ngIf="formulario.get('parcelas')?.invalid && formulario.get('parcelas')?.touched" class="invalid-feedback">
+                    O campo parcelas é obrigatório
+                  </div>
               </div>
               <div class="col-md-7">
                   <label for="descricao" class="form-label">Descricao</label>
-                  <input type="text" required class="form-control form-control-sm" formControlName="descricao" />
+                  <input type="text"
+                  required class="form-control form-control-sm"
+                  formControlName="descricao"
+                  [ngClass]="{'is-invalid' : formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched}" />
+                
+                  <div *ngIf="formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched" class="invalid-feedback">
+                    O campo descricao é obrigatório
+                  </div>
+                  
               </div>
           </div>
           </form>
