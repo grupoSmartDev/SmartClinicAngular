@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, input } from '@angular/core';
 import { Plano } from '../../../_module/planoModule';
 import { ToastrService } from 'ngx-toastr';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Paciente } from '../../../_module/pacienteModule';
 import { ResponseModel } from '../../../_module/ResponseModule';
 import { PlanoService } from '../../../_services/plano.service';
@@ -11,7 +11,7 @@ import { PlanoService } from '../../../_services/plano.service';
   templateUrl: './modal-planos.component.html',
   styleUrl: './modal-planos.component.css'
 })
-export class ModalPlanosComponent implements OnInit{
+export class ModalPlanosComponent{
   @Input() data = {} as Plano;
   @Output() dadosAtualizados = new EventEmitter<void>();
 
@@ -19,39 +19,32 @@ export class ModalPlanosComponent implements OnInit{
   constructor(private toast: ToastrService,
     private planoService: PlanoService,
     private fb : FormBuilder
-  ) { }
+  ) { 
+
+    this.formulario = this.fb.group({
+      id : [null],
+      descricao : [null, Validators.required],
+      tempoMinutos : [0],
+      diasSemana : [1, Validators.required],
+      centroDeCustoId : [null],
+      valorBimestral : [0, [Validators.required, Validators.min(0)]],
+      valorTrimestral : [0, [Validators.required, Validators.min(0)]],
+      valorQuadrimestral : [0, [Validators.required, Validators.min(0)]],
+      valorSemestral : [0, [Validators.required, Validators.min(0)]],
+      valorAnual : [0, [Validators.required, Validators.min(0)]],
+      valorMensal : [0, [Validators.required, Validators.min(0)]],
+      data : [null],
+      pacienteId : [null],
+      financeiroId : [null],
+      tipoMes : ['a']
+    })
+  }
 
   formulario! : FormGroup;
   valorMensalCalculado : string = '';
   
 
-  criarFormulario(){
-    this.formulario = this.fb.group({
-      id : [''],
-      descricao : [''],
-      tempoMinutos : [0],
-      diasSemana : [1],
-      centroDeCustoId : [''],
-      valorBimestral : [0],
-      valorTrimestral : [0],
-      valorQuadrimestral : [0],
-      valorSemestral : [0],
-      valorAnual : [0],
-      valorMensal : [0],
-      data : [''],
-      pacienteId : [''],
-      financeiroId : [''],
-      tipoMes : ['a']
 
-    })
-  }
-
-  
-  ngOnInit(){
-    this.criarFormulario();
-
-   
-  }
   
   calculoValorMensal(event:any){
     this.formulario.get('valorMensal')?.valueChanges.subscribe((valorMensal: number) => {
@@ -64,49 +57,42 @@ export class ModalPlanosComponent implements OnInit{
   }
   
 
+onSubmit(){
 
-
-  onSubmit() {
-    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    console.log(this.formulario.value);
-    if (this.formulario.valid) {
-      const dadosToSave: Plano = this.formulario.value as Plano;
-      if (dadosToSave.id) {
-        this.planoService.Atualizar(dadosToSave).subscribe({
-          next: (response: ResponseModel<Plano>) => {
-            this.toast.success('plano atualizado com Sucesso', 'Parabéns');
-            this.dadosAtualizados.emit(); // Emita o evento após a atualização
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um plano');
-          }
-        });
-      } else {
-        this.planoService.Criar(dadosToSave).subscribe({
-          next: (response: ResponseModel<Plano>) => {
-            this.toast.success('plano Criado com sucesso', 'Parabéns');
-            this.dadosAtualizados.emit(); // Emita o evento após a criação
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            console.error('Erro ao criar plano:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um plano');
-          }
-        });
-      }
-    } else {
-      console.error('Formulário inválido');
-    }
+  if(this.formulario.invalid){
+    this.formulario.markAllAsTouched();
+    this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');
+    return;
   }
+
+  const dataToSave = this.formulario.value as Plano;
+
+  const saveOperation = dataToSave.id
+    ? this.planoService.Atualizar(dataToSave)
+    : this.planoService.Criar(dataToSave);
+
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Plano ${action} com sucesso!`, 'Parabéns');
+        this.dadosAtualizados.emit();
+        this.fecharModal();
+
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
+}
+
 
   carregarDados(plano: any) {
     this.formulario.patchValue(this.data);
   }
 
   fecharModal() {
+    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
     this.formulario.reset();
+    btnCacelar.click();
   }
 }

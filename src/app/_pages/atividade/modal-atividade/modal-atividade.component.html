@@ -14,8 +14,13 @@
                   <input type="text" class="form-control form-control-sm" id="Id" readonly formControlName="id" />
               </div>
               <div class="col-md-8">
-                  <label for="nome" class="form-label">Atividade</label>
-                  <input type="text" required class="form-control form-control-sm required" formControlName="titulo" />
+                  <label for="titulo" class="form-label">Atividade</label>
+                  <input type="text" required class="form-control form-control-sm required" formControlName="titulo" 
+                  [ngClass]="{'is-invalid' : formulario.get('titulo')?.invalid && formulario.get('titulo')?.touched}"
+                  >
+                  <div *ngIf="formulario.get('titulo')?.invalid && formulario.get('titulo')?.touched" class="invalid-feedback">
+                    O campo titulo é obrigatório.
+                  </div>
               </div>
               <div class="col-md-2">
                   <label for="capacidade" class="form-label">tempo</label>

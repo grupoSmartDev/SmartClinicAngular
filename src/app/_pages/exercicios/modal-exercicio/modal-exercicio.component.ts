@@ -10,74 +10,64 @@ import { ResponseModel } from '../../../_module/ResponseModule';
   templateUrl: './modal-exercicio.component.html',
   styleUrl: './modal-exercicio.component.css'
 })
-export class ModalExercicioComponent implements OnInit{
+export class ModalExercicioComponent {
   constructor(
     private exercicioService: ExercicioService,
     private toast: ToastrService,
-    private fb : FormBuilder) { }
+    private fb : FormBuilder) {
+      this.formulario = this.fb.group({
+        id : [null],
+        titulo : [null, Validators.required],
+        descricao : [null],
+        tempo : [null],
+        repeticoes : [null],
+        series : [null],
+        evolucaoId : [null]
+      })
+     }
 
-  @ViewChild('modalSala') modalSala?: ElementRef;
+  @ViewChild('modalEditarCriar') modalEditarCriar?: ElementRef;
   @Input() data = {} as Exercicio;
-  @Output() exercicioAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
+  @Output() dadosAtualizados = new EventEmitter<void>(); // Adicione este EventEmitter
 
   formulario! : FormGroup;
 
-    ngOnInit(): void {
-      this.criarFormulario();
-    }
-
-  criarFormulario() : void{
-    this.formulario = this.fb.group({
-      id : [''],
-      titulo : ['', Validators.required],
-      descricao : [''],
-      tempo : [],
-      repeticoes : [],
-      series : []
-    })
-  }
 
   carregarDados(exercicio: any) {
     this.formulario.patchValue(this.data);
   }
 
   fecharModal() {
+    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
     this.formulario.reset();
+    btnCacelar.click();
   }
 
-  onSubmit() {
-    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    if (this.formulario.valid) {
-      const exercicioToSave: Exercicio = this.formulario.value as Exercicio;
-      if (exercicioToSave.id) {
-        this.exercicioService.Atualizar(exercicioToSave).subscribe({
-          next: (response: ResponseModel<Exercicio>) => {
-            this.toast.success('exercicio atualizado com Sucesso', 'Parabéns');
-            this.exercicioAtualizado.emit(); // Emita o evento após a atualização
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar uma Sala');
-          }
-        });
-      } else {
-        this.exercicioService.Criar(exercicioToSave).subscribe({
-          next: (response: ResponseModel<Exercicio>) => {
-            this.toast.success('Exercicio Criado com sucesso', 'Parabéns');
-            this.exercicioAtualizado.emit(); // Emita o evento após a criação
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            console.error('Erro ao criar exercicio:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar uma exercicio');
-          }
-        });
-      }
-    } else {
-      console.error('Formulário inválido');
+  onSubmit(){
+    if(this.formulario.invalid){
+      this.formulario.markAllAsTouched();
+      this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');
+      return;
     }
+  
+    const dataToSave = this.formulario.value as Exercicio;
+  
+    const saveOperation = dataToSave.id
+      ? this.exercicioService.Atualizar(dataToSave)
+      : this.exercicioService.Criar(dataToSave);
+  
+      saveOperation.subscribe({
+        next: () => {
+          const action = dataToSave.id ? 'atualizado' : 'criado';
+          this.toast.success(`Exercicio ${action} com sucesso!`, 'Parabéns');
+          this.dadosAtualizados.emit();
+          this.fecharModal();
+  
+        },
+        error: () => {
+          this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+        },
+      });
   }
 
   testeEnvio(){
