@@ -22,7 +22,7 @@ export class ModalProfissionalComponent {
   ) { 
     this.formulario = this.fb.group({
       id: [null],
-      email: [null,Validators.required, Validators.email],
+      email: [null, [Validators.required, Validators.email]],
       nome: [null,Validators.required],
       cpf: [null,Validators.required],
       celular: [null, Validators.required],
@@ -80,7 +80,7 @@ export class ModalProfissionalComponent {
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
         if(dataToSave.id && dataToSave.ehUsuario){
-            this.criarUsuarioParaProfissional(dataToSave);
+           // this.criarUsuarioParaProfissional(dataToSave);
         }
         this.toast.success(`Conselho ${action} com sucesso!`, 'Parabéns');
         this.dataAtualizado.emit();
@@ -144,4 +144,6 @@ export class ModalProfissionalComponent {
     const usuario = this.formulario.get('ehUsuario')?.value == 'true' ? true : false;
     this.exibirCamposUsuario = usuario;
   }
+
+
 }

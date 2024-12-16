@@ -53,6 +53,19 @@
               </div>
             </div>
 
+            <div class="col-md-5">
+              <label for="email" class="form-label">E-mail</label>
+              <input
+                type="email"
+                class="form-control form-control-sm"
+                formControlName="email"
+                [ngClass]="{'is-invalid' : formulario.get('email')?.invalid && formulario.get('email')?.touched}"
+                />
+                <div *ngIf="formulario.get('email')?.invalid && formulario.get('email')?.touched" class="invalid-feedback">
+                  O campo E-mail é obrigatório.
+                </div>
+            </div>
+
             <div class="col-md-3">
               <label for="cpf" class="form-label">CPF</label>
               <input
@@ -68,7 +81,7 @@
                 </div>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-md-3">
               <label for="sexo" class="form-label">Sexo</label>
               <select
                 class="form-select form-select-sm"
@@ -80,18 +93,7 @@
               </select>
             </div>
 
-            <div class="col-md-4">
-              <label for="email" class="form-label">E-mail</label>
-              <input
-                type="email"
-                class="form-control form-control-sm"
-                formControlName="email"
-                [ngClass]="{'is-invalid' : formulario.get('email')?.invalid && formulario.get('email')?.touched}"
-                />
-                <div *ngIf="formulario.get('email')?.invalid && formulario.get('email')?.touched" class="invalid-feedback">
-                  O campo E-mail é obrigatório.
-                </div>
-            </div>
+      
 
             <div class="col-md-3">
               <label for="celular" class="form-label">Celular</label>

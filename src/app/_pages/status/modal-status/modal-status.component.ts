@@ -31,6 +31,9 @@ export class ModalStatusComponent {
   formulario: FormGroup;
 
   onSubmit(){
+
+    const btnFechar = document.getElementById('btnCancelar') as HTMLButtonElement;
+
     if(this.formulario.invalid){
         this.formulario.markAllAsTouched();
         this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
@@ -48,6 +51,7 @@ export class ModalStatusComponent {
             const action = dataToSave.id ? 'atualizado' : 'criado';
             this.toast.success(`Status ${action} com sucesso!`, 'Parabéns');
             this.statusAtualizado.emit();
+            btnFechar.click();
             this.fecharModal();
           },
           error: () => {
