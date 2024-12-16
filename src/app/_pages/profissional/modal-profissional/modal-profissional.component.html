@@ -46,7 +46,11 @@
                 type="text"
                 class="form-control form-control-sm"
                 formControlName="nome"
+                [ngClass]="{'is-invalid' : formulario.get('nome')?.invalid && formulario.get('nome')?.touched}"
               />
+              <div *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="invalid-feedback">
+                O campo nome é obrigatório.
+              </div>
             </div>
 
             <div class="col-md-3">
@@ -56,7 +60,12 @@
                 class="form-control form-control-sm"
                 formControlName="cpf"
                 mask="000.000.000-00"
-              />
+                placeholder="000.000.000-00"
+                [ngClass]="{'is-invalid' : formulario.get('cpf')?.invalid && formulario.get('cpf')?.touched}"
+                />
+                <div *ngIf="formulario.get('cpf')?.invalid && formulario.get('cpf')?.touched" class="invalid-feedback">
+                  O campo CPF é obrigatório.
+                </div>
             </div>
 
             <div class="col-md-2">
@@ -77,7 +86,11 @@
                 type="email"
                 class="form-control form-control-sm"
                 formControlName="email"
-              />
+                [ngClass]="{'is-invalid' : formulario.get('email')?.invalid && formulario.get('email')?.touched}"
+                />
+                <div *ngIf="formulario.get('email')?.invalid && formulario.get('email')?.touched" class="invalid-feedback">
+                  O campo E-mail é obrigatório.
+                </div>
             </div>
 
             <div class="col-md-3">
@@ -87,7 +100,11 @@
                 class="form-control form-control-sm"
                 formControlName="celular"
                 mask="(00) 00000-0000"
-              />
+                [ngClass]="{'is-invalid' : formulario.get('celular')?.invalid && formulario.get('celular')?.touched}"
+                />
+                <div *ngIf="formulario.get('celular')?.invalid && formulario.get('celular')?.touched" class="invalid-feedback">
+                  O campo Celular é obrigatório.
+                </div>
             </div>
 
             <!-- Informações de Registro -->
@@ -238,25 +255,18 @@
             </div>
 
             <div class="col-md-2">
-              <label for="ehUsuario" class="form-label">É Usuário?</label>
+              <label for="ehUsuario" class="form-label">Usuário?</label>
               <select
                 class="form-select form-select-sm"
                 formControlName="ehUsuario"
+                (change)="campoParaUsuario()"
               >
                 <option value="true">Sim</option>
                 <option value="false">Não</option>
               </select>
             </div>
-
-            <div class="col-md-3">
-              <label for="dataCadastro" class="form-label">Data de Cadastro</label>
-              <input
-                type="date"
-                class="form-control form-control-sm"
-                formControlName="dataCadastro"
-              />
-            </div>
           </div>
+
         </form>
       </div>
       <div class="modal-footer">

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Convenio } from '../../../_module/convenioModule';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConvenioService } from '../../../_services/convenio.service';
 import { ToastrService } from 'ngx-toastr';
 import { ResponseModel } from '../../../_module/ResponseModule';
@@ -15,54 +15,33 @@ export class ModalConvenioComponent {
   @Output() convenioAtualizado = new EventEmitter<void>();
 
   constructor(private toast: ToastrService,
-    private convenioService: ConvenioService
-  ) { }
+    private convenioService: ConvenioService,
+    private fb : FormBuilder
+  ) {
+    this.formulario = this.fb.group({
+      id: [null],
+      nome: [null, Validators.required],
+      registroAvs: [null, Validators.required],
+      periodoCarencia: [null, Validators.required],
+      telefone: [null, Validators.required],
+      email: [null, Validators.required],
+      ativo: [false]
+    })
+   }
 
-  formulario = new FormGroup({
-    id: new FormControl(),
-    nome: new FormControl(''),
-    registroAvs: new FormControl(''),
-    periodoCarencia: new FormControl(''),
-    telefone: new FormControl(''),
-    email: new FormControl(''),
-    ativo: new FormControl(false),
+  formulario : FormGroup;
 
-  })
-
-  onSubmit() {
-    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    console.log(this.formulario.value);
-    if (this.formulario.valid) {
-      const convenioToSave: Convenio = this.formulario.value as Convenio;
-      if (convenioToSave.id) {
-        this.convenioService.Atualizar(convenioToSave).subscribe({
-          next: (response: ResponseModel<Convenio>) => {
-            this.toast.success('Convênio atualizado com Sucesso', 'Parabéns');
-            this.convenioAtualizado.emit(); // Emita o evento após a atualização
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um Convênio');
-          }
-        });
-      } else {
-        this.convenioService.Criar(convenioToSave).subscribe({
-          next: (response: ResponseModel<Convenio>) => {
-            this.toast.success('Convênio Criado com sucesso', 'Parabéns');
-            this.convenioAtualizado.emit(); // Emita o evento após a criação
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            console.error('Erro ao criar Convênio:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um Convênio');
-          }
-        });
-      }
-    } else {
-      console.error('Formulário inválido');
+  onSubmit(){
+    if(this.formulario.invalid){
+      this.formulario.markAllAsTouched();
+      this.toast.error('Por favor, preencha todos os campos obrigatórios', 'Erro');
     }
+
+    const dataToSave = this.formulario.value as Convenio;
+
+    const saveOperation = this.convenio.id ? this.convenioService.Atualizar(dataToSave) : this.convenioService.Criar(dataToSave);
+
+
   }
 
   carregarConvenio(convenio: any) {
@@ -70,6 +49,8 @@ export class ModalConvenioComponent {
   }
 
   fecharModal() {
+    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
     this.formulario.reset();
+    btnCacelar.click();
   }
 }
