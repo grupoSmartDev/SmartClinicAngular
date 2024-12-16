@@ -12,7 +12,7 @@ import { ResponseModel } from '../../../_module/ResponseModule';
 })
 export class ModalConvenioComponent {
   @Input() convenio = {} as Convenio;
-  @Output() convenioAtualizado = new EventEmitter<void>();
+  @Output() dadosAtualizados = new EventEmitter<void>();
 
   constructor(private toast: ToastrService,
     private convenioService: ConvenioService,
@@ -40,6 +40,19 @@ export class ModalConvenioComponent {
     const dataToSave = this.formulario.value as Convenio;
 
     const saveOperation = this.convenio.id ? this.convenioService.Atualizar(dataToSave) : this.convenioService.Criar(dataToSave);
+
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Convenio ${action} com sucesso!`, 'Parabéns');
+        this.dadosAtualizados.emit();
+        this.fecharModal();
+
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
 
 
   }

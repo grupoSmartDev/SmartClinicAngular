@@ -41,7 +41,11 @@
                 required
                 class="form-control form-control-sm required"
                 formControlName="nome"
-              />
+                [ngClass]="{'is-invalid' : formulario.get('nome')?.invalid && formulario.get('nome')?.touched}"
+                >
+                <div *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="invalid-feedback">
+                  O campo nome é obrigatório.
+                </div>
             </div>
             <div class="col-md-3">
               <label for="registroAvs" class="form-label">Registro Avs</label>
@@ -50,7 +54,11 @@
                 required
                 class="form-control form-control-sm"
                 formControlName="registroAvs"
-              />
+                [ngClass]="{'is-invalid' : formulario.get('registroAvs')?.invalid && formulario.get('registroAvs')?.touched}"
+                >
+                <div *ngIf="formulario.get('registroAvs')?.invalid && formulario.get('registroAvs')?.touched" class="invalid-feedback">
+                  O campo registro é obrigatório.
+                </div>
             </div>
             <div class="col-md-3">
               <label for="periodoCarencia" class="form-label"
@@ -62,7 +70,11 @@
                 class="form-control form-control-sm"
                 formControlName="periodoCarencia"
                 [mask]="'00/00/0000'"
-              />
+                [ngClass]="{'is-invalid' : formulario.get('periodoCarencia')?.invalid && formulario.get('periodoCarencia')?.touched}"
+                >
+                <div *ngIf="formulario.get('periodoCarencia')?.invalid && formulario.get('periodoCarencia')?.touched" class="invalid-feedback">
+                  O campo periodo é obrigatório.
+                </div>
             </div>
             <div class="col-md-3">
               <label for="telefone" class="form-label">Telefone</label>
@@ -72,7 +84,11 @@
                 class="form-control form-control-sm"
                 formControlName="telefone"
                 [mask]="'(00) 0000-0000'"
-              />
+                [ngClass]="{'is-invalid' : formulario.get('telefone')?.invalid && formulario.get('telefone')?.touched}"
+                >
+                <div *ngIf="formulario.get('telefone')?.invalid && formulario.get('telefone')?.touched" class="invalid-feedback">
+                  O campo telefone é obrigatório.
+                </div>
             </div>
             <div class="col-md-3">
               <label for="email" class="form-label">E-mail</label>
@@ -81,7 +97,11 @@
                 required
                 class="form-control form-control-sm"
                 formControlName="email"
-              />
+                [ngClass]="{'is-invalid' : formulario.get('email')?.invalid && formulario.get('email')?.touched}"
+                >
+                <div *ngIf="formulario.get('email')?.invalid && formulario.get('email')?.touched" class="invalid-feedback">
+                  O campo E-mail é obrigatório.
+                </div>
             </div>
             <div class="col-md-3">
              
