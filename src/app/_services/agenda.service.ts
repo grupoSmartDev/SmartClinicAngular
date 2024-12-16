@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Agenda } from '../_module/agendaModule';
 import { ResponseModel } from '../_module/ResponseModule';
@@ -28,4 +28,20 @@ export class AgendaService {
   Deletar(id: string): Observable<ResponseModel<void>> {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
+
+  ObterContadoresDashboard(profissionalId?: number, dataInicio?: Date, dataFim?: Date): Observable<ResponseModel<any>> {
+    let params = new HttpParams();
+  
+    if (profissionalId !== undefined && profissionalId !== null) {
+      params = params.set('profissionalId', profissionalId.toString());
+    }
+    if (dataInicio) {
+      params = params.set('dataInicio', dataInicio.toISOString());
+    }
+    if (dataFim) {
+      params = params.set('dataFim', dataFim.toISOString());
+    }
+  
+    return this.http.get<ResponseModel<any>>(`${this.baseURL}ObterContadoresDashboard`, { params });
+  }  
 }

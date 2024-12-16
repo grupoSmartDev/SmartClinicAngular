@@ -1,4 +1,81 @@
 <div class="filters row align-items-end">
+  <!-- Filtro de Profissional -->
+  <div class="col-md-2 col-12">
+    <label for="profissional">Profissional</label>
+    <select
+      id="profissional"
+      [(ngModel)]="selectedProfissional"
+      class="form-select form-select-sm"
+    >
+      <option *ngFor="let prof of profissionais" [value]="prof.id">
+        {{ prof.nome }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Filtro de Período (Data Início) -->
+  <div class="col-md-2 col-12">
+    <label for="start-date">Período</label>
+    <input
+      id="start-date"
+      type="date"
+      class="form-control form-control-sm"
+      [(ngModel)]="startDate"
+    />
+  </div>
+
+  <!-- Filtro de Período (Data Fim) -->
+  <div class="col-md-2 col-12">
+    <input
+      type="date"
+      class="form-control form-control-sm"
+      [(ngModel)]="endDate"
+    />
+  </div>
+
+  <!-- Botão de Atualizar -->
+  <div class="col-12 col-md-2">
+    <button class="btn btn-sm btn-primary" (click)="atualizarGraficos()">
+      Atualizar
+    </button>
+  </div>
+</div>
+
+<!-- Cards de Dados -->
+<div class="row my-2">
+  <app-card-dados
+    class="col-md-3 col-12"
+    [icone]="'bi bi-calendar'"
+    [dados]="contadores.totalAgendas || 0"
+    [nomeLabel]="'Agendamentos'"
+  ></app-card-dados>
+  <app-card-dados
+    class="col-md-3 col-12"
+    [icone]="'bi bi-calendar-check'"
+    [dados]="contadores.agendasFinalizadas || 0"
+    [nomeLabel]="'Atendidos'"
+  ></app-card-dados>
+  <app-card-dados
+    class="col-md-3 col-12"
+    [icone]="'bi bi-calendar-x'"
+    [dados]="contadores.agendasFuturas || 0"
+    [nomeLabel]="'Não compareceram'"
+  ></app-card-dados>
+  <app-card-dados
+    class="col-md-3 col-12"
+    [icone]="'bi bi-person-plus'"
+    [dados]="contadores.pacientesNoPeriodo || 0"
+    [nomeLabel]="'Clientes Novos'"
+  ></app-card-dados>
+</div>
+
+<!-- Gráfico da Agenda -->
+<div class="charts my-5">
+  <app-agenda></app-agenda>
+</div>
+
+
+<!-- <div class="filters row align-items-end">
   <div class="col-md-2 col-12">
     <label for="profissional">Profissional</label>
     <select
@@ -64,7 +141,7 @@
 
 <div class="charts my-5">
   <app-agenda> </app-agenda>
-</div>
+</div> -->
 
 <!-- <div class="charts my-5">
   <app-cliente-charts
