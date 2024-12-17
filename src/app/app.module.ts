@@ -94,6 +94,8 @@ import { ListarFinancReceberComponent } from './_pages/financReceber/listar-fina
 import { ModalFinanceiroReceber } from './_pages/financReceber/modal-financ-receber/modal-financ-receber.component';
 import { ListarFinancPagarComponent } from './_pages/financPagar/listar-financ-pagar/listar-financ-pagar.component';
 import { ModalFinancPagarComponent } from './_pages/financPagar/modal-financ-pagar/modal-financ-pagar.component';
+import { ListarProfissaoComponent } from './_pages/profissao/listar-profissao/listar-profissao.component';
+import { ModalProfissaoComponent } from './_pages/profissao/modal-profissao/modal-profissao.component';
 
 
 
@@ -183,10 +185,8 @@ import { ModalFinancPagarComponent } from './_pages/financPagar/modal-financ-pag
     ModalFinanceiroReceber,
     ListarFinancPagarComponent,
     ModalFinancPagarComponent,
-    
-    
-    
-    
+    ModalProfissaoComponent,
+    ListarProfissaoComponent
   ],
   imports: [
     BrowserModule,
