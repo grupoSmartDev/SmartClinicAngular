@@ -1,11 +1,26 @@
-<div class="modal fade" id="modalAgenda" tabindex="-1" aria-labelledby="modalAgendaLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalAgendaLabel">
+<div
+  #modalConvenio
+  class="modal fade"
+  id="modalAgenda"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="statusModalLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h1 class="modal-title  fs-5" id="modalAgendaLabel">
             {{ selectedEvent ? 'Detalhes do Evento' : 'Novo Agendamento' }}
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </h1>
+          <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
         </div>
         <div class="modal-body">
           <div *ngIf="selectedEvent; else novoAgendamento">
@@ -15,121 +30,138 @@
           </div>
           <ng-template #novoAgendamento>
             <p>Data Selecionada: {{ selectedDate }}</p>
+           <form [formGroup]="formulario">
             <div>
              
-                <div class="row">
-                  <div class="col-md-2">
-                    <label for="id" class="form-label">Cód.</label>
-                    <input type="text" class="form-control form-control-sm" id="id" readonly  />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="titulo" class="form-label">Título</label>
-                    <input type="text" required class="form-control form-control-sm"  />
-                  </div>
-                  <div class="col-md-4">
-                    <label for="">Status</label>
-                    <select  class="form-select form-select-sm">
-                      @for (item of listaStatus; track item.id) {
-                        <option value="{{item.id}}">{{item.status}}</option>
-                      }
-                    </select>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <label for="">Paciente</label>
-                    <input 
-                    type="text" 
-                    class="form-control form-control-sm" 
-                    placeholder="Digite o nome do paciente..." 
-                    [(ngModel)]="searchTerm" 
-                    (input)="onSearch()"
-                  />
-                    <ul  class="list-group mt-2">
-                      <li class="list-group-item" *ngFor="let patient of filteredPatients">
-                        {{ patient.name }} - {{ patient.cpf }}
-                      </li>
-                    </ul>
-                    
-                    <div *ngIf="!filteredPatients.length && searchTerm.length >= 3" class="mt-2">
-                      <p>Nenhum paciente encontrado. <button  (click)="openOffcanvas()">Cadastrar paciente</button></p>
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <label for="">Inicio</label>
-                    <input type="datetime" class="form-control form-control-sm">
-                  </div>
-                  <div class="col-md-3">
-                    <label for="">Fim</label>
-                    <input type="datetime" class="form-control form-control-sm">
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <label>Profissional</label>
-                    <select name="" id="" class="form-select form-select-sm">
-                      @for (item of listaProfissional; track $index) {
-                        <option value="{{item.id}}">{{item.nome}}"></option>
-                      }
-                    </select>
-                  </div>
-                <div class="col-md-6">
-                  <label>Tipo de Atendimento</label>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                    <label class="form-check-label" for="flexRadioDefault1">
-                      Avulso
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                    <label class="form-check-label" for="flexRadioDefault2">
-                      Não Avulso
-                    </label>
-                  </div>
-                </div>
-
-                </div>
-                <div class="row">
-                                  <div class="col-md-4">
-                  <label>Pacote</label>
-                  <select class="form-select form-select-sm">
-                    @for (item of listaPlano; track $index) {
-                      <option value="{{item.id}}">{{item.descricao}}</option>
-                    }
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label>Sala</label>
-                  <select class="form-select form-select-sm">
-                    @for (item of listaSala; track $index) {
-                      <option value="{{item.id}}">{{item.nome}}</option>
-                    }
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label>Usuário</label>
-                  <select class="form-select form-select-sm">
-                    @for (item of listaUsuario; track $index) {
-                      <option value="{{item.id}}">{{item.nome}}</option>
-                    }
-                  </select>
-                </div>
-
-                </div>
               <div class="row">
-                <div class="col-md-12">
-                  <label for="">Obs</label>
-                  <textarea name="" id="" class="form-control form-control-sm"></textarea>
+                <div class="col-md-2">
+                  <label for="id" class="form-label">Cód.</label>
+                  <input type="text" class="form-control form-control-sm" id="id" readonly  />
+                </div>
+                <div class="col-md-6">
+                  <label for="titulo" class="form-label">Título</label>
+                  <input type="text" required class="form-control form-control-sm"  
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="" class="form-label">Status</label>
+                  <select  class="form-select form-select-sm">
+                    @for (item of listaStatus; track item.id) {
+                      <option value="{{item.id}}">{{item.status}}</option>
+                    }
+                  </select>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="">Paciente</label>
+                  <input 
+                  type="text" 
+                  class="form-control form-control-sm" 
+                  placeholder="Digite o nome do paciente..." 
+                  [(ngModel)]="searchTerm" 
+                  (input)="onSearch()"
+                />
+                  <ul  class="list-group mt-2">
+                    <li class="list-group-item" *ngFor="let patient of filteredPatients">
+                      {{ patient.name }} - {{ patient.cpf }}
+                    </li>
+                  </ul>
+                  
+                  <div *ngIf="!filteredPatients.length && searchTerm.length >= 3" class="mt-2">
+                    <p>Nenhum paciente encontrado. <button  (click)="openOffcanvas()">Cadastrar paciente</button></p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label for="">Inicio</label>
+                  <input type="datetime" class="form-control form-control-sm">
+                </div>
+                <div class="col-md-3">
+                  <label for="">Fim</label>
+                  <input type="datetime" class="form-control form-control-sm">
+                </div>
               </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label>Profissional</label>
+                  <select name="" id="" class="form-select form-select-sm">
+                    @for (item of listaProfissional; track $index) {
+                      <option value="{{item.id}}">{{item.nome}}"></option>
+                    }
+                  </select>
+                </div>
+              <div class="col-md-6">
+                <label class="form-label">Avulso</label>
+                <select class="form-select form-select-sm" formControlName="avulso" (change)="pagamentoAvulso()">
+                  <option value="true">Sim</option>
+                  <option value="false">Não</option>
+                </select>
+              </div>
+              @if(camposFinancPagar){
+                <div class="col-md-6">
+                  <label>Financ. Receber</label>
+                </div>
+              }
+
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                <label>Pacote</label>
+                <select class="form-select form-select-sm">
+                  @for (item of listaPlano; track $index) {
+                    <option value="{{item.id}}">{{item.descricao}}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label>Sala</label>
+                <select class="form-select form-select-sm">
+                  @for (item of listaSala; track $index) {
+                    <option value="{{item.id}}">{{item.nome}}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label>Usuário</label>
+                <select class="form-select form-select-sm">
+                  @for (item of listaUsuario; track $index) {
+                    <option value="{{item.id}}">{{item.nome}}</option>
+                  }
+                </select>
+              </div>
+
+              </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label for="">Obs</label>
+                <textarea name="" id="" class="form-control form-control-sm"></textarea>
+              </div>
+            </div>
+            </div>
+           </form>
+           
             
           </ng-template>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-          <button *ngIf="!selectedEvent" type="button" class="btn btn-primary">Salvar</button>
+          <button
+            type="button"
+            (click)="onSubmit()"
+            class="btn btn-success"
+            id="btn_salvar_editar"
+          >
+            <i class="bi bi-check"></i> Confirmar
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            id="btnCancelar"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+            (click)="fecharModal()"
+          >
+            <i class="bi bi-x"></i>Cancelar
+          </button>
         </div>
       </div>
     </div>

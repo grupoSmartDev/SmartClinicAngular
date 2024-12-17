@@ -1,5 +1,7 @@
+import { FinancReceber } from "./financReceberModule";
+
 export interface Agenda{
-    id? : number,
+    id : number,
     titulo : string,
     dataCompomisso : Date,
     horaInicio : Date,
@@ -13,6 +15,7 @@ export interface Agenda{
     salaId? : string,
     pacoteId? : string,
     financReceberId? : string,
+    financReceber : FinancReceber
     observacao? : string,
     lembrete : boolean,
     vinculoComAgenda : boolean,
