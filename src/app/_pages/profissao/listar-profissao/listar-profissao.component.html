@@ -28,7 +28,7 @@
                       {{ item.id }}
                     </td>
                     <td>
-                      {{ item.nome }}
+                      {{ item.descricao }}
                     </td>
           
                     <td class="text-end">
@@ -67,7 +67,7 @@
 </div>
 
 <!-- listar.component.html -->
-<app-modal-profissao (salaAtualizado)="atualizarLista()"></app-modal-profissao>
+<app-modal-profissao (dataAtualizado)="atualizarLista()"></app-modal-profissao>
 
 <app-confirm-dialog
   #confirmDialog

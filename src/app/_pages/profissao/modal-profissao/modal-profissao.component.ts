@@ -16,7 +16,7 @@ export class ModalProfissaoComponent {
     private fb : FormBuilder) {
       this.formulario = this.fb.group({
         id: [null],
-        nome: [null, Validators.required],
+        descricao: [null, Validators.required],
 
       })
    }
@@ -31,7 +31,9 @@ export class ModalProfissaoComponent {
   }
 
   fecharModal() {
+    const btnCancelar = document.querySelector('#btnCancelar') as HTMLElement;
     this.formulario.reset();
+    btnCancelar.click();
   }
 
   onSubmit(){
