@@ -17,28 +17,34 @@ export class ListarComponent implements OnInit {
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
   statusList: Status[] = [];
   errorMessage: string = '';
-  idParaExcluir!: string;
-  statusParaExcluir! : Status;
+  idParaExcluir: string = '';
+  filterStatus: string = '';
+  filterCor: string = '';
+  currentPage: number = 1;
+  pageSize: number = 5;
+  totalItems: number = 0;
+  Math = Math; 
 
   constructor(private statusService: StatusServerService, private toast: ToastrService) { }
 
   ngOnInit(): void {
-    this.getStatus();
+    //this.getStatusPaginado();
+    this.loadData();
   }
 
-  getStatus(): void {
-    this.statusService.Listar().subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.statusList = data.dados;
-        }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar status:', err);
-        this.errorMessage = 'Erro ao carregar os status. Tente novamente mais tarde.';
-      }
-    });
-  }
+  // getStatus(): void {
+  //   this.statusService.Listar().subscribe({
+  //     next: (data) => {
+  //       if (data.dados) {
+  //         this.statusList = data.dados;
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('Erro ao buscar status:', err);
+  //       this.errorMessage = 'Erro ao carregar os status. Tente novamente mais tarde.';
+  //     }
+  //   });
+  // }
 
   openModal(status: any) {
     if (status.id) {
@@ -68,7 +74,7 @@ export class ListarComponent implements OnInit {
 
   // Método para recarregar a lista após criação/atualização
   atualizarLista(): void {
-    this.getStatus(); // Chama o método para buscar os status novamente
+    //this.getStatus(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -83,4 +89,43 @@ export class ListarComponent implements OnInit {
   cancelDelete() {
     this.idParaExcluir = '';
   }
-}
+  
+    // Método para buscar dados paginados
+    getStatusPaginado(): void {
+      this.statusService.ListarPaginado(this.currentPage, this.pageSize).subscribe({
+        next: (data) => {
+          if (data.dados) {
+            this.statusList = data.dados;
+            this.totalItems = data.totalItens; // Retorno do backend com o total de itens
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar status:', err);
+          this.errorMessage = 'Erro ao carregar os status. Tente novamente mais tarde.';
+        }
+      });
+    }
+  
+    // Atualizar página ao mudar a navegação
+    onPageChange(page: number): void {
+      this.currentPage = page - 1; // Bootstrap usa paginação iniciando em 1
+      this.getStatusPaginado();
+    }
+
+    loadData(): void {
+      this.statusService
+        .Listar(this.currentPage, this.pageSize, this.filterStatus, this.filterCor)
+        .subscribe((response) => {
+          if (response.status) {
+            this.statusList = response.dados;
+            this.totalItems = response.dados.length; // Altere conforme o backend enviar
+          }
+        });
+    }
+  
+    onSearch(): void {
+      this.currentPage = 1;
+      this.loadData();
+    }
+  }
+  

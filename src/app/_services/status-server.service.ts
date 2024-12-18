@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Status } from '../_module/statusModule';
 import { ResponseModel } from '../_module/ResponseModule';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,27 @@ export class StatusServerService {
 
   constructor(private http: HttpClient) { }
 
-  Listar(): Observable<ResponseModel<Status[]>> {
-    return this.http.get<ResponseModel<Status[]>>(`${this.baseURL}Listar`);
+  Listar(
+    page: number,
+    pageSize: number,
+    status?: string,
+    cor?: string
+  ): Observable<ResponseModel<Status[]>> {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('pageSize', pageSize);
+
+    if (status) params = params.set('status', status);
+    if (cor) params = params.set('cor', cor);
+
+    return this.http.get<ResponseModel<Status[]>>(`${this.baseURL}Listar`, { params });
+  }
+
+  ListarPaginado(page: number, size: number): Observable<ResponseModel<Status[]>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<ResponseModel<Status[]>>(`${this.baseURL}Listar`, { params });
   }
 
   Criar(status: Status): Observable<ResponseModel<Status>> {

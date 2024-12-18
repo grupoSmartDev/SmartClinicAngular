@@ -106,7 +106,7 @@ export class ModalAgendaComponent implements OnInit {
   ngOnInit(): void {
     this.getCentroDeCusto();
     this.getProfissional();
-    this.getStatus();
+   // this.getStatus();
     this.getSala();
   }
 
@@ -123,19 +123,19 @@ export class ModalAgendaComponent implements OnInit {
     this.fecharModal();
   }
 
-  getStatus(): void {
-    this.statusService.Listar().subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.listaStatus = data.dados;
-        }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar status:', err);
-        this.errorMessage = 'Erro ao carregar os status. Tente novamente mais tarde.';
-      }
-    });
-  }
+  // getStatus(): void {
+  //   this.statusService.Listar().subscribe({
+  //     next: (data) => {
+  //       if (data.dados) {
+  //         this.listaStatus = data.dados;
+  //       }
+  //     },
+  //     error: (err) => {
+  //       console.error('Erro ao buscar status:', err);
+  //       this.errorMessage = 'Erro ao carregar os status. Tente novamente mais tarde.';
+  //     }
+  //   });
+  // }
 
   getCentroDeCusto() : void {
     this.centroDeCustoService.Listar().subscribe({
