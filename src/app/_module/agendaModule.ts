@@ -15,7 +15,7 @@ export interface Agenda{
     salaId? : string,
     pacoteId? : string,
     financReceberId? : string,
-    financReceber : FinancReceber
+    financReceber? : FinancReceber | null,
     observacao? : string,
     lembrete : boolean,
     vinculoComAgenda : boolean,

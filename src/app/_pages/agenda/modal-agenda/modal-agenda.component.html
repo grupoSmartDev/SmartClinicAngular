@@ -40,12 +40,12 @@
                 </div>
                 <div class="col-md-6">
                   <label for="titulo" class="form-label">Título</label>
-                  <input type="text" required class="form-control form-control-sm"  
+                  <input type="text" required class="form-control form-control-sm"  formControlName="titulo"
                   />
                 </div>
                 <div class="col-md-4">
                   <label for="" class="form-label">Status</label>
-                  <select  class="form-select form-select-sm">
+                  <select  class="form-select form-select-sm" formControlName="statusId">
                     @for (item of listaStatus; track item.id) {
                       <option value="{{item.id}}">{{item.status}}</option>
                     }
@@ -54,7 +54,7 @@
               </div>
               <div class="row">
                 <div class="col-md-6">
-                  <label for="">Paciente</label>
+                  <label for="" class="form-label">Paciente</label>
                   <input 
                   type="text" 
                   class="form-control form-control-sm" 
@@ -73,20 +73,20 @@
                   </div>
                 </div>
                 <div class="col-md-3">
-                  <label for="">Inicio</label>
-                  <input type="datetime" class="form-control form-control-sm">
+                  <label for="" class="form-label">Inicio</label>
+                  <input type="time" class="form-control" formControlName="horaInicio" />
                 </div>
                 <div class="col-md-3">
-                  <label for="">Fim</label>
-                  <input type="datetime" class="form-control form-control-sm">
+                  <label for="" class="form-label">Fim</label>
+                  <input type="time" class="form-control" formControlName="horaFim" />
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-6">
-                  <label>Profissional</label>
-                  <select name="" id="" class="form-select form-select-sm">
-                    @for (item of listaProfissional; track $index) {
-                      <option value="{{item.id}}">{{item.nome}}"></option>
+                  <label class="form-label">Profissional</label>
+                  <select name="" id="" class="form-select form-select-sm" formControlName="profissionalId">
+                    @for (item of listaProfissional; track item.id) {
+                      <option value="{{item.id}}">{{item.nome}}</option>
                     }
                   </select>
                 </div>
@@ -98,33 +98,151 @@
                 </select>
               </div>
               @if(camposFinancPagar){
-                <div class="col-md-6">
-                  <label>Financ. Receber</label>
+                <div formGroupName="financReceber">
+                  
+                  <div class="row justify-content-end">
+                    <div class="col-md-3">
+                      <label for="valor" class="form-label">Valor Total</label>
+                      <input
+                        id="valor"
+                        type="number"
+                        class="form-control form-control-sm"
+                        formControlName="valor"
+                        (change)="onValorTotalChange()"
+                        placeholder="Informe o valor total"
+                        [ngClass]="{'is-invalid' : formulario.get('valor')?.invalid && formulario.get('valor')?.touched}"
+                      />
+                      <div *ngIf="formulario.get('valor')?.invalid && formulario.get('valor')?.touched" class="invalid-feedback">
+                        O campo Valor é obrigatório.
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="parcela" class="form-label">Parcelas</label>
+                      <input
+                        id="parcelas"
+                        type="number"
+                        class="form-control form-control-sm"
+                        formControlName="parcela"
+                        (change)="gerarParcelas()"
+                        placeholder="Informe a quantidade de parcelas"
+                        [ngClass]="{'is-invalid' : formulario.get('parcela')?.invalid && formulario.get('parcela')?.touched}"
+                      />
+                      <div *ngIf="formulario.get('parcela')?.invalid && formulario.get('parcela')?.touched" class="invalid-feedback">
+                        O campo parcela é obrigatório.
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="desconto" class="form-label">Centro de Custo</label>
+                      <select name="" id="" class="form-select form-select-sm" formControlName="centroCustoId">
+                        @for (item of listaCentroDeCusto; track item.id) {
+                          <option value="{{item.id}}">{{item.descricao}}</option>
+                        }
+                      </select>
+                    </div>
+                  </div>
+                  <div *ngIf="subFinancReceber.controls.length > 0">
+                    <h5>Parcelas Geradas</h5>
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Vencimento</th>
+                          <th>Pagamento</th>
+                          <th>Valor</th>
+                          <th>Forma</th>
+                          <th>Tipo</th>
+                          <th>Observação</th>
+                        </tr>
+                      </thead>
+                      <tbody formArrayName="subFinancReceber">
+                        <tr *ngFor="let parcela of subFinancReceber.controls; let i = index" [formGroupName]="i">
+                          <td>{{ i + 1 }}</td>
+                          <td>
+                            <input
+                              type="date"
+                              class="form-control form-control-sm"
+                              formControlName="dataVencimento"
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="date"
+                              class="form-control form-control-sm"
+                              formControlName="dataPagamento"
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="number"
+                              class="form-control form-control-sm"
+                              formControlName="valor"
+                              readonly
+                            />
+                          </td>
+                          <td>
+                            <select name="" id="" class="form-select form-select-sm"
+                            formControlName="formaPagamentoId"
+                            [ngClass]="{'is-invalid' : formulario.get('formaPagamentoId')?.invalid && formulario.get('formaPagamentoId')?.touched}"
+                            >
+                              @for (item of listaFormaPagamento; track item.id) {
+                                <option value="{{item.id}}">{{item.descricao}}</option>
+                              }
+                            </select>
+                            <div *ngIf="formulario.get('formaPagamentoId')?.invalid && formulario.get('formaPagamentoId')?.touched" class="invalid-feedback">
+                              O campo forma de pagamento é obrigatório.
+                            </div>
+                          </td>
+                          <td>
+                            <select name="" id="" class="form-select form-select-sm"
+                            formControlName="tipoPagamentoId"
+                            [ngClass]="{'is-invalid' : formulario.get('tipoPagamentoId')?.invalid && formulario.get('tipoPagamentoId')?.touched}"
+                            >
+                              @for (item of listaTipoPagamento; track item.id) {
+                                <option value="{{item.id}}">{{item.descricao}}</option>
+                              }
+                            </select>
+                            <div *ngIf="formulario.get('tipoPagamentoId')?.invalid && formulario.get('tipoPagamentoId')?.touched" class="invalid-feedback">
+                              O campo tipo de pagamento é obrigatório.
+                            </div>
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              class="form-control form-control-sm"
+                              formControlName="observacao"
+                              placeholder="Digite observação"
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+                
               }
 
               </div>
               <div class="row">
                 <div class="col-md-4">
-                <label>Pacote</label>
+                <label class="form-label">Pacote</label>
                 <select class="form-select form-select-sm">
-                  @for (item of listaPlano; track $index) {
+                  @for (item of listaPlano; track item.id) {
                     <option value="{{item.id}}">{{item.descricao}}</option>
                   }
                 </select>
               </div>
               <div class="col-md-4">
-                <label>Sala</label>
-                <select class="form-select form-select-sm">
-                  @for (item of listaSala; track $index) {
+                <label class="form-label">Sala</label>
+                <select class="form-select form-select-sm" formControlName="salaId">
+                  @for (item of listaSala; track item.id) {
                     <option value="{{item.id}}">{{item.nome}}</option>
                   }
                 </select>
               </div>
               <div class="col-md-4">
-                <label>Usuário</label>
+                <label class="form-label">Usuário</label>
                 <select class="form-select form-select-sm">
-                  @for (item of listaUsuario; track $index) {
+                  @for (item of listaUsuario; track item.id) {
                     <option value="{{item.id}}">{{item.nome}}</option>
                   }
                 </select>
@@ -133,7 +251,7 @@
               </div>
             <div class="row">
               <div class="col-md-12">
-                <label for="">Obs</label>
+                <label for="" class="form-label">Obs</label>
                 <textarea name="" id="" class="form-control form-control-sm"></textarea>
               </div>
             </div>

@@ -10,11 +10,16 @@ import { Sala } from '../../../_module/salasModule';
 import { Usuario } from '../../../_module/usuarioModule';
 import { Plano } from '../../../_module/planoModule';
 import { FinancReceberService } from '../../../_services/financ-receber.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Agenda } from '../../../_module/agendaModule';
 import { AgendaService } from '../../../_services/agenda.service';
 import { FinancReceber, StatusPagamento } from '../../../_module/financReceberModule';
+import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
+import { FormaPagamento } from '../../../_module/formaPagamentoModule';
+import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service';
+import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
+import { SalasService } from '../../../_services/salas.service';
 
 @Component({
   selector: 'app-modal-agenda',
@@ -30,7 +35,10 @@ export class ModalAgendaComponent implements OnInit {
     private financReceberService : FinancReceberService,
     private fb : FormBuilder,
     private toast : ToastrService,
-    private agendaService : AgendaService
+    private agendaService : AgendaService,
+    private tipoPagamentoService : TipoPagamentoService,
+    private formaPagamentoService : FormaPagamentoService,
+    private salaService : SalasService
     ) { 
       this.formulario = fb.group({
         id : [null],
@@ -39,7 +47,7 @@ export class ModalAgendaComponent implements OnInit {
         horaInicio : [null,Validators.required],
         DataCompromissoFim : [null,Validators.required],
         dataCancelamento : [null],
-        pacienteId : [null, Validators.required],
+        pacienteId : [1, Validators.required],
         profissionalId : [null, Validators.required],    
         convenioId : [null],
         avulso : [null],
@@ -91,12 +99,15 @@ export class ModalAgendaComponent implements OnInit {
   listaPlano : Plano[] = [];
   listaSala : Sala[] = [];
   listaUsuario : Usuario[] = [];
+  listaFormaPagamento : FormaPagamento[] = [];
+  listaTipoPagamento : TipoPagamento[] = [];
 
 
   ngOnInit(): void {
     this.getCentroDeCusto();
     this.getProfissional();
     this.getStatus();
+    this.getSala();
   }
 
   fecharModal() {
@@ -152,6 +163,48 @@ export class ModalAgendaComponent implements OnInit {
     })
   }
 
+  getFP() : void{
+    this.formaPagamentoService.Listar().subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.listaFormaPagamento = data.dados;
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao getbuscar forma de pagamento:', err);
+        this.errorMessage = 'Erro ao carregar os forma de pagamento. Tente novamente mais tarde.';
+      }
+    })
+  }
+
+  getTP() : void{
+    this.tipoPagamentoService.ListarTipoPagamento().subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.listaTipoPagamento = data.dados;
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao buscar tipo de pagamento:', err);
+        this.errorMessage = 'Erro ao carregar os tipo de pagamento. Tente novamente mais tarde.';
+      }
+    })
+  }
+
+  getSala() : void{
+    this.salaService.Listar().subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.listaSala = data.dados;
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao buscar tipo de pagamento:', err);
+        this.errorMessage = 'Erro ao carregar os tipo de pagamento. Tente novamente mais tarde.';
+      }
+    })
+  }
+ 
 
   searchTerm: string = '';
   patients = [
@@ -183,6 +236,7 @@ export class ModalAgendaComponent implements OnInit {
   }
 
   onSubmit() {
+    debugger
     if(this.formulario.invalid){
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro')
@@ -190,9 +244,20 @@ export class ModalAgendaComponent implements OnInit {
 
     const dataToSave = this.formulario.value as Agenda;
 
-    if (dataToSave.avulso) {
+
+    const financReceber = this.formulario.get('financReceber')?.value;
+    if (financReceber) {
+      financReceber.pacienteId = dataToSave.pacienteId;
+      financReceber.descricao = dataToSave.titulo + ' - ' + dataToSave.observacao;
+      financReceber.dataEmissao = new Date();
+      dataToSave.financReceber = financReceber;
+    }
+
+    const avulso = this.formulario.get('avulso')?.value;
+
+    if (avulso == 'false') {
       try {
-        dataToSave.financReceber = this.gerarFinancReceber(dataToSave);
+        dataToSave.financReceber = null;
       } catch (error) {
         console.error(error);
         this.toast.error('Erro ao gerar dados financeiros.', 'Erro');
@@ -220,42 +285,54 @@ export class ModalAgendaComponent implements OnInit {
 
     if(pagamentoAvulso){
       this.camposFinancPagar = true;
+      this.getFP();
+      this.getTP();
     }
     else{
       this.camposFinancPagar = false;
     }
   }
 
-  gerarFinancReceber(data: Agenda): FinancReceber {
-    const financReceber: FinancReceber = {
-      id: '', // Será gerado pelo backend
-      idOrigem: '', // ID de origem referenciando o agendamento
-      nrDocto: '', // Gera um número de documento único baseado no timestamp
-      dataEmissao: new Date(), // Data atual de emissão
-      valorOriginal: data.avulso ? this.formulario.get('valor')?.value : 0, // Usa o valor do atendimento se for avulso
-      valorPago: 0, // Inicializa como 0 pois ainda não foi pago
-      parcela: 1, // Assume 1 parcela padrão
-      valor: data.avulso ? this.formulario.get('valor')?.value : 0, // Valor total apenas para atendimentos avulsos
-      status: StatusPagamento.PENDENTE, // Define como pendente inicialmente
-      notaFiscal: '', // Não há nota fiscal no momento da geração
-      descricao: `Atendimento ${data.avulso ? 'avulso' : 'pelo convênio'}: ${data.titulo}`,
-      classificacao: 'Atendimento Avulso', // Classificação padrão (ajustar se necessário)
-      observacao: data.observacao || '', // Pega a observação se houver
-      pacienteId: data.pacienteId!, // ID do paciente vinculado ao agendamento
-      paciente: null as any, // Paciente será carregado no backend
-      fornecedorId: '', // Não aplicável para este caso
-      fornecedor: null as any,
-      centroCustoId: this.formulario.get('centroCustoId')?.value || '', // Centro de custo associado ao agendamento
-      centroCusto: null as any, // Será tratado no backend
-      bancoId: '', // Informar apenas se houver banco vinculado
-      banco: null as any,
-      subFinancReceber: [], // Sub registros não aplicáveis neste cenário
-      usuarioResponsavelId: 'admin', // Assumindo o usuário logado como responsável
-      dataUltimaAtualizacao: new Date() // Atualização criada no momento da geração
-    };
-  
-    return financReceber;
+  get subFinancReceber(): FormArray {
+    return this.formulario.get('financReceber.subFinancReceber') as FormArray;
   }
+
+  gerarParcelas(): void {
+    const valorTotal = this.formulario.get('financReceber.valor')?.value || 0;
+    const quantidadeParcelas = this.formulario.get('financReceber.parcela')?.value || 1;
+
+    this.subFinancReceber.clear();
+
+    const valorParcela = parseFloat((valorTotal / quantidadeParcelas).toFixed(2));
+    for (let i = 0; i < quantidadeParcelas; i++) {
+      const dataVencimento = new Date();
+      dataVencimento.setMonth(dataVencimento.getMonth() + i);
+
+      this.subFinancReceber.push(
+        this.fb.group({
+          id: [null],
+          financReceberId: [null],
+          parcela: [i + 1],
+          valor: [valorParcela, [Validators.required, Validators.min(0)]],
+          dataVencimento: [dataVencimento.toISOString().split('T')[0], Validators.required],
+          dataPagamento: [''],
+          observacao: [''],
+          desconto: [0],
+          juros: [0],
+          multa : [0],
+          formaPagamentoId : [''],
+          tipoPagamentoId : [''],
+        })
+      );
+    }
+  }
+
+  onValorTotalChange(): void {
+    if (this.formulario.get('financReceber.parcela')?.value > 0) {
+      this.gerarParcelas();
+    }
+  }
+  
     
   }
 
