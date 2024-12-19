@@ -20,20 +20,27 @@ export class ListarProfissionalComponent {
   errorMessage : string = '';
   idParaExcluir! : string;
   dataParaExcluir! : Profissional
-  colunaTabela = [
-    { header: 'Cód.', field: 'id' },
-    { header: 'Nome', field: 'nome' },
-  ];
+    //paginacao
+    totalItems: number = 0;
+    pageSize: number = 10;
+    currentPage: number = 1;
+    // filtros
+    nomeFiltro: string = '';
+    idFiltro: string = '';
+    cpfFiltro: string = '';
+    profissaoFiltro: string = '';
 
   ngOnInit(): void {
-    this.getData();
+    this.loadData();
   } 
 
-  getData() : void {
-    this.profissionalService.Listar().subscribe({
+  loadData() : void {
+    this.profissionalService.Listar(this.currentPage, this.pageSize, this.nomeFiltro, 
+      this.idFiltro, this.cpfFiltro, this.profissaoFiltro).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
+          this.totalItems = data.totalCount;
         }
       },
       error: (err) => {
@@ -71,7 +78,7 @@ export class ListarProfissionalComponent {
   }
 
   atualizarLista(): void {
-    this.getData(); // Chama o método para buscar os cc novamente
+    this.loadData(); // Chama o método para buscar os cc novamente
   }
 
   promptDelete(id: string) {
@@ -85,5 +92,15 @@ export class ListarProfissionalComponent {
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadData();
+  }
+
+  filtrar(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 }

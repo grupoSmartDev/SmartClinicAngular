@@ -19,13 +19,23 @@ export class ListarProfissaoComponent {
   idParaExcluir!: string;
   dataParaExcluir!: Profissao;
 
+    //paginacao
+    totalItems: number = 0;
+    pageSize: number = 10;
+    currentPage: number = 1;
+    // filtros
+    nomeFiltro: string = '';
+    cpfFiltro: string = '';
+    profissaoFiltro: string = '';
+    id: string = '';
+
   constructor(private profissaoService: ProfissaoService , private toast: ToastrService) { }
 
   ngOnInit(): void {
-    this.getDados();
+    this.loadData();
   } 
 
-  getDados(): void {
+  loadData(): void {
     this.profissaoService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
@@ -40,7 +50,6 @@ export class ListarProfissaoComponent {
   }
 
   openModal(profissao: any) {
-    debugger
     if (profissao.id) {
       this.modalSalaComponent.data = profissao;
       this.modalSalaComponent.carregarProfissao(profissao);
@@ -68,7 +77,7 @@ export class ListarProfissaoComponent {
   }
   
   atualizarLista(): void {
-    this.getDados(); // Chama o método para buscar os status novamente
+    this.loadData(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -82,5 +91,15 @@ export class ListarProfissaoComponent {
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadData();
+  }
+
+  filtrar(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 }

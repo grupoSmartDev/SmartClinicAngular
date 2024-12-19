@@ -17,24 +17,15 @@ export class StatusServerService {
   Listar(
     page: number,
     pageSize: number,
-    status?: string,
-    cor?: string
+    statusFiltro?: string
   ): Observable<ResponseModel<Status[]>> {
     debugger
     let params = new HttpParams()
       .set('page', page)
       .set('pageSize', pageSize);
 
-    if (status) params = params.set('status', status);
-    if (cor) params = params.set('cor', cor);
-
-    return this.http.get<ResponseModel<Status[]>>(`${this.baseURL}Listar`, { params });
-  }
-
-  ListarPaginado(page: number, size: number): Observable<ResponseModel<Status[]>> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
+    if (statusFiltro) params = params.set('statusFiltro', statusFiltro);
+    
     return this.http.get<ResponseModel<Status[]>>(`${this.baseURL}Listar`, { params });
   }
 

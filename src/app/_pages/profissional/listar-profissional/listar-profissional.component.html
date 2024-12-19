@@ -4,7 +4,34 @@
 >
 </app-label-nome>
 
-<div class="row">
+<div class="row mb-2">
+  <div class="col-md-2">
+    <input type="text"
+     [(ngModel)]="idFiltro" 
+     placeholder="Filtrar por Cód"
+     class="form-control form-control-sm" />
+  </div>
+  <div class="col-md-2">
+    <input type="text" [(ngModel)]="nomeFiltro" placeholder="Filtrar por nome" class="form-control form-control-sm" />
+  </div>
+  <div class="col-md-2">
+    <input type="text"
+     [(ngModel)]="cpfFiltro" 
+     placeholder="Filtrar por CPF"
+     class="form-control form-control-sm" />
+  </div>
+  <div class="col-md-2">
+    <input type="text"
+     [(ngModel)]="profissaoFiltro" 
+     placeholder="Filtrar por profissão"
+     class="form-control form-control-sm" />
+  </div>
+  <div class="col-md-1">
+    <button class="btn btn-secondary btn-sm" (click)="filtrar()"><i class="bi bi-search"></i></button>
+  </div>
+</div>
+
+<div class="row mb-2">
   <div class="col-12">
     @if (lista.length > 0) {
     <div class="table-responsive">
@@ -66,6 +93,22 @@
     <img src="public\image\semRegistro.svg" alt="" />
     }
   </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="">
+    <pagination
+      [totalItems]="totalItems"
+      [(ngModel)]="currentPage"
+      [itemsPerPage]="pageSize"
+      (pageChanged)="onPageChange($event.page)"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;" 
+      firstText="&laquo;" 
+      lastText="&raquo;">
+  </pagination>
+  </div>
+
 </div>
 
 <app-modal-profissional (dataAtualizado)="atualizarLista()">

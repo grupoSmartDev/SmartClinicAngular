@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Profissional } from '../_module/profissionalModule';
 import { ResponseModel } from '../_module/ResponseModule';
@@ -13,7 +13,33 @@ export class ProfissionalService {
 
   baseURL: string = 'https://localhost:44308/api/Profissional/';
 
-  Listar(): Observable<ResponseModel<Profissional[]>> {
+  Listar(
+    page: number,
+    pageSize: number,
+    nomeFiltro?: string,
+    idFiltro? : string,
+    cpfFiltro? : string,
+    profissaoFiltro? : string
+  ): Observable<ResponseModel<Profissional[]>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+
+    if (nomeFiltro) {
+      params = params.set('nomeFiltro', nomeFiltro);
+    }
+
+    if (idFiltro) {
+      params = params.set('idFiltro', idFiltro);
+    }
+
+    if (cpfFiltro) {
+      params = params.set('cpfFiltro', cpfFiltro);
+    }
+
+    if (profissaoFiltro) {
+      params = params.set('profissaoFiltro', profissaoFiltro);
+    }
     return this.http.get<ResponseModel<Profissional[]>>(`${this.baseURL}Listar`);
   }
 
@@ -28,5 +54,9 @@ export class ProfissionalService {
 
   Deletar(id: string): Observable<ResponseModel<void>> {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
+  }
+
+  ListarSemPaginacao(): Observable<ResponseModel<Profissional[]>> {
+    return this.http.get<ResponseModel<Profissional[]>>(`${this.baseURL}Listar`);
   }
 }

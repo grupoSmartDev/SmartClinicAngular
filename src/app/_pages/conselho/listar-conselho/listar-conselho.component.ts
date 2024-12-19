@@ -19,9 +19,11 @@ export class ListarConselhoComponent implements OnInit{
   errorMessage: string = '';
   idParaExcluir!: string;
   conselhoParaExcluir!: Conselho;
+  //paginacao
   totalItems: number = 0;
   pageSize: number = 10;
   currentPage: number = 1;
+  // filtros
   nomeFiltro: string = '';
   siglaFiltro: string = '';
 
@@ -54,7 +56,7 @@ export class ListarConselhoComponent implements OnInit{
   }
 
   atualizarConselho(){
-    this.getConselho();
+    this.loadData();
   }
 
   openModal(conselho: any) {
@@ -83,10 +85,10 @@ export class ListarConselhoComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.getConselho();
+    this.loadData();
   }
 
-  getConselho(): void {
+  loadData(): void {
     this.conselhoService.Listar(this.currentPage, this.pageSize, this.nomeFiltro).subscribe({
       next: (data) => {
         if (data.dados) {
@@ -103,11 +105,11 @@ export class ListarConselhoComponent implements OnInit{
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    this.getConselho();
+    this.loadData();
   }
 
   filtrar(): void {
     this.currentPage = 1;
-    this.getConselho();
+    this.loadData();
   }
 }

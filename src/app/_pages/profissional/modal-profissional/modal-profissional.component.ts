@@ -131,7 +131,7 @@ export class ModalProfissionalComponent {
   }
 
   carregarCC(): void {
-    this.profissionalService.Listar().subscribe({
+    this.profissionalService.ListarSemPaginacao().subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;

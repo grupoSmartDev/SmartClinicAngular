@@ -19,7 +19,7 @@ export class ConselhoService {
     sigla : ''
   }));
 
-  Listaraa(page: number, pageSize: number, nomeFiltro?: string, siglaFiltro?: string): Observable<ResponseModel<Conselho[]>> {
+  Listar(page: number, pageSize: number, nomeFiltro?: string, siglaFiltro?: string): Observable<ResponseModel<Conselho[]>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
@@ -35,7 +35,7 @@ export class ConselhoService {
     return this.http.get<ResponseModel<Conselho[]>>(`${this.baseURL}Listar`, { params });
   }
 
-  Listar(page: number, pageSize: number, nomeFiltro?: string): Observable<ResponseModel<Conselho[]>> {
+  ListarTeste(page: number, pageSize: number, nomeFiltro?: string): Observable<ResponseModel<Conselho[]>> {
     let filteredConselhos = this.mockConselhos;
 
     if (nomeFiltro) {

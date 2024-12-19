@@ -18,12 +18,13 @@ export class ListarComponent implements OnInit {
   statusList: Status[] = [];
   errorMessage: string = '';
   idParaExcluir: string = '';
-  filterStatus: string = '';
-  filterCor: string = '';
+  //paginacao
+  totalItems: number = 0;
+  pageSize: number = 10;
   currentPage: number = 1;
-  pageSize: number = 5;
-  totalCount: number = 0;
-  Math = Math; 
+  // filtros
+  statusFiltro: string = '';
+  corFiltro: string = '';
 
   constructor(private statusService: StatusServerService, private toast: ToastrService) { }
 
@@ -76,35 +77,21 @@ export class ListarComponent implements OnInit {
     this.idParaExcluir = '';
   }
   
-    // Método para buscar dados paginados
-    getStatusPaginado(): void {
-      this.statusService.ListarPaginado(this.currentPage, this.pageSize).subscribe({
-        next: (data) => {
-          if (data.dados) {
-            this.statusList = data.dados;
-            this.totalCount = data.totalCount; // Retorno do backend com o total de itens
-          }
-        },
-        error: (err) => {
-          console.error('Erro ao buscar status:', err);
-          this.errorMessage = 'Erro ao carregar os status. Tente novamente mais tarde.';
-        }
-      });
-    }
-  
     // Atualizar página ao mudar a navegação
     onPageChange(page: number): void {
-      this.currentPage = page - 1; // Bootstrap usa paginação iniciando em 1
-      this.getStatusPaginado();
+      this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+      this.loadData();
     }
 
     loadData(): void {
+      debugger
+      
       this.statusService
-        .Listar(this.currentPage, this.pageSize, this.filterStatus, this.filterCor)
+        .Listar(this.currentPage, this.pageSize, this.statusFiltro)
         .subscribe((response) => {
           if (response.status) {
             this.statusList = response.dados;
-            this.totalCount = response.dados.length; // Altere conforme o backend enviar
+            this.totalItems = response.totalCount; // Altere conforme o backend enviar
           }
         });
     }
