@@ -22,7 +22,7 @@ export class ListarComponent implements OnInit {
   filterCor: string = '';
   currentPage: number = 1;
   pageSize: number = 5;
-  totalItems: number = 0;
+  totalCount: number = 0;
   Math = Math; 
 
   constructor(private statusService: StatusServerService, private toast: ToastrService) { }
@@ -31,20 +31,6 @@ export class ListarComponent implements OnInit {
     //this.getStatusPaginado();
     this.loadData();
   }
-
-  // getStatus(): void {
-  //   this.statusService.Listar().subscribe({
-  //     next: (data) => {
-  //       if (data.dados) {
-  //         this.statusList = data.dados;
-  //       }
-  //     },
-  //     error: (err) => {
-  //       console.error('Erro ao buscar status:', err);
-  //       this.errorMessage = 'Erro ao carregar os status. Tente novamente mais tarde.';
-  //     }
-  //   });
-  // }
 
   openModal(status: any) {
     if (status.id) {
@@ -74,7 +60,7 @@ export class ListarComponent implements OnInit {
 
   // Método para recarregar a lista após criação/atualização
   atualizarLista(): void {
-    //this.getStatus(); // Chama o método para buscar os status novamente
+    this.onSearch(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -96,7 +82,7 @@ export class ListarComponent implements OnInit {
         next: (data) => {
           if (data.dados) {
             this.statusList = data.dados;
-            this.totalItems = data.totalItens; // Retorno do backend com o total de itens
+            this.totalCount = data.totalCount; // Retorno do backend com o total de itens
           }
         },
         error: (err) => {
@@ -118,7 +104,7 @@ export class ListarComponent implements OnInit {
         .subscribe((response) => {
           if (response.status) {
             this.statusList = response.dados;
-            this.totalItems = response.dados.length; // Altere conforme o backend enviar
+            this.totalCount = response.dados.length; // Altere conforme o backend enviar
           }
         });
     }

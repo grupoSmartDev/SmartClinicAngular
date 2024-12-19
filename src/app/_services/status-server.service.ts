@@ -20,6 +20,7 @@ export class StatusServerService {
     status?: string,
     cor?: string
   ): Observable<ResponseModel<Status[]>> {
+    debugger
     let params = new HttpParams()
       .set('page', page)
       .set('pageSize', pageSize);
