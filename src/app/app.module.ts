@@ -97,7 +97,7 @@ import { ModalFinancPagarComponent } from './_pages/financPagar/modal-financ-pag
 import { ListarProfissaoComponent } from './_pages/profissao/listar-profissao/listar-profissao.component';
 import { ModalProfissaoComponent } from './_pages/profissao/modal-profissao/modal-profissao.component';
 
-
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 
 
@@ -200,6 +200,7 @@ import { ModalProfissaoComponent } from './_pages/profissao/modal-profissao/moda
     NgxChartsModule,
     FormsModule,    
     CommonModule,
+    PaginationModule.forRoot()
     
   ],
   providers: [ provideNgxMask(),],

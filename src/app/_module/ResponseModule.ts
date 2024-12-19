@@ -3,5 +3,6 @@ export interface ResponseModel<T> {
     mensagem: string;
     status: boolean;
     totalCount : number;
+    pageSize : number;
   }
   

@@ -1,5 +1,5 @@
 export interface Conselho {
-    id: string
+    id: string 
     nome: string
     sigla: string
 }

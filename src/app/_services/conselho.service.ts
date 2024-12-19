@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Conselho } from '../_module/conselhoModule';
 import { ResponseModel } from '../_module/ResponseModule';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +13,49 @@ export class ConselhoService {
 
   baseURL: string = 'https://localhost:44308/api/Conselho/';
 
-  Listar(): Observable<ResponseModel<Conselho[]>> {
-    return this.http.get<ResponseModel<Conselho[]>>(`${this.baseURL}Listar`);
+  private mockConselhos: Conselho[] = Array.from({ length: 100 }, (_, i) => ({
+    id: (i + 1).toString(),
+    nome: `Conselho ${i + 1}`,
+    sigla : ''
+  }));
+
+  Listaraa(page: number, pageSize: number, nomeFiltro?: string, siglaFiltro?: string): Observable<ResponseModel<Conselho[]>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+  
+    if (nomeFiltro) {
+      params = params.set('nomeFiltro', nomeFiltro);
+    }
+
+    if (siglaFiltro) {
+      params = params.set('siglaFiltro', siglaFiltro);
+    }
+  
+    return this.http.get<ResponseModel<Conselho[]>>(`${this.baseURL}Listar`, { params });
   }
+
+  Listar(page: number, pageSize: number, nomeFiltro?: string): Observable<ResponseModel<Conselho[]>> {
+    let filteredConselhos = this.mockConselhos;
+
+    if (nomeFiltro) {
+      filteredConselhos = filteredConselhos.filter(c => c.nome.toLowerCase().includes(nomeFiltro.toLowerCase()));
+    }
+
+    const totalCount = filteredConselhos.length;
+    const paginatedConselhos = filteredConselhos.slice((page - 1) * pageSize, page * pageSize);
+
+    const response: ResponseModel<Conselho[]> = {
+      dados: paginatedConselhos,
+      mensagem: 'Dados mockados retornados com sucesso.',
+      status: true,
+      totalCount,
+      pageSize
+    };
+
+    return of(response);
+  }
+  
 
   Criar(conselho: Conselho): Observable<ResponseModel<Conselho>> {
     return this.http.post<ResponseModel<Conselho>>(`${this.baseURL}Criar`, conselho);

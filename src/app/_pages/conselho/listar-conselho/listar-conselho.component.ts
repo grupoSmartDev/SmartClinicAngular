@@ -19,29 +19,15 @@ export class ListarConselhoComponent implements OnInit{
   errorMessage: string = '';
   idParaExcluir!: string;
   conselhoParaExcluir!: Conselho;
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  nomeFiltro: string = '';
+  siglaFiltro: string = '';
 
   @ViewChild(ModalConselhoComponent) modalConselhoComponent!: ModalConselhoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
-
-
-  ngOnInit(): void {
-    this.getConselho();
-  }
-
-  getConselho(): void {
-    this.conselhoService.Listar().subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.lista = data.dados;
-        }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar Conselho:', err);
-        this.errorMessage = 'Erro ao carregar os Conselho. Tente novamente mais tarde.';
-      }
-    })
-  }
 
   editarItem(item: any) {
     console.log('Editando item:', item);
@@ -94,5 +80,34 @@ export class ListarConselhoComponent implements OnInit{
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  ngOnInit(): void {
+    this.getConselho();
+  }
+
+  getConselho(): void {
+    this.conselhoService.Listar(this.currentPage, this.pageSize, this.nomeFiltro).subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.lista = data.dados;
+          this.totalItems = data.totalCount;
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao buscar Conselho:', err);
+        this.errorMessage = 'Erro ao carregar os Conselho. Tente novamente mais tarde.';
+      }
+    });
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.getConselho();
+  }
+
+  filtrar(): void {
+    this.currentPage = 1;
+    this.getConselho();
   }
 }
