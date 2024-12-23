@@ -83,9 +83,7 @@ export class ListarComponent implements OnInit {
       this.loadData();
     }
 
-    loadData(): void {
-      debugger
-      
+    loadData(): void {     
       this.statusService
         .Listar(this.currentPage, this.pageSize, this.statusFiltro)
         .subscribe((response) => {
