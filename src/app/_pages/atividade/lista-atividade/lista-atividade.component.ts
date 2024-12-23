@@ -20,14 +20,26 @@ export class ListaAtividadeComponent {
   idParaExcluir!: string;
   dadosParaExcluir!: Atividade;
 
+    //paginacao
+    totalItems: number = 0;
+    pageSize: number = 10;
+    currentPage: number = 1;
+    // filtros
+    atividadeFiltro: string = '';
+    idFiltro: string = '';
+    descricaoFiltro: string = '';
+    paginar : boolean = true;
+
   constructor(private atividadeService: AtividadeService , private toast: ToastrService) { }
 
   ngOnInit(): void {
-    this.getDados();
+    this.loadData();
   } 
 
-  getDados(): void {
-    this.atividadeService.Listar().subscribe({
+  loadData(): void {
+    this.atividadeService.Listar(this.currentPage, this.pageSize,
+      this.atividadeFiltro, this.idFiltro, this.descricaoFiltro,
+      this.paginar).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -68,7 +80,7 @@ export class ListaAtividadeComponent {
   }
   
   atualizarLista(): void {
-    this.getDados(); // Chama o método para buscar os status novamente
+    this.loadData(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -82,5 +94,15 @@ export class ListaAtividadeComponent {
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.loadData();
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 }
