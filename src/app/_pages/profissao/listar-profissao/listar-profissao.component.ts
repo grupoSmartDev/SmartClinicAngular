@@ -24,8 +24,7 @@ export class ListarProfissaoComponent {
     pageSize: number = 10;
     currentPage: number = 1;
     // filtros
-    nomeFiltro: string = '';
-    cpfFiltro: string = '';
+    descricaoFiltro: string = '';
     profissaoFiltro: string = '';
     id: string = '';
 
@@ -36,10 +35,11 @@ export class ListarProfissaoComponent {
   } 
 
   loadData(): void {
-    this.profissaoService.Listar().subscribe({
+    this.profissaoService.Listar(undefined,undefined,this.descricaoFiltro).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
+          this.totalItems = data.totalCount;
         }
       },
       error: (err) => {

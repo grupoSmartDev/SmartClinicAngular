@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResponseModel } from '../_module/ResponseModule';
@@ -13,8 +13,19 @@ export class ProfissaoService {
 
   baseURL: string = 'https://localhost:44308/api/Profissao/';
 
-  Listar(): Observable<ResponseModel<Profissao[]>> {
-    return this.http.get<ResponseModel<Profissao[]>>(`${this.baseURL}Listar`);
+  Listar(
+    page?: number,
+    pageSize?: number,
+    descricaoFiltro?: string
+  ): Observable<ResponseModel<Profissao[]>> {
+    debugger
+    let params = new HttpParams()
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:4242440096.
+    if (page) params = params.set('page', page.toString());
+    if (pageSize) params = params.set('pageSize', pageSize.toString());
+    if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
+    
+    return this.http.get<ResponseModel<Profissao[]>>(`${this.baseURL}Listar`, { params });
   }
 
   Criar(profissao: Profissao): Observable<ResponseModel<Profissao>> {
