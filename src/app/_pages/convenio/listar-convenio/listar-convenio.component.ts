@@ -13,13 +13,25 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ListarConvenioComponent implements OnInit {
 constructor(private convenioService: ConvenioService, private toast: ToastrService) {}
+  @ViewChild(ModalConvenioComponent) modalConvenioComponent!: ModalConvenioComponent;
+  @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
   lista : Convenio[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   convenioParaExcluir!: Convenio;
-  @ViewChild(ModalConvenioComponent) modalConvenioComponent!: ModalConvenioComponent;
-  @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
+
+    //paginacao
+    totalItems: number = 0;
+    pageSize: number = 10;
+    currentPage: number = 1;
+    // filtros
+    idFiltro: string = '';
+    nomeFiltro: string = '';
+    registroAvsFiltro: string = '';
+    telefoneFiltro : string = '';
+    paginar : boolean = true;
+
 
   colunasConvenios = [
     { header: 'Cód.', field: 'id' },
@@ -32,11 +44,14 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
   ];
 
   ngOnInit(): void {
-    this.getConvenio();
+    this.loadData();
   }
 
-  getConvenio(): void {
-    this.convenioService.Listar().subscribe({
+  loadData(): void {
+    this.convenioService.Listar(
+      this.currentPage,
+      this.pageSize,this.nomeFiltro,this.idFiltro,
+      this.registroAvsFiltro,this.telefoneFiltro,this.paginar = true).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -74,7 +89,7 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
   }
 
   atualizarConvenio(){
-    this.getConvenio();
+    this.loadData();
   }
   openModal(convenio: any) {
     if (convenio.id) {
@@ -99,5 +114,15 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.loadData();
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 }
