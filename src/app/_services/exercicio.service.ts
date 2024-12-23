@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
@@ -14,8 +14,25 @@ export class ExercicioService {
 
   baseURL: string = 'https://localhost:44308/api/exercicio/';
 
-  Listar(): Observable<ResponseModel<Exercicio[]>> {
-    return this.http.get<ResponseModel<Exercicio[]>>(`${this.baseURL}Listar`);
+  Listar(
+    page?: number,
+    pageSize?: number,
+    exercicioFiltro? : string,
+    idFiltro? : string,
+    descricaoFiltro? : string,
+    paginar?: boolean
+  ): Observable<ResponseModel<Exercicio[]>> {
+    
+    let params = new HttpParams()
+
+    if (page) params = params.set('page', page.toString());
+    if (pageSize) params = params.set('pageSize', pageSize.toString());
+    if (exercicioFiltro) params = params.set('exercicioFiltro', exercicioFiltro);
+    if (idFiltro) params = params.set('idFiltro', idFiltro);
+    if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
+    if (paginar) params = params.set('paginar', paginar);
+    
+    return this.http.get<ResponseModel<Exercicio[]>>(`${this.baseURL}Listar`, { params });
   }
 
   Criar(exercicio: Exercicio): Observable<ResponseModel<Exercicio>> {

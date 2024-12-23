@@ -20,15 +20,24 @@ export class ListarExerciciosComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: Exercicio;
+    //paginacao
+    totalItems: number = 0;
+    pageSize: number = 10;
+    currentPage: number = 1;
+    // filtros
+    descricaoFiltro: string = '';
+    idFiltro: string = '';
+    exercicioFiltro: string = '';
+    paginar : boolean = true;
 
   constructor(private exercicioService: ExercicioService , private toast: ToastrService) { }
 
   ngOnInit(): void {
-    this.getDados();
+    this.loadData();
   } 
 
-  getDados(): void {
-    this.exercicioService.Listar().subscribe({
+  loadData(): void {
+    this.exercicioService.Listar(this.currentPage, this.pageSize, this.exercicioFiltro, this.idFiltro, this.descricaoFiltro, this.paginar).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -70,7 +79,7 @@ export class ListarExerciciosComponent {
   }
   
   atualizarLista(): void {
-    this.getDados(); // Chama o método para buscar os status novamente
+    this.loadData(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -84,6 +93,16 @@ export class ListarExerciciosComponent {
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.loadData();
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 
 }
