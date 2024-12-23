@@ -20,15 +20,27 @@ export class ListarSalasComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   salaParaExcluir!: Sala;
+    //paginacao
+    totalItems: number = 0;
+    pageSize: number = 10;
+    currentPage: number = 1;
+    // filtros
+    nomeFiltro: string = '';
+    idFiltro: string = '';
+    localFiltro: string = '';
+    capacidadeFiltro: string = '';
+    paginar : boolean = true;
 
   constructor(private salaService: SalasService , private toast: ToastrService) { }
 
   ngOnInit(): void {
-    this.getDados();
+    this.loadData();
   } 
 
-  getDados(): void {
-    this.salaService.Listar().subscribe({
+  loadData(): void {
+    this.salaService.Listar(this.currentPage,this.pageSize,this.nomeFiltro,
+      this.idFiltro,this.localFiltro,this.capacidadeFiltro,
+      this.paginar).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -42,7 +54,6 @@ export class ListarSalasComponent {
   }
 
   openModal(sala: any) {
-    debugger
     if (sala.id) {
       this.modalSalaComponent.sala = sala;
       this.modalSalaComponent.carregarSala(sala);
@@ -55,7 +66,6 @@ export class ListarSalasComponent {
   }
 
   Excluir(sala : Sala) {
-    debugger
     let id = sala.id;
     this.salaService.Deletar(parseInt(id)).subscribe({
       next: (response) => {
@@ -71,7 +81,7 @@ export class ListarSalasComponent {
   }
   
   atualizarLista(): void {
-    this.getDados(); // Chama o método para buscar os status novamente
+    this.loadData(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -85,5 +95,15 @@ export class ListarSalasComponent {
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.loadData();
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 }
