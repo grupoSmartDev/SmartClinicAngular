@@ -18,15 +18,24 @@ export class ListaProcedimentoComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   procedimentoParaExcluir!: Procedimento;
+    //paginacao
+    totalItems: number = 0;
+    pageSize: number = 10;
+    currentPage: number = 1;
+    // filtros
+    nomeFiltro? : string = '';
+    idFiltro? : string = '';
+    descricaoFiltro? : string = '';
+    paginar?: boolean
 
   constructor(private procedimentoService:ProcedimentoService , private toast: ToastrService) { }
 
   ngOnInit(): void {
-    this.getDados();
+    this.loadData();
   } 
 
-  getDados(): void {
-    this.procedimentoService.Listar().subscribe({
+  loadData(): void {
+    this.procedimentoService.Listar(this.currentPage,this.pageSize,this.nomeFiltro,this.idFiltro,this.descricaoFiltro,this.paginar).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -67,7 +76,7 @@ export class ListaProcedimentoComponent {
   }
   
   atualizarLista(): void {
-    this.getDados(); // Chama o método para buscar os status novamente
+    this.loadData(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -81,5 +90,15 @@ export class ListaProcedimentoComponent {
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.loadData();
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 }

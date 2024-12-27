@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResponseModel } from '../_module/ResponseModule';
@@ -13,8 +13,25 @@ export class ProcedimentoService {
 
   baseURL: string = 'https://localhost:44308/api/Procedimento/';
 
-  Listar(): Observable<ResponseModel<Procedimento[]>> {
-    return this.http.get<ResponseModel<Procedimento[]>>(`${this.baseURL}Listar`);
+  Listar(
+    page?: number,
+    pageSize?: number,
+    nomeFiltro? : string,
+    idFiltro? : string,
+    descricaoFiltro? : string,
+    paginar?: boolean
+  ): Observable<ResponseModel<Procedimento[]>> {
+    
+    let params = new HttpParams()
+
+    if (page) params = params.set('page', page.toString());
+    if (pageSize) params = params.set('pageSize', pageSize.toString());
+    if (nomeFiltro) params = params.set('nomeFiltro', nomeFiltro);
+    if (idFiltro) params = params.set('idFiltro', idFiltro);
+    if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
+    if (paginar) params = params.set('paginar', paginar);
+    
+    return this.http.get<ResponseModel<Procedimento[]>>(`${this.baseURL}Listar`, { params });
   }
 
   Criar(procedimento: Procedimento): Observable<ResponseModel<Procedimento>> {
