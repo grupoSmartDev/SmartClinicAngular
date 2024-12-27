@@ -21,23 +21,29 @@ export class ListarBancoComponent {
   errorMessage : string = '';
   idParaExcluir! : string;
   bancoParaExcluir ! : Banco;
-  colunaTabela = [
-    { header: 'Cód.', field: 'id' },
-    { header: 'Nome', field: 'nomeBanco' },
-    { header: 'Agencia', field: 'agencia' },
-    { header: 'N. Conta', field: 'numeroConta' },
-    { header: 'Tipo de Conta', field: 'tipoConta' },
-  ];
+  //paginacao
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  // filtros
+  nomeBancoFiltro? : string = '';
+  nomeTitularFiltro? : string = '';
+  idFiltro? : string = '';
+  documentoTitularFiltro? : string = '';
+  paginar : boolean = true;
 
   ngOnInit(): void {
-    this.getBancos();
+    this.loadData();
   } 
 
-  getBancos() : void {
-    this.BancoService.Listar().subscribe({
+  loadData() : void {
+    this.BancoService.Listar(this.currentPage, this.pageSize,
+       this.nomeBancoFiltro, this.nomeTitularFiltro, 
+       this.idFiltro, this.documentoTitularFiltro, this.paginar).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
+          this.totalItems = data.totalCount;
         }
       },
       error: (err) => {
@@ -76,7 +82,7 @@ export class ListarBancoComponent {
   }
   
   atualizarLista(): void {
-    this.getBancos(); // Chama o método para buscar os status novamente
+    this.loadData(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -90,5 +96,15 @@ export class ListarBancoComponent {
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.loadData();
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 }
