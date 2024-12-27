@@ -49,7 +49,8 @@ export class ProfissionalService {
     if (profissaoFiltro) {
       params = params.set('profissaoFiltro', profissaoFiltro);
     }
-    return this.http.get<ResponseModel<Profissional[]>>(`${this.baseURL}Listar`);
+    debugger
+    return this.http.get<ResponseModel<Profissional[]>>(`${this.baseURL}Listar`, { params });
   }
 
   Criar(profissonal: Profissional): Observable<ResponseModel<Profissional>> {
