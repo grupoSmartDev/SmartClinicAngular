@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
@@ -14,8 +14,23 @@ export class PlanoService {
 
   baseURL: string = 'https://localhost:44308/api/Plano/';
 
-  Listar(): Observable<ResponseModel<Plano[]>> {
-    return this.http.get<ResponseModel<Plano[]>>(`${this.baseURL}Listar`);
+  Listar(
+    page?: number,
+    pageSize?: number,
+    descricaoFiltro? : string,
+    idFiltro? : string,
+    paginar?: boolean
+  ): Observable<ResponseModel<Plano[]>> {
+    
+    let params = new HttpParams()
+
+    if (page) params = params.set('page', page.toString());
+    if (pageSize) params = params.set('pageSize', pageSize.toString());
+    if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
+    if (idFiltro) params = params.set('idFiltro', idFiltro);
+    if (paginar) params = params.set('paginar', paginar);
+    
+    return this.http.get<ResponseModel<Plano[]>>(`${this.baseURL}Listar`, { params });
   }
 
   Criar(plano: Plano): Observable<ResponseModel<Plano>> {
