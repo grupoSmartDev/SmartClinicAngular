@@ -44,6 +44,7 @@ export class ListarCategoriaComponent {
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
+          this.totalItems = data.totalCount;
         }
       },
       error: (err) => {

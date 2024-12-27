@@ -15,16 +15,18 @@ export class StatusServerService {
   constructor(private http: HttpClient) { }
 
   Listar(
-    page: number,
-    pageSize: number,
-    statusFiltro?: string
+    page?: number,
+    pageSize?: number,
+    statusFiltro?: string,
+    paginar: boolean = false
   ): Observable<ResponseModel<Status[]>> {
     debugger
     let params = new HttpParams()
-      .set('page', page)
-      .set('pageSize', pageSize);
-
+    
+    if(page) params = params.set('page', page.toString());
+    if(pageSize) params = params.set('pageSize', pageSize.toString());
     if (statusFiltro) params = params.set('statusFiltro', statusFiltro);
+    if (paginar) params = params.set('paginar', paginar);
     
     return this.http.get<ResponseModel<Status[]>>(`${this.baseURL}Listar`, { params });
   }

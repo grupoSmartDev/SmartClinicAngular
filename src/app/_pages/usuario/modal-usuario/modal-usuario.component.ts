@@ -42,7 +42,7 @@ export class ModalUsuarioComponent {
   });
 
   ngOnInit(): void {
-    this.profissionalService.ListarSemPaginacao().subscribe({
+    this.profissionalService.Listar(undefined,undefined,undefined,undefined,undefined,undefined,false).subscribe({
       next: (data) => {
         if (data.dados) {
           this.profissionais = data.dados;

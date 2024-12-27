@@ -7,6 +7,8 @@ import * as bootstrap from 'bootstrap';
 
 import { FinancReceber } from '../../../_module/financReceberModule';
 import { ModalFinanceiroReceber } from '../modal-financ-receber/modal-financ-receber.component';
+import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
+import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 
 @Component({
   selector: 'app-listar-financ-receber',
@@ -18,18 +20,34 @@ export class ListarFinancReceberComponent {
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
   lista: FinancReceber[] = [];
+  ccLista : CentroDeCusto[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: FinancReceber;
+  //paginacao
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  // filtros
+  descricaoFiltro?: string = '';
+  idFiltro?: string = '';
+  dataEmissaoFiltro?: string = '';
+  pacienteFiltro?: string = '';
+  pacienteIdFiltro?: string = '';
+  ccFiltro?: string = '';
+  paginar: boolean = true;
 
-  constructor(private financReceberService: FinancReceberService , private toast: ToastrService) { }
+  constructor(private financReceberService: FinancReceberService, private toast: ToastrService, private ccService : CentroDeCustoService) { }
 
   ngOnInit(): void {
-    this.getDados();
-  } 
+    this.loadData();
+  }
 
-  getDados(): void {
-    this.financReceberService.Listar().subscribe({
+  loadData(): void {
+    this.financReceberService.Listar(
+      this.currentPage,this.pageSize,this.descricaoFiltro,this.idFiltro,
+      this.dataEmissaoFiltro,this.pacienteFiltro,this.pacienteIdFiltro,this.ccFiltro, this.paginar
+    ).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -38,6 +56,22 @@ export class ListarFinancReceberComponent {
       error: (err) => {
         console.error('Erro ao buscar exercicio:', err);
         this.errorMessage = 'Erro ao carregar as exercicios. Tente novamente mais tarde.';
+      }
+    });
+  }
+
+  
+  loadCC(): void {
+    this.ccService.Listar(
+    ).subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.ccLista = data.dados;
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao buscar contas a pagar:', err);
+        this.errorMessage = 'Erro ao carregar as contas a pagar. Tente novamente mais tarde.';
       }
     });
   }
@@ -54,7 +88,7 @@ export class ListarFinancReceberComponent {
     }
   }
 
-  Excluir(financReceber : FinancReceber) {
+  Excluir(financReceber: FinancReceber) {
     let id = financReceber.id;
     this.financReceberService.Deletar(id.toString()).subscribe({
       next: (response) => {
@@ -68,9 +102,9 @@ export class ListarFinancReceberComponent {
       }
     });
   }
-  
+
   atualizarLista(): void {
-    this.getDados(); // Chama o método para buscar os status novamente
+    this.loadData(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -84,5 +118,15 @@ export class ListarFinancReceberComponent {
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.loadData();
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 }

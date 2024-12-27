@@ -14,16 +14,25 @@ export class ProfissionalService {
   baseURL: string = 'https://localhost:44308/api/Profissional/';
 
   Listar(
-    page: number,
-    pageSize: number,
+    page?: number,
+    pageSize?: number,
     nomeFiltro?: string,
     idFiltro? : string,
     cpfFiltro? : string,
-    profissaoFiltro? : string
+    profissaoFiltro? : string,
+    paginar: boolean = false
   ): Observable<ResponseModel<Profissional[]>> {
     let params = new HttpParams()
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
+      
+      
+
+    if(page){
+      params = params.set('page', page.toString());
+    }
+
+    if(pageSize){
+      params = params.set('pageSize', pageSize.toString());
+    }
 
     if (nomeFiltro) {
       params = params.set('nomeFiltro', nomeFiltro);
@@ -56,7 +65,5 @@ export class ProfissionalService {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
 
-  ListarSemPaginacao(): Observable<ResponseModel<Profissional[]>> {
-    return this.http.get<ResponseModel<Profissional[]>>(`${this.baseURL}Listar`);
-  }
+
 }
