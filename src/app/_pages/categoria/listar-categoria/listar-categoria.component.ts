@@ -22,17 +22,25 @@ export class ListarCategoriaComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: Categoria;
+    //paginacao
+    totalItems: number = 0;
+    pageSize: number = 10;
+    currentPage: number = 1;
+    // filtros
+    descricaoFiltro: string = '';
+    idFiltro: string = '';
+    paginar : boolean = true;
 
   ngOnInit(): void {
-    this.getDados();
+    this.loadData();
   }
 
   atualizarLista(): void {
-    this.getDados(); // Chama o método para buscar os status novamente
+    this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  getDados(): void {
-    this.categoriaService.Listar().subscribe({
+  loadData(): void {
+    this.categoriaService.Listar(this.currentPage,this.pageSize,this.descricaoFiltro,this.idFiltro,this.paginar).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -84,5 +92,15 @@ export class ListarCategoriaComponent {
         this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir um categoria');
       }
     })
+  }
+  
+  onPageChange(page: number): void {
+    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.loadData();
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 }
