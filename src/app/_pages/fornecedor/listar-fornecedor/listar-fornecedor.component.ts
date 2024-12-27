@@ -34,12 +34,6 @@ export class ListarFornecedorComponent {
   celularFiltro : string = '';
   paginar : boolean = true;
 
-  colunasTabela = [
-    { header: 'Cód.', field: 'id' },
-    { header: 'Nome', field: 'nome' },
-    { header: 'CPF/CNPJ', field: 'cpf' },
-  ]
-
   ngOnInit(): void {
     this.loadData();
   }

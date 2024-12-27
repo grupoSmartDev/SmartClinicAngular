@@ -24,19 +24,26 @@ export class ListarPacienteComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dataParaExcluir!:Paciente;
-
-  colunaTabela = [
-    { header: 'Cód.', field: 'id' },
-    { header: 'Nome', field: 'nome' },
-    { header: 'Telefone', field: 'telefone' },
-  ]
+  //paginacao
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  // filtros
+  nomeFiltro: string = '';
+  idFiltro: string = '';
+  cpfFiltro: string = '';
+  celularFiltro : string = '';
+  paginar : boolean = true;
 
   ngOnInit(): void {
-    this.getData();
+    this.loadData();
   } 
 
-  getData() : void {
-    this.pacienteService.Listar().subscribe({
+  loadData() : void {
+    this.pacienteService.Listar(
+      this.currentPage,this.pageSize,this.nomeFiltro,this.idFiltro,
+      this.cpfFiltro, this.celularFiltro, this.paginar
+    ).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -98,7 +105,7 @@ export class ListarPacienteComponent {
   }
 
   atualizarLista(): void {
-    this.getData(); // Chama o método para buscar os cc novamente
+    this.loadData(); // Chama o método para buscar os cc novamente
   }
 
   promptDelete(id: string) {
@@ -112,5 +119,15 @@ export class ListarPacienteComponent {
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.loadData();
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 }
