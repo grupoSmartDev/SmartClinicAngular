@@ -95,7 +95,7 @@
             }
 
                     <!-- Paginação Bootstrap -->
-        <div class="row justify-content-center">
+        <div class="row justify-content-center mt-1">
           <div class="">
             <pagination
               [totalItems]="totalItems"
@@ -114,7 +114,7 @@
 
 
 <!-- listar.component.html -->
-<app-modal-atividade (dataAtualizada)="atualizarLista()"></app-modal-atividade>
+<app-modal-atividade (dadosAtualizados)="atualizarLista()"></app-modal-atividade>
 
 <app-confirm-dialog
   #confirmDialog
