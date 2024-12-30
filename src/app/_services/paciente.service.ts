@@ -48,4 +48,8 @@ export class PacienteService {
   Deletar(id: string): Observable<ResponseModel<void>> {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
+
+  listarHistoricoPagamento(pacienteId:string){
+    return this.http.get<ResponseModel<any>>(`${this.baseURL}ListarHistorico/${pacienteId}`);
+  }
 }

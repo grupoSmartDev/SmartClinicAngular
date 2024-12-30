@@ -27,9 +27,10 @@ export class PacienteCompletoComponent implements OnInit {
     private fb : FormBuilder,
     private evolucaoService : EvolucaoService) {}
 
-  listaPacientes : Paciente[] = [];
+  Paciente : Paciente = {} as Paciente;
   listaProfissional : Profissional[] = [];
   formEvolucao! : FormGroup;
+  valorTotalReceita = 0;
 
   @Output() evolucaoAtualizado = new EventEmitter<void>();
 
@@ -150,4 +151,24 @@ export class PacienteCompletoComponent implements OnInit {
   mandarEvolucao() : void {
     console.log('Formulario de evolução', this.formEvolucao.value);
   }
-}
+
+  calcularValorTotalReceita(): number {
+    let total = 0;
+    this.Paciente.financReceber?.forEach((item) => {
+      item.subFinancReceber?.forEach((itemSub) => {
+        total += itemSub.valor;
+      });
+    });
+    return total;
+  }
+
+  quantidadeAulasFeitas(): number {
+    let quantidade = 0;
+    this.Paciente.agendamentos?.forEach((item)=>{
+      item.dataCancelamento ? quantidade++ : null;
+    })
+    return quantidade;
+    }
+  
+  }
+  

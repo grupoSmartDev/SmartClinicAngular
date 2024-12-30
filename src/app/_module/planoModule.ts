@@ -16,7 +16,7 @@ export interface Plano{
     ativo : boolean;
     pacienteId?: number; //id do paciente
     financeiroId?: number;
-    tipoMes?: TipoMes;
+    tipoMes: TipoMes;
 }
 
 export enum TipoMes {

@@ -101,12 +101,13 @@
                       <div class="card-body">
                         <p class="titulo-pequeno">Paciênte</p>
                         <h3 class="descricao-grande">
-                          Jhonatan Willian Faelis
+                          {{Paciente.nome}}
                         </h3>
                         <p>Idade 29 anos</p>
-                        <p><i class="bi bi-whatsapp"></i> (19) 99926-5677</p>
+                        <p><i class="bi bi-whatsapp"></i> {{Paciente.celular}}</p>
                         <p>
-                          <i class="bi bi-envelope"></i> jhonatanfaelisgmail.com
+                          <i class="bi bi-envelope"></i> 
+                          {{Paciente.email}}
                         </p>
                       </div>
                     </div>
@@ -119,30 +120,48 @@
                         <!--Vai virar um component, esse quadrado com as informaç~oes de numero e texto-->
                         <div class="row">
                           <div class="col-6">
-                            <p class="descricao-grande">6</p>
+                            <p class="descricao-grande">{{Paciente.agendamentos ? Paciente.agendamentos.length : 0}}</p>
                             <p class="descricao-medio">Agendamentos</p>
                             <hr />
                           </div>
                           <div class="col-6">
-                            <p class="descricao-grande">1</p>
+                            <p class="descricao-grande">{{quantidadeAulasFeitas()}}</p>
                             <p class="descricao-medio">Cancelamentos</p>
                             <hr />
                           </div>
                         </div>
                         <div class="row">
                           <div class="col-6">
-                            <p class="descricao-grande">Plano A</p>
-                            <p class="descricao-medio">Tipo de plano</p>
+                            <p class="descricao-grande">{{Paciente.plano ? Paciente.plano.descricao: 'Sem plano'}}</p>
+                            <p class="descricao-medio">
+                              @switch (Paciente.plano?.tipoMes) {
+                                @case ('m') {
+                                  Plano Mensal
+                                }
+                                @case ('s') {
+                                  Plano Semestral
+                                }
+                                @case ('a') {
+                                  Plano Anual
+                                }
+                                @default {
+                                 
+                                }
+                              }
+                            </p>
                             <hr />
                           </div>
                           <div class="col-6">
                             <p class="descricao-grande">Convênio ABC</p>
-                            <p class="descricao-medio">Convênio</p>
+                            <p class="descricao-grande">{{Paciente.convenio?.nome}}</p>
+                            <p class="descricao-medio">{{Paciente.convenio?.telefone}}</p>
                             <hr />
                           </div>
                         </div>
                         <div>
-                          <p class="descricao-grande">R$ 265,00</p>
+                          <p class="descricao-grande">
+                            {{calcularValorTotalReceita()}}
+                          </p>
                           <p class="descricao-medio">em receita</p>
                           <hr />
                         </div>
@@ -155,8 +174,7 @@
                       <div class="card-body">
                         <p class="titulo-pequeno">Observação</p>
                         <p class="descricao-medio">
-                          informações normais do paciente que virão do
-                          paciente.obs
+                         {{Paciente.breveDiagnostico ? Paciente.breveDiagnostico : 'Sem observação'}}
                         </p>
                       </div>
                     </div>

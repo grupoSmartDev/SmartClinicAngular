@@ -44,6 +44,7 @@ export class ModalExercicioComponent {
   }
 
   onSubmit(){
+    
     if(this.formulario.invalid){
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');

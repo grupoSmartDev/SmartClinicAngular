@@ -55,6 +55,74 @@ export class ListarPacienteComponent {
         this.errorMessage = 'Erro ao carregar os Paciente. Tente novamente mais tarde.';
       }
     })
+    this.lista = [
+      {
+        "id": 1,
+        "bairro": "Centro",
+        "breveDiagnostico": "Hipertensão",
+        "celular": "(11) 98765-4321",
+        "cep": "01000-000",
+        "cidade": "São Paulo",
+        "comoConheceu": "Indicação de amigo",
+        "complemento": "Apt. 45",
+        "convenioId": 101,
+        "cpf": "123.456.789-00",
+        "dataNascimento": "1985-06-15",
+        "email": "joao.silva@email.com",
+        "uf": "SP",
+        "estadoCivil": "Casado",
+        "logradouro": "Rua das Flores",
+        "medicamento": "Losartana",
+        "profissionalId": 3,
+        "nome": "João Silva",
+        "numero": "123",
+        "pais": "Brasil",
+        "permitirLembretes": true,
+        "preferenciaDeContato": "WhatsApp",
+        "profissao": "Engenheiro",
+        "responsavel": false,
+        "rg": "12.345.678-9",
+        "sexo": "Masculino",
+        "telefone": "(11) 3232-1234",
+        "planoId": 201,
+        "evolucoes": [],
+        "dataUltimoAtendimento": "2024-11-01",
+        "financReceber": []
+      }, {
+        "id": 2,
+        "bairro": "Botafogo",
+        "breveDiagnostico": "",
+        "celular": "(21) 99876-5432",
+        "cep": "22250-040",
+        "cidade": "Rio de Janeiro",
+        "comoConheceu": "Redes sociais",
+        "complemento": "Casa 2",
+        "convenioId": null,
+        "cpf": "987.654.321-00",
+        "dataNascimento": "1995-03-20",
+        "email": "maria.oliveira@email.com",
+        "uf": "RJ",
+        "estadoCivil": "Solteira",
+        "logradouro": "Av. Atlântica",
+        "medicamento": "Salbutamol",
+        "profissionalId": 5,
+        "nome": "Maria Oliveira",
+        "numero": "456",
+        "pais": "Brasil",
+        "permitirLembretes": "Sim",
+        "preferenciaDeContato": "Email",
+        "profissao": "Advogada",
+        "responsavel": "Não",
+        "rg": "34.567.890-1",
+        "sexo": "Feminino",
+        "telefone": "(21) 3232-5678",
+        "planoId": null,
+        "evolucoes": [],
+        "dataUltimoAtendimento": "2024-10-15",
+        "financReceber": []
+      }
+      
+      ];
   }
 
   openModal(paciente: any) {
@@ -70,10 +138,12 @@ export class ListarPacienteComponent {
   }
 
   openModalDetalhado(paciente: any) {
-    // if (paciente.id) {
-    //   this.modalPacienteCompletoComponent.paciente = paciente;
-    //   this.modalPacienteComponent.carregarData(paciente);
-    // }
+debugger
+    if(paciente){
+        this.modalPacienteCompletoComponent.Paciente = paciente;
+        console.table(paciente)
+      }
+
     const modalElement = document.getElementById('modalPacienteDetalhado');
     if (modalElement) {
       const modal = new bootstrap.Modal(modalElement);

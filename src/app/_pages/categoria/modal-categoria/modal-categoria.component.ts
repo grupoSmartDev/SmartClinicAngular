@@ -56,6 +56,8 @@ export class ModalCategoriaComponent {
     }
   
     fecharModal() {
+      const btnCancelar = document.querySelector("#btnCancelar") as HTMLElement;
       this.formulario.reset();
+      btnCancelar.click();
     }
 }

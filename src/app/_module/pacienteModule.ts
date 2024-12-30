@@ -1,6 +1,9 @@
+import { Agenda } from "./agendaModule";
 import { Atendimento } from "./atendimentoModule";
+import { Convenio } from "./convenioModule";
 import { Evolucao } from "./evolucaoModule";
 import { FinancReceber } from "./financReceberModule";
+import { Plano } from "./planoModule";
 
 export interface Paciente {
   id: number; 
@@ -12,6 +15,7 @@ export interface Paciente {
   comoConheceu?: string; 
   complemento?: string; 
   convenioId?: number | null;  
+  convenio? : Convenio
   cpf?: string; 
   dataNascimento?: string | null; 
   email?: string; 
@@ -31,6 +35,9 @@ export interface Paciente {
   sexo?: string; 
   telefone?: string; 
   planoId?: number | null; 
+  plano? : Plano;
+
+  agendamentos? : Agenda[];
 
   evolucoes?: Evolucao[];
   dataUltimoAtendimento?: string | null;
