@@ -3,6 +3,8 @@ import { ToastrService } from 'ngx-toastr';
 import { PlanoContasSubService } from '../../../_services/plano-contas-sub.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PlanoContaSub } from '../../../_module/planoContaSubModule';
+import { PlanoContas } from '../../../_module/planoContasModule';
+import { PlanoContasService } from '../../../_services/plano-contas.service';
 
 @Component({
   selector: 'app-modal-plano-contas-sub',
@@ -13,9 +15,11 @@ export class ModalPlanoContasSubComponent {
   @Input() data = {} as PlanoContaSub;
   @Output() dadosAtualizados = new EventEmitter<void>();
 
+  listaPlanoContas : PlanoContas[] = [];
   
   constructor(private toast: ToastrService,
-    private planoContaService: PlanoContasSubService,
+    private planoContaSubService: PlanoContasSubService,
+    private planoContasService : PlanoContasService,
     private fb : FormBuilder
   ) { 
 
@@ -42,8 +46,8 @@ onSubmit(){
   const dataToSave = this.formulario.value as PlanoContaSub;
 
   const saveOperation = dataToSave.id
-    ? this.planoContaService.Atualizar(dataToSave)
-    : this.planoContaService.Criar(dataToSave);
+    ? this.planoContaSubService.Atualizar(dataToSave)
+    : this.planoContaSubService.Criar(dataToSave);
 
     saveOperation.subscribe({
       next: () => {
@@ -59,6 +63,13 @@ onSubmit(){
     });
 }
 
+carregarPlanoContas() {
+  this.planoContasService.Listar().subscribe({
+    next: (dados) => {
+      this.listaPlanoContas = dados.dados;
+    }
+  })
+}
 
   carregarDados(plano: any) {
     this.formulario.patchValue(this.data);

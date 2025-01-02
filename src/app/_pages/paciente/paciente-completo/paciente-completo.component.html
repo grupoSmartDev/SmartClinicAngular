@@ -152,8 +152,7 @@
                             <hr />
                           </div>
                           <div class="col-6">
-                            <p class="descricao-grande">Convênio ABC</p>
-                            <p class="descricao-grande">{{Paciente.convenio?.nome}}</p>
+                            <p class="descricao-grande">{{Paciente.convenio ?  Paciente.convenio?.nome : 'Sem convenio'}}</p>
                             <p class="descricao-medio">{{Paciente.convenio?.telefone}}</p>
                             <hr />
                           </div>
@@ -192,23 +191,32 @@
             >
               <h5>Histórico Financeiro</h5>
               <!-- Aqui vai o conteúdo da aba de financeiro -->
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Descrição</th>
-                    <th>Valor</th>
-                  </tr>
-                </thead>
+              <table border="1">
+            
                 <tbody>
-                  <!-- Exemplo de itens financeiros -->
-                  <tr>
-                    <td>01/01/2023</td>
-                    <td>Consulta</td>
-                    <td>R$ 150,00</td>
+                  <!-- Percorrendo os itens financeiros -->
+                  <tr *ngFor="let item of Paciente.financReceber">
+                    <td colspan="3">
+                      <!-- Subtabela para itens filhos -->
+                      <table border="1" class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>Data</th>
+                            <th>Valor</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let subItem of item.subFinancReceber">
+                            <td>{{ subItem.dataPagamento }}</td>
+                            <td>{{ subItem.valor }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
                   </tr>
                 </tbody>
               </table>
+                                  
             </div>
 
             <!-- Atendimentos -->

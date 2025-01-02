@@ -3,6 +3,7 @@ import { PlanoContas } from '../../../_module/planoContasModule';
 import { ToastrService } from 'ngx-toastr';
 import { PlanoContasService } from '../../../_services/plano-contas.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PlanoContaSub } from '../../../_module/planoContaSubModule';
 
 @Component({
   selector: 'app-modal-plano-contas',
@@ -13,9 +14,12 @@ export class ModalPlanoContasComponent {
   @Input() data = {} as PlanoContas;
   @Output() dadosAtualizados = new EventEmitter<void>();
 
+  listaPlanoContasSub : PlanoContaSub[] = [];
+
   
   constructor(private toast: ToastrService,
     private planoContaService: PlanoContasService,
+    private planoContaSubService : PlanoContasService,
     private fb : FormBuilder
   ) { 
 
@@ -24,6 +28,7 @@ export class ModalPlanoContasComponent {
       codigo : [null, Validators.required],
       nome : [null, Validators.required],
       tipo : [null,Validators.required],
+      ativo : [true],
       planoContaSub : this.fb.array([])
     })
   }
@@ -71,5 +76,18 @@ onSubmit(){
     const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
     this.formulario.reset();
     btnCacelar.click();
+  }
+
+
+  adicionarSub(): void {
+    //se eu precisar pegar todas as informações posso fazer um filter no array de planoContaSub e retirar o plano com o id que eu receber no adicionar. 
+    const novoItem = this.fb.group({
+      id: [null],
+    });
+    this.planoContaSub.push(novoItem);
+  }
+
+  removerSub(index: number): void {
+    this.planoContaSub.removeAt(index);
   }
 }
