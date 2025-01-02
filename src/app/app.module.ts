@@ -98,6 +98,10 @@ import { ListarProfissaoComponent } from './_pages/profissao/listar-profissao/li
 import { ModalProfissaoComponent } from './_pages/profissao/modal-profissao/modal-profissao.component';
 
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { ListarPlanoContasComponent } from './_pages/planoContas/listar-plano-contas/listar-plano-contas.component';
+import { ModalPlanoContasComponent } from './_pages/planoContas/modal-plano-contas/modal-plano-contas.component';
+import { ListarPlanoContasSubComponent } from './_pages/planoContasSub/listar-plano-contas-sub/listar-plano-contas-sub.component';
+import { ModalPlanoContasSubComponent } from './_pages/planoContasSub/modal-plano-contas-sub/modal-plano-contas-sub.component';
 
 
 
@@ -186,7 +190,11 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
     ListarFinancPagarComponent,
     ModalFinancPagarComponent,
     ModalProfissaoComponent,
-    ListarProfissaoComponent
+    ListarProfissaoComponent,
+    ListarPlanoContasComponent,
+    ModalPlanoContasComponent,
+    ListarPlanoContasSubComponent,
+    ModalPlanoContasSubComponent
   ],
   imports: [
     BrowserModule,
