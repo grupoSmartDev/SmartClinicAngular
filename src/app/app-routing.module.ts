@@ -30,6 +30,8 @@ import { ListarCategoriaComponent } from './_pages/categoria/listar-categoria/li
 import { ListarFinancReceberComponent } from './_pages/financReceber/listar-financ-receber/listar-financ-receber.component';
 import { ListarFinancPagarComponent } from './_pages/financPagar/listar-financ-pagar/listar-financ-pagar.component';
 import { ListarProfissaoComponent } from './_pages/profissao/listar-profissao/listar-profissao.component';
+import { ListarPlanoContasSubComponent } from './_pages/planoContasSub/listar-plano-contas-sub/listar-plano-contas-sub.component';
+import { ListarPlanoContasComponent } from './_pages/planoContas/listar-plano-contas/listar-plano-contas.component';
 
 
 const routes: Routes = [
@@ -67,6 +69,8 @@ const routes: Routes = [
       { path: 'FinancReceber/listar', component: ListarFinancReceberComponent}, // pagina para testes
       { path: 'financPagar/listar', component: ListarFinancPagarComponent}, // pagina para testes
       { path: 'profissao/listar', component: ListarProfissaoComponent}, // pagina para testes
+      { path: 'planoContas/listar', component: ListarPlanoContasComponent}, // pagina para testes
+      { path: 'planoContaSub/listar', component: ListarPlanoContasSubComponent}, // pagina para testes
     ]
   },
 
