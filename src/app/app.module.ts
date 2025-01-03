@@ -102,6 +102,8 @@ import { ListarPlanoContasComponent } from './_pages/planoContas/listar-plano-co
 import { ModalPlanoContasComponent } from './_pages/planoContas/modal-plano-contas/modal-plano-contas.component';
 import { ListarPlanoContasSubComponent } from './_pages/planoContasSub/listar-plano-contas-sub/listar-plano-contas-sub.component';
 import { ModalPlanoContasSubComponent } from './_pages/planoContasSub/modal-plano-contas-sub/modal-plano-contas-sub.component';
+import { DatePtBrPipe } from './date-pt-br.pipe';
+import { CurrencyPtBrPipe } from './currency-pt-br.pipe';
 
 
 
@@ -194,7 +196,9 @@ import { ModalPlanoContasSubComponent } from './_pages/planoContasSub/modal-plan
     ListarPlanoContasComponent,
     ModalPlanoContasComponent,
     ListarPlanoContasSubComponent,
-    ModalPlanoContasSubComponent
+    ModalPlanoContasSubComponent,
+    DatePtBrPipe,
+    CurrencyPtBrPipe
   ],
   imports: [
     BrowserModule,

@@ -8,26 +8,26 @@ import { TipoPagamento } from "./tipoPagamentoModule"
 
 export interface FinancReceber {
     id: string;
-    idOrigem: string; //ok
-    nrDocto: string; //ok
-    dataEmissao: Date;//ok
+    idOrigem: string; 
+    nrDocto: string; 
+    dataEmissao: Date;
     valorOriginal: number;
     valorPago: number;
     parcela: number;
     valor : number;
-    status: StatusPagamento; // Enumeração
-    notaFiscal: string; //ok
-    descricao: string; //ok
+    status: StatusPagamento;
+    notaFiscal: string; 
+    descricao: string; 
     classificacao: string;
-    observacao: string; //ok
-    pacienteId: string; //ok
-    paciente: Paciente; //ok
+    observacao: string; 
+    pacienteId: string; 
+    paciente: Paciente; 
     fornecedorId: string; 
-    fornecedor: Fornecedor;
-    centroCustoId: string; //ok
-    centroCusto: CentroDeCusto; //ok
+    fornecedor?: Fornecedor;
+    centroCustoId: string; 
+    centroCusto: CentroDeCusto; 
     bancoId: string;
-    banco: Banco;
+    banco?: Banco;
     subFinancReceber: SubFinancReceber[];
     usuarioResponsavelId: string;
     dataUltimaAtualizacao: Date; 

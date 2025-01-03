@@ -8,6 +8,7 @@ import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
 import { PacienteCompletoComponent } from '../paciente-completo/paciente-completo.component';
 import { TipoMes } from '../../../_module/planoModule';
+import { StatusPagamento } from '../../../_module/financReceberModule';
 
 @Component({
   selector: 'app-listar-paciente',
@@ -168,7 +169,88 @@ export class ListarPacienteComponent {
           }
         ],
         "dataUltimoAtendimento": "2024-10-15",
-        "financReceber": []
+        "financReceber": [
+          {
+            "id": "1",
+            "idOrigem": "123",
+            "nrDocto": "DOC123456",
+            "dataEmissao": new Date("2025-01-01"),
+            "valorOriginal": 1500.0,
+            "valorPago": 500.0,
+            "parcela": 3,
+            "valor": 500.0,
+            "status": StatusPagamento.PENDENTE, // Exemplo de valor para StatusPagamento
+            "notaFiscal": "NF12345",
+            "descricao": "Consulta médica",
+            "classificacao": "Saúde",
+            "observacao": "Primeira parcela paga",
+            "pacienteId": "P001",
+            "paciente": {
+              "id": 1,
+              "nome": "João Silva",
+              "cpf": "123.456.789-00",
+              "telefone": "99999-9999"
+            },
+            "fornecedorId": "F001",
+            "centroCustoId": "CC001",
+            "centroCusto": {
+              "id": "CC001",
+              "descricao": "Centro de Custo 1",
+              "tipo": "Receitas Diversas"
+            },
+            "bancoId": "B001",
+            "subFinancReceber": [
+              {
+                "id": 1,
+                "financReceberId": "1",
+                "parcela": "1/3",
+                "valor": 500.0,
+                "dataVencimento": new Date("2025-01-10"),
+                "dataPagamento": new Date("2025-01-05"),
+                "observacao": "Pagamento adiantado",
+                "desconto": 50.0,
+                "juros": 0.0,
+                "multa": 0.0,
+                "formaPagamentoId": "FP001",
+                "formaPagamento": {
+                  "id": "FP001",
+                  "descricao": "Cartão de Crédito",
+                  "parcelas": 1
+                },
+                "tipoPagamentoId": "TP001",
+                "tipoPagamento": {
+                  "id": "TP001",
+                  "descricao": "Entrada"
+                }
+              },
+              {
+                "id": 2,
+                "financReceberId": "1",
+                "parcela": "2/3",
+                "valor": 500.0,
+                "dataVencimento": new Date("2025-02-10"),
+                "dataPagamento": new Date("2005-02-10"),
+                "observacao": "Pendente",
+                "desconto": 0.0,
+                "juros": 0.0,
+                "multa": 0.0,
+                "formaPagamentoId": "FP002",
+                "formaPagamento": {
+                  "id": "FP002",
+                  "descricao": "Boleto",
+                  "parcelas": 1
+                },
+                "tipoPagamentoId": "TP002",
+                "tipoPagamento": {
+                  "id": "TP002",
+                  "descricao": "Normal"
+                }
+              }
+            ],
+            "usuarioResponsavelId": "U001",
+            "dataUltimaAtualizacao": new Date("2025-01-02")
+          }
+        ]
       }
       
       ];

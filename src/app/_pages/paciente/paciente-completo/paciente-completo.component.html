@@ -159,7 +159,7 @@
                         </div>
                         <div>
                           <p class="descricao-grande">
-                            {{calcularValorTotalReceita()}}
+                            {{calcularValorTotalReceita() | currencyPtBr}}
                           </p>
                           <p class="descricao-medio">em receita</p>
                           <hr />
@@ -191,7 +191,7 @@
             >
               <h5>Histórico Financeiro</h5>
               <!-- Aqui vai o conteúdo da aba de financeiro -->
-              <table border="1">
+              <table border="1" class="table table-striped table-responsive">
             
                 <tbody>
                   <!-- Percorrendo os itens financeiros -->
@@ -207,8 +207,8 @@
                         </thead>
                         <tbody>
                           <tr *ngFor="let subItem of item.subFinancReceber">
-                            <td>{{ subItem.dataPagamento }}</td>
-                            <td>{{ subItem.valor }}</td>
+                            <td>{{ subItem.dataPagamento | datePtBr }}</td>
+                            <td>{{ subItem.valor | currencyPtBr }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -241,7 +241,7 @@
                 <tbody>
                   <tr>
                     @for (items of Paciente.evolucoes; track items.id) {
-                      <td>{{items.data}}</td>
+                      <td>{{items.data | datePtBr}}</td>
                       <td>{{items.descricao}}</td>
                       <td>  <button
                         class="btn btn-sm btn-primary"
