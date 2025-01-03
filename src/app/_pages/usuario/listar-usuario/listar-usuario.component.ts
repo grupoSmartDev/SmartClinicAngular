@@ -50,7 +50,7 @@ export class ListarUsuarioComponent {
 
   
   openModal(usuario: any) {
-    debugger
+    
     if (usuario.id) {
       this.modal.usuario = usuario;
       this.modal.carregarDados(usuario);

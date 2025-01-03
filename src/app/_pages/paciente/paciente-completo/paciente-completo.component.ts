@@ -51,21 +51,36 @@ export class PacienteCompletoComponent implements OnInit {
       descricao: ['', Validators.required],
       pacienteId: ['', Validators.required],
       profissionalId: ['', Validators.required],
-      exercicios: this.fb.array<Exercicio>([]),
-      atividades: this.fb.array<Atividade>([]),
+      exercicio: this.fb.array<Exercicio>([]),
+      atividade: this.fb.array<Atividade>([]),
     });
   }
   get exercicios(): FormArray {
-    return this.formEvolucao.get('exercicios') as FormArray;
+    return this.formEvolucao.get('exercicio') as FormArray;
   }
 
   get atividades() : FormArray{
-    return this.formEvolucao.get('atividades') as FormArray;
+    return this.formEvolucao.get('atividade') as FormArray;
   }
-  openDialog(paciente:any) {
+  openDialog(evolucao : any) {
+    debugger
     const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
     if (dialog) {
       dialog.showModal();
+      this.formEvolucao.patchValue(evolucao);
+
+    // Atualizar o FormArray de atividade
+    const atividadeArray = this.formEvolucao.get('atividade') as FormArray;
+    evolucao.atividade.forEach((atividade: Atividade) => {
+      atividadeArray.push(this.fb.group(atividade));
+    });
+
+    // Atualizar o FormArray de exercicio
+    const exercicioArray = this.formEvolucao.get('exercicio') as FormArray;
+    evolucao.exercicio.forEach((exercicio: Exercicio) => {
+      exercicioArray.push(this.fb.group(exercicio));
+    });
+
     } else {
       console.error('Dialog não encontrado!');
     }
@@ -111,45 +126,33 @@ export class PacienteCompletoComponent implements OnInit {
     this.formEvolucao.patchValue(this.exercicios);
   }
 
-
-  salvarEvolucao() {
-    
-    const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    if (this.formEvolucao.valid) {
-      const dadosParaSalvar: Evolucao = this.formEvolucao.value as Evolucao;
-      if (dadosParaSalvar.id) {
-        this.evolucaoService.Atualizar(dadosParaSalvar).subscribe({
-          next: (response: ResponseModel<Evolucao>) => {
-            this.toast.success('Evolução atualizado com Sucesso', 'Parabéns');
-            this.evolucaoAtualizado.emit(); // Emita o evento após a atualização
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar uma evolução');
-          }
-        });
-      } else {
-        this.evolucaoService.Criar(dadosParaSalvar).subscribe({
-          next: (response: ResponseModel<Evolucao>) => {
-            this.toast.success('Evolução cadastrada com sucesso', 'Parabéns');
-            this.evolucaoAtualizado.emit(); // Emita o evento após a criação
-            btnCacelar.click();
-            this.fecharModal();
-          },
-          error: (err) => {
-            console.error('Erro ao cadastrar evolução:', err);
-            this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao cadastrar uma evolução');
-          }
-        });
-      }
-    } else {
-      console.error('Formulário inválido');
+  salvarEvolucao() : void {
+    if(this.formEvolucao.invalid){
+      this.toast.error('Preencha todos os campos', 'Erro ao cadastrar uma evolução');
+      return
     }
-  }
 
-  mandarEvolucao() : void {
-    console.log('Formulario de evolução', this.formEvolucao.value);
+    const dataToSave = this.formEvolucao.value;
+
+    dataToSave.pacienteId = this.Paciente.id;
+
+    console.log(dataToSave);
+
+    const saveOperation = dataToSave.id 
+      ? this.evolucaoService.Atualizar(dataToSave)
+      : this.evolucaoService.Criar(dataToSave);
+
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Evolução ${action} com sucesso!`, 'Parabéns');
+        this.closeDialog();
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
+
   }
 
   calcularValorTotalReceita(): number {

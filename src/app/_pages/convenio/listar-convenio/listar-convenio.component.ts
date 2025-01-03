@@ -70,7 +70,7 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
 
   Excluir(convenio : Convenio) {
     let id = convenio.id;
-    debugger
+    
     this.convenioService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Convênio excluído com sucesso:', response);

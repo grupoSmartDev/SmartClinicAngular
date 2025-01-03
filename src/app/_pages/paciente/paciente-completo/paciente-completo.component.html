@@ -240,16 +240,16 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>05/02/2023</td>
-                    <td>Fisioterapia</td>
-                    <td>
-                      <button
+                    @for (items of Paciente.evolucoes; track items.id) {
+                      <td>{{items.data}}</td>
+                      <td>{{items.descricao}}</td>
+                      <td>  <button
                         class="btn btn-sm btn-primary"
-                        (click)="openDialog('')"
+                        (click)="openDialog(items)"
                       >
                         Ver Evolução
-                      </button>
-                    </td>
+                      </button></td>
+                    }
                   </tr>
                 </tbody>
               </table>
@@ -264,23 +264,33 @@
             >
               <h5>Planos do Paciente</h5>
               <button class="btn btn-success mb-2">
-                <i class="bi bi-plus"></i> Plano
+                <i class="bi bi-plus"></i> Renovar plano
               </button>
               <!-- Lista de planos cadastrados -->
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>Plano</th>
                     <th>Descrição</th>
+                    <th>Plano</th>
                     <th>Validade</th>
                   </tr>
                 </thead>
                 <tbody>
                   <!-- Exemplo de plano -->
                   <tr>
-                    <td>Plano Básico</td>
-                    <td>Acesso limitado</td>
-                    <td>31/12/2023</td>
+                    <td>{{Paciente.plano?.descricao}}</td>
+                    @switch (Paciente.plano?.tipoMes) {
+                      @case ('m') {
+                        <td>Mensal</td>
+                      }
+                      @case ('s') {
+                        <td>Semestral</td>
+                      }
+                      @case ('a') {
+                        <td>Anual</td>
+                      }
+                    }
+                    <td>{{Paciente.plano?.dataFim?.getDate()}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -417,7 +427,7 @@
                 </div>
               
                 <!-- FormArray para os itens -->
-                <div formArrayName="exercicios" class="mt-2">
+                <div formArrayName="exercicio" class="mt-2">
                     <div
                       *ngFor="let item of exercicios.controls; let i = index"
                       [formGroupName]="i"
@@ -477,7 +487,7 @@
                     </div>
                   </div>
 
-                  <div formArrayName="atividades" class="mt-2">
+                  <div formArrayName="atividade" class="mt-2">
                     <div
                       *ngFor="let item of atividades.controls; let i = index"
                       [formGroupName]="i"
@@ -529,7 +539,7 @@
             </div>
         </div>
         <div class="modal-footer justify-content-end">
-          <button type="button" (click)="mandarEvolucao()" class="btn btn-success">
+          <button type="button" (click)="salvarEvolucao()" class="btn btn-success">
             <i class="bi bi-check"></i> Confirmar
           </button>
           <button

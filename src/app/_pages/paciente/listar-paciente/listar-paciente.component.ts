@@ -7,6 +7,7 @@ import { Paciente } from '../../../_module/pacienteModule';
 import * as bootstrap from 'bootstrap';
 import { Router } from '@angular/router';
 import { PacienteCompletoComponent } from '../paciente-completo/paciente-completo.component';
+import { TipoMes } from '../../../_module/planoModule';
 
 @Component({
   selector: 'app-listar-paciente',
@@ -116,8 +117,56 @@ export class ListarPacienteComponent {
         "rg": "34.567.890-1",
         "sexo": "Feminino",
         "telefone": "(21) 3232-5678",
-        "planoId": null,
-        "evolucoes": [],
+        "planoId": 1,
+        "plano" : {
+          "id" : 1,
+          "descricao" : "teste",
+          "ativo" : true,
+          "diasSemana" : 3,
+          "dataFim" : new Date(),
+          "centroCustoId" : undefined,
+          "dataInicio" : undefined,
+          "financeiroId" : undefined,
+          "pacienteId" : 2,
+          "tempoMinutos" : 230,
+          "tipoMes" : TipoMes.Mensal
+        },
+        "evolucoes": [
+          {
+            "id": 1,
+            "descricao": "Evolução 1",
+            "pacienteId": 2,
+            "profissionalId": "1",
+            "data" : new Date(),
+            "atividade" : [
+              {
+                "descricao" : "Atividade A",
+                "evolucaoId" : 1,
+                "id" : 2,
+                "tempo" : 60,
+                "titulo" : "teste titulo atividade"
+              },
+              {
+                "descricao" : "Atividade B",
+                "evolucaoId" : 1,
+                "id" : 3,
+                "tempo" : 30,
+                "titulo" : "teste titulo 2"
+              }
+            ],
+            "exercicio" : [
+              {
+                "descricao" : "Exercício A",
+                "evolucaoId" : 1,
+                "id" : 4,
+                "repeticoes" : 10,
+                "series" : 3,
+                "tempo" : 30,
+                "titulo" : "Teste titulo exercicio 1"
+              }
+            ]
+          }
+        ],
         "dataUltimoAtendimento": "2024-10-15",
         "financReceber": []
       }
@@ -138,7 +187,7 @@ export class ListarPacienteComponent {
   }
 
   openModalDetalhado(paciente: any) {
-debugger
+
     if(paciente){
         this.modalPacienteCompletoComponent.Paciente = paciente;
         console.table(paciente)

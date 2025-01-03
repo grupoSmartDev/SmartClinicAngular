@@ -18,7 +18,7 @@ export class TabelaComponent {
   }
 
   onDelete(item: any) {
-    debugger
+    
     this.delete.emit(item);
   }
 }

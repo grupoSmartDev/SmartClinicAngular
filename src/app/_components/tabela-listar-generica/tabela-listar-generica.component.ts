@@ -26,7 +26,7 @@ export class TabelaListarGenericaComponent {
   }
 
   onEdit(item: any) {
-    debugger
+    
     this.edit.emit(item);
   }
 

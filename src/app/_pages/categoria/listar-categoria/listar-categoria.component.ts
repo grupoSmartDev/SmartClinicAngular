@@ -56,7 +56,7 @@ export class ListarCategoriaComponent {
 
   
   openModal(categoria: any) {
-    debugger
+    
     if (categoria.id) {
       this.modal.categoria = categoria;
       this.modal.carregarDados(categoria);

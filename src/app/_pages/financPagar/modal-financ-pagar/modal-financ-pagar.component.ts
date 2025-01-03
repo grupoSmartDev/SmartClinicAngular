@@ -196,7 +196,7 @@ export class ModalFinancPagarComponent {
   }
 
   testeEnvios(): void {
-    debugger
+    
     if (this.formulario.valid) {
       console.log('Formulário enviado:', this.formulario.value);
       alert('Formulário enviado com sucesso!');

@@ -37,7 +37,7 @@ export class PacienteService {
   }
 
   Criar(paciente: Paciente): Observable<ResponseModel<Paciente>> {
-    debugger
+    
     return this.http.post<ResponseModel<Paciente>>(`${this.baseURL}Criar`, paciente);
   }
 

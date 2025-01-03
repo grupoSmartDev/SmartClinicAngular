@@ -20,7 +20,7 @@ export class StatusServerService {
     statusFiltro?: string,
     paginar: boolean = false
   ): Observable<ResponseModel<Status[]>> {
-    debugger
+    
     let params = new HttpParams()
     
     if(page) params = params.set('page', page.toString());

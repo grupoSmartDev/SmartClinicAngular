@@ -37,7 +37,7 @@ export class ListarConselhoComponent implements OnInit{
 
   Excluir(conselho : Conselho) {
     let id = conselho.id;
-    debugger
+    
     this.conselhoService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Conselho excluído com sucesso:', response);

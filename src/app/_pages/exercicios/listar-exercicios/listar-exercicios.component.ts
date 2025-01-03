@@ -63,7 +63,7 @@ export class ListarExerciciosComponent {
   }
 
   Excluir(exercicio : Exercicio) {
-    debugger
+    
     let id = exercicio.id;
     this.exercicioService.Deletar(id.toString()).subscribe({
       next: (response) => {

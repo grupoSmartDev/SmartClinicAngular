@@ -18,7 +18,7 @@ export class ProfissaoService {
     pageSize?: number,
     descricaoFiltro?: string
   ): Observable<ResponseModel<Profissao[]>> {
-    debugger
+    
     let params = new HttpParams()
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:4242440096.
     if (page) params = params.set('page', page.toString());
@@ -29,7 +29,7 @@ export class ProfissaoService {
   }
 
   Criar(profissao: Profissao): Observable<ResponseModel<Profissao>> {
-    debugger
+    
     return this.http.post<ResponseModel<Profissao>>(`${this.baseURL}Criar`, profissao);
   }
 

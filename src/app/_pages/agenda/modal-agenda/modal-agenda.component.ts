@@ -108,11 +108,14 @@ export class ModalAgendaComponent implements OnInit {
     this.getProfissional();
     this.getStatus();
     this.getSala();
+    this.getFP();
+    this.getTP();
   }
 
   fecharModal() {
     const modal = document.getElementById('modalAgenda');
     if (modal) {
+      this.formulario.reset();
       const bootstrapModal = bootstrap.Modal.getInstance(modal);
       bootstrapModal?.hide();
     }
@@ -236,14 +239,12 @@ export class ModalAgendaComponent implements OnInit {
   }
 
   onSubmit() {
-    debugger
     if(this.formulario.invalid){
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro')
     }
 
     const dataToSave = this.formulario.value as Agenda;
-
 
     const financReceber = this.formulario.get('financReceber')?.value;
     if (financReceber) {

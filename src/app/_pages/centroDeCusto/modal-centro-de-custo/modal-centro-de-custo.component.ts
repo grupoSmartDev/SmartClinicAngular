@@ -30,7 +30,7 @@ export class ModalCentroDeCustoComponent {
   }
 
   onSubmit() {
-    debugger
+    
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched(); // Marca todos os campos como tocados para exibir os erros.
       this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');

@@ -53,7 +53,7 @@ export class ListarTipoPagamentoComponent {
 
   
   openModal(tipoPagamento: any) {
-    debugger
+    
     if (tipoPagamento.id) {
       this.modalTipoPagamento.tipoPagamento = tipoPagamento;
       this.modalTipoPagamento.carregarTipoPagamento(tipoPagamento);
