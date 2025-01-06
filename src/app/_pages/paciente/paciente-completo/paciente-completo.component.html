@@ -376,7 +376,7 @@
       <div class="">
         <div class="modal-header">
           <h5 class="modal-title" id="addProgressModalLabel">
-            Evolução - Nome do Paciente
+            Evolução - {{Paciente.nome}}
           </h5>
           <button
             type="button"
@@ -530,6 +530,53 @@
                       </button>
                     </div>
                   </div>
+                <div class="col-12">
+                  <label for="progressDescription" class="form-label">Descrição</label>
+                  <textarea cols="30" rows="10" class="form-control form-control-sm" formControlName="descricao"></textarea>
+                </div>
+              </div>
+              
+            </div>
+        </div>
+        <div class="modal-footer justify-content-end">
+          <button type="button" (click)="salvarEvolucao()" class="btn btn-success">
+            <i class="bi bi-check"></i> Confirmar
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="closeDialog()"
+          >
+            <i class="bi bi-x"></i> Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dialog_plano">
+    <form [formGroup]="formPlano">
+      <div class="">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProgressModalLabel">
+            Plano - {{Paciente.nome}}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeDialog()"
+          ></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+              <div class="row mb-2 align-items-end">
+                <div class="col-2">
+                  <label for="progressDescription" class="form-label"
+                  >Cód</label
+                >
+                <input type="text" class="form-control form-control-sm" readonly formControlName="id">
+                </div>
+                
                 <div class="col-12">
                   <label for="progressDescription" class="form-label">Descrição</label>
                   <textarea cols="30" rows="10" class="form-control form-control-sm" formControlName="descricao"></textarea>

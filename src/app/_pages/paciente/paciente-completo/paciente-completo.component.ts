@@ -30,6 +30,7 @@ export class PacienteCompletoComponent implements OnInit {
   Paciente : Paciente = {} as Paciente;
   listaProfissional : Profissional[] = [];
   formEvolucao! : FormGroup;
+  formPlano! : FormGroup;
   valorTotalReceita = 0;
 
   @Output() evolucaoAtualizado = new EventEmitter<void>();
@@ -63,7 +64,6 @@ export class PacienteCompletoComponent implements OnInit {
     return this.formEvolucao.get('atividade') as FormArray;
   }
   openDialog(evolucao : any) {
-    debugger
     const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
     if (dialog) {
       dialog.showModal();
@@ -171,6 +171,16 @@ export class PacienteCompletoComponent implements OnInit {
       item.dataCancelamento ? quantidade++ : null;
     })
     return quantidade;
+    }
+
+    openDialogPlano(plano : any) {
+      const dialog = document.getElementById('dialog_plano') as HTMLDialogElement;
+      if (dialog) {
+        dialog.showModal();
+        this.formPlano.patchValue(plano);
+      } else {
+        console.error('Dialog não encontrado!');
+      }
     }
   
   }
