@@ -101,13 +101,15 @@
                       <div class="card-body">
                         <p class="titulo-pequeno">Paciênte</p>
                         <h3 class="descricao-grande">
-                          {{Paciente.nome}}
+                          {{ Paciente.nome }}
                         </h3>
                         <p>Idade 29 anos</p>
-                        <p><i class="bi bi-whatsapp"></i> {{Paciente.celular}}</p>
                         <p>
-                          <i class="bi bi-envelope"></i> 
-                          {{Paciente.email}}
+                          <i class="bi bi-whatsapp"></i> {{ Paciente.celular }}
+                        </p>
+                        <p>
+                          <i class="bi bi-envelope"></i>
+                          {{ Paciente.email }}
                         </p>
                       </div>
                     </div>
@@ -120,46 +122,57 @@
                         <!--Vai virar um component, esse quadrado com as informaç~oes de numero e texto-->
                         <div class="row">
                           <div class="col-6">
-                            <p class="descricao-grande">{{Paciente.agendamentos ? Paciente.agendamentos.length : 0}}</p>
+                            <p class="descricao-grande">
+                              {{
+                                Paciente.agendamentos
+                                  ? Paciente.agendamentos.length
+                                  : 0
+                              }}
+                            </p>
                             <p class="descricao-medio">Agendamentos</p>
                             <hr />
                           </div>
                           <div class="col-6">
-                            <p class="descricao-grande">{{quantidadeAulasFeitas()}}</p>
+                            <p class="descricao-grande">
+                              {{ quantidadeAulasFeitas() }}
+                            </p>
                             <p class="descricao-medio">Cancelamentos</p>
                             <hr />
                           </div>
                         </div>
                         <div class="row">
                           <div class="col-6">
-                            <p class="descricao-grande">{{Paciente.plano ? Paciente.plano.descricao: 'Sem plano'}}</p>
+                            <p class="descricao-grande">
+                              {{
+                                Paciente.plano
+                                  ? Paciente.plano.descricao
+                                  : "Sem plano"
+                              }}
+                            </p>
                             <p class="descricao-medio">
-                              @switch (Paciente.plano?.tipoMes) {
-                                @case ('m') {
-                                  Plano Mensal
-                                }
-                                @case ('s') {
-                                  Plano Semestral
-                                }
-                                @case ('a') {
-                                  Plano Anual
-                                }
-                                @default {
-                                 
-                                }
-                              }
+                              @switch (Paciente.plano?.tipoMes) { @case ('m') {
+                              Plano Mensal } @case ('s') { Plano Semestral }
+                              @case ('a') { Plano Anual } @default { } }
                             </p>
                             <hr />
                           </div>
                           <div class="col-6">
-                            <p class="descricao-grande">{{Paciente.convenio ?  Paciente.convenio?.nome : 'Sem convenio'}}</p>
-                            <p class="descricao-medio">{{Paciente.convenio?.telefone}}</p>
+                            <p class="descricao-grande">
+                              {{
+                                Paciente.convenio
+                                  ? Paciente.convenio?.nome
+                                  : "Sem convenio"
+                              }}
+                            </p>
+                            <p class="descricao-medio">
+                              {{ Paciente.convenio?.telefone }}
+                            </p>
                             <hr />
                           </div>
                         </div>
                         <div>
                           <p class="descricao-grande">
-                            {{calcularValorTotalReceita() | currencyPtBr}}
+                            {{ calcularValorTotalReceita() | currencyPtBr }}
                           </p>
                           <p class="descricao-medio">em receita</p>
                           <hr />
@@ -173,7 +186,11 @@
                       <div class="card-body">
                         <p class="titulo-pequeno">Observação</p>
                         <p class="descricao-medio">
-                         {{Paciente.breveDiagnostico ? Paciente.breveDiagnostico : 'Sem observação'}}
+                          {{
+                            Paciente.breveDiagnostico
+                              ? Paciente.breveDiagnostico
+                              : "Sem observação"
+                          }}
                         </p>
                       </div>
                     </div>
@@ -192,7 +209,6 @@
               <h5>Histórico Financeiro</h5>
               <!-- Aqui vai o conteúdo da aba de financeiro -->
               <table border="1" class="table table-striped table-responsive">
-            
                 <tbody>
                   <!-- Percorrendo os itens financeiros -->
                   <tr *ngFor="let item of Paciente.financReceber">
@@ -216,7 +232,6 @@
                   </tr>
                 </tbody>
               </table>
-                                  
             </div>
 
             <!-- Atendimentos -->
@@ -241,14 +256,16 @@
                 <tbody>
                   <tr>
                     @for (items of Paciente.evolucoes; track items.id) {
-                      <td>{{items.data | datePtBr}}</td>
-                      <td>{{items.descricao}}</td>
-                      <td>  <button
+                    <td>{{ items.data | datePtBr }}</td>
+                    <td>{{ items.descricao }}</td>
+                    <td>
+                      <button
                         class="btn btn-sm btn-primary"
                         (click)="openDialog(items)"
                       >
                         Ver Evolução
-                      </button></td>
+                      </button>
+                    </td>
                     }
                   </tr>
                 </tbody>
@@ -263,9 +280,31 @@
               aria-labelledby="plans-tab"
             >
               <h5>Planos do Paciente</h5>
-              <button class="btn btn-success mb-2">
-                <i class="bi bi-plus"></i> Renovar plano
+              @if (Paciente.plano?.id == null) {
+                <button
+                class="btn btn-success mb-2"
+                (click)="openModalRenovarPlano(Paciente.plano)"
+              >
+                <i class="bi bi-plus"></i> Adicionar plano
               </button>
+              }
+              @else if (Paciente.plano?.id && compararDataParaRenovarPlano(Paciente.plano?.dataFim)) {
+                <button
+                class="btn btn-success mb-2"
+                (click)="openModalRenovarPlano(Paciente.plano)"
+              >
+                <i class="bi bi-arrow-repeat"></i> Renovar plano
+              </button>
+              }
+              @else {
+                <button
+                disabled
+                class="btn btn-success mb-2"
+                (click)="openModalRenovarPlano(Paciente.plano)"
+              >
+                <i class="bi bi-arrow-repeat"></i> Renovar plano
+              </button>
+              }
               <!-- Lista de planos cadastrados -->
               <table class="table table-striped">
                 <thead>
@@ -278,19 +317,15 @@
                 <tbody>
                   <!-- Exemplo de plano -->
                   <tr>
-                    <td>{{Paciente.plano?.descricao}}</td>
-                    @switch (Paciente.plano?.tipoMes) {
-                      @case ('m') {
-                        <td>Mensal</td>
-                      }
-                      @case ('s') {
-                        <td>Semestral</td>
-                      }
-                      @case ('a') {
-                        <td>Anual</td>
-                      }
-                    }
-                    <td>{{Paciente.plano?.dataFim?.getDate()}}</td>
+                    <td>{{ Paciente.plano?.descricao }}</td>
+                    @switch (Paciente.plano?.tipoMes) { @case ('m') {
+                    <td>Mensal</td>
+                    } @case ('s') {
+                    <td>Semestral</td>
+                    } @case ('a') {
+                    <td>Anual</td>
+                    } }
+                    <td>{{ Paciente.plano?.dataFim?.getDate() }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -376,7 +411,7 @@
       <div class="">
         <div class="modal-header">
           <h5 class="modal-title" id="addProgressModalLabel">
-            Evolução - {{Paciente.nome}}
+            Evolução - {{ Paciente.nome }}
           </h5>
           <button
             type="button"
@@ -385,168 +420,189 @@
           ></button>
         </div>
         <div class="modal-body">
-            <div class="mb-3">
-              <div class="row mb-2 align-items-end">
-                <div class="col-2">
-                  <label for="progressDescription" class="form-label"
-                  >Cód</label
+          <div class="mb-3">
+            <div class="row mb-2 align-items-end">
+              <div class="col-2">
+                <label for="progressDescription" class="form-label">Cód</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  readonly
+                  formControlName="id"
+                />
+              </div>
+
+              <div class="col-md-4 col-12">
+                <label for="progressDescription" class="form-label"
+                  >Profissional</label
                 >
-                <input type="text" class="form-control form-control-sm" readonly formControlName="id">
-                </div>
-                
-                <div class="col-md-4 col-12">
-                  <label for="progressDescription" class="form-label">Profissional</label>
-                  <select name="" id="" class="form-select form-select-sm" id="" formControlName="profissionalId">
-                    <option value="">Selecione...</option>
-                    @for (item of listaProfissional; track item.id) {
-                    <option value="{{ item.id }}">{{ item.nome }}</option>
-                    }
-                  </select>
-                </div>
-                <div class="col-md-2 col-12">
-                  <label for="progressDescription" class="form-label">Data</label>
-                  <input type="date" class="form-control form-control-sm" formControlName="data">
-                </div>
-                <div class="col-md-2 col-12">
-                  <button
+                <select
+                  name=""
+                  id=""
+                  class="form-select form-select-sm"
+                  id=""
+                  formControlName="profissionalId"
+                >
+                  <option value="">Selecione...</option>
+                  @for (item of listaProfissional; track item.id) {
+                  <option value="{{ item.id }}">{{ item.nome }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-md-2 col-12">
+                <label for="progressDescription" class="form-label">Data</label>
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  formControlName="data"
+                />
+              </div>
+              <div class="col-md-2 col-12">
+                <button
                   type="button"
                   class="btn btn-primary btn-sm"
                   (click)="adicionarExercicio()"
                 >
                   <i class="bi bi-plus"></i> Exercicios
                 </button>
-                </div>
-                <div class="col-md-2 col-12">
-                  <button
+              </div>
+              <div class="col-md-2 col-12">
+                <button
                   type="button"
                   class="btn btn-primary btn-sm"
                   (click)="adicionarAtividade()"
                 >
-                <i class="bi bi-plus"></i> Atividade
+                  <i class="bi bi-plus"></i> Atividade
                 </button>
-                </div>
-              
-                <!-- FormArray para os itens -->
-                <div formArrayName="exercicio" class="mt-2">
-                    <div
-                      *ngFor="let item of exercicios.controls; let i = index"
-                      [formGroupName]="i"
-                      class="border rounded p-3 mb-2"
-                    >
-                      <h3 class="titulo-pequeno">Exercício {{ i + 1 }}</h3>
-                      <div class="row">
-                        <div class="col-md-4">
-                          <label for="titulo">Exercício</label>
-                          <input
-                            type="text"
-                            class="form-control form-control-sm"
-                            formControlName="titulo"
-                          />
-                        </div>
-                        <div class="col-md-4">
-                          <label for="descricao">Descrição</label>
-                          <input
-                            type="text"
-                            class="form-control form-control-sm"
-                            formControlName="descricao"
-                          />
-                        </div>
-                        <div class="col-md-4">
-                          <label for="tempo">Tempo</label>
-                          <input
-                            type="text"
-                            class="form-control form-control-sm"
-                            formControlName="tempo"
-                          />
-                        </div>
-                        <div class="col-md-4">
-                          <label for="tempo">Repetições</label>
-                          <input
-                            type="text"
-                            class="form-control form-control-sm"
-                            formControlName="repeticoes"
-                          />
-                        </div>
-                        <div class="col-md-4">
-                          <label for="tempo">Séries</label>
-                          <input
-                            type="text"
-                            class="form-control form-control-sm"
-                            formControlName="series"
-                          />
-                        </div>
-                      </div>
-             
-                      <button
-                        type="button"
-                        class="btn btn-danger btn-sm mt-2"
-                        (click)="removerExercicio(i)"
-                      >
-                        Remover
-                      </button>
+              </div>
+
+              <!-- FormArray para os itens -->
+              <div formArrayName="exercicio" class="mt-2">
+                <div
+                  *ngFor="let item of exercicios.controls; let i = index"
+                  [formGroupName]="i"
+                  class="border rounded p-3 mb-2"
+                >
+                  <h3 class="titulo-pequeno">Exercício {{ i + 1 }}</h3>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="titulo">Exercício</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        formControlName="titulo"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="descricao">Descrição</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        formControlName="descricao"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="tempo">Tempo</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        formControlName="tempo"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="tempo">Repetições</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        formControlName="repeticoes"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="tempo">Séries</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        formControlName="series"
+                      />
                     </div>
                   </div>
 
-                  <div formArrayName="atividade" class="mt-2">
-                    <div
-                      *ngFor="let item of atividades.controls; let i = index"
-                      [formGroupName]="i"
-                      class="border rounded p-3 mb-2 "
-                    >
-                    <h3 class="titulo-pequeno">Atividade {{ i + 1 }}</h3>
-                      <div class="row">
-                        <div class="col-md-4">
-                          <label for="titulo">Atividade</label>
-                          <input
-                            type="text"
-                            class="form-control form-control-sm"
-                            formControlName="titulo"
-                          />
-                        </div>
-                        <div class="col-md-4">
-                          <label for="descricao">Descrição</label>
-                          <input
-                            type="text"
-                            class="form-control form-control-sm"
-                            formControlName="descricao"
-                          />
-                        </div>
-                        <div class="col-md-4">
-                          <label for="tempo">Tempo</label>
-                          <input
-                            type="text"
-                            class="form-control form-control-sm"
-                            formControlName="tempo"
-                          />
-                        </div>
-                      </div>
-             
-                      <button
-                        type="button"
-                        class="btn btn-danger btn-sm mt-2"
-                        (click)="removerAtividade(i)"
-                      >
-                        Remover
-                      </button>
-                    </div>
-                  </div>
-                <div class="col-12">
-                  <label for="progressDescription" class="form-label">Descrição</label>
-                  <textarea cols="30" rows="10" class="form-control form-control-sm" formControlName="descricao"></textarea>
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm mt-2"
+                    (click)="removerExercicio(i)"
+                  >
+                    Remover
+                  </button>
                 </div>
               </div>
-              
+
+              <div formArrayName="atividade" class="mt-2">
+                <div
+                  *ngFor="let item of atividades.controls; let i = index"
+                  [formGroupName]="i"
+                  class="border rounded p-3 mb-2"
+                >
+                  <h3 class="titulo-pequeno">Atividade {{ i + 1 }}</h3>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="titulo">Atividade</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        formControlName="titulo"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="descricao">Descrição</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        formControlName="descricao"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="tempo">Tempo</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        formControlName="tempo"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="btn btn-danger btn-sm mt-2"
+                    (click)="removerAtividade(i)"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+              <div class="col-12">
+                <label for="progressDescription" class="form-label"
+                  >Descrição</label
+                >
+                <textarea
+                  cols="30"
+                  rows="10"
+                  class="form-control form-control-sm"
+                  formControlName="descricao"
+                ></textarea>
+              </div>
             </div>
+          </div>
         </div>
         <div class="modal-footer justify-content-end">
-          <button type="button" (click)="salvarEvolucao()" class="btn btn-success">
-            <i class="bi bi-check"></i> Confirmar
-          </button>
           <button
             type="button"
-            class="btn btn-danger"
-            (click)="closeDialog()"
+            (click)="salvarEvolucao()"
+            class="btn btn-success"
           >
+            <i class="bi bi-check"></i> Confirmar
+          </button>
+          <button type="button" class="btn btn-danger" (click)="closeDialog()">
             <i class="bi bi-x"></i> Cancelar
           </button>
         </div>
@@ -559,41 +615,99 @@
       <div class="">
         <div class="modal-header">
           <h5 class="modal-title" id="addProgressModalLabel">
-            Plano - {{Paciente.nome}}
+            Plano - {{ Paciente.nome }}
           </h5>
           <button
             type="button"
             class="btn-close"
-            (click)="closeDialog()"
+            (click)="closeDialogPlano()"
           ></button>
         </div>
         <div class="modal-body">
-            <div class="mb-3">
-              <div class="row mb-2 align-items-end">
-                <div class="col-2">
-                  <label for="progressDescription" class="form-label"
-                  >Cód</label
-                >
-                <input type="text" class="form-control form-control-sm" readonly formControlName="id">
-                </div>
-                
-                <div class="col-12">
-                  <label for="progressDescription" class="form-label">Descrição</label>
-                  <textarea cols="30" rows="10" class="form-control form-control-sm" formControlName="descricao"></textarea>
-                </div>
-              </div>
-              
+          <div class="row align-items-end">
+            <div class="col-md-3">
+              <label for="" class="form-label">Plano</label>
+              <select name="" id="" class="form-select form-select-sm" id="">
+                <option value="">Selecione...</option>
+                @for (item of listaPlanos; track item.id) {
+                <option value="{{ item.id }}">{{ item.descricao }}</option>
+                }
+              </select>
             </div>
+            <div class="col-md-3">
+              <label for="" class="form-label"> Tipo de assinatura </label>
+              <select name="" id="" class="form-select form-select-sm" id="">
+                <option value="">Selecione...</option>
+                <option value="m">Mensal</option>
+                <option value="b">Bimestral</option>
+                <option value="t">Trimestral</option>
+                <option value="q">Quadrimestral</option>
+                <option value="s">Semestral</option>
+                <option value="a">Anual</option>
+              </select>
+            </div>
+
+            <div class="col-md-2">
+              <label for="" class="form-label">Data inicio</label>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                formControlName="dataInicio"
+              />
+            </div>
+
+            <div class="col-md-3">
+              <button type="button" class="btn btn-success btn-sm">
+                <i class="bi bi-arrow-repeat"></i> Renovar Plano
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="row mb-2 align-items-end">
+              <div class="col-2">
+                <label for="progressDescription" class="form-label">Cód</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  readonly
+                  formControlName="id"
+                />
+              </div>
+
+              <div class="col-4">
+                <label for="progressDescription" class="form-label"
+                  >Descrição</label
+                >
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="descricao"
+                  readonly
+                />
+              </div>
+
+              <div class="col-md-2">
+                <label for="" class="form-label">Vencimento</label>
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  formControlName="vencimento"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer justify-content-end">
-          <button type="button" (click)="salvarEvolucao()" class="btn btn-success">
-            <i class="bi bi-check"></i> Confirmar
-          </button>
           <button
             type="button"
-            class="btn btn-danger"
-            (click)="closeDialog()"
+            (click)="salvarEvolucao()"
+            class="btn btn-success"
           >
+            <i class="bi bi-check"></i> Confirmar
+          </button>
+          <button type="button" class="btn btn-danger" (click)="closeDialog()">
             <i class="bi bi-x"></i> Cancelar
           </button>
         </div>
@@ -601,6 +715,3 @@
     </form>
   </dialog>
 </div>
-
-
-
