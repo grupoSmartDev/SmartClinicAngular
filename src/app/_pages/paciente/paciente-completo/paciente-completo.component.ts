@@ -82,8 +82,8 @@ export class PacienteCompletoComponent implements OnInit {
 
 
   ngOnInit(): void {
-
     this.preencherFormulario();
+    this.carregarFormularioPlano();
 
   }
 
@@ -392,19 +392,16 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
 
-  openModalRenovarPlano(plano : any){
+  openModalRenovarPlano(plano: any) {
     const dialog = document.getElementById('dialog_plano') as HTMLDialogElement;
-
     if (dialog) {
-
+      this.carregarFormularioPlano(); // Reseta e inicializa o formPlano
+      if (plano) {
+        console.log('Plano recebido:', plano);
+        this.formPlano.patchValue(plano);
+        console.log('Form após patch:', this.formPlano.value);
+      }
       dialog.showModal();
-
-      this.formPlano.patchValue(plano);
-
-    } else {
-
-      console.error('Dialog não encontrado!');
-
     }
   }
 
@@ -415,10 +412,27 @@ export class PacienteCompletoComponent implements OnInit {
     return dataPlano > dataAtual;
   }
 
-
+  carregarFormularioPlano(){
+    this.formPlano = this.fb.group({
+      id : [null],
+      descricao : [null, Validators.required],
+      tempoMinutos : [0],
+      diasSemana : [1, Validators.required],
+      centroDeCustoId : [null],
+      valorBimestral : [0, [Validators.required, Validators.min(0)]],
+      valorTrimestral : [0, [Validators.required, Validators.min(0)]],
+      valorQuadrimestral : [0, [Validators.required, Validators.min(0)]],
+      valorSemestral : [0, [Validators.required, Validators.min(0)]],
+      valorAnual : [0, [Validators.required, Validators.min(0)]],
+      valorMensal : [0, [Validators.required, Validators.min(0)]],
+      data : [null],
+      pacienteId : [null],
+      financeiroId : [null],
+      tipoMes : ['a']
+    })
+  }
+  
 }
-
-
 
 
 

@@ -1,0 +1,79 @@
+<div class="calendar-container">
+    <div class="calendar-header">
+      <select [formControl]="viewMode" class="view-selector">
+        <option value="month">Mensal</option>
+        <option value="week">Semanal</option>
+        <option value="day">Diário</option>
+      </select>
+      
+      <div class="navigation">
+        <button (click)="previousMonth()">&lt;</button>
+        <h2>{{ currentDate | date:'MMMM yyyy' }}</h2>
+        <button (click)="nextMonth()">&gt;</button>
+      </div>
+    </div>
+  
+    <!-- Visualização Mensal -->
+    <div *ngIf="viewMode.value === 'month'" class="calendar-grid">
+      <div class="weekdays">
+        <div>Dom</div>
+        <div>Seg</div>
+        <div>Ter</div>
+        <div>Qua</div>
+        <div>Qui</div>
+        <div>Sex</div>
+        <div>Sáb</div>
+      </div>
+  
+      <div class="weeks">
+        <div class="week" *ngFor="let week of weeks">
+          <div 
+            *ngFor="let date of week" 
+            class="day"
+            [class.today]="isToday(date)"
+            [class.selected]="isSelected(date)"
+            [class.other-month]="date.getMonth() !== currentDate.getMonth()"
+            (click)="selectDate(date)"
+          >
+            <div class="date-number">{{ date.getDate() }}</div>
+            <div class="events">
+              <div *ngFor="let event of getDayEvents(date)" class="event">
+                {{ event.title }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Visualização Semanal -->
+    <div *ngIf="viewMode.value === 'week'" class="week-view">
+      <div class="weekdays">
+        <div *ngFor="let date of getWeekDates()">
+          <div>{{ date | date:'EEE' }}</div>
+          <div>{{ date | date:'d' }}</div>
+        </div>
+      </div>
+      <div class="week-events">
+        <div *ngFor="let date of getWeekDates()" class="day-column">
+          <div *ngFor="let event of getDayEvents(date)" class="event">
+            {{ event.title }}
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Visualização Diária -->
+    <div *ngIf="viewMode.value === 'day'" class="day-view">
+      <h3>{{ selectedDate | date:'fullDate' }}</h3>
+      <div class="day-events">
+        <div *ngFor="let event of getDayEvents(selectedDate)" class="event">
+          <div class="event-time">
+            {{ event.start | date:'shortTime' }} - {{ event.end | date:'shortTime' }}
+          </div>
+          <div class="event-title">{{ event.title }}</div>
+          <div class="event-description">{{ event.description }}</div>
+        </div>
+      </div>
+    </div>
+  </div>

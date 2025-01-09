@@ -104,6 +104,8 @@ import { ListarPlanoContasSubComponent } from './_pages/planoContasSub/listar-pl
 import { ModalPlanoContasSubComponent } from './_pages/planoContasSub/modal-plano-contas-sub/modal-plano-contas-sub.component';
 import { DatePtBrPipe } from './date-pt-br.pipe';
 import { CurrencyPtBrPipe } from './currency-pt-br.pipe';
+import { CalendarComponent } from './_components/_calendar/calendar/calendar.component';
+import { CalendarModule } from './calendar/calendar.module';
 
 
 
@@ -198,7 +200,7 @@ import { CurrencyPtBrPipe } from './currency-pt-br.pipe';
     ListarPlanoContasSubComponent,
     ModalPlanoContasSubComponent,
     DatePtBrPipe,
-    CurrencyPtBrPipe
+    CurrencyPtBrPipe,
   ],
   imports: [
     BrowserModule,
@@ -212,7 +214,8 @@ import { CurrencyPtBrPipe } from './currency-pt-br.pipe';
     NgxChartsModule,
     FormsModule,    
     CommonModule,
-    PaginationModule.forRoot()
+    PaginationModule.forRoot(),
+    CalendarModule
     
   ],
   providers: [ provideNgxMask(),],

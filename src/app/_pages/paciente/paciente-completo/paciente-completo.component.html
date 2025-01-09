@@ -406,9 +406,9 @@
     </div>
   </div>
   <!-- Modal para Evolução do Atendimento -->
-  <dialog id="dialog_teste">
+  <dialog id="dialog_teste" class="modal">
     <form [formGroup]="formEvolucao">
-      <div class="">
+      <div class="modal-dialog">
         <div class="modal-header">
           <h5 class="modal-title" id="addProgressModalLabel">
             Evolução - {{ Paciente.nome }}
@@ -431,7 +431,7 @@
                   formControlName="id"
                 />
               </div>
-
+  
               <div class="col-md-4 col-12">
                 <label for="progressDescription" class="form-label"
                   >Profissional</label
@@ -475,7 +475,7 @@
                   <i class="bi bi-plus"></i> Atividade
                 </button>
               </div>
-
+  
               <!-- FormArray para os itens -->
               <div formArrayName="exercicio" class="mt-2">
                 <div
@@ -526,7 +526,7 @@
                       />
                     </div>
                   </div>
-
+  
                   <button
                     type="button"
                     class="btn btn-danger btn-sm mt-2"
@@ -536,7 +536,7 @@
                   </button>
                 </div>
               </div>
-
+  
               <div formArrayName="atividade" class="mt-2">
                 <div
                   *ngFor="let item of atividades.controls; let i = index"
@@ -570,7 +570,7 @@
                       />
                     </div>
                   </div>
-
+  
                   <button
                     type="button"
                     class="btn btn-danger btn-sm mt-2"
@@ -609,10 +609,10 @@
       </div>
     </form>
   </dialog>
-
-  <dialog id="dialog_plano">
+  
+  <dialog id="dialog_plano" class="modal">
     <form [formGroup]="formPlano">
-      <div class="">
+      <div class="modal-dialog">
         <div class="modal-header">
           <h5 class="modal-title" id="addProgressModalLabel">
             Plano - {{ Paciente.nome }}
@@ -627,7 +627,7 @@
           <div class="row align-items-end">
             <div class="col-md-3">
               <label for="" class="form-label">Plano</label>
-              <select name="" id="" class="form-select form-select-sm" id="">
+              <select name="" class="form-select form-select-sm">
                 <option value="">Selecione...</option>
                 @for (item of listaPlanos; track item.id) {
                 <option value="{{ item.id }}">{{ item.descricao }}</option>
@@ -636,7 +636,7 @@
             </div>
             <div class="col-md-3">
               <label for="" class="form-label"> Tipo de assinatura </label>
-              <select name="" id="" class="form-select form-select-sm" id="">
+              <select name="" class="form-select form-select-sm">
                 <option value="">Selecione...</option>
                 <option value="m">Mensal</option>
                 <option value="b">Bimestral</option>
@@ -646,7 +646,7 @@
                 <option value="a">Anual</option>
               </select>
             </div>
-
+  
             <div class="col-md-2">
               <label for="" class="form-label">Data inicio</label>
               <input
@@ -655,14 +655,14 @@
                 formControlName="dataInicio"
               />
             </div>
-
+  
             <div class="col-md-3">
               <button type="button" class="btn btn-success btn-sm">
                 <i class="bi bi-arrow-repeat"></i> Renovar Plano
               </button>
             </div>
           </div>
-
+  
           <div class="mb-3">
             <div class="row mb-2 align-items-end">
               <div class="col-2">
@@ -670,11 +670,11 @@
                 <input
                   type="text"
                   class="form-control form-control-sm"
-                  readonly
+                  
                   formControlName="id"
                 />
               </div>
-
+  
               <div class="col-4">
                 <label for="progressDescription" class="form-label"
                   >Descrição</label
@@ -683,17 +683,17 @@
                   type="text"
                   class="form-control form-control-sm"
                   formControlName="descricao"
-                  readonly
+                  
                 />
               </div>
-
+  
               <div class="col-md-2">
                 <label for="" class="form-label">Vencimento</label>
                 <input
                   type="date"
                   class="form-control form-control-sm"
                   formControlName="vencimento"
-                  readonly
+                  
                 />
               </div>
             </div>
@@ -714,4 +714,8 @@
       </div>
     </form>
   </dialog>
+
+ 
 </div>
+
+
