@@ -1,6 +1,7 @@
 export interface Plano{
 
     id: number;
+    idOriginal? : number;
     descricao: string;
     tempoMinutos: number;
     diasSemana: number;

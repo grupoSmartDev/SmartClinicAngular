@@ -23,7 +23,7 @@ import { EvolucaoService } from '../../../_services/evolucao.service';
 
 import { ResponseModel } from '../../../_module/ResponseModule';
 
-import { Plano } from '../../../_module/planoModule';
+import { Plano, TipoMes } from '../../../_module/planoModule';
 
 import { PlanoService } from '../../../_services/plano.service';
 
@@ -41,10 +41,6 @@ import { PlanoService } from '../../../_services/plano.service';
 
 export class PacienteCompletoComponent implements OnInit {
 
-
-
-
-
   constructor(private pacienteService: PacienteService,
 
     private toast: ToastrService,
@@ -60,25 +56,15 @@ export class PacienteCompletoComponent implements OnInit {
     private planoService: PlanoService) { }
 
 
-
   Paciente: Paciente = {} as Paciente;
-
   listaProfissional: Profissional[] = [];
-
   formEvolucao!: FormGroup;
-
   formPlano!: FormGroup;
-
   valorTotalReceita = 0;
-
   listaPlanos: Plano[] = [];
-
   dataAtual = new Date();
 
-
-
   @Output() evolucaoAtualizado = new EventEmitter<void>();
-
 
 
   ngOnInit(): void {
@@ -88,53 +74,62 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   onSubmit() {
-
-    alert('submitando')
-
+    alert('submitando');
   }
-
-
 
   fecharModal() {
-
-    alert('fechando')
-
+    alert('fechando');
   }
-
-
 
   preencherFormulario() {
 
     this.formEvolucao = this.fb.group({
 
       id: [''],
-
       descricao: ['', Validators.required],
-
       pacienteId: ['', Validators.required],
-
       profissionalId: ['', Validators.required],
-
       exercicio: this.fb.array<Exercicio>([]),
-
       atividade: this.fb.array<Atividade>([]),
 
     });
 
   }
 
+  preencherFormularioPlano() {
+
+    this.formPlano = this.fb.group({
+
+      id: [''],
+      idOriginal: [''],
+      descricao: ['', Validators.required],
+      pacienteId: ['', Validators.required],
+      profissionalId: ['', Validators.required],
+      tempoMinimo: ['', Validators.required],
+      diasSemana: ['', Validators.required],
+      centroCustoId: ['', Validators.required],
+      valorBimestral: ['', Validators.required],
+      valorTrimestral: ['', Validators.required],
+      valorQuadrimensal: ['', Validators.required],
+      valorSemestral: ['', Validators.required],
+      valorAnual: ['', Validators.required],
+      valorMensal : ['', Validators.required],
+      dataInicio: ['', Validators.required],
+      dataFim : ['', Validators.required],
+      ativo : ['', Validators.required],
+      financeiroId: ['', Validators.required],
+      tipoMes: ['', Validators.required],
+    });
+  }
+
   get exercicios(): FormArray {
-
     return this.formEvolucao.get('exercicio') as FormArray;
-
   }
 
 
 
   get atividades(): FormArray {
-
     return this.formEvolucao.get('atividade') as FormArray;
-
   }
 
   openDialog(evolucao: any) {
@@ -196,7 +191,6 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
 
-
   closeDialogPlano() {
 
     const dialog = document.getElementById('dialog_plano') as HTMLDialogElement;
@@ -209,50 +203,31 @@ export class PacienteCompletoComponent implements OnInit {
 
   }
 
-
-
-
-
   adicionarExercicio(): void {
 
     const novoItem = this.fb.group({
-
       titulo: ['', Validators.required],
-
       descricao: ['', Validators.required],
-
       tempo: ['', Validators.required],
-
       repeticoes: ['', Validators.required],
-
       series: ['', Validators.required],
-
     });
 
     this.exercicios.push(novoItem);
 
   }
 
-
-
   removerExercicio(index: number): void {
-
     this.exercicios.removeAt(index);
-
   }
 
 
 
   adicionarAtividade(): void {
-
     const novoItem = this.fb.group({
-
       titulo: ['', Validators.required],
-
       descricao: ['', Validators.required],
-
       tempo: ['', Validators.required],
-
     });
 
     this.atividades.push(novoItem);
@@ -262,9 +237,7 @@ export class PacienteCompletoComponent implements OnInit {
 
 
   removerAtividade(index: number): void {
-
     this.atividades.removeAt(index);
-
   }
 
 
@@ -280,56 +253,27 @@ export class PacienteCompletoComponent implements OnInit {
   salvarEvolucao(): void {
 
     if (this.formEvolucao.invalid) {
-
       this.toast.error('Preencha todos os campos', 'Erro ao cadastrar uma evolução');
-
       return
-
     }
 
-
-
     const dataToSave = this.formEvolucao.value;
-
-
-
+  
     dataToSave.pacienteId = this.Paciente.id;
 
-
-
-    console.log(dataToSave);
-
-
-
     const saveOperation = dataToSave.id
-
       ? this.evolucaoService.Atualizar(dataToSave)
-
       : this.evolucaoService.Criar(dataToSave);
-
-
-
     saveOperation.subscribe({
-
       next: () => {
-
         const action = dataToSave.id ? 'atualizado' : 'criado';
-
         this.toast.success(`Evolução ${action} com sucesso!`, 'Parabéns');
-
         this.closeDialog();
-
       },
-
       error: () => {
-
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
-
       },
-
     });
-
-
 
   }
 
@@ -406,6 +350,7 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   compararDataParaRenovarPlano(plano: any): boolean {
+
     const dataAtual = new Date();
     const dataPlano = new Date(plano.dataFim);
 
@@ -432,6 +377,35 @@ export class PacienteCompletoComponent implements OnInit {
     })
   }
   
+  salvarPlano(): void {
+
+    if (this.formPlano.invalid) {
+      this.toast.error('Preencha todos os campos', 'Erro ao cadastrar uma evolução');
+      return
+    }
+
+    const dataToSave = this.formPlano.value;
+  
+    dataToSave.pacienteId = this.Paciente.id;
+
+    const saveOperation = dataToSave.id && dataToSave.idOriginal
+      ? this.evolucaoService.Atualizar(dataToSave)
+      : this.evolucaoService.Criar(dataToSave);
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Evolução ${action} com sucesso!`, 'Parabéns');
+        this.closeDialog();
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
+
+  }
+
+
+
 }
 
 
