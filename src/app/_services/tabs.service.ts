@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 interface Tab {
   path: string;
   title: string;
+  data?: any; // Para armazenar dados em cache
 }
 
 @Injectable({
@@ -12,41 +13,78 @@ interface Tab {
 export class TabService {
   tabs: Tab[] = [];
   activeTab: number = 0;
+  private cache: Map<string, any> = new Map(); // Cache para dados das abas
 
   constructor(private router: Router) {
-    this.openDefaultTab(); // Abre a aba padrão ao iniciar
+    this.openDefaultTab();
   }
 
   openTab(tab: Tab) {
     const existingTabIndex = this.tabs.findIndex(t => t.path === tab.path);
     if (existingTabIndex !== -1) {
+      // Se a aba já existe, apenas ative-a
       this.activeTab = existingTabIndex;
+      this.router.navigate([tab.path], { skipLocationChange: true }); // Evita recarregar
     } else {
+      // Se é uma nova aba, adicione-a
       this.tabs.push(tab);
       this.activeTab = this.tabs.length - 1;
+      this.router.navigate([tab.path]);
     }
-    this.router.navigate([tab.path]);
   }
 
   selectTab(index: number) {
-    this.activeTab = index;
-    this.router.navigate([this.tabs[this.activeTab].path]);  // Navega para a aba selecionada
+    if (index >= 0 && index < this.tabs.length) {
+      this.activeTab = index;
+      // Usa skipLocationChange para evitar requisições desnecessárias
+      this.router.navigate([this.tabs[index].path], { skipLocationChange: true });
+    }
   }
 
   closeTab(index: number) {
-    this.tabs.splice(index, 1); // Remove a aba da lista
-    if (this.activeTab >= this.tabs.length) {
-      this.activeTab = this.tabs.length - 1; // Atualiza a aba ativa se necessário
+    if (index < 0 || index >= this.tabs.length) return;
+
+    const wasActive = this.activeTab === index;
+    this.tabs.splice(index, 1);
+
+    // Ajusta o índice da aba ativa
+    if (wasActive) {
+      // Se fechou a aba ativa, seleciona a anterior ou a próxima
+      if (index > 0) {
+        this.activeTab = index - 1;
+      } else if (this.tabs.length > 0) {
+        this.activeTab = 0;
+      }
+    } else if (index < this.activeTab) {
+      // Se fechou uma aba antes da ativa, ajusta o índice
+      this.activeTab--;
     }
+
+    // Navega para a nova aba ativa ou abre o dashboard
     if (this.tabs.length > 0) {
-      this.router.navigate([this.tabs[this.activeTab].path]); // Navega para a aba ativa
+      this.router.navigate([this.tabs[this.activeTab].path], { skipLocationChange: true });
     } else {
-      this.openDefaultTab();  // Se todas as abas forem fechadas, abre a aba padrão
+      this.openDefaultTab();
     }
+  }
+
+  // Método para armazenar dados em cache
+  setCacheData(path: string, data: any) {
+    this.cache.set(path, data);
+  }
+
+  // Método para recuperar dados do cache
+  getCacheData(path: string) {
+    return this.cache.get(path);
+  }
+
+  // Método para verificar se existem dados em cache
+  hasCacheData(path: string): boolean {
+    return this.cache.has(path);
   }
 
   openDefaultTab() {
     const defaultTab: Tab = { path: '/dashboard', title: 'Dashboard' };
-    this.openTab(defaultTab); // Abre a aba do Dashboard como padrão
+    this.openTab(defaultTab);
   }
 }
