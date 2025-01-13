@@ -254,10 +254,10 @@
                   </tr>
                 </thead>
                 <tbody>
+                  @for (items of Paciente.evolucoes; track items.id) {
                   <tr>
-                    @for (items of Paciente.evolucoes; track items.id) {
                     <td>{{ items.data | datePtBr }}</td>
-                    <td>{{ items.descricao }}</td>
+                    <td>{{ items.observacao }}</td>
                     <td>
                       <button
                         class="btn btn-sm btn-primary"
@@ -266,8 +266,8 @@
                         Ver Evolução
                       </button>
                     </td>
-                    }
                   </tr>
+                }
                 </tbody>
               </table>
             </div>
@@ -283,7 +283,7 @@
               @if (Paciente.plano?.id == null) {
                 <button
                 class="btn btn-success mb-2"
-                (click)="openModalRenovarPlano(Paciente.plano)"
+                (click)="openModalRenovarPlano('')"
               >
                 <i class="bi bi-plus"></i> Adicionar plano
               </button>
@@ -406,9 +406,9 @@
     </div>
   </div>
   <!-- Modal para Evolução do Atendimento -->
-  <dialog id="dialog_teste" class="modal">
+  <dialog id="dialog_teste">
     <form [formGroup]="formEvolucao">
-      <div class="modal-dialog">
+      <div>
         <div class="modal-header">
           <h5 class="modal-title" id="addProgressModalLabel">
             Evolução - {{ Paciente.nome }}
@@ -431,6 +431,7 @@
                   formControlName="id"
                 />
               </div>
+              <input type="hidden" name="" id="" formControlName="pacienteId">
   
               <div class="col-md-4 col-12">
                 <label for="progressDescription" class="form-label"
@@ -477,7 +478,7 @@
               </div>
   
               <!-- FormArray para os itens -->
-              <div formArrayName="exercicio" class="mt-2">
+              <div formArrayName="exercicios" class="mt-2">
                 <div
                   *ngFor="let item of exercicios.controls; let i = index"
                   [formGroupName]="i"
@@ -537,7 +538,7 @@
                 </div>
               </div>
   
-              <div formArrayName="atividade" class="mt-2">
+              <div formArrayName="atividades" class="mt-2">
                 <div
                   *ngFor="let item of atividades.controls; let i = index"
                   [formGroupName]="i"
@@ -588,7 +589,7 @@
                   cols="30"
                   rows="10"
                   class="form-control form-control-sm"
-                  formControlName="descricao"
+                  formControlName="observacao"
                 ></textarea>
               </div>
             </div>
@@ -610,9 +611,9 @@
     </form>
   </dialog>
   
-  <dialog id="dialog_plano" class="modal">
+  <dialog id="dialog_plano">
     <form [formGroup]="formPlano">
-      <div class="modal-dialog">
+      <div >
         <div class="modal-header">
           <h5 class="modal-title" id="addProgressModalLabel">
             Plano - {{ Paciente.nome }}

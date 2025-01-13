@@ -71,6 +71,9 @@ export class PacienteCompletoComponent implements OnInit {
     this.preencherFormulario();
     this.carregarFormularioPlano();
 
+    this.getPlanos();
+    this.getProfissional();
+
   }
 
   onSubmit() {
@@ -81,16 +84,43 @@ export class PacienteCompletoComponent implements OnInit {
     alert('fechando');
   }
 
+  getProfissional(){
+    this.profissionalService.Listar(undefined,undefined,undefined,undefined,undefined,undefined,false).subscribe({
+      next : (data) => {
+        if(data.dados){
+          this.listaProfissional = data.dados;
+        }
+      },
+      error(err) {
+        console.error('Erro ao buscar Profissional:', err)
+      },
+    })
+  }
+
+  getPlanos(){
+    this.planoService.Listar().subscribe({
+      next : (data) => {
+        if(data.dados){
+          this.listaPlanos = data.dados;
+        }
+      },
+      error(err) {
+        console.error('Erro ao buscar Planos:', err)
+      },
+    })
+  }
+
   preencherFormulario() {
 
     this.formEvolucao = this.fb.group({
 
       id: [''],
-      descricao: ['', Validators.required],
+      observacao: ['', Validators.required],
       pacienteId: ['', Validators.required],
       profissionalId: ['', Validators.required],
-      exercicio: this.fb.array<Exercicio>([]),
-      atividade: this.fb.array<Atividade>([]),
+      data: ['', Validators.required],
+      exercicios: this.fb.array<Exercicio>([]),
+      atividades: this.fb.array<Atividade>([]),
 
     });
 
@@ -123,57 +153,65 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   get exercicios(): FormArray {
-    return this.formEvolucao.get('exercicio') as FormArray;
+    return this.formEvolucao.get('exercicios') as FormArray;
   }
 
 
 
   get atividades(): FormArray {
-    return this.formEvolucao.get('atividade') as FormArray;
+    return this.formEvolucao.get('atividades') as FormArray;
   }
 
   openDialog(evolucao: any) {
-
     const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
-
     if (dialog) {
-
       dialog.showModal();
-
-      this.formEvolucao.patchValue(evolucao);
-
-
-
-      // Atualizar o FormArray de atividade
-
-      const atividadeArray = this.formEvolucao.get('atividade') as FormArray;
-
-      evolucao.atividade.forEach((atividade: Atividade) => {
-
-        atividadeArray.push(this.fb.group(atividade));
-
+      
+      // Limpar os arrays primeiro
+      while (this.exercicios.length) {
+        this.exercicios.removeAt(0);
+      }
+      while (this.atividades.length) {
+        this.atividades.removeAt(0);
+      }
+  
+      // Fazer o patch dos campos simples
+      this.formEvolucao.patchValue({
+        id: evolucao.id,
+        descricao: evolucao.descricao,
+        pacienteId: evolucao.pacienteId,
+        profissionalId: evolucao.profissionalId,
+        data: evolucao.data
       });
-
-
-
-      // Atualizar o FormArray de exercicio
-
-      const exercicioArray = this.formEvolucao.get('exercicio') as FormArray;
-
-      evolucao.exercicio.forEach((exercicio: Exercicio) => {
-
-        exercicioArray.push(this.fb.group(exercicio));
-
-      });
-
-
-
-    } else {
-
-      console.error('Dialog não encontrado!');
-
+  
+      // Adicionar exercícios
+      if (evolucao.exercicio?.length) {
+        evolucao.exercicio.forEach((exercicios: Exercicio) => {
+          const exercicioGroup = this.fb.group({
+            titulo: [exercicios.titulo, Validators.required],
+            descricao: [exercicios.descricao, Validators.required],
+            tempo: [exercicios.tempo, Validators.required],
+            repeticoes: [exercicios.repeticoes, Validators.required],
+            series: [exercicios.series, Validators.required],
+            evolucaoId: [exercicios.evolucaoId]
+          });
+          this.exercicios.push(exercicioGroup);
+        });
+      }
+  
+      // Adicionar atividades
+      if (evolucao.atividades?.length) {
+        evolucao.atividades.forEach((atividades: Atividade) => {
+          const atividadeGroup = this.fb.group({
+            titulo: [atividades.titulo, Validators.required],
+            descricao: [atividades.descricao, Validators.required],
+            tempo: [atividades.tempo, Validators.required],
+            evolucaoId: [atividades.evolucaoId]
+          });
+          this.atividades.push(atividadeGroup);
+        });
+      }
     }
-
   }
 
 
@@ -211,6 +249,7 @@ export class PacienteCompletoComponent implements OnInit {
       tempo: ['', Validators.required],
       repeticoes: ['', Validators.required],
       series: ['', Validators.required],
+      evolucaoId : ['']
     });
 
     this.exercicios.push(novoItem);
@@ -228,6 +267,7 @@ export class PacienteCompletoComponent implements OnInit {
       titulo: ['', Validators.required],
       descricao: ['', Validators.required],
       tempo: ['', Validators.required],
+      evolucaoId : ['']
     });
 
     this.atividades.push(novoItem);
@@ -251,16 +291,38 @@ export class PacienteCompletoComponent implements OnInit {
 
 
   salvarEvolucao(): void {
+    debugger
 
-    if (this.formEvolucao.invalid) {
-      this.toast.error('Preencha todos os campos', 'Erro ao cadastrar uma evolução');
-      return
-    }
 
-    const dataToSave = this.formEvolucao.value;
+    this.formEvolucao.patchValue({
+      pacienteId: this.Paciente.id
+    });
+   // Log do valor atual do formulário
+   console.log('Valor do formulário:', this.formEvolucao.value);
   
-    dataToSave.pacienteId = this.Paciente.id;
-
+   // Log do status de cada campo
+   Object.keys(this.formEvolucao.controls).forEach(key => {
+     const control = this.formEvolucao.get(key);
+     console.log(`Campo ${key}:`);
+     console.log('- Valor:', control?.value);
+     console.log('- Status:', control?.status);
+     console.log('- Erros:', control?.errors);
+     
+     // Se for um FormArray, verificar cada item
+     if (control instanceof FormArray) {
+       control.controls.forEach((item, index) => {
+         console.log(`- Item ${index}:`, item.errors);
+       });
+     }
+   });
+ 
+   const dataToSave = this.formEvolucao.value;
+   dataToSave.pacienteId = this.Paciente.id;
+ 
+   if (this.formEvolucao.invalid) {
+     this.toast.error('Preencha todos os campos', 'Erro ao cadastrar uma evolução');
+     return;
+   }
     const saveOperation = dataToSave.id
       ? this.evolucaoService.Atualizar(dataToSave)
       : this.evolucaoService.Criar(dataToSave);

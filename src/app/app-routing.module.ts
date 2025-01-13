@@ -32,6 +32,7 @@ import { ListarFinancPagarComponent } from './_pages/financPagar/listar-financ-p
 import { ListarProfissaoComponent } from './_pages/profissao/listar-profissao/listar-profissao.component';
 import { ListarPlanoContasSubComponent } from './_pages/planoContasSub/listar-plano-contas-sub/listar-plano-contas-sub.component';
 import { ListarPlanoContasComponent } from './_pages/planoContas/listar-plano-contas/listar-plano-contas.component';
+import { AuthGuard } from './auth.guard';
 
 
 const routes: Routes = [

@@ -6,8 +6,8 @@ export interface Evolucao {
     data: Date;
     pacienteId: number; // ID do paciente vinculado
     profissionalId: string;
-    descricao: string;
-    atividade : Atividade[];
-    exercicio : Exercicio[];
+    observacao: string;
+    atividades : Atividade[];
+    exercicios : Exercicio[];
     
 }

@@ -13,7 +13,7 @@ import { BodyComponent } from './_components/body/body.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ListarComponent } from './_pages/status/listar/listar.component';
 import { LabelNomeComponent } from './_components/label-nome/label-nome.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ModalStatusComponent } from './_pages/status/modal-status/modal-status.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
@@ -106,6 +106,8 @@ import { DatePtBrPipe } from './date-pt-br.pipe';
 import { CurrencyPtBrPipe } from './currency-pt-br.pipe';
 import { CalendarComponent } from './_components/_calendar/calendar/calendar.component';
 import { CalendarModule } from './calendar/calendar.module';
+import { JwtModule } from '@auth0/angular-jwt';
+import { AuthInterceptor } from './auth.interceptor';
 
 
 
@@ -215,10 +217,21 @@ import { CalendarModule } from './calendar/calendar.module';
     FormsModule,    
     CommonModule,
     PaginationModule.forRoot(),
-    CalendarModule
+    CalendarModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => localStorage.getItem('token'),
+        allowedDomains: ['localhost:44308'], // domínio onde sua API está rodando
+        disallowedRoutes: ['localhost:44308/Auth/login'] // rota de login que não precisa do token
+      }
+    })
     
   ],
-  providers: [ provideNgxMask(),],
+  providers: [ provideNgxMask(), {
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
