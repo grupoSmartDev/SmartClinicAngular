@@ -13,24 +13,29 @@ import * as bootstrap from 'bootstrap';
 })
 export class ListarCentroDeCustoComponent {
 
-  constructor(private centroDeCustoService: CentroDeCustoService , private toast: ToastrService) { }
-  @ViewChild(ModalCentroDeCustoComponent) modalCentroDeCusto! : ModalCentroDeCustoComponent;
-  @ViewChild('confirmDialog') confirmDialog! : ConfirmDialogComponent;
-  lista : CentroDeCusto[] = []
-  errorMessage : string = '';
-  idParaExcluir! : string;
-  centroDeCustoParaExcluir! : CentroDeCusto
-  colunaTabela = [
-    { header: 'Cód.', field: 'id' },
-    { header: 'Tipo', field: 'tipo' },
-    { header: 'Descrição', field: 'descricao' }
-  ];
+  constructor(private centroDeCustoService: CentroDeCustoService, private toast: ToastrService) { }
+  @ViewChild(ModalCentroDeCustoComponent) modalCentroDeCusto!: ModalCentroDeCustoComponent;
+  @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
+  lista: CentroDeCusto[] = []
+  errorMessage: string = '';
+  idParaExcluir!: string;
+  dataParaExcluir!: CentroDeCusto
+
+  //paginacao
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  // filtros
+  tipoFiltro: string = '';
+  idFiltro: string = '';
+  descricaoFiltro: string = '';
+  subCentroDeCustoFiltro: string = '';
 
   ngOnInit(): void {
-    this.getData();
-  } 
+    this.loadData();
+  }
 
-  getData() : void {
+  loadData(): void {
     this.centroDeCustoService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
@@ -56,7 +61,7 @@ export class ListarCentroDeCustoComponent {
     }
   }
 
-  Excluir(centroDeCusto : CentroDeCusto) {
+  Excluir(centroDeCusto: CentroDeCusto) {
     let id = centroDeCusto.id;
     this.centroDeCustoService.Deletar(id).subscribe({
       next: (response) => {
@@ -70,9 +75,9 @@ export class ListarCentroDeCustoComponent {
       }
     });
   }
-  
+
   atualizarLista(): void {
-    this.getData(); // Chama o método para buscar os cc novamente
+    this.loadData(); // Chama o método para buscar os cc novamente
   }
 
   promptDelete(id: string) {
@@ -81,11 +86,22 @@ export class ListarCentroDeCustoComponent {
   }
 
   confirmDelete() {
-    this.Excluir(this.centroDeCustoParaExcluir);
+    this.Excluir(this.dataParaExcluir);
   }
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadData();
+  }
+
+  filtrar(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 
 }
