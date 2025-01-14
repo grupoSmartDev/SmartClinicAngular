@@ -108,6 +108,8 @@ import { CalendarComponent } from './_components/_calendar/calendar/calendar.com
 import { CalendarModule } from './calendar/calendar.module';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthInterceptor } from './auth.interceptor';
+import { OnlyNumbersDirective } from './only-number.directive';
+
 
 
 
@@ -203,6 +205,7 @@ import { AuthInterceptor } from './auth.interceptor';
     ModalPlanoContasSubComponent,
     DatePtBrPipe,
     CurrencyPtBrPipe,
+    OnlyNumbersDirective,
   ],
   imports: [
     BrowserModule,

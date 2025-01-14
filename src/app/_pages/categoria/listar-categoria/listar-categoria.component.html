@@ -1,107 +1,113 @@
 <div class="row">
-    <app-label-nome [nomeTela]="'Categoria'" (adicionarClicked)="openModal('')"></app-label-nome>
-  </div>
-  <div class="row mb-3">
-
-    <div class="col-md-2">
-      <input
-        type="text"
-        class="form-control form-control-sm"
-        placeholder="Filtrar por código"
-        [(ngModel)]="idFiltro"
-      />
-    </div>
-  
-    <div class="col-md-3">
-      <input
-        type="text"
-        class="form-control form-control-sm"
-        placeholder="Filtrar por descrição"
-        [(ngModel)]="descricaoFiltro"
-      />
-    </div>   
-  
-    <div class="col-md-1">
-      <button type="button" class="btn btn-sm btn-secondary" 
-      (click)="onSearch()">
-        <i class="bi bi-search"></i>
-      </button>
-    </div>
+  <app-label-nome
+    [nomeTela]="'Categoria'"
+    (adicionarClicked)="openModal('')"
+  ></app-label-nome>
+</div>
+<div class="row mb-2">
+  <div class="col-md-2">
+    <input
+      type="text"
+      class="form-control form-control-sm"
+      placeholder="Filtrar por código"
+      [(ngModel)]="idFiltro"
+    />
   </div>
 
-  <div class="row">
-    <div class="col-12">
-      @if (lista.length > 0) {
-      <div class="table-responsive">
-        <table class="table table-striped table-centered mb-0">
-          <thead>
-            <tr>
-              <th>Cód.</th>
-              <th>Descrição</th>
-              <th class="text-end"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of lista">
-              <!-- Renderiza dinamicamente as células com base nas colunas -->
-              <td>
-                {{ item.id }}
-              </td>
-              <td>
-                {{ item.descricao }}
-              </td>
-
-              <td class="text-end">
-                <a
-                  href="javascript:void(0);"
-                  (click)="openModal(item)"
-                  class="action-icon btn-tooltip"
-                >
-                  <i class="bi bi-pencil text-warning"></i>
-                  <span class="tooltip-text">Edição rapida</span>
-                </a>
-                <a
-                  href="javascript:void(0);"
-                  (click)="Excluir(item)"
-                  class="action-icon btn-tooltip"
-                >
-                  <i class="bi bi-trash3 text-danger"></i>
-                  <span class="tooltip-text">Excluir</span>
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      } @else {
-      <div class="alert alert-danger" role="alert">
-        Nenhum registro encontrado
-      </div>
-      <img src="public\image\semRegistro.svg" alt="" />
-      }
-
-              <!-- Paginação Bootstrap -->
-              <div class="row justify-content-center">
-                <div class="">
-                  <pagination
-                    [totalItems]="totalItems"
-                    [(ngModel)]="currentPage"
-                    [itemsPerPage]="pageSize"
-                    (pageChanged)="onPageChange($event.page)"
-                    previousText="&lsaquo;"
-                    nextText="&rsaquo;" 
-                    firstText="&laquo;" 
-                    lastText="&raquo;">
-                </pagination>
-                </div>
-              </div>
-    </div>
+  <div class="col-md-3">
+    <input
+      type="text"
+      class="form-control form-control-sm"
+      placeholder="Filtrar por descrição"
+      [(ngModel)]="descricaoFiltro"
+    />
   </div>
 
-  <app-modal-categoria [nomeModal]="'Categoria'" (DadosAtualizados)="atualizarLista()"></app-modal-categoria>
+  <div class="col-md-1">
+    <button type="button" class="btn btn-sm btn-secondary" (click)="onSearch()">
+      <i class="bi bi-search"></i>
+    </button>
+  </div>
+</div>
 
-  <app-confirm-dialog
+<div class="row mb-2">
+  <div class="col-12">
+    @if (lista.length > 0) {
+    <div class="table-responsive">
+      <table class="table table-striped table-centered mb-0">
+        <thead>
+          <tr>
+            <th>Cód.</th>
+            <th>Descrição</th>
+            <th class="text-end"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of lista">
+            <!-- Renderiza dinamicamente as células com base nas colunas -->
+            <td>
+              {{ item.id }}
+            </td>
+            <td>
+              {{ item.descricao }}
+            </td>
+
+            <td class="text-end">
+              <a
+                href="javascript:void(0);"
+                (click)="openModal(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-pencil text-warning"></i>
+                <span class="tooltip-text">Edição rapida</span>
+              </a>
+              <a
+                href="javascript:void(0);"
+                (click)="Excluir(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-trash3 text-danger"></i>
+                <span class="tooltip-text">Excluir</span>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    } @else {
+    <div class="alert alert-danger" role="alert">
+      Nenhum registro encontrado
+    </div>
+    <img src="public\image\semRegistro.svg" alt="" />
+    }
+  </div>
+</div>
+
+<!-- Paginação Bootstrap -->
+<div class="row justify-content-center">
+  <div class="">
+    <pagination
+      [totalItems]="totalItems"
+      [(ngModel)]="currentPage"
+      [itemsPerPage]="pageSize"
+      (pageChanged)="onPageChange($event.page)"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+    >
+    </pagination>
+  </div>
+</div>
+
+<app-modal-categoria
+  [nomeModal]="'Categoria'"
+  (DadosAtualizados)="atualizarLista()"
+></app-modal-categoria>
+
+<app-confirm-dialog
   #confirmDialog
   (onConfirm)="confirmDelete()"
-  (onCancel)="cancelDelete()">
+  (onCancel)="cancelDelete()"
+>
 </app-confirm-dialog>

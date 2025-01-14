@@ -1,7 +1,6 @@
 <app-label-nome [nomeTela]="'Pacientes'" (adicionarClicked)="openModal('')">
 </app-label-nome>
-<div class="row mb-3">
-
+<div class="row mb-2">
   <div class="col-md-2">
     <input
       type="text"
@@ -37,102 +36,100 @@
     />
   </div>
 
- 
-
   <div class="col-md-1">
-    <button type="button" class="btn btn-sm btn-secondary" 
-    (click)="onSearch()">
+    <button type="button" class="btn btn-sm btn-secondary" (click)="onSearch()">
       <i class="bi bi-search"></i>
     </button>
   </div>
 </div>
 
+<div class="row mb-2">
+  <div class="col-12">
+    @if (lista.length > 0) {
+    <div class="table-responsive">
+      <table class="table table-striped table-centered mb-0">
+        <thead>
+          <tr>
+            <th>Cód.</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>E-mail</th>
+            <th class="text-end"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of lista">
+            <!-- Renderiza dinamicamente as células com base nas colunas -->
+            <td>
+              {{ item.id }}
+            </td>
+            <td>
+              {{ item.nome }}
+            </td>
+            <td>
+              {{ item.celular }}
+            </td>
+            <td>
+              {{ item.email }}
+            </td>
+            <td class="text-end">
+              <a
+                href="javascript:void(0);"
+                (click)="openModal(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-pencil text-warning"></i>
+                <span class="tooltip-text">Edição rapida</span>
+              </a>
 
-        <div class="row">
-          <div class="col-12">
-            @if (lista.length > 0) {
-            <div class="table-responsive">
-              <table class="table table-striped table-centered mb-0">
-                <thead>
-                  <tr>
-                    <th>Cód.</th>
-                    <th>Nome</th>
-                    <th>Telefone</th>
-                    <th>E-mail</th>
-                    <th class="text-end"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let item of lista">
-                    <!-- Renderiza dinamicamente as células com base nas colunas -->
-                    <td>
-                      {{ item.id }}
-                    </td>
-                    <td>
-                      {{ item.nome }}
-                    </td>
-                    <td>
-                      {{ item.celular }} 
-                    </td>
-                    <td>
-                      {{ item.email }} 
-                    </td>
-                    <td class="text-end">
-                      <a
-                        href="javascript:void(0);"
-                        (click)="openModal(item)"
-                        class="action-icon btn-tooltip"
-                      >
-                        <i class="bi bi-pencil text-warning"></i>
-                        <span class="tooltip-text">Edição rapida</span>
-                      </a>
+              <a
+                href="javascript:void(0);"
+                (click)="openModalDetalhado(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-box-arrow-in-right text-success"></i>
+                <span class="tooltip-text">Acessar registro</span>
+              </a>
 
-                      <a
-                        href="javascript:void(0);"
-                        (click)="openModalDetalhado(item)"
-                        class="action-icon btn-tooltip"
-                      >
-                        <i class="bi bi-box-arrow-in-right text-success"></i>
-                        <span class="tooltip-text">Acessar registro</span>
-                      </a>
+              <a
+                href="javascript:void(0);"
+                (click)="Exluir(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-trash3 text-danger"></i>
+                <span class="tooltip-text">Excluir</span>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    } @else {
+    <div class="alert alert-danger" role="alert">
+      Nenhum registro encontrado
+    </div>
+    <img src="public\image\semRegistro.svg" alt="" />
+    }
 
-                      <a
-                        href="javascript:void(0);"
-                        (click)="Exluir(item)"
-                        class="action-icon btn-tooltip"
-                      >
-                        <i class="bi bi-trash3 text-danger"></i>
-                        <span class="tooltip-text">Excluir</span>
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            } @else {
-            <div class="alert alert-danger" role="alert">
-              Nenhum registro encontrado
-            </div>
-            <img src="public\image\semRegistro.svg" alt="" />
-            }
+    <!-- Paginação Bootstrap -->
+  </div>
+</div>
 
-                    <!-- Paginação Bootstrap -->
-        <div class="row justify-content-center">
-          <div class="">
-            <pagination
-              [totalItems]="totalItems"
-              [(ngModel)]="currentPage"
-              [itemsPerPage]="pageSize"
-              (pageChanged)="onPageChange($event.page)"
-              previousText="&lsaquo;"
-              nextText="&rsaquo;" 
-              firstText="&laquo;" 
-              lastText="&raquo;">
-          </pagination>
-          </div>
-        </div>
-          </div>
-        </div>
+<div class="row justify-content-center">
+  <div class="">
+    <pagination
+      [totalItems]="totalItems"
+      [(ngModel)]="currentPage"
+      [itemsPerPage]="pageSize"
+      (pageChanged)="onPageChange($event.page)"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+    >
+    </pagination>
+  </div>
+</div>
 
 <app-modal-paciente (dataAtualizado)="atualizarLista()"> </app-modal-paciente>
 
