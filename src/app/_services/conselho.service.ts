@@ -16,22 +16,19 @@ export class ConselhoService {
   private mockConselhos: Conselho[] = Array.from({ length: 100 }, (_, i) => ({
     id: (i + 1).toString(),
     nome: `Conselho ${i + 1}`,
-    sigla : ''
+    sigla: ''
   }));
 
-  Listar(page: number, pageSize: number, nomeFiltro?: string, siglaFiltro?: string): Observable<ResponseModel<Conselho[]>> {
+  Listar(page: number, pageSize: number, nomeFiltro?: string, siglaFiltro?: string, idFiltro?: string, paginar: boolean = false): Observable<ResponseModel<Conselho[]>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
-  
-    if (nomeFiltro) {
-      params = params.set('nomeFiltro', nomeFiltro);
-    }
 
-    if (siglaFiltro) {
-      params = params.set('siglaFiltro', siglaFiltro);
-    }
-  
+    if (nomeFiltro) params = params.set('nomeFiltro', nomeFiltro);
+    if (siglaFiltro) params = params.set('siglaFiltro', siglaFiltro);
+    if (idFiltro) params = params.set('idFiltro', idFiltro);
+    if (paginar) params = params.set('paginar', paginar);
+
     return this.http.get<ResponseModel<Conselho[]>>(`${this.baseURL}Listar`, { params });
   }
 
@@ -55,7 +52,7 @@ export class ConselhoService {
 
     return of(response);
   }
-  
+
 
   Criar(conselho: Conselho): Observable<ResponseModel<Conselho>> {
     return this.http.post<ResponseModel<Conselho>>(`${this.baseURL}Criar`, conselho);
