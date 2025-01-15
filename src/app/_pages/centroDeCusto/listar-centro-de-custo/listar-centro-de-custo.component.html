@@ -87,6 +87,22 @@
   </div>
 </div>
 
+<div class="row justify-content-center">
+  <div class="">
+    <pagination
+      [totalItems]="totalItems"
+      [(ngModel)]="currentPage"
+      [itemsPerPage]="pageSize"
+      (pageChanged)="onPageChange($event.page)"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;" 
+      firstText="&laquo;" 
+      lastText="&raquo;">
+  </pagination>
+  </div>
+
+</div>
+
 <app-modal-centro-de-custo (dataAtualizado)="atualizarLista()">
 </app-modal-centro-de-custo>
 

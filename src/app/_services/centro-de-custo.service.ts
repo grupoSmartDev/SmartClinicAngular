@@ -18,39 +18,23 @@ export class CentroDeCustoService {
     page?: number,
     pageSize?: number,
     tipoFiltro?: string,
-    idFiltro? : string,
-    descricaoFiltro? : string,
-    subCentroDeCustoFiltro? : string,
+    idFiltro?: string,
+    descricaoFiltro?: string,
+    subCentroDeCustoFiltro?: string,
     paginar: boolean = false
   ): Observable<ResponseModel<CentroDeCusto[]>> {
     let params = new HttpParams()
-      
-      
 
-    if(page){
-      params = params.set('page', page.toString());
-    }
 
-    if(pageSize){
-      params = params.set('pageSize', pageSize.toString());
-    }
 
-    if (tipoFiltro) {
-      params = params.set('tipoFiltro', tipoFiltro);
-    }
+    if (page) params = params.set('page', page.toString());
+    if (pageSize) params = params.set('pageSize', pageSize.toString());
+    if (tipoFiltro) params = params.set('tipoFiltro', tipoFiltro);
+    if (idFiltro) params = params.set('idFiltro', idFiltro);
+    if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
+    if (subCentroDeCustoFiltro) params = params.set('subCentroDeCustoFiltro', subCentroDeCustoFiltro);
+    if(paginar) params = params.set('paginar', paginar);
 
-    if (idFiltro) {
-      params = params.set('idFiltro', idFiltro);
-    }
-
-    if (descricaoFiltro) {
-      params = params.set('descricaoFiltro', descricaoFiltro);
-    }
-
-    if (subCentroDeCustoFiltro) {
-      params = params.set('subCentroDeCustoFiltro', subCentroDeCustoFiltro);
-    }
-    
     return this.http.get<ResponseModel<CentroDeCusto[]>>(`${this.baseURL}Listar`, { params });
   }
 
