@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResponseModel } from '../_module/ResponseModule';
@@ -13,7 +13,25 @@ export class FormaPagamentoService {
 
   baseURL: string = 'https://localhost:44308/api/FormaPagamento/';
 
-  Listar(): Observable<ResponseModel<FormaPagamento[]>> {
+  Listar(
+    page?: number,
+    pageSize?: number,
+    idFiltro?: string,
+    descricaoFiltro?: string,
+    parcelaFiltro?: string,
+    paginar: boolean = false
+  ): Observable<ResponseModel<FormaPagamento[]>> {
+
+    let params = new HttpParams();
+
+    if (page) params = params.set('page', page.toString());
+    if (pageSize) params = params.set('pageSize', pageSize.toString());
+
+    if (idFiltro) params = params.set('idFiltro', idFiltro);
+    if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
+    if (parcelaFiltro) params = params.set('parcelaFiltro', parcelaFiltro);
+    if (paginar) params = params.set('paginar', paginar);
+
     return this.http.get<ResponseModel<FormaPagamento[]>>(`${this.baseURL}Listar`);
   }
 
