@@ -291,9 +291,6 @@ export class PacienteCompletoComponent implements OnInit {
 
 
   salvarEvolucao(): void {
-    debugger
-
-
     this.formEvolucao.patchValue({
       pacienteId: this.Paciente.id
     });
