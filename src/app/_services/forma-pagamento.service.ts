@@ -32,7 +32,7 @@ export class FormaPagamentoService {
     if (parcelaFiltro) params = params.set('parcelaFiltro', parcelaFiltro);
     if (paginar) params = params.set('paginar', paginar);
 
-    return this.http.get<ResponseModel<FormaPagamento[]>>(`${this.baseURL}Listar`);
+    return this.http.get<ResponseModel<FormaPagamento[]>>(`${this.baseURL}Listar`, {params});
   }
 
   Criar(formaPagamento: FormaPagamento): Observable<ResponseModel<FormaPagamento>> {
