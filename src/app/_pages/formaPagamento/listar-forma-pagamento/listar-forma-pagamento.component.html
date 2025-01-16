@@ -2,7 +2,7 @@
   <app-label-nome [nomeTela]="'Forma de Pagamento'" (adicionarClicked)="openModal('')"></app-label-nome>
 </div>
 
-<div class="row mb-2">
+<!-- <div class="row mb-2">
   
   <div class="col-md-2">
     <input type="text"
@@ -25,7 +25,7 @@
   <div class="col-md-1">
     <button class="btn btn-secondary btn-sm" (click)="filtrar()"><i class="bi bi-search"></i></button>
   </div>
-</div>
+</div> -->
 
 <div class="row mb-2">
   <div class="col-12">
@@ -83,7 +83,7 @@
   </div>
 </div>
 
-<div class="row justify-content-center">
+<!-- <div class="row justify-content-center">
   <div class="">
     <pagination
       [totalItems]="totalItems"
@@ -96,7 +96,7 @@
       lastText="&raquo;">
   </pagination>
   </div>
-</div>
+</div> -->
 
 <app-modal-forma-pagamento (formaPagamentoAtualizado)="atualizarLista()"> </app-modal-forma-pagamento>
 
