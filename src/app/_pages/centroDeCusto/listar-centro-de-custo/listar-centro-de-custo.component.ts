@@ -36,7 +36,9 @@ export class ListarCentroDeCustoComponent {
   }
 
   loadData(): void {
-    this.centroDeCustoService.Listar().subscribe({
+    this.centroDeCustoService.Listar(
+      this.currentPage,this.pageSize,this.tipoFiltro,this.idFiltro,this.descricaoFiltro,this.subCentroDeCustoFiltro,true
+    ).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;

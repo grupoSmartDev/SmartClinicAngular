@@ -21,19 +21,24 @@ export class ListarFormaPagamentoComponent implements OnInit {
   errorMessage: string = '';
   idParaExcluir!: string;
   formaPagamentoParaExcluir!: FormaPagamento
-
-  colunaTabela = [
-    { header: 'Cód.', field: 'id' },
-    { header: 'Descricão', field: 'descricao' },
-    { header: 'Parcelas', field: 'parcelas' },
-  ]
+  //paginacao
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  // filtros
+  parcelaFiltro: string = '';
+  idFiltro: string = '';
+  descricaoFiltro: string = '';
+  subCentroDeCustoFiltro: string = '';
 
   ngOnInit(): void {
-    this.getDados();
+    this.loadData();
   }
 
-  getDados(): void {
-    this.formaPagamentoService.Listar().subscribe({
+  loadData(): void {
+    this.formaPagamentoService.Listar(
+      this.currentPage, this.pageSize, this.idFiltro, this.descricaoFiltro, this.parcelaFiltro, true
+    ).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -58,7 +63,7 @@ export class ListarFormaPagamentoComponent implements OnInit {
     }
   }
 
-  Excluir(formaPagamento : FormaPagamento) {
+  Excluir(formaPagamento: FormaPagamento) {
     let id = formaPagamento.id;
     this.formaPagamentoService.Deletar(id).subscribe({
       next: (response) => {
@@ -75,7 +80,7 @@ export class ListarFormaPagamentoComponent implements OnInit {
 
   // Método para recarregar a lista após criação/atualização
   atualizarLista(): void {
-    this.getDados(); // Chama o método para buscar os status novamente
+    this.loadData(); // Chama o método para buscar os status novamente
   }
 
   promptDelete(id: string) {
@@ -89,6 +94,16 @@ export class ListarFormaPagamentoComponent implements OnInit {
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadData();
+  }
+
+  filtrar(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 
 }
