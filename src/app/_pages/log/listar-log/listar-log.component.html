@@ -4,12 +4,94 @@
 >
 </app-label-nome>
 
-<app-tabela-listar-generica
-  [titulo]="'Log do Sistema'"
-  [data]="lista"
-  [columns]="colunaTabela"
->
-</app-tabela-listar-generica>
 
+<div class="row mb-2">  
+  <div class="col-md-2">
+    <input type="text"
+     [(ngModel)]="idFiltro" 
+     placeholder="Filtrar por Cód"
+     class="form-control form-control-sm" />
+  </div>
+
+  <div class="col-md-2">
+    <input type="text" [(ngModel)]="usuarioFiltro"
+     placeholder="Filtrar por usuario" 
+     class="form-control form-control-sm" />
+  </div>
+
+  <div class="col-md-2">
+    <input type="text"
+     [(ngModel)]="descricaoFiltro" 
+     placeholder="Filtrar por descrição"
+     class="form-control form-control-sm" />
+  </div>
+
+  <div class="col-md-2">
+    <input type="text"
+     [(ngModel)]="telaFiltro" 
+     placeholder="Filtrar por tela"
+     class="form-control form-control-sm" />
+  </div>
+
+  <div class="col-md-2">
+    <input type="date"
+     [(ngModel)]="dataFiltro" 
+     placeholder="Filtrar por data"
+     class="form-control form-control-sm" />
+  </div>
+
+  <div class="col-md-1">
+    <button class="btn btn-secondary btn-sm" (click)="filtrar()"><i class="bi bi-search"></i></button>
+  </div>
+</div>
+
+<div class="row mb-2">
+  <div class="col-12">
+    @if (lista.length > 0) {
+      <div class="table-responsive">
+        <table class="table table-striped table-centered mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Descrição</th>
+              <th>Usuário</th>
+              <th>Tela</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of lista">
+              <td>{{ item.id }}</td>
+              <td>{{ item.descricao }}</td>
+              <td>{{ item.usuario }}</td>
+              <td>{{ item.tela }}</td>
+              <td>{{ item.data }}</td>
+            </tr>
+          </tbody>
+          </table>
+      </div>
+    }@else {
+      <div class="alert alert-danger" role="alert">
+        Nenhum registro encontrado
+      </div>
+      <img src="public\image\semRegistro.svg" alt="" />
+    }
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="">
+    <pagination
+      [totalItems]="totalItems"
+      [(ngModel)]="currentPage"
+      [itemsPerPage]="pageSize"
+      (pageChanged)="onPageChange($event.page)"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;" 
+      firstText="&laquo;" 
+      lastText="&raquo;">
+  </pagination>
+  </div>
+</div>
 
 

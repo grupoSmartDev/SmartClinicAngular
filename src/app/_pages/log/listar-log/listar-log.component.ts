@@ -14,20 +14,27 @@ export class ListarLogComponent {
 
   lista : Log[] = [];
   errorMessage : string = '';
-  colunaTabela = [
-    { header: 'Cód.', field: 'id' },
-    { header: 'Descrição', field: 'descricao' },
-    { header: 'Usuario', field: 'usuario' },
-    { header: 'Tela', field: 'tela' },
-    { header: 'Data', field: 'data' },
-  ]
+
+   //paginacao
+   totalItems: number = 0;
+   pageSize: number = 10;
+   currentPage: number = 1;
+   // filtros
+   parcelaFiltro: string = '';
+   idFiltro: string = '';
+   descricaoFiltro: string = '';
+   dataFiltro: string = '';
+   telaFiltro: string = '';
+   usuarioFiltro: string = '';
 
   ngOnInit(): void {
-    this.getData();
+    this.loadData();
   } 
 
-  getData() : void {
-    this.logService.Listar().subscribe({
+  loadData() : void {
+    this.logService.Listar(
+      this.currentPage, this.pageSize, this.idFiltro, this.descricaoFiltro, this.usuarioFiltro, this.telaFiltro, this.dataFiltro, true
+    ).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -38,6 +45,16 @@ export class ListarLogComponent {
         this.errorMessage = 'Erro ao carregar os Centro de custo. Tente novamente mais tarde.';
       }
     })
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadData();
+  }
+
+  filtrar(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 
 }
