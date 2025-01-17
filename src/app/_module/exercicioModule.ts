@@ -3,8 +3,8 @@ import { Paciente } from "./pacienteModule";
 
 export interface Exercicio{
     id : number,
-    titulo : string,
     descricao : string,
+    obs : string,
     tempo : number,
     repeticoes : number,
     series : number,

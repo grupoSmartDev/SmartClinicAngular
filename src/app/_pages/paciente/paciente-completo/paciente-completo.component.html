@@ -256,7 +256,7 @@
                 <tbody>
                   @for (items of Paciente.evolucoes; track items.id) {
                   <tr>
-                    <td>{{ items.data | datePtBr }}</td>
+                    <td>{{ items.dataEvolucao | datePtBr }}</td>
                     <td>{{ items.observacao }}</td>
                     <td>
                       <button
@@ -455,7 +455,7 @@
                 <input
                   type="date"
                   class="form-control form-control-sm"
-                  formControlName="data"
+                  formControlName="dataEvolucao"
                 />
               </div>
               <div class="col-md-2 col-12">
@@ -487,19 +487,19 @@
                   <h3 class="titulo-pequeno">Exercício {{ i + 1 }}</h3>
                   <div class="row">
                     <div class="col-md-4">
-                      <label for="titulo">Exercício</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        formControlName="titulo"
-                      />
-                    </div>
-                    <div class="col-md-4">
-                      <label for="descricao">Descrição</label>
+                      <label for="descricao">Exercício</label>
                       <input
                         type="text"
                         class="form-control form-control-sm"
                         formControlName="descricao"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label for="titulo">Observação</label>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        formControlName="obs"
                       />
                     </div>
                     <div class="col-md-4">

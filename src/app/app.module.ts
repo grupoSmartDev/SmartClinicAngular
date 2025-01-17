@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 
@@ -109,7 +109,7 @@ import { CalendarModule } from './calendar/calendar.module';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthInterceptor } from './auth.interceptor';
 import { OnlyNumbersDirective } from './only-number.directive';
-
+import { NgxSpinnerModule } from "ngx-spinner";
 
 
 
@@ -227,7 +227,8 @@ import { OnlyNumbersDirective } from './only-number.directive';
         allowedDomains: ['localhost:44308'], // domínio onde sua API está rodando
         disallowedRoutes: ['localhost:44308/Auth/login'] // rota de login que não precisa do token
       }
-    })
+    }),
+    NgxSpinnerModule.forRoot({ type: 'square-jelly-box' })
     
   ],
   providers: [ provideNgxMask(), {
@@ -235,6 +236,7 @@ import { OnlyNumbersDirective } from './only-number.directive';
     useClass: AuthInterceptor,
     multi: true
   }],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }

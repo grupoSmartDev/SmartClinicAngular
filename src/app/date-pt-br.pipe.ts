@@ -17,4 +17,9 @@ export class DatePtBrPipe implements PipeTransform {
       year: 'numeric'
     });
   }
+
+  formatToHtmlDate(date: string | Date): string {
+    const d = new Date(date);
+    return d.toISOString().split('T')[0]; // Retorna apenas YYYY-MM-DD
+  }
 }

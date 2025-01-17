@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { PacienteCompletoComponent } from '../paciente-completo/paciente-completo.component';
 import { TipoMes } from '../../../_module/planoModule';
 import { StatusPagamento } from '../../../_module/financReceberModule';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-listar-paciente',
@@ -16,7 +17,7 @@ import { StatusPagamento } from '../../../_module/financReceberModule';
   styleUrl: './listar-paciente.component.css'
 })
 export class ListarPacienteComponent {
-  constructor(private pacienteService:PacienteService, private toast: ToastrService, private router: Router) { }
+  constructor(private pacienteService:PacienteService, private toast: ToastrService, private router: Router,private spinner: NgxSpinnerService) { }
 
   @ViewChild(ModalPacienteComponent) modalPacienteComponent!: ModalPacienteComponent;
   @ViewChild(PacienteCompletoComponent) modalPacienteCompletoComponent!: PacienteCompletoComponent;
@@ -38,8 +39,10 @@ export class ListarPacienteComponent {
   paginar : boolean = true;
 
   ngOnInit(): void {
+    this.spinner.show();
     this.loadData();
   } 
+
 
   loadData() : void {
     this.pacienteService.Listar(
@@ -47,6 +50,7 @@ export class ListarPacienteComponent {
       this.cpfFiltro, this.celularFiltro, this.paginar
     ).subscribe({
       next: (data) => {
+        this.spinner.show();
         if (data.dados) {
           this.lista = data.dados;
           this.totalItems = data.totalCount;
@@ -55,8 +59,12 @@ export class ListarPacienteComponent {
       error: (err) => {
         console.error('Erro ao buscar Paciente:', err);
         this.errorMessage = 'Erro ao carregar os Paciente. Tente novamente mais tarde.';
+      },
+      complete: () => {
+        this.spinner.hide();
       }
     })
+
     // this.lista = [
     //   {
     //     "id": 1,

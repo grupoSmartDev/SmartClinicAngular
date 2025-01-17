@@ -3,7 +3,7 @@ import { Exercicio } from "./exercicioModule";
 
 export interface Evolucao {
     id: number;
-    data: Date;
+    dataEvolucao: Date;
     pacienteId: number; // ID do paciente vinculado
     profissionalId: string;
     observacao: string;

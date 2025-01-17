@@ -26,6 +26,7 @@ import { ResponseModel } from '../../../_module/ResponseModule';
 import { Plano, TipoMes } from '../../../_module/planoModule';
 
 import { PlanoService } from '../../../_services/plano.service';
+import { DatePtBrPipe } from '../../../date-pt-br.pipe';
 
 
 
@@ -35,25 +36,22 @@ import { PlanoService } from '../../../_services/plano.service';
 
   templateUrl: './paciente-completo.component.html',
 
-  styleUrl: './paciente-completo.component.css'
+  styleUrl: './paciente-completo.component.css',
+
+  providers: [DatePtBrPipe]
 
 })
 
 export class PacienteCompletoComponent implements OnInit {
 
   constructor(private pacienteService: PacienteService,
-
     private toast: ToastrService,
-
     private router: Router,
-
     private profissionalService: ProfissionalService,
-
     private fb: FormBuilder,
-
     private evolucaoService: EvolucaoService,
-
-    private planoService: PlanoService) { }
+    private planoService: PlanoService,
+    private datePipe: DatePtBrPipe) { }
 
 
   Paciente: Paciente = {} as Paciente;
@@ -77,11 +75,11 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   onSubmit() {
-    alert('submitando');
+    
   }
 
   fecharModal() {
-    alert('fechando');
+    
   }
 
   getProfissional(){
@@ -118,7 +116,7 @@ export class PacienteCompletoComponent implements OnInit {
       observacao: ['', Validators.required],
       pacienteId: ['', Validators.required],
       profissionalId: ['', Validators.required],
-      data: ['', Validators.required],
+      dataEvolucao: ['', Validators.required],
       exercicios: this.fb.array<Exercicio>([]),
       atividades: this.fb.array<Atividade>([]),
 
@@ -163,6 +161,7 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   openDialog(evolucao: any) {
+    
     const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
     if (dialog) {
       dialog.showModal();
@@ -181,14 +180,25 @@ export class PacienteCompletoComponent implements OnInit {
         descricao: evolucao.descricao,
         pacienteId: evolucao.pacienteId,
         profissionalId: evolucao.profissionalId,
-        data: evolucao.data
+        dataEvolucao: evolucao.dataEvolucao,
+        observacao : evolucao.observacao
       });
+
+      if(evolucao.dataEvolucao){
+        const dataFormatada = this.datePipe.formatToHtmlDate(evolucao.dataEvolucao);
+        this.formEvolucao.get('dataEvolucao')?.setValue(dataFormatada);  
+      }
+
+
+      
+      this.formEvolucao.get('profissionalId')?.setValue(this.Paciente.profissionalId);
+      
   
       // Adicionar exercícios
-      if (evolucao.exercicio?.length) {
-        evolucao.exercicio.forEach((exercicios: Exercicio) => {
+      if (evolucao.exercicios?.length) {
+        evolucao.exercicios.forEach((exercicios: Exercicio) => {
           const exercicioGroup = this.fb.group({
-            titulo: [exercicios.titulo, Validators.required],
+            obs: [exercicios.obs, Validators.required],
             descricao: [exercicios.descricao, Validators.required],
             tempo: [exercicios.tempo, Validators.required],
             repeticoes: [exercicios.repeticoes, Validators.required],
@@ -244,7 +254,7 @@ export class PacienteCompletoComponent implements OnInit {
   adicionarExercicio(): void {
 
     const novoItem = this.fb.group({
-      titulo: ['', Validators.required],
+      obs: ['', Validators.required],
       descricao: ['', Validators.required],
       tempo: ['', Validators.required],
       repeticoes: ['', Validators.required],
@@ -283,9 +293,7 @@ export class PacienteCompletoComponent implements OnInit {
 
 
   carregarDados(dados: any) {
-
     this.formEvolucao.patchValue(this.exercicios);
-
   }
 
 
