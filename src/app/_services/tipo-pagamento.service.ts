@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResponseModel } from '../_module/ResponseModule';
@@ -13,8 +13,21 @@ export class TipoPagamentoService {
 
   baseURL: string = 'https://localhost:44308/api/TipoPagamento/';
 
-  ListarTipoPagamento(): Observable<ResponseModel<TipoPagamento[]>> {
-    return this.http.get<ResponseModel<TipoPagamento[]>>(`${this.baseURL}Listar`)
+  ListarTipoPagamento(
+    page?: number,
+    pageSize?: number,
+    idFiltro?: string,
+    descricaoFiltro?: string,
+    paginar: boolean = false
+  ): Observable<ResponseModel<TipoPagamento[]>> {
+
+    let params = new HttpParams();
+
+    if (page) params = params.set('page', page.toString());
+    if (pageSize) params = params.set('pageSize', pageSize.toString());
+    if (idFiltro) params = params.set('idFiltro', idFiltro);
+    if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
+    return this.http.get<ResponseModel<TipoPagamento[]>>(`${this.baseURL}Listar`, {params})
   }
 
   CriarTipoPagamento(tipoPagamento: TipoPagamento): Observable<ResponseModel<TipoPagamento>> {

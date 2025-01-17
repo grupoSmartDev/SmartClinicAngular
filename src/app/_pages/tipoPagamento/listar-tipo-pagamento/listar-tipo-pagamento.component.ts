@@ -23,21 +23,24 @@ export class ListarTipoPagamentoComponent {
   idParaExcluir!: string;
   tipoPagamentoParaExcluir!: TipoPagamento;
 
-
-  colunaTabela = [
-    { header: 'Cód', field: 'id' },
-    { header: 'Descrição', field: 'descricao' },
-  ];
+    //paginacao
+    totalItems: number = 0;
+    pageSize: number = 10;
+    currentPage: number = 1;
+    // filtros
+    idFiltro: string = '';
+    descricaoFiltro: string = '';
+  
 
   ngOnInit(): void {
-    this.getTipoPagamento();
+    this.loadData();
   }
 
   atualizarLista(): void {
-    this.getTipoPagamento(); // Chama o método para buscar os status novamente
+    this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  getTipoPagamento(): void {
+  loadData(): void {
     this.tipoPagamentoService.ListarTipoPagamento().subscribe({
       next: (data) => {
         if (data.dados) {
@@ -90,6 +93,16 @@ export class ListarTipoPagamentoComponent {
         this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir um tipo de pagamento');
       }
     })
+  }
+
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.loadData();
+  }
+
+  filtrar(): void {
+    this.currentPage = 1;
+    this.loadData();
   }
 
 
