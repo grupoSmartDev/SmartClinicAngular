@@ -110,6 +110,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { AuthInterceptor } from './auth.interceptor';
 import { OnlyNumbersDirective } from './only-number.directive';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { FichaAvaliacaoComponent } from './_pages/paciente/ficha-avaliacao/ficha-avaliacao.component';
 
 
 
@@ -206,6 +207,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
     DatePtBrPipe,
     CurrencyPtBrPipe,
     OnlyNumbersDirective,
+    FichaAvaliacaoComponent,
   ],
   imports: [
     BrowserModule,
