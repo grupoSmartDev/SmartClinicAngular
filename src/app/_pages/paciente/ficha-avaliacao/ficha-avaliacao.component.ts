@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatePtBrPipe } from '../../../date-pt-br.pipe';
+import { Paciente } from '../../../_module/pacienteModule';
 
 @Component({
   selector: 'app-ficha-avaliacao',
@@ -10,6 +11,7 @@ import { DatePtBrPipe } from '../../../date-pt-br.pipe';
 })
 export class FichaAvaliacaoComponent {
   fichaForm!: FormGroup;
+  paciente!: Paciente;
 
   constructor(private fb: FormBuilder, private dataInput : DatePtBrPipe) {}
 
@@ -104,5 +106,9 @@ export class FichaAvaliacaoComponent {
         controle.markAsTouched();
       }
     });
+  }
+
+  fecharModal(){
+
   }
 }

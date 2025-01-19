@@ -83,6 +83,15 @@
               </a>
 
               <a
+              href="javascript:void(0);"
+              (click)="openfichaAvaliacao(item)"
+              class="action-icon btn-tooltip"
+            >
+              <i class="bi bi-card-checklist"></i>
+              <span class="tooltip-text">Ficha cadastral</span>
+            </a>
+
+              <a
                 href="javascript:void(0);"
                 (click)="openModalDetalhado(item)"
                 class="action-icon btn-tooltip"
@@ -134,6 +143,8 @@
 <app-modal-paciente (dataAtualizado)="atualizarLista()"> </app-modal-paciente>
 
 <app-paciente-completo></app-paciente-completo>
+
+<app-ficha-avaliacao></app-ficha-avaliacao>
 
 <app-confirm-dialog
   #confirmDialog

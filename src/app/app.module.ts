@@ -111,6 +111,7 @@ import { AuthInterceptor } from './auth.interceptor';
 import { OnlyNumbersDirective } from './only-number.directive';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { FichaAvaliacaoComponent } from './_pages/paciente/ficha-avaliacao/ficha-avaliacao.component';
+import { MenuComponent } from './_components/menu/menu.component';
 
 
 
@@ -208,6 +209,7 @@ import { FichaAvaliacaoComponent } from './_pages/paciente/ficha-avaliacao/ficha
     CurrencyPtBrPipe,
     OnlyNumbersDirective,
     FichaAvaliacaoComponent,
+    MenuComponent,
   ],
   imports: [
     BrowserModule,
