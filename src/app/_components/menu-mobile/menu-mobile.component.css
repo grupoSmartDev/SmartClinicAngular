@@ -1,20 +1,218 @@
-.offcanvas-header {
-  background-color: #f8f9fa;
+/* Estilos base do sidebar */
+#sidebar {
+  width: 70px;
+  min-width: 70px;
+  z-index: 1000;
+  transition: all .25s ease-in-out;
+  background-color: #389D8D;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 0rem 1rem 1rem 0rem;
+  z-index: 1050;
+  position: relative;
 }
 
-.offcanvas-body {
-  padding: 1rem;
+#sidebar.expand {
+  width: 18rem;
+  min-width: 18rem;
+}
+
+/* Estilos gerais dos links e itens */
+.sidebar-nav {
+  padding: 2rem 0;
+  flex: 1 1 auto;
+  list-style: none;
+  margin: 0;
 }
 
 .sidebar-item {
+  position: relative;
   margin-bottom: 10px;
 }
 
-.sidebar-link {
-  color: #333;
-  font-weight: 500;
+a.sidebar-link {
+  padding: .625rem 1.225rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+  transition: all .25s ease-in-out;
 }
 
-.sidebar-link:hover {
-  color: #0056b3;
+.sidebar-link i {
+  font-size: 1.2rem;
+  margin-right: .75rem;
+}
+
+a.sidebar-link:hover {
+  color: #fff;
+  background-color: #133832ab;
+  border-left: 3px solid #fff;
+  cursor: pointer;
+}
+
+/* Animações e comportamentos do toggle */
+#sidebar:not(.expand) .sidebar-logo,
+#sidebar:not(.expand) a.sidebar-link span {
+  display: none;
+}
+
+#sidebar.expand .sidebar-logo,
+#sidebar.expand a.sidebar-link span {
+  animation: fadeIn .25s ease;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Estilos do dropdown */
+.sidebar-dropdown {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#sidebar:not(.expand) .sidebar-item .sidebar-dropdown {
+  position: absolute;
+  top: 0;
+  left: 70px;
+  background-color: #389d8cab;
+  padding: 0;
+  min-width: 15rem;
+  display: none;
+}
+
+#sidebar:not(.expand) .sidebar-item:hover .has-dropdown + .sidebar-dropdown {
+  display: block;
+  width: 100%;
+  opacity: 1;
+  background-color: #389d8cde;
+  z-index: 1060;
+}
+
+/* Seta do dropdown */
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"]::after {
+  border: solid;
+  border-width: 0 .075rem .075rem 0;
+  content: "";
+  display: inline-block;
+  padding: 2px;
+  position: absolute;
+  right: 1.5rem;
+  top: 1.4rem;
+  transform: rotate(-135deg);
+  transition: all .2s ease-out;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
+  transform: rotate(45deg);
+}
+
+/* Estilos específicos para mobile (offcanvas) */
+@media (max-width: 767.98px) {
+  .offcanvas {
+    background-color: #389D8D;
+    max-width: 280px;
+  }
+
+  .offcanvas-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .offcanvas-header h5 {
+    color: #fff;
+  }
+
+  .offcanvas-body {
+    padding: 1rem 0;
+  }
+
+  .btn-close {
+    background-color: #fff;
+  }
+
+  /* Ajustes para o menu mobile */
+  #sidebar:not(.expand) .sidebar-item .sidebar-dropdown {
+    position: static;
+    display: none;
+    background-color: #133832ab;
+  }
+
+  .sidebar-dropdown .sidebar-link {
+    padding-left: 2.5rem;
+  }
+
+  /* Correção para o dropdown no mobile */
+  .sidebar-item .collapse {
+    display: none;
+  }
+
+  .sidebar-item .collapse.show {
+    display: block;
+  }
+}
+
+/* Estilos da navbar */
+.navbar {
+  background-color: #00b389;
+  box-shadow: 0 0 2rem 0 rgba(33, 37, 41, .1);
+}
+
+.navbar-expand .navbar-collapse {
+  min-width: 200px;
+}
+
+.avatar {
+  height: 40px;
+  width: 40px;
+}
+
+.sidebar-dropdown {
+  transition: all 0.3s ease;
+}
+
+header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+
+    margin-bottom: 1rem !important;
+
+    background-color: #00b389;
+    box-shadow: 0 0 2rem 0 rgba(33, 37, 41, .1);
+}
+
+@media (max-width: 767.98px) {
+  /* Estilo da setinha para submenus no mobile */
+  .sidebar-link.has-dropdown::after {
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    content: "";
+    display: inline-block;
+    padding: 3px;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.2rem;
+    transform: rotate(45deg);
+    transition: transform 0.3s ease;
+  }
+
+  /* Rotação da setinha quando o submenu está aberto */
+  .sidebar-link.has-dropdown[aria-expanded="true"]::after {
+    transform: rotate(-135deg);
+  }
+
+  /* Ajuste do padding do link para acomodar a setinha */
+  .sidebar-link.has-dropdown {
+    padding-right: 3rem;
+    position: relative;
+  }
 }

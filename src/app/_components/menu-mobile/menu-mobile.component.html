@@ -1,13 +1,21 @@
 <!-- Botão Hamburger para telas pequenas -->
-<button
-  class="navbar-toggler d-md-none text-danger"
+<header class="d-flex justify-content-between align-items-center px-3 py-2">
+  <div class="d-flex align-items-center">
+    <h5 class="text-white">SmartClinic</h5>
+  </div>
+  <button
+  class="d-md-none btn btn-sm btn-outline-light"
   type="button"
   data-bs-toggle="offcanvas"
   data-bs-target="#offcanvasMenu"
   aria-controls="offcanvasMenu"
+  aria-label="Abrir menu"
 >
-  <span class="navbar-toggler-icon"></span>
+  <i class="bi bi-list"></i>
 </button>
+</header>
+
+
 
 <!-- Offcanvas Sidebar -->
 <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
@@ -17,63 +25,152 @@
   </div>
   
   <div class="offcanvas-body">
-    <ul class="sidebar-nav">
-      <!-- Cadastro -->
+    <ul class="sidebar-nav" id="menuSideBar">
       <li class="sidebar-item">
         <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('cadastro')" data-bs-toggle="collapse">
           <i class="lni lni-layout"></i>
           <span>Cadastro</span>
         </a>
-        <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['cadastro'], 'show': isMenuOpen['cadastro']}" id="cadastro">
+        <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['cadastro'], 'show': isMenuOpen['cadastro']}" id="cadastro"  data-bs-toggle="collapse"
+        data-bs-target="#cadastro">
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/usuario/listar', 'Usuário')">Usuário</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/profissional/listar', 'Profissional')">Profissional</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/profissao/listar', 'Profissão')">Profissão</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/fornecedor/listar', 'Fornecedor')">Fornecedor</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/status/listar', 'Status')">Status</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/convenio/listar', 'Convênio')">Convênio</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/conselho/listar', 'Conselho')">Conselho</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/sala/listar', 'Sala')">Sala</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/exercicio/listar', 'Exercício')">Exercício</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/atividade/listar', 'Atividade')">Atividade</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/banco/listar', 'Banco')">Banco</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/plano/listar', 'Planos')">Plano</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/procedimento/listar', 'Procedimento')">Procedimento</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/categoria/listar', 'Categoria')">Categoria</a>
+        </li>
+      </ul>
+      </li>
+  
+      <li class="sidebar-item">
+        
+        <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('financeiro')" data-bs-toggle="collapse">
+          <i class="bi bi-cash"></i>
+          <span>Financeiro</span>
+        </a>
+        <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['financeiro'], 'show': isMenuOpen['financeiro']}" id="financeiro">
           <li class="sidebar-item">
-            <a class="sidebar-link" (click)="openTab('/usuario/listar', 'Usuário')" data-bs-dismiss="offcanvas">Usuário</a>
+            <a class="sidebar-link" (click)="openTab('/tipoPagamento/listar', 'Tipo de pagamento')">Tipo de pagamento</a>
           </li>
           <li class="sidebar-item">
-            <a class="sidebar-link" (click)="openTab('/fornecedor/listar', 'Fornecedor')" data-bs-dismiss="offcanvas">Fornecedor</a>
+            <a class="sidebar-link" (click)="openTab('/formaPagamento/listar', 'Forma de pagamento')">Forma de pagamento</a>
           </li>
           <li class="sidebar-item">
-            <a class="sidebar-link" (click)="openTab('/status/listar', 'Status')" data-bs-dismiss="offcanvas">Status</a>
+            <a class="sidebar-link" (click)="openTab('/centroDeCusto/listar', 'Centro de Custo')">Centro de Custo</a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/SubcentroDeCusto/listar', 'Sub Centro de Custo')">Sub Centro de Custo</a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/planoContas/listar', 'Plano de Contas')">Plano de Contas</a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/planoContaSub/listar', 'Plano de contas Sub')">Plano de Contas sub</a>
           </li>
         </ul>
       </li>
-
-      <!-- Pacientes -->
+  
       <li class="sidebar-item">
-        <a class="sidebar-link" (click)="openTab('/pacientes/listar', 'Pacientes')" data-bs-dismiss="offcanvas">
-          <i class="lni lni-user"></i>
+        <a class="sidebar-link" (click)="openTab('/pacientes/listar', 'Pacientes')">
+          <i class="bi bi-person"></i>
           <span>Pacientes</span>
         </a>
       </li>
-
-      <!-- Agenda -->
+  
       <li class="sidebar-item">
-        <a class="sidebar-link" (click)="openTab('/agenda/listar', 'Agenda')" data-bs-dismiss="offcanvas">
+        <a class="sidebar-link" (click)="openTab('/agenda/listar', 'Agenda')">
           <i class="lni lni-calendar"></i>
           <span>Agenda</span>
         </a>
       </li>
-
-      <!-- Relatórios -->
       <li class="sidebar-item">
-        <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('relatorios')" data-bs-toggle="collapse">
+        <a class="sidebar-link" (click)="openTab('/financPagar/listar', 'Pagar')">
+          <i class="bi bi-cash-stack"></i>
+          <span>Contas a pagar</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a class="sidebar-link" (click)="openTab('/FinancReceber/listar', 'Receber')">
+          <i class="bi bi-cash-stack"></i>
+          <span>Contas a receber</span>
+        </a>
+      </li>
+  
+      <li class="sidebar-item">
+        <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('auth')" data-bs-toggle="collapse"> 
           <i class="lni lni-files"></i>
           <span>Relatórios</span>
         </a>
-        <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['relatorios'], 'show': isMenuOpen['relatorios']}" id="relatorios">
+        <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['auth'], 'show': isMenuOpen['auth']}" id="auth">
           <li class="sidebar-item">
-            <a class="sidebar-link" (click)="openTab('/relatorios/pacientes', 'Pacientes')" data-bs-dismiss="offcanvas">Pacientes</a>
+            <a class="sidebar-link" (click)="openTab('/relatorios/pacientes', 'Relatório de Pacientes')">Pacientes</a>
           </li>
           <li class="sidebar-item">
-            <a class="sidebar-link" (click)="openTab('/relatorios/contasPagar', 'Contas a Pagar')" data-bs-dismiss="offcanvas">Contas a Pagar</a>
+            <a class="sidebar-link" (click)="openTab('/relatorios/contasPagar', 'Contas a Pagar')">Contas a Pagar</a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/relatorios/contasReceber', 'Contas a Receber')">Contas a Receber</a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/relatorios/tipoPagamento', 'Tipo de Pagamento')">Tipo de Pagamento</a>
           </li>
         </ul>
       </li>
-
-      <!-- Logout -->
+  
+      
       <li class="sidebar-item">
-        <a href="#" class="sidebar-link">
-          <i class="lni lni-exit"></i>
-          <span>Logout</span>
+        <a class="sidebar-link" (click)="openTab('/log/listar', 'Log')">
+          <i class="bi bi-person-lines-fill"></i>
+          <span>Log</span>
+        </a>
+      </li>
+  
+      <li class="sidebar-item">
+        <a class="sidebar-link" (click)="openTab('/teste', 'testes')">
+          <i class="bi bi-person-lines-fill"></i>
+          <span>testes</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a class="sidebar-link" (click)="openTab('/testeComponents', 'testeComponents')">
+          <i class="bi bi-person-lines-fill"></i>
+          <span>testeComponents</span>
         </a>
       </li>
     </ul>

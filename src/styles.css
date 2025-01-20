@@ -44,6 +44,24 @@ html {
     }
 }
 
+@media (max-width: 767.98px) {
+    .main {
+      margin-top: 3rem !important;
+    }
+
+    .form-control{
+        margin-top: 0.5rem !important;
+    }
+    .btn{
+        margin-top: 0.5rem !important;
+    }
+
+    .card{
+        margin-top: 0.5rem !important;
+    }
+    
+  }
+
 .btn:focus,
 .btn:active:focus,
 .btn-link.nav-link:focus,
