@@ -208,6 +208,7 @@
             >
               <h5>Histórico Financeiro</h5>
               <!-- Aqui vai o conteúdo da aba de financeiro -->
+             <div class="table-responsive">
               <table border="1" class="table table-striped table-responsive">
                 <tbody>
                   <!-- Percorrendo os itens financeiros -->
@@ -232,6 +233,7 @@
                   </tr>
                 </tbody>
               </table>
+             </div>
             </div>
 
             <!-- Atendimentos -->
@@ -245,31 +247,33 @@
               <button class="btn btn-success mb-2" (click)="openDialog('')">
                 <i class="bi bi-plus"></i> Evolução
               </button>
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Data</th>
-                    <th>Descrição</th>
-                    <th>Evolução</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (items of Paciente.evolucoes; track items.id) {
-                  <tr>
-                    <td>{{ items.dataEvolucao | datePtBr }}</td>
-                    <td>{{ items.observacao }}</td>
-                    <td>
-                      <button
-                        class="btn btn-sm btn-primary"
-                        (click)="openDialog(items)"
-                      >
-                        Ver Evolução
-                      </button>
-                    </td>
-                  </tr>
-                }
-                </tbody>
-              </table>
+           <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Descrição</th>
+                  <th>Evolução</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (items of Paciente.evolucoes; track items.id) {
+                <tr>
+                  <td>{{ items.dataEvolucao | datePtBr }}</td>
+                  <td>{{ items.observacao }}</td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-primary"
+                      (click)="openDialog(items)"
+                    >
+                      Ver Evolução
+                    </button>
+                  </td>
+                </tr>
+              }
+              </tbody>
+            </table>
+           </div>
             </div>
 
             <!-- Planos -->
@@ -306,29 +310,33 @@
               </button>
               }
               <!-- Lista de planos cadastrados -->
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Descrição</th>
-                    <th>Plano</th>
-                    <th>Validade</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Exemplo de plano -->
-                  <tr>
-                    <td>{{ Paciente.plano?.descricao }}</td>
-                    @switch (Paciente.plano?.tipoMes) { @case ('m') {
-                    <td>Mensal</td>
-                    } @case ('s') {
-                    <td>Semestral</td>
-                    } @case ('a') {
-                    <td>Anual</td>
-                    } }
-                    <td>{{ Paciente.plano?.dataFim?.getDate() }}</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Descrição</th>
+                      <th>Plano</th>
+                      <th>Validade</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Exemplo de plano -->
+                    <tr>
+                      <td>{{ Paciente.plano?.descricao }}</td>
+                      @switch (Paciente.plano?.tipoMes)
+                       { @case ('m') {
+                      <td>Mensal</td>
+                      } @case ('s') {
+                      <td>Semestral</td>
+                      } @case ('a') {
+                      <td>Anual</td>
+                      } 
+                    }
+                      <td>{{ Paciente.plano?.dataFim?.getDate() }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

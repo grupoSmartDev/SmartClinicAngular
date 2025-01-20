@@ -44,25 +44,25 @@
 <!-- Cards de Dados -->
 <div class="row my-2">
   <app-card-dados
-    class="col-md-3 col-12"
+    class="flex col-md-3 col-12"
     [icone]="'bi bi-calendar'"
     [dados]="contadores.totalAgendas || 0"
     [nomeLabel]="'Agendamentos'"
   ></app-card-dados>
   <app-card-dados
-    class="col-md-3 col-12"
+    class="flex col-md-3 col-12"
     [icone]="'bi bi-calendar-check'"
     [dados]="contadores.agendasFinalizadas || 0"
     [nomeLabel]="'Atendidos'"
   ></app-card-dados>
   <app-card-dados
-    class="col-md-3 col-12"
+    class="flex col-md-3 col-12"
     [icone]="'bi bi-calendar-x'"
     [dados]="contadores.agendasFuturas || 0"
     [nomeLabel]="'Não compareceram'"
   ></app-card-dados>
   <app-card-dados
-    class="col-md-3 col-12"
+    class="flex col-md-3 col-12"
     [icone]="'bi bi-person-plus'"
     [dados]="contadores.pacientesNoPeriodo || 0"
     [nomeLabel]="'Clientes Novos'"
@@ -114,7 +114,7 @@
 
 <div class="row my-2">
   <app-card-dados
-    class="col-md-3 col-12"
+    class="flex col-12"
     [icone]="'bi bi-calendar'"
     [dados]="335"
     [nomeLabel]="'Agendamentos'"
