@@ -445,6 +445,28 @@ export class PacienteCompletoComponent implements OnInit {
   }
   
   salvarPlano(): void {
+debugger
+    this.formPlano.patchValue({
+      pacienteId: this.Paciente.id
+    });
+   // Log do valor atual do formulário
+   console.log('Valor do formulário:', this.formPlano.value);
+  
+   // Log do status de cada campo
+   Object.keys(this.formPlano.controls).forEach(key => {
+     const control = this.formPlano.get(key);
+     console.log(`Campo ${key}:`);
+     console.log('- Valor:', control?.value);
+     console.log('- Status:', control?.status);
+     console.log('- Erros:', control?.errors);
+     
+     // Se for um FormArray, verificar cada item
+     if (control instanceof FormArray) {
+       control.controls.forEach((item, index) => {
+         console.log(`- Item ${index}:`, item.errors);
+       });
+     }
+   });
 
     if (this.formPlano.invalid) {
       this.toast.error('Preencha todos os campos', 'Erro ao cadastrar uma evolução');
@@ -452,12 +474,20 @@ export class PacienteCompletoComponent implements OnInit {
     }
 
     const dataToSave = this.formPlano.value;
+
+    const planoIdForm = (document.getElementById('planoId') as HTMLSelectElement)?.value ?? '';
+
+    let planoSelecionado = this.listaPlanos.find(x => x.id == parseFloat(planoIdForm));
+    if (planoSelecionado) {
+      dataToSave.idOriginal = planoSelecionado.id;
+      dataToSave.tempoMinutos = planoSelecionado.tempoMinutos;
+    }
   
     dataToSave.pacienteId = this.Paciente.id;
 
     const saveOperation = dataToSave.id && dataToSave.idOriginal
-      ? this.evolucaoService.Atualizar(dataToSave)
-      : this.evolucaoService.Criar(dataToSave);
+      ? this.planoService.Atualizar(dataToSave)
+      : this.planoService.Criar(dataToSave);
     saveOperation.subscribe({
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
@@ -470,8 +500,6 @@ export class PacienteCompletoComponent implements OnInit {
     });
 
   }
-
-
 
 }
 

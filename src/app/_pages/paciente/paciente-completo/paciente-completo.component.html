@@ -160,7 +160,7 @@
                             <p class="descricao-grande">
                               {{
                                 Paciente.convenio
-                                  ? Paciente.convenio?.nome
+                                  ? Paciente.convenio.nome
                                   : "Sem convenio"
                               }}
                             </p>
@@ -331,6 +331,9 @@
                       } @case ('a') {
                       <td>Anual</td>
                       } 
+                      @default {
+                      <td></td>
+                      }
                     }
                       <td>{{ Paciente.plano?.dataFim?.getDate() }}</td>
                     </tr>
@@ -640,7 +643,7 @@
           <div class="row align-items-end">
             <div class="col-md-3">
               <label for="" class="form-label">Plano</label>
-              <select name="" class="form-select form-select-sm">
+              <select name="" class="form-select form-select-sm" formControlName="planoId" id="planoId">
                 <option value="">Selecione...</option>
                 @for (item of listaPlanos; track item.id) {
                 <option value="{{ item.id }}">{{ item.descricao }}</option>
@@ -715,7 +718,7 @@
         <div class="modal-footer justify-content-end">
           <button
             type="button"
-            (click)="salvarEvolucao()"
+            (click)="salvarPlano()"
             class="btn btn-success"
           >
             <i class="bi bi-check"></i> Confirmar
