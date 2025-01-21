@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Convenio } from '../_module/convenioModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class ConvenioService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/Convenio/';
+  baseURL: string = environment.apiUrl + 'api/Convenio/';
 
   Listar(
     page?: number,

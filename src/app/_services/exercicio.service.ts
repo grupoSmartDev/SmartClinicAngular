@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
 import { Exercicio } from '../_module/exercicioModule';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class ExercicioService {
     
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/exercicio/';
+  baseURL: string = environment.apiUrl + 'api/exercicio/';
 
   Listar(
     page?: number,

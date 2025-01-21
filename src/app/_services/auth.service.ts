@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, throwError  } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { AuthResponse, UserLoginRequest, UserToken } from '../_module/authModule';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 
 
 export class AuthService {
-  private readonly API_URL = 'https://localhost:44308/Auth/login';
+  private readonly API_URL = environment.apiUrl + 'Auth/login';
   private currentUserSubject: BehaviorSubject<UserToken | null>;
   public currentUser: Observable<UserToken | null>;
   private jwtHelper = new JwtHelperService();

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Log } from '../_module/logModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class LogService {
 
   
 
-  baseURL: string = 'https://localhost:44308/api/log/';
+  baseURL: string = environment.apiUrl + 'api/log/';
 
   Listar(
     page?: number,

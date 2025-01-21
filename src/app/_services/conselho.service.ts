@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Conselho } from '../_module/conselhoModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable, of } from 'rxjs';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class ConselhoService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/Conselho/';
+  baseURL: string = environment.apiUrl + 'api/Conselho/';
 
   private mockConselhos: Conselho[] = Array.from({ length: 100 }, (_, i) => ({
     id: (i + 1).toString(),

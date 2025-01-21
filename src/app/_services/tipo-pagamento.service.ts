@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResponseModel } from '../_module/ResponseModule';
 import { TipoPagamento } from '../_module/tipoPagamentoModule';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class TipoPagamentoService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/TipoPagamento/';
+  baseURL: string = environment.apiUrl + 'api/TipoPagamento/';
 
   ListarTipoPagamento(
     page?: number,

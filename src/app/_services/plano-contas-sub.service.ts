@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
 import { PlanoContaSub } from '../_module/planoContaSubModule';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class PlanoContasSubService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/planoContaSub/';
+  baseURL: string = environment.apiUrl + 'api/planoContaSub/';
 
   Listar(
     page?: number,

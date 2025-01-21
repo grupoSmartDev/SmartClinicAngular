@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { Status } from '../_module/statusModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { HttpParams } from '@angular/common/http';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StatusServerService {
 
-  baseURL: string = 'https://localhost:44308/api/Status/';
+  baseURL: string = environment.apiUrl + 'api/Status/';
 
   constructor(private http: HttpClient) { }
 

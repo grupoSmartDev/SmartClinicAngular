@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResponseModel } from '../_module/ResponseModule';
 import { FormaPagamento } from '../_module/formaPagamentoModule';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class FormaPagamentoService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/FormaPagamento/';
+  baseURL: string = environment.apiUrl +  'api/FormaPagamento/';
 
   Listar(
     page?: number,

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Agenda } from '../_module/agendaModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class AgendaService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/Agenda/';
+  baseURL: string = environment.apiUrl + 'api/Agenda/';
 
   Listar(): Observable<ResponseModel<Agenda[]>> {
     return this.http.get<ResponseModel<Agenda[]>>(`${this.baseURL}Listar`);

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Profissional } from '../_module/profissionalModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class ProfissionalService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/Profissional/';
+  baseURL: string = environment.apiUrl + 'api/Profissional/';
 
   Listar(
     page?: number,

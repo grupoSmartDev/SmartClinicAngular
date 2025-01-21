@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
 import { Evolucao } from '../_module/evolucaoModule';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class EvolucaoService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/Evolucao/';
+  baseURL: string = environment.apiUrl + 'api/Evolucao/';
 
   Listar(): Observable<ResponseModel<Evolucao[]>> {
     return this.http.get<ResponseModel<Evolucao[]>>(`${this.baseURL}Listar`);

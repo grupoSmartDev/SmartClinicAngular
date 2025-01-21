@@ -4,6 +4,7 @@ import { ResponseModel } from '../_module/ResponseModule';
 import { Fornecedor } from '../_module/fornecedorModule';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Profissional } from '../_module/profissionalModule';
+import { environment } from '../../environments/environments';
 
 
 @Injectable({
@@ -13,7 +14,7 @@ export class FornecedorService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/Fornecedor/';
+  baseURL: string = environment.apiUrl + 'api/Fornecedor/';
 
   Listar(
     page?: number,

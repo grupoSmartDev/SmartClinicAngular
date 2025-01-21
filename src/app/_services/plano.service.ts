@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
 import { Plano } from '../_module/planoModule';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class PlanoService {
     
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/Plano/';
+  baseURL: string = environment.apiUrl + 'api/Plano/';
 
   Listar(
     page?: number,

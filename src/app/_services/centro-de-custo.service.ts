@@ -4,6 +4,7 @@ import { Banco } from '../_module/bancoModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
 import { CentroDeCusto } from '../_module/centroDeCustoModule';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class CentroDeCustoService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/CentroCusto/';
+  baseURL: string = environment.apiUrl + 'api/CentroCusto/';
 
   Listar(
     page?: number,

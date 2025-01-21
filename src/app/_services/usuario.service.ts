@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Usuario } from '../_module/usuarioModule';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class UsuarioService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/usuario/';
+  baseURL: string =  environment.apiUrl + 'api/usuario/';
 
   Listar(): Observable<ResponseModel<Usuario[]>> {
     return this.http.get<ResponseModel<Usuario[]>>(`${this.baseURL}Listar`);

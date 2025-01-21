@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Banco } from '../_module/bancoModule';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class BancoService {
   
   constructor(private http: HttpClient) { }
 
-  baseURL: string = 'https://localhost:44308/api/Banco/';
+  baseURL: string =  environment.apiUrl + 'api/Banco/';
 
   Listar(
     page?: number,
