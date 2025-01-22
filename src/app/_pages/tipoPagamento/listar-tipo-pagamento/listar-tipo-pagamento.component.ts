@@ -68,8 +68,8 @@ export class ListarTipoPagamentoComponent {
     }
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir: any) {
+    this.tipoPagamentoParaExcluir = dataParaExcluir
     this.confirmDialog.openDialog();
   }
 

@@ -82,8 +82,8 @@ export class ListarCentroDeCustoComponent {
     this.loadData(); // Chama o método para buscar os cc novamente
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.dataParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

@@ -103,8 +103,8 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
     }
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.convenioParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

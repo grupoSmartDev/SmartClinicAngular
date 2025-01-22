@@ -71,8 +71,8 @@ export class ListarConselhoComponent implements OnInit{
     }
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.conselhoParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

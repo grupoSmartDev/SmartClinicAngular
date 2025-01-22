@@ -68,8 +68,8 @@ export class ListarCategoriaComponent {
     }
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.dadosParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

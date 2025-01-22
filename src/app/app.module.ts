@@ -152,6 +152,7 @@ import { MenuComponent } from './_components/menu/menu.component';
     GeneroChartsComponent,
     MainLayoutComponent,
     LoginComponent,
+    MenuComponent,
     MenuMobileComponent,
     LandinPageComponent,
     HeaderLPComponent,

@@ -49,7 +49,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row mb-2">
   <div class="col-12">
     @if (lista.length > 0) {
     <div class="table-responsive">
@@ -93,7 +93,7 @@
               </a>
               <a
                 href="javascript:void(0);"
-                (click)="Excluir(item)"
+                (click)="promptDelete(item)"
                 class="action-icon btn-tooltip"
               >
                 <i class="bi bi-trash3 text-danger"></i>
@@ -111,9 +111,10 @@
     <img src="public\image\semRegistro.svg" alt="" />
     }
   </div>
+</div>
 
-         <!-- Paginação Bootstrap -->
-         <div class="row justify-content-center">
+        <!-- Paginação Bootstrap -->
+        <div class="row justify-content-center">
           <div class="">
             <pagination
               [totalItems]="totalItems"
@@ -127,7 +128,6 @@
           </pagination>
           </div>
         </div>
-</div>
 
 
 <app-modal-banco (bancoAtualizado)="atualizarLista()"></app-modal-banco>

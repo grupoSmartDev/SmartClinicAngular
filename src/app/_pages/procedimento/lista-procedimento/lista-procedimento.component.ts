@@ -80,8 +80,8 @@ export class ListaProcedimentoComponent {
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.procedimentoParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

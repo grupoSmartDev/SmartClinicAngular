@@ -88,6 +88,7 @@ export class ListarComponent implements OnInit {
   }
 
   ExcluirStatus(id: string) {
+
     this.statusService.Deletar(parseInt(id)).subscribe({
       next: (response) => {
         this.statusList = this.statusList.filter(status => status.id !== id);
@@ -139,8 +140,8 @@ export class ListarComponent implements OnInit {
     }
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.idParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

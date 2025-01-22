@@ -90,11 +90,12 @@ export class ListarFinancReceberComponent {
 
   Excluir(financReceber: FinancReceber) {
     let id = financReceber.id;
+
     this.financReceberService.Deletar(id.toString()).subscribe({
       next: (response) => {
         console.log('conta a receber excluído com sucesso:', response);
-        this.lista = this.lista.filter(exercicio => exercicio.id !== id);
-        this.toast.success('exercicio excluído com sucesso!', 'Excluído');
+        this.lista = this.lista.filter(financReceber => financReceber.id !== id);
+        this.toast.success('Contas a receber excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
         console.error('Erro ao excluir contas a receber:', err);
@@ -107,8 +108,8 @@ export class ListarFinancReceberComponent {
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.dadosParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

@@ -62,8 +62,8 @@ export class ListarUsuarioComponent {
     }
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.usuarioParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

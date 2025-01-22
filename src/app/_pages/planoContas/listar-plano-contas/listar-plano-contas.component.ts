@@ -80,8 +80,8 @@ export class ListarPlanoContasComponent {
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.planoParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

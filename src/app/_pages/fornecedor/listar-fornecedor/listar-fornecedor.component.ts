@@ -71,8 +71,8 @@ export class ListarFornecedorComponent {
     this.loadData(); // Chama o método para buscar os fornecedor novamente
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.fornecedorParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

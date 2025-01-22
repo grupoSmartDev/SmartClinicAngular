@@ -91,8 +91,8 @@ export class ListarFinancPagarComponent {
     this.financPagarService.Deletar(id.toString()).subscribe({
       next: (response) => {
         console.log('conta a pagar excluído com sucesso:', response);
-        this.lista = this.lista.filter(exercicio => exercicio.id !== id);
-        this.toast.success('exercicio excluído com sucesso!', 'Excluído');
+        this.lista = this.lista.filter(financPagar => financPagar.id !== id);
+        this.toast.success('Contas a pagar excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
         console.error('Erro ao excluir contas a pagar:', err);
@@ -105,8 +105,8 @@ export class ListarFinancPagarComponent {
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.dadosParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 

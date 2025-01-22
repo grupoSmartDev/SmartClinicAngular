@@ -84,8 +84,8 @@ export class ListarSalasComponent {
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  promptDelete(id: string) {
-    this.idParaExcluir = id;
+  promptDelete(dataParaExcluir : any) {
+    this.salaParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
 
