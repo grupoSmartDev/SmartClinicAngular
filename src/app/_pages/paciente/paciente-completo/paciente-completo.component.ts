@@ -440,7 +440,8 @@ export class PacienteCompletoComponent implements OnInit {
       data : [null],
       pacienteId : [null],
       financeiroId : [null],
-      tipoMes : ['a']
+      tipoMes : ['a'],
+      planoId : [null]
     })
   }
   
