@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { fadeInOut, INavbarData } from './helper';
 import { navbarData } from './nav-data';
 import { TabService } from '../../_services/tabs.service';
+import { AuthService } from '../../_services/auth.service';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -48,7 +49,7 @@ export class SidenavComponent implements OnInit {
     }
   }
 
-  constructor(public router: Router,private tabService: TabService) {}
+  constructor(public router: Router,private tabService: TabService, private authService: AuthService) {}
 
     // Alterna a expansão da sidebar
   
@@ -97,5 +98,15 @@ export class SidenavComponent implements OnInit {
   // Método para abrir uma nova aba
   openTab(path: string, title: string) {
     this.tabService.openTab({ path, title });
+  }
+
+  logout(){
+    try {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 }
