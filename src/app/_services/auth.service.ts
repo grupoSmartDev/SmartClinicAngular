@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, throwError  } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { AuthResponse, UserLoginRequest, UserToken } from '../_module/authModule';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

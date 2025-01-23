@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Sala } from '../_module/salasModule';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

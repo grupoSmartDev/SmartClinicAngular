@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Banco } from '../_module/bancoModule';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

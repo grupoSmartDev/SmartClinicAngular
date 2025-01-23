@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
 import { Plano } from '../_module/planoModule';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

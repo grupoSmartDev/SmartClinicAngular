@@ -4,7 +4,7 @@ import { ResponseModel } from '../_module/ResponseModule';
 import { Fornecedor } from '../_module/fornecedorModule';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Profissional } from '../_module/profissionalModule';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({

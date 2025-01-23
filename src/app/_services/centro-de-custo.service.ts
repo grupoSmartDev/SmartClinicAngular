@@ -4,7 +4,7 @@ import { Banco } from '../_module/bancoModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
 import { CentroDeCusto } from '../_module/centroDeCustoModule';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

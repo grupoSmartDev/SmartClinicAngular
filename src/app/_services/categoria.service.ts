@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
 import { Categoria } from '../_module/categoriaModule';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

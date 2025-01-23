@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Status } from '../_module/statusModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { HttpParams } from '@angular/common/http';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

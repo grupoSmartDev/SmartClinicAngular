@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Paciente } from '../_module/pacienteModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environments';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -52,5 +52,13 @@ export class PacienteService {
 
   listarHistoricoPagamento(pacienteId:string){
     return this.http.get<ResponseModel<any>>(`${this.baseURL}ListarHistorico/${pacienteId}`);
+  }
+
+  pesquisarPorCpf(cpf: string): Observable<any> {
+    return this.http.get<any>(`${this.baseURL}cpf/${cpf}`);
+  }
+
+  pesquisarPorNome(nome: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseURL}pesquisar?nome=${nome}`);
   }
 }
