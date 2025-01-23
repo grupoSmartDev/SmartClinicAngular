@@ -1,5 +1,18 @@
+
 .dropdown-menu {
   display: block;
   position: absolute;
+  width: 95%;
+  max-height: 200px;
+  overflow-y: auto;
   z-index: 1000;
+}
+
+.dropdown-menu li {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f8f9fa;
 }

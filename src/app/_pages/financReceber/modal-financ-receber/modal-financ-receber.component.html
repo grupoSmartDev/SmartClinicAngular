@@ -65,16 +65,26 @@
                   </div>  
                   <inpute type="hidden" formControlName="pacienteId" />
                 </div>
-                  <div class="col-md-4">
-                    <label for="" class="form-label">CPF</label>
+                <div class="col-md-4">
+                  <label for="" class="form-label">CPF</label>
+                  <div class="input-group">
                     <input
-                    id="cpf"
-                    type="text"
-                    class="form-control form-control-sm"
-                    placeholder="3 números para pesquisa"
-                    mask="000.000.000-00"
-                  />                  
+                      id="cpf"
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="cpf"
+                      placeholder="Digite o CPF"
+                      mask="000.000.000-00"
+                    />
+                    <button 
+                      class="btn btn-sm btn-outline-secondary" 
+                      type="button"
+                      [disabled]="!formulario.get('cpf')?.value"
+                      (click)="pesquisarPorCpf()">
+                      <i class="bi bi-search"></i>
+                    </button>
                   </div>
+                </div>
                 <div class="col-md-4">
                   <label for="centroCusto" class="form-label">Centro de Custo</label>
                  <select name="" id="" class="form-select form-select-sm"

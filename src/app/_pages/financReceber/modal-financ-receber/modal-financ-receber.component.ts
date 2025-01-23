@@ -61,6 +61,7 @@ export class ModalFinanceiroReceber implements OnInit {
       fornecedorId : [''],
       centroCustoId: [''],
       bancoId : [''],
+      cpf:[''],
       subFinancReceber: this.fb.array([]),
     });
 
@@ -75,16 +76,30 @@ export class ModalFinanceiroReceber implements OnInit {
     this.buscarTP();
   }
 
-  filterOptions(): void {
-    const query = this.myControl.value?.toLowerCase() || '';
-    this.filteredOptions = this.options.filter((option) =>
-      option.toLowerCase().includes(query)
-    );
+  filterOptions() {
+    const value = this.formulario.get('paciente')?.value;
+    if (value && value.length >= 3) {
+      this.pacienteService.pesquisarPorNome(value).subscribe(
+        (pacientes) => {
+          this.listaCliente = pacientes;
+          this.filteredOptions = pacientes.map(p => `${p.nome} - ${p.cpf}`);
+        }
+      );
+    } else {
+      this.filteredOptions = [];
+    }
   }
 
-  selectOption(option: string): void {
-    this.formulario.patchValue({ paciente: option });
-    this.myControl.setValue(option);
+ 
+  selectOption(option: string) {
+    const paciente = this.listaCliente.find(p => `${p.nome} - ${p.cpf}` === option);
+    if (paciente) {
+      this.formulario.patchValue({
+        paciente: paciente.nome,
+        pacienteId: paciente.id,
+        cpf: paciente.cpf
+      });
+    }
     this.filteredOptions = [];
   }
 
@@ -227,6 +242,28 @@ export class ModalFinanceiroReceber implements OnInit {
     })
   }
 
- 
+  pesquisarPorCpf() {
+    const cpf = this.formulario.get('cpf')?.value;
+    if (cpf) {
+      this.pacienteService.pesquisarPorCpf(cpf).subscribe(
+        (paciente) => {
+          if (paciente) {
+            this.formulario.patchValue({
+              paciente: paciente.nome,
+              pacienteId: paciente.id
+            });
+          } else {
+            alert('Paciente não encontrado');
+          }
+        },
+        (error) => {
+          console.error('Erro ao pesquisar paciente:', error);
+          alert('Erro ao pesquisar paciente');
+        }
+      );
+    }
+  }
+
+
 
 }
