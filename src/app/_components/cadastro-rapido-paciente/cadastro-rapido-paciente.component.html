@@ -1,0 +1,42 @@
+<!-- <div class="offcanvas offcanvas-end" tabindex="-1" id="clienteOffcanvas">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Cadastro Rápido de Cliente</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label class="form-label">Nome</label>
+          <input type="text" class="form-control" formControlName="nome">
+          <div class="text-danger" *ngIf="form.get('nome')?.errors?.['required'] && form.get('nome')?.touched">
+            Nome é obrigatório
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" formControlName="email">
+          <div class="text-danger" *ngIf="form.get('email')?.errors?.['email'] && form.get('email')?.touched">
+            Email inválido
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Telefone</label>
+          <input type="tel" class="form-control" formControlName="telefone">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">CPF</label>
+          <input type="text" class="form-control" formControlName="cpf">
+          <div class="text-danger" *ngIf="form.get('cpf')?.errors?.['required'] && form.get('cpf')?.touched">
+            CPF é obrigatório
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+          Cadastrar
+        </button>
+      </form>
+    </div>
+  </div> -->

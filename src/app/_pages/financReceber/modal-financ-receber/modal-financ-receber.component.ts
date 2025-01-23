@@ -11,6 +11,7 @@ import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { FormaPagamento } from '../../../_module/formaPagamentoModule';
 import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service';
 import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-modal-financ-receber',
@@ -19,6 +20,9 @@ import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
 })
 export class ModalFinanceiroReceber implements OnInit {
   @ViewChild('modalComponent') modalComponent?: ElementRef;
+  @ViewChild('clienteOffcanvas') offcanvas?: ElementRef;
+
+  private bsOffcanvas: any;
   @Input() data = {} as FinancReceber;
   @Output() dadosAtualizado = new EventEmitter<void>();
 
@@ -264,6 +268,13 @@ export class ModalFinanceiroReceber implements OnInit {
     }
   }
 
+  ngAfterViewInit() {
+    // Inicializa o offcanvas do Bootstrap
+    this.bsOffcanvas = new bootstrap.Offcanvas('#clienteOffcanvas');
+  }
 
+  abrirOffcanvas() {
+    this.bsOffcanvas.show();
+  }
 
 }

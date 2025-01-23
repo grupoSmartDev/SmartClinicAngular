@@ -52,6 +52,7 @@
                       class="form-control form-control-sm"
                       placeholder="Pesquise o paciente"
                       autocomplete="off"
+                      [readonly]="formulario.get('id')?.value"
                       [ngClass]="{'is-invalid' : formulario.get('paciente')?.invalid && formulario.get('paciente')?.touched}"
                     />
                     <div *ngIf="formulario.get('paciente')?.invalid && formulario.get('paciente')?.touched" class="invalid-feedback">

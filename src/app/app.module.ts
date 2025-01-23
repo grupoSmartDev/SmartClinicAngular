@@ -112,6 +112,7 @@ import { OnlyNumbersDirective } from './only-number.directive';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { FichaAvaliacaoComponent } from './_pages/paciente/ficha-avaliacao/ficha-avaliacao.component';
 import { MenuComponent } from './_components/menu/menu.component';
+import { CadastroRapidoPacienteComponent } from './_components/cadastro-rapido-paciente/cadastro-rapido-paciente.component';
 
 
 
@@ -211,6 +212,7 @@ import { MenuComponent } from './_components/menu/menu.component';
     OnlyNumbersDirective,
     FichaAvaliacaoComponent,
     MenuComponent,
+    CadastroRapidoPacienteComponent,
   ],
   imports: [
     BrowserModule,
