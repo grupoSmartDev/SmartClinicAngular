@@ -38,6 +38,10 @@ export class PlanoService {
     return this.http.post<ResponseModel<Plano>>(`${this.baseURL}Criar`, plano);
   }
 
+  PlanoParaPaciente(plano: Plano): Observable<ResponseModel<Plano>> {
+    return this.http.post<ResponseModel<Plano>>(`${this.baseURL}PlanoParaPaciente`, plano);
+  }
+
   Atualizar(plano: Plano): Observable<ResponseModel<Plano>> {
     return this.http.put<ResponseModel<Plano>>(`${this.baseURL}Editar`, plano);
   }

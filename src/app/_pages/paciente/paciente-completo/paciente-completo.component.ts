@@ -482,13 +482,23 @@ debugger
     if (planoSelecionado) {
       dataToSave.idOriginal = planoSelecionado.id;
       dataToSave.tempoMinutos = planoSelecionado.tempoMinutos;
+      dataToSave.diasSemana = planoSelecionado.diasSemana;
+      dataToSave.centroCustoId = planoSelecionado.centroCustoId;
+      dataToSave.descricao = planoSelecionado.descricao;
+      dataToSave.valorBimestral = planoSelecionado.valorBimestral;
+      dataToSave.valorTrimestral = planoSelecionado.valorTrimestral;
+      dataToSave.valorQuadrimestral = planoSelecionado.valorQuadrimestral;
+      dataToSave.valorSemestral = planoSelecionado.valorSemestral;
+      dataToSave.valorAnual = planoSelecionado.valorAnual;
+      dataToSave.valorMensal = planoSelecionado.valorMensal;
+      dataToSave.tipoMes = planoSelecionado.tipoMes;
     }
   
     dataToSave.pacienteId = this.Paciente.id;
 
     const saveOperation = dataToSave.id && dataToSave.idOriginal
       ? this.planoService.Atualizar(dataToSave)
-      : this.planoService.Criar(dataToSave);
+      : this.planoService.PlanoParaPaciente(dataToSave);
     saveOperation.subscribe({
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
