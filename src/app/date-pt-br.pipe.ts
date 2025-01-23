@@ -4,8 +4,9 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'datePtBr'
 })
 export class DatePtBrPipe implements PipeTransform {
-  transform(value: string | Date): string {
+  transform(value: string | Date | undefined): string {
     if (!value) return '';
+    if (value === null || value === undefined) return '';
 
     // Garantir que o valor seja uma data
     const date = new Date(value);

@@ -99,7 +99,7 @@ export class PacienteCompletoComponent implements OnInit {
     this.planoService.Listar().subscribe({
       next : (data) => {
         if(data.dados){
-          this.listaPlanos = data.dados;
+          this.listaPlanos = data.dados.filter(x => x.pacienteId == null || x.pacienteId == undefined || x.pacienteId == 0);
         }
       },
       error(err) {
@@ -386,7 +386,7 @@ export class PacienteCompletoComponent implements OnInit {
 
       next: (response) => {
 
-        this.listaPlanos = response.dados.filter(x => x.pacienteId == null);
+        this.listaPlanos = response.dados.filter(x => x.pacienteId == null || x.pacienteId == undefined || x.pacienteId == 0);
 
       },
 
