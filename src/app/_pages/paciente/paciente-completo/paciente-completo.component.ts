@@ -67,7 +67,7 @@ export class PacienteCompletoComponent implements OnInit {
 
   ngOnInit(): void {
     this.preencherFormulario();
-    this.carregarFormularioPlano();
+    this.preencherFormularioPlano();
 
     this.getPlanos();
     this.getProfissional();
@@ -148,6 +148,8 @@ export class PacienteCompletoComponent implements OnInit {
       financeiroId: ['', Validators.required],
       tipoMes: ['', Validators.required],
     });
+
+    if(this.formPlano.get('dataInicio')){}
   }
 
   get exercicios(): FormArray {
@@ -406,11 +408,21 @@ export class PacienteCompletoComponent implements OnInit {
   openModalRenovarPlano(plano: any) {
     const dialog = document.getElementById('dialog_plano') as HTMLDialogElement;
     if (dialog) {
-      this.carregarFormularioPlano(); // Reseta e inicializa o formPlano
+      this.preencherFormularioPlano(); // Reseta e inicializa o formPlano
       if (plano) {
         console.log('Plano recebido:', plano);
         this.formPlano.patchValue(plano);
         console.log('Form após patch:', this.formPlano.value);
+
+        if(plano.dataInicio){
+          const dataFormatada = this.datePipe.formatToHtmlDate(plano.dataInicio);
+          this.formPlano.get('dataInicio')?.setValue(dataFormatada);  
+        }
+
+        if(plano.dataFim){
+          const dataFormatada = this.datePipe.formatToHtmlDate(plano.dataFim);
+          this.formPlano.get('dataFim')?.setValue(dataFormatada);  
+        }
       }
       dialog.showModal();
     }
@@ -440,13 +452,13 @@ export class PacienteCompletoComponent implements OnInit {
       data : [null],
       pacienteId : [null],
       financeiroId : [null],
-      tipoMes : ['a'],
+      tipoMes : [''],
       planoId : [null]
     })
   }
   
   salvarPlano(): void {
-debugger
+
     this.formPlano.patchValue({
       pacienteId: this.Paciente.id
     });
@@ -492,6 +504,8 @@ debugger
       dataToSave.valorAnual = planoSelecionado.valorAnual;
       dataToSave.valorMensal = planoSelecionado.valorMensal;
       dataToSave.tipoMes = planoSelecionado.tipoMes;
+      dataToSave.dataInicio = planoSelecionado.dataInicio;
+      dataToSave.dataFim = planoSelecionado.dataFim;
     }
   
     dataToSave.pacienteId = this.Paciente.id;
@@ -510,6 +524,32 @@ debugger
       },
     });
 
+  }
+
+  calcularDataFim() {
+    
+    const dataInicio = this.formPlano.get('dataInicio')?.value;
+    const tipoMes = document.getElementById('tipoAssinatura') as HTMLSelectElement;
+    
+    if (dataInicio && tipoMes.value) {
+      const inicio = new Date(dataInicio);
+      let meses = 0;
+      
+      switch(tipoMes.value) {
+        case 'm': meses = 1; break;
+        case 'b': meses = 2; break;
+        case 't': meses = 3; break;
+        case 'q': meses = 4; break;
+        case 's': meses = 6; break;
+        case 'a': meses = 12; break;
+      }
+      
+      const dataFim = new Date(inicio);
+      dataFim.setMonth(dataFim.getMonth() + meses);
+      
+      const dataFormatada = this.datePipe.formatToHtmlDate(dataFim);
+      this.formPlano.get('dataFim')?.setValue(dataFormatada);
+    }
   }
 
 }

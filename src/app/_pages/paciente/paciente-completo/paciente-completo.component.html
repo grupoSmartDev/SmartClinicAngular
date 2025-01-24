@@ -653,7 +653,7 @@
             </div>
             <div class="col-md-3">
               <label for="" class="form-label"> Tipo de assinatura </label>
-              <select name="" class="form-select form-select-sm">
+              <select name="" class="form-select form-select-sm" (change)="calcularDataFim()" id="tipoAssinatura">
                 <option value="">Selecione...</option>
                 <option value="m">Mensal</option>
                 <option value="b">Bimestral</option>
@@ -670,6 +670,7 @@
                 type="date"
                 class="form-control form-control-sm"
                 formControlName="dataInicio"
+                (change)="calcularDataFim()"
               />
             </div>
   
@@ -687,7 +688,7 @@
                 <input
                   type="text"
                   class="form-control form-control-sm"
-                  
+                  readonly
                   formControlName="id"
                 />
               </div>
