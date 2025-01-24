@@ -29,7 +29,6 @@
 
 # Angular cache and environment files
 /.angular/cache
-/src/environments/environment*.ts
 
 # Miscellaneous
 .sass-cache/

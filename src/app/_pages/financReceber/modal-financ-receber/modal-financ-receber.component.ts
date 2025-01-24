@@ -29,9 +29,9 @@ export class ModalFinanceiroReceber implements OnInit {
   formulario!: FormGroup;
 
   listaCliente = [{ id: 1, nome: 'Cliente 1', cpf: '12341' }, { id: 2, nome: 'Cliente 2', cpf: '12341' }];
-  listaCentroDeCusto! : CentroDeCusto[];
-  listaFormaPagamento! : FormaPagamento[];
-  listaTipoPagamento! : TipoPagamento[];
+  listaCentroDeCusto!: CentroDeCusto[];
+  listaFormaPagamento!: FormaPagamento[];
+  listaTipoPagamento!: TipoPagamento[];
 
   myControl = new FormControl();
   options: string[] = ['Cliente 1', 'Cliente 2', 'Cliente 3'];
@@ -42,30 +42,30 @@ export class ModalFinanceiroReceber implements OnInit {
     private financReceberService: FinancReceberService,
     private toast: ToastrService,
     private fb: FormBuilder,
-    private centroCustoService : CentroDeCustoService,
-    private formaPagamentoService : FormaPagamentoService,
-    private pacienteService : PacienteService,
-    private tipoPagamentoService : TipoPagamentoService
+    private centroCustoService: CentroDeCustoService,
+    private formaPagamentoService: FormaPagamentoService,
+    private pacienteService: PacienteService,
+    private tipoPagamentoService: TipoPagamentoService
   ) {
     this.formulario = this.fb.group({
       id: [],
-      idOrigem : [''],
-      nrDocto : [''],
+      idOrigem: [null],
+      nrDocto: [null],
       dataEmissao: ['', Validators.required],
-      valorOriginal : [''],
-      valorPago : [''],
+      valorOriginal: [null],
+      valorPago: [null],
       parcela: [1, [Validators.required, Validators.min(1)]],
       valor: [0, [Validators.required, Validators.min(1)]],
-      status : [''],
-      notaFiscal : [''],
+      status: [''],
+      notaFiscal: [null],
       descricao: ['', Validators.required],
-      classificacao : [''],
+      classificacao: [''],
       observacao: [''],
-      pacienteId: [''],
-      fornecedorId : [''],
-      centroCustoId: [''],
-      bancoId : [''],
-      cpf:[''],
+      cpf: [''],
+      pacienteId: [null],
+      fornecedorId: [null],
+      centroCustoId: [null],
+      bancoId: [null],
       subFinancReceber: this.fb.array([]),
     });
 
@@ -115,8 +115,8 @@ export class ModalFinanceiroReceber implements OnInit {
     this.formulario.reset();
   }
 
-  onSubmit(){
-    if(this.formulario.invalid){
+  onSubmit() {
+    if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
       return;
@@ -128,17 +128,17 @@ export class ModalFinanceiroReceber implements OnInit {
       ? this.financReceberService.Atualizar(dataToSave)
       : this.financReceberService.Criar(dataToSave);
 
-      saveOperation.subscribe({
-        next: () => {
-          const action = dataToSave.id ? 'atualizado' : 'criado';
-          this.toast.success(`Contas a receber ${action} com sucesso!`, 'Parabéns');
-          this.dadosAtualizado.emit();
-          this.fecharModal();
-        },
-        error: () => {
-          this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
-        },
-      });
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Contas a receber ${action} com sucesso!`, 'Parabéns');
+        this.dadosAtualizado.emit();
+        this.fecharModal();
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
   }
 
   get subFinancReceber(): FormArray {
@@ -162,14 +162,14 @@ export class ModalFinanceiroReceber implements OnInit {
           financReceberId: [null],
           parcela: [i + 1],
           valor: [valorParcela, [Validators.required, Validators.min(0)]],
-          dataVencimento: [dataVencimento.toISOString().split('T')[0], Validators.required],
-          dataPagamento: [''],
+          dataVencimento: [null],
+          dataPagamento: [null],
           observacao: [''],
           desconto: [0],
           juros: [0],
-          multa : [0],
-          formaPagamentoId : [''],
-          tipoPagamentoId : [''],
+          multa: [0],
+          formaPagamentoId: [null],
+          tipoPagamentoId: [null],
         })
       );
     }
@@ -204,7 +204,7 @@ export class ModalFinanceiroReceber implements OnInit {
     }, 200);
   }
 
-  buscarCC() : void{
+  buscarCC(): void {
     this.centroCustoService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
@@ -218,7 +218,7 @@ export class ModalFinanceiroReceber implements OnInit {
     })
   }
 
-  buscarFP() : void{
+  buscarFP(): void {
     this.formaPagamentoService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
@@ -232,7 +232,7 @@ export class ModalFinanceiroReceber implements OnInit {
     })
   }
 
-  buscarTP() : void{
+  buscarTP(): void {
     this.tipoPagamentoService.ListarTipoPagamento().subscribe({
       next: (data) => {
         if (data.dados) {
