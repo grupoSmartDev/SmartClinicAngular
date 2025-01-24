@@ -113,6 +113,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { FichaAvaliacaoComponent } from './_pages/paciente/ficha-avaliacao/ficha-avaliacao.component';
 import { MenuComponent } from './_components/menu/menu.component';
 import { CadastroRapidoPacienteComponent } from './_components/cadastro-rapido-paciente/cadastro-rapido-paciente.component';
+import { HistoricoPlanoComponent } from './_pages/paciente/historico-plano/historico-plano.component';
 
 
 
@@ -213,6 +214,7 @@ import { CadastroRapidoPacienteComponent } from './_components/cadastro-rapido-p
     FichaAvaliacaoComponent,
     MenuComponent,
     CadastroRapidoPacienteComponent,
+    HistoricoPlanoComponent,
   ],
   imports: [
     BrowserModule,

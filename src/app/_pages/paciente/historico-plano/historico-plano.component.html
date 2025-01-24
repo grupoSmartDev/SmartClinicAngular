@@ -1,0 +1,42 @@
+<dialog id="dialog_historico_plano">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProgressModalLabel">
+            Histórico de Planos - {{ Paciente.nome }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeDialog()"
+          ></button>
+        </div>
+        <div class="modal-body">
+      
+        <div class="row mb-2 align-items-end">
+            <div class="col-12 table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>valor</th>
+                            <th>Data Inicio</th>
+                            <th>Data Fim</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <!--COlocar laço aqui para lista.-->
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+         
+        </div>
+      
+        <div class="modal-footer justify-content-end">
+          <button type="button" class="btn btn-danger" (click)="closeDialog()">
+            <i class="bi bi-x"></i> Cancelar
+          </button>
+        </div>
+  </dialog>

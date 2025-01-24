@@ -55,10 +55,10 @@ export class PacienteService {
   }
 
   pesquisarPorCpf(cpf: string): Observable<any> {
-    return this.http.get<any>(`${this.baseURL}cpf/${cpf}`);
+    return this.http.get<ResponseModel<Paciente>>(`${this.baseURL}cpf/${cpf}`);
   }
 
-  pesquisarPorNome(nome: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseURL}pesquisar?nome=${nome}`);
+  pesquisarPorNome(nome: string): Observable<ResponseModel<Paciente[]>> {
+    return this.http.get<ResponseModel<Paciente[]>>(`${this.baseURL}pesquisar?nome=${nome}`);
   }
 }

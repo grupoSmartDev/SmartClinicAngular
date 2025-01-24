@@ -12,6 +12,7 @@ import { FormaPagamento } from '../../../_module/formaPagamentoModule';
 import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service';
 import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
 import * as bootstrap from 'bootstrap';
+import { Paciente } from '../../../_module/pacienteModule';
 
 @Component({
   selector: 'app-modal-financ-receber',
@@ -28,7 +29,7 @@ export class ModalFinanceiroReceber implements OnInit {
 
   formulario!: FormGroup;
 
-  listaCliente = [{ id: 1, nome: 'Cliente 1', cpf: '12341' }, { id: 2, nome: 'Cliente 2', cpf: '12341' }];
+  listaCliente : Paciente[] = [];
   listaCentroDeCusto!: CentroDeCusto[];
   listaFormaPagamento!: FormaPagamento[];
   listaTipoPagamento!: TipoPagamento[];
@@ -84,9 +85,9 @@ export class ModalFinanceiroReceber implements OnInit {
     const value = this.formulario.get('paciente')?.value;
     if (value && value.length >= 3) {
       this.pacienteService.pesquisarPorNome(value).subscribe(
-        (pacientes) => {
-          this.listaCliente = pacientes;
-          this.filteredOptions = pacientes.map(p => `${p.nome} - ${p.cpf}`);
+        (response) => {
+          this.listaCliente = response.dados;
+          this.filteredOptions = this.listaCliente.map(p => `${p.nome} - ${p.cpf}`);
         }
       );
     } else {
