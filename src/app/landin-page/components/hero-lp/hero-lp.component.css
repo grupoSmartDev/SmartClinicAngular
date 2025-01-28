@@ -1,17 +1,28 @@
 
 
-.hero-section {
+.hero-sections {
     background-color: #f9f9f9;
+  }
+
+  .hero-section {
+    background-image: url('/assets/image/testebg.png');
+    background-size: cover; /* ou outro valor como 'contain', dependendo da sua necessidade */
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 38rem;
+    border-radius: 0px 0px 3rem 3rem;
   }
   
   .hero-section h1 {
-    color: #3d3c3c;
+    /* color: #3d3c3c; */
+    color : white;
     font-weight: 700;
     font-size: 2.8rem;
   }
   
   .hero-section .lead {
-    color: #5a5a5a;
+    /* color: #5a5a5a; */
+    color : white;
   }
   
   .hero-section img {
