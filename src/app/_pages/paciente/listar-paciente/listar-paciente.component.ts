@@ -10,6 +10,7 @@ import { PacienteCompletoComponent } from '../paciente-completo/paciente-complet
 import { TipoMes } from '../../../_module/planoModule';
 import { StatusPagamento } from '../../../_module/financReceberModule';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { FichaAvaliacaoComponent } from '../ficha-avaliacao/ficha-avaliacao.component';
 
 @Component({
   selector: 'app-listar-paciente',
@@ -21,6 +22,7 @@ export class ListarPacienteComponent {
 
   @ViewChild(ModalPacienteComponent) modalPacienteComponent!: ModalPacienteComponent;
   @ViewChild(PacienteCompletoComponent) modalPacienteCompletoComponent!: PacienteCompletoComponent;
+  @ViewChild(FichaAvaliacaoComponent) modalFichaAvaliacaoComponent!: FichaAvaliacaoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
   
   lista: Paciente[] = [];
@@ -292,17 +294,20 @@ export class ListarPacienteComponent {
     }
   }
 
-  openfichaAvaliacao(paciente: any) {
-    if (paciente.id) {
-      this.modalPacienteComponent.paciente = paciente;
-      this.modalPacienteComponent.carregarData(paciente);
-    }
+
+openfichaAvaliacao(paciente: any) {
+  if (paciente.id) {
+    this.modalFichaAvaliacaoComponent.getFac(paciente.id);
+    this.modalFichaAvaliacaoComponent.paciente = paciente;
+
     const modalElement = document.getElementById('modalFichaAvaliacao');
     if (modalElement) {
       const modal = new bootstrap.Modal(modalElement);
       modal.show();
     }
   }
+}
+
 
   Exluir(paciente : Paciente) {
     let id = paciente.id;

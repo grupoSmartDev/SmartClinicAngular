@@ -12,13 +12,13 @@ export class FichaAvaliacaoService {
 
    constructor(private http: HttpClient) { }
   
-    baseURL: string = environment.apiUrl + 'api/fichaAvaliacao/';
+    baseURL: string = environment.apiUrl + 'api/FichaAvaliacao/';
 
     BuscarId(pacienteId : string): Observable<ResponseModel<FichaAvaliacao>>{
       let params = new HttpParams();
 
       params = params.set('pacienteId', pacienteId)
-      return this.http.get<ResponseModel<FichaAvaliacao>>(`${this.baseURL}BuscarPorPaciente`, {params})
+      return this.http.get<ResponseModel<FichaAvaliacao>>(`${this.baseURL}BuscarPorIdPaciente`, {params})
     }
 
     Criar(ficha: FichaAvaliacao): Observable<ResponseModel<FichaAvaliacao>> {

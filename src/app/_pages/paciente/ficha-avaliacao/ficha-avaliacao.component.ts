@@ -2,6 +2,12 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DatePtBrPipe } from '../../../date-pt-br.pipe';
 import { Paciente } from '../../../_module/pacienteModule';
+import { Profissional } from '../../../_module/profissionalModule';
+import { ProfissionalService } from '../../../_services/profissional.service';
+import { ToastrService } from 'ngx-toastr';
+import { FichaAvaliacaoService } from '../../../_services/ficha-avaliacao.service';
+import { FichaAvaliacao } from '../../../_module/fichaAvaliacaoModule';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-ficha-avaliacao',
@@ -12,12 +18,21 @@ import { Paciente } from '../../../_module/pacienteModule';
 export class FichaAvaliacaoComponent {
   fichaForm!: FormGroup;
   paciente!: Paciente;
+  listaProfissional : Profissional[] = [];
+  fichaAvaliacao! : FichaAvaliacao;
 
-  constructor(private fb: FormBuilder, private dataInput : DatePtBrPipe) {}
+  constructor(private fb: FormBuilder, private dataInput : DatePtBrPipe,
+      private profissionalSerice : ProfissionalService, private toast: ToastrService,
+       private facService : FichaAvaliacaoService,
+       private datePipe: DatePtBrPipe) {}
 
   ngOnInit() {
+
+    this.getProfissional();
     this.inicializarFormulario();
   }
+
+  //cliquei, vou mandar o paciente todo com o viewchield, depois disso vou chamar uma função que vai buscar minha ficha de acordo com o paciente id que eu recebi
 
   inicializarFormulario() {
     this.fichaForm = this.fb.group({
@@ -25,7 +40,7 @@ export class FichaAvaliacaoComponent {
       id: [''],
       pacienteId: ['', Validators.required],
       dataAvaliacao: ['', Validators.required],
-      profissional: ['', Validators.required],
+      profissionalId: ['', Validators.required],
       especialidade: ['', Validators.required],
       
       // Informações do Cliente
@@ -67,6 +82,8 @@ export class FichaAvaliacaoComponent {
       // Assinaturas
       assinaturaProfissional: [''],
       assinaturaCliente: ['']
+
+      
     });
 
     //ajustando a data para o input
@@ -77,6 +94,8 @@ export class FichaAvaliacaoComponent {
     // Observar mudanças no peso e altura para calcular IMC
     this.fichaForm.get('peso')?.valueChanges.subscribe(() => this.calcularIMC());
     this.fichaForm.get('altura')?.valueChanges.subscribe(() => this.calcularIMC());
+
+  
   }
 
   calcularIMC() {
@@ -91,8 +110,25 @@ export class FichaAvaliacaoComponent {
   }
 
   onSubmit() {
+    debugger
     if (this.fichaForm.valid) {
       console.log('Formulário enviado:', this.fichaForm.value);
+
+      const dataToSave = this.fichaForm.value as FichaAvaliacao;
+
+      const saveOperation = dataToSave.id
+      ? this.facService.Atualizar(dataToSave)
+      : this.facService.Criar(dataToSave);
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Evolução ${action} com sucesso!`, 'Parabéns');
+        
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
       // Aqui você pode implementar a lógica para salvar os dados
     } else {
       this.marcarCamposInvalidos();
@@ -108,7 +144,64 @@ export class FichaAvaliacaoComponent {
     });
   }
 
-  fecharModal(){
-
+// ficha-avaliacao.component.ts
+fecharModal() {
+  this.fichaForm.reset();
+  this.fichaAvaliacao = new FichaAvaliacao();
+  
+  const modalElement = document.getElementById('modalFichaAvaliacao');
+  if (modalElement) {
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    if (modal) {
+      modal.hide();
+    }
   }
+}
+
+  getProfissional(){
+    this.profissionalSerice.Listar(undefined,undefined,undefined,undefined,undefined,undefined,false).subscribe({
+      next : (data) => {
+        if(data.dados){
+          this.listaProfissional = data.dados;
+        }
+      },
+      error(err) {
+        console.error('Erro ao buscar Profissional:', err)
+      },
+    })
+  }
+
+  // ficha-avaliacao.component.ts
+getFac(pacienteId: string) {
+  this.facService.BuscarId(pacienteId).subscribe({
+    next: (data) => {
+      if (data.dados) {
+        this.fichaAvaliacao = data.dados;
+        // Depois de receber os dados, atualiza o formulário
+        this.fichaForm.patchValue(this.fichaAvaliacao);
+
+        if(this.fichaAvaliacao.dataAvaliacao){
+          const dataFormatada = this.datePipe.formatToHtmlDate(this.fichaAvaliacao.dataAvaliacao);
+          this.fichaForm.get('dataAvaliacao')?.setValue(dataFormatada);  
+        }
+      }
+    },
+    error: (err) => {
+      console.error('Erro ao buscar Ficha de Avaliação:', err);
+      this.toast.error('Erro ao carregar a ficha de avaliação', 'Erro');
+    },
+    complete: () => {
+      // Se não houver ficha existente, inicializa com o ID do paciente
+      if (!this.fichaAvaliacao) {
+        this.fichaForm.patchValue({
+          pacienteId: pacienteId,
+          dataAvaliacao: new Date().toISOString().split('T')[0]
+        });
+      }
+    }
+  });
+  this.fichaForm.patchValue({
+    pacienteId: pacienteId
+  })
+}
 }

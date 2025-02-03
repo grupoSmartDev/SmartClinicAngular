@@ -3,11 +3,11 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Ficha Cadastral</h1>
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Ficha de Avaliação</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form [formGroup]="fichaForm" (ngSubmit)="onSubmit()" class="needs-validation">
+            <form [formGroup]="fichaForm" class="needs-validation">
               <!-- Informações Básicas -->
               <div class="card mb-4">
                 <div class="card-header">
@@ -16,8 +16,8 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-3 mb-3">
-                      <label for="pacienteId" class="form-label">ID do Cliente</label>
-                      <input type="number" class="form-control form-control-sm" id="pacienteId" formControlName="pacienteId">
+                      <label for="pacienteId" class="form-label">Cód. Cliente</label>
+                      <input type="number" class="form-control form-control-sm" id="pacienteId" formControlName="pacienteId" readonly>
                       <div class="invalid-feedback" *ngIf="fichaForm.get('pacienteId')?.touched && fichaForm.get('pacienteId')?.invalid">
                         ID do cliente é obrigatório
                       </div>
@@ -30,7 +30,12 @@
                     
                     <div class="col-md-3 mb-3">
                       <label for="profissional" class="form-label">Profissional</label>
-                      <input type="text" class="form-control form-control-sm" id="profissional" formControlName="profissional">
+                      <select name="" id="" class="form-select form-select-sm" formControlName="profissionalId">
+                        <option value="">Selecione o profissional</option>
+                        @for (item of listaProfissional; track item.id) {
+                          <option value="{{ item.id }}">{{ item.nome }}</option>
+                        }
+                      </select>
                     </div>
                     
                     <div class="col-md-3 mb-3">
@@ -258,7 +263,7 @@
               </div>
           
               <!-- Assinaturas -->
-              <div class="card mb-4">
+              <div class="card mb-4 d-none">
                 <div class="card-header">
                   <h4 class="mb-0">Assinaturas</h4>
                 </div>
