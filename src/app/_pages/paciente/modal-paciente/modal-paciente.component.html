@@ -251,7 +251,7 @@
                 >
                   <option value=0>Selecione...</option>
                   @for (item of planos; track $index) {
-                  <option value="{{ item.id }}">{{ item.nome }}</option>
+                  <option value="{{ item.id }}">{{ item.descricao }}</option>
                   }
                 </select>
               </div>
@@ -264,14 +264,10 @@
                   class="form-select form-select-sm"
                   id=""
                 >
-                  <!-- <option value="">Selecione...</option>
+                  <option value="">Selecione...</option>
                   @for (item of profissionais; track $index) {
                   <option value="{{ item.id }}">{{ item.nome }}</option>
-                  } -->
-                  <option value="">Selecione...</option>
-                  <option value="1">Profissional 1</option>
-                  <option value="2">Profissional 2</option>
-                  <option value="3">Profissional 3</option>
+                  } 
                 </select>
               </div>
              

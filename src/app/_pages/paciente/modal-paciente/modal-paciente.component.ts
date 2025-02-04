@@ -10,11 +10,15 @@ import { Convenio } from '../../../_module/convenioModule';
 import { Profissional } from '../../../_module/profissionalModule';
 import { ProfissionalService } from '../../../_services/profissional.service';
 import { ConvenioService } from '../../../_services/convenio.service';
+import { PlanoService } from '../../../_services/plano.service';
+import { Plano } from '../../../_module/planoModule';
+import { DatePtBrPipe } from '../../../date-pt-br.pipe';
 
 @Component({
   selector: 'app-modal-paciente',
   templateUrl: './modal-paciente.component.html',
-  styleUrl: './modal-paciente.component.css'
+  styleUrl: './modal-paciente.component.css',
+  providers: [DatePtBrPipe]
 })
 export class ModalPacienteComponent {
   constructor(
@@ -23,7 +27,9 @@ export class ModalPacienteComponent {
     private router: Router,
     private cepService: BuscarCepService,
     private profissionalService: ProfissionalService,
-    private convenioService: ConvenioService
+    private convenioService: ConvenioService,
+    private planoService : PlanoService,
+    private datePipe: DatePtBrPipe
 
   ) { }
 
@@ -37,12 +43,7 @@ export class ModalPacienteComponent {
   //fazer lista de profissionais para rodar no select
   profissionais: Profissional[] = [];
   //fazer lista de planos para rodar no select
-  planos: any[] = [
-    { nome: 'Plano 1', id: 1 },
-    { nome: 'Plano 2', id: 2 },
-    { nome: 'Plano 3', id: 3 },
-    { nome: 'Plano 4', id: 4},
-  ];
+  planos: Plano[] = [];
 
 
   fb = new FormBuilder();
@@ -98,6 +99,7 @@ export class ModalPacienteComponent {
     this.carregarCC();
     this.carregarConvenio();
     this.carregarProfissional();
+    this.getPlanos();
   }
 
   onSubmit() {
@@ -171,6 +173,14 @@ export class ModalPacienteComponent {
 
   carregarData(centroDeCusto: any) {
     this.formulario.patchValue(this.paciente);
+
+    let data = this.formulario.get('dataNascimento')?.value;
+    if (data){
+      data = this.datePipe.formatToHtmlDate(data);
+      this.formulario.get('dataNascimento')?.setValue(data);
+    }
+
+    
   }
 
   fecharModal() {
@@ -194,6 +204,16 @@ export class ModalPacienteComponent {
           this.profissionais = data.dados;
         }
       },
+    })
+  }
+
+  getPlanos(){
+    this.planoService.Listar().subscribe({
+      next : (data) =>{
+        if (data.dados){
+          this.planos = data.dados;
+        }
+      }
     })
   }
 
