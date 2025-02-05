@@ -143,11 +143,13 @@
 
             <div class="col-md-3">
               <label for="profissaoId" class="form-label">Profissão</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="profissaoId"
-              />
+           
+              <select class="form-select form-select-sm" formControlName="profissaoId">
+                <option value="">Selecione...</option>
+                @for (item of listaProfissao; track item.id) {
+                  <option value="{{ item.id }}">{{ item.descricao }}</option>
+                }
+              </select>
             </div>
 
             <div class="col-md-3">

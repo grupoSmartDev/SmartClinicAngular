@@ -14,12 +14,12 @@
                   <input type="text" class="form-control form-control-sm" id="Id" readonly formControlName="id" />
               </div>
               <div class="col-md-10">
-                  <label for="descricao" class="form-label">Descrição</label>
-                  <input type="text" required class="form-control form-control-sm required" formControlName="descricao" 
-                  [ngClass]="{'is-invalid' : formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched}"
+                  <label for="nome" class="form-label">Nome</label>
+                  <input type="text" required class="form-control form-control-sm required" formControlName="nome" 
+                  [ngClass]="{'is-invalid' : formulario.get('nome')?.invalid && formulario.get('nome')?.touched}"
                   />
-                  <div *ngIf="formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched" class="invalid-feedback">
-                    O campo descricão é obrigatório.
+                  <div *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="invalid-feedback">
+                    O campo nome é obrigatório.
                   </div>
               </div>
         

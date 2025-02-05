@@ -6,6 +6,8 @@ import { Profissional } from '../../../_module/profissionalModule';
 import { ResponseModel } from '../../../_module/ResponseModule';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UsuarioService } from '../../../_services/usuario.service';
+import { Profissao } from '../../../_module/profissaoModule';
+import { ProfissaoService } from '../../../_services/profissao.service';
 
 @Component({
   selector: 'app-modal-profissional',
@@ -18,7 +20,8 @@ export class ModalProfissionalComponent {
     private toast: ToastrService,
     private router: Router,
     private fb: FormBuilder,
-    private usuarioService : UsuarioService
+    private usuarioService : UsuarioService,
+    private profissaoService : ProfissaoService
   ) { 
     this.formulario = this.fb.group({
       id: [null],
@@ -58,12 +61,14 @@ export class ModalProfissionalComponent {
    exibirCamposUsuario = false;
 
   lista: Profissional[] = [];
+  listaProfissao : Profissao[] = [];
   formulario : FormGroup;
 
 
 
   ngOnInit() {
     this.carregarCC();
+    this.getProfissao();
   }
 
   onSubmit(){
@@ -143,6 +148,19 @@ export class ModalProfissionalComponent {
   campoParaUsuario(){
     const usuario = this.formulario.get('ehUsuario')?.value == 'true' ? true : false;
     this.exibirCamposUsuario = usuario;
+  }
+
+  getProfissao(){
+    this.profissaoService.Listar(undefined,undefined,undefined).subscribe({
+      next : (data) => {
+        if(data.dados){
+          this.listaProfissao = data.dados;
+        }
+      },
+      error(err) {
+        console.error('Erro ao buscar Profissional:', err)
+      },
+    })
   }
 
 

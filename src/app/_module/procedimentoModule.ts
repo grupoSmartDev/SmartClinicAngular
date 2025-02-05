@@ -4,7 +4,7 @@ export interface Procedimento{
     id : number
     nome : string
     descricao : string
-    valor : number
+    preco : number
     duracao : number
     ativo : boolean
     categoriaID? : number

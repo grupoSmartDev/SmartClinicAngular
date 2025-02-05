@@ -38,7 +38,9 @@ export class ModalSalasComponent {
   }
 
   fecharModal() {
+    let btnCancelar = document.querySelector('#btnCancelar') as HTMLElement;
     this.formulario.reset();
+    btnCancelar.click();
   }
 
   onSubmit(){

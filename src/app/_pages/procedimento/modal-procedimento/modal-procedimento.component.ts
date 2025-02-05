@@ -29,6 +29,7 @@ export class ModalProcedimentoComponent {
 
   ngOnInit(){
     this.criarFormulario();
+    this.carregarCategoria()
   }
    
   onSubmit(){
@@ -64,9 +65,9 @@ export class ModalProcedimentoComponent {
       id : [null],
       descricao : [null, Validators.required],
       nome: [null, Validators.required],
-      valor : [null, Validators.required],
+      preco : [null, Validators.required],
       duracao : [null],
-      ativo : [null],
+      ativo : [true],
       categoriaID : [null],
     })
   }
@@ -80,7 +81,7 @@ export class ModalProcedimentoComponent {
   }
 
   carregarCategoria(){
-    this.categoriaService.Listar().subscribe({
+    this.categoriaService.Listar(undefined,undefined,undefined,undefined,false).subscribe({
       next: (response: ResponseModel<Categoria[]>) => {
         this.listaCategorias = response.dados;
       },

@@ -19,7 +19,7 @@ export class ModalCategoriaComponent {
     private fb : FormBuilder) {
       this.formulario = this.fb.group({
         id: [null],
-        descricao: [null, Validators.required]
+        nome: [null, Validators.required]
       });
      }
 

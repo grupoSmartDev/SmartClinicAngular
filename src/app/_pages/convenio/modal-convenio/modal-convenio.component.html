@@ -70,6 +70,7 @@
                 class="form-control form-control-sm"
                 formControlName="periodoCarencia"
                 [mask]="'00/00/0000'"
+                placeholder="00/00/0000"
                 [ngClass]="{'is-invalid' : formulario.get('periodoCarencia')?.invalid && formulario.get('periodoCarencia')?.touched}"
                 >
                 <div *ngIf="formulario.get('periodoCarencia')?.invalid && formulario.get('periodoCarencia')?.touched" class="invalid-feedback">

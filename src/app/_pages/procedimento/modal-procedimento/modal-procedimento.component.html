@@ -56,11 +56,11 @@
                 class="form-control form-control-sm"
                 id="valor"
                 placeholder="Digite o valor"
-                name="valor"
-                formControlName="valor"
-                [ngClass]="{'is-invalid' : formulario.get('valor')?.invalid && formulario.get('valor')?.touched}"
+                name="preco"
+                formControlName="preco"
+                [ngClass]="{'is-invalid' : formulario.get('preco')?.invalid && formulario.get('preco')?.touched}"
                 />
-                <div *ngIf="formulario.get('valor')?.invalid && formulario.get('valor')?.touched" class="invalid-feedback">
+                <div *ngIf="formulario.get('preco')?.invalid && formulario.get('preco')?.touched" class="invalid-feedback">
                   O campo valor é obrigatório.
                 </div>
             </div>
@@ -99,7 +99,7 @@
           <label for="categoria" class="form-label">Categorias</label>
           <select name="categoriaId" id="" class="form-select form-select-sm">
             @for (item of listaCategorias; track item.id) {
-              <option value="{{item.id}}">{{item.descricao}}</option>
+              <option value="{{item.id}}">{{item.nome}}</option>
             }
           </select>
         </div>
