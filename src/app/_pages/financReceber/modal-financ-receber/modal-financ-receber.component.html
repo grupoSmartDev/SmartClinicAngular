@@ -42,7 +42,13 @@
                 <div class="col-md-4">
                   <div>
                     <label for="paciente" class="form-label">Paciente</label>
-                    <input
+                    <select name="" class="form-select form-select-sm" id="" formControlName="pacienteId">
+                      <option value="">Selecione um paciente</option>
+                      @for (item of listaPacientes; track $index) {
+                        <option value="{{ item.id }}">{{ item.nome }} - {{ item.cpf }}</option>
+                      }
+                    </select>
+                    <!-- <input
                       id="paciente"
                       type="text"
                       [formControl]="myControl"
@@ -54,15 +60,15 @@
                       autocomplete="off"
                       [readonly]="formulario.get('id')?.value"
                       [ngClass]="{'is-invalid' : formulario.get('paciente')?.invalid && formulario.get('paciente')?.touched}"
-                    />
+                    /> -->
                     <div *ngIf="formulario.get('paciente')?.invalid && formulario.get('paciente')?.touched" class="invalid-feedback">
                       O campo passiente é obrigatório.
                     </div>
-                    <ul *ngIf="isDropdownOpen && filteredOptions.length > 0" class="dropdown-menu">
+                    <!-- <ul *ngIf="isDropdownOpen && filteredOptions.length > 0" class="dropdown-menu">
                       <li *ngFor="let option of filteredOptions" (click)="selectOption(option)">
                         {{ option }}
                       </li>
-                    </ul>
+                    </ul> -->
                   </div>  
                   <inpute type="hidden" formControlName="pacienteId" />
                 </div>
@@ -249,7 +255,12 @@
           
         </div>
         <div class="modal-footer">
-            <button type="button"  (click)="onSubmit()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>
+            <button 
+            type="button"  (click)="onSubmit()" class="btn btn-success"
+            [disabled]="formulario.get('id')?.value"
+            id="btn_salvar_editar">
+            <i class="bi bi-check"
+            ></i> Confirmar</button>
             <button type="button" class="btn btn-danger" id="btnCancelar" data-bs-dismiss="modal" aria-label="Close" (click)="fecharModal()"><i class="bi bi-x"></i>Cancelar</button>
         </div>
       </div>

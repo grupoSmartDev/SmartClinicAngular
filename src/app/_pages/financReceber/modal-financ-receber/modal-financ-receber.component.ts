@@ -13,11 +13,13 @@ import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service'
 import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
 import * as bootstrap from 'bootstrap';
 import { Paciente } from '../../../_module/pacienteModule';
+import { DatePtBrPipe } from '../../../date-pt-br.pipe';
 
 @Component({
   selector: 'app-modal-financ-receber',
   templateUrl: './modal-financ-receber.component.html',
-  styleUrls: ['./modal-financ-receber.component.css']
+  styleUrls: ['./modal-financ-receber.component.css'],
+  providers: [DatePtBrPipe]
 })
 export class ModalFinanceiroReceber implements OnInit {
   @ViewChild('modalComponent') modalComponent?: ElementRef;
@@ -29,7 +31,7 @@ export class ModalFinanceiroReceber implements OnInit {
 
   formulario!: FormGroup;
 
-  listaCliente : Paciente[] = [];
+  listaPacientes : Paciente[] = [];
   listaCentroDeCusto!: CentroDeCusto[];
   listaFormaPagamento!: FormaPagamento[];
   listaTipoPagamento!: TipoPagamento[];
@@ -46,7 +48,8 @@ export class ModalFinanceiroReceber implements OnInit {
     private centroCustoService: CentroDeCustoService,
     private formaPagamentoService: FormaPagamentoService,
     private pacienteService: PacienteService,
-    private tipoPagamentoService: TipoPagamentoService
+    private tipoPagamentoService: TipoPagamentoService,
+    private datePipe : DatePtBrPipe
   ) {
     this.formulario = this.fb.group({
       id: [],
@@ -79,6 +82,7 @@ export class ModalFinanceiroReceber implements OnInit {
     this.buscarCC();
     this.buscarFP();
     this.buscarTP();
+    this.buscarPaciente();
   }
 
   filterOptions() {
@@ -86,8 +90,8 @@ export class ModalFinanceiroReceber implements OnInit {
     if (value && value.length >= 3) {
       this.pacienteService.pesquisarPorNome(value).subscribe(
         (response) => {
-          this.listaCliente = response.dados;
-          this.filteredOptions = this.listaCliente.map(p => `${p.nome} - ${p.cpf}`);
+          this.listaPacientes = response.dados;
+          this.filteredOptions = this.listaPacientes.map(p => `${p.nome} - ${p.cpf}`);
         }
       );
     } else {
@@ -97,7 +101,7 @@ export class ModalFinanceiroReceber implements OnInit {
 
  
   selectOption(option: string) {
-    const paciente = this.listaCliente.find(p => `${p.nome} - ${p.cpf}` === option);
+    const paciente = this.listaPacientes.find(p => `${p.nome} - ${p.cpf}` === option);
     if (paciente) {
       this.formulario.patchValue({
         paciente: paciente.nome,
@@ -109,20 +113,68 @@ export class ModalFinanceiroReceber implements OnInit {
   }
 
   carregarDados(financReceber: any) {
+
+    // Clear existing subFinancReceber array
+    while (this.subFinancReceber.length !== 0) {
+      this.subFinancReceber.removeAt(0);
+    }
     this.formulario.patchValue(this.data);
+
+    let dataEmissao = this.formulario.get('dataEmissao')?.value;
+    if (dataEmissao) {
+      dataEmissao = this.datePipe.formatToHtmlDate(dataEmissao);
+      this.formulario.patchValue({ dataEmissao });
+    }
+
+        // Load subFinancReceber if it exists in the data
+        if (this.data.subFinancReceber && this.data.subFinancReceber.length > 0) {
+          this.data.subFinancReceber.forEach(subFinanc => {
+            let dataVencimento : any = subFinanc.dataVencimento;
+            if(dataVencimento){
+              dataVencimento =  this.datePipe.formatToHtmlDate(dataVencimento);
+            }
+
+            let dataPagamento : any = subFinanc.dataPagamento;
+            if(dataPagamento){
+              dataPagamento =  this.datePipe.formatToHtmlDate(dataPagamento);
+            }
+
+            this.subFinancReceber.push(
+              this.fb.group({
+                id: [subFinanc.id],
+                financReceberId: [subFinanc.financReceberId],
+                parcela: [subFinanc.parcela],
+                valor: [subFinanc.valor, [Validators.required, Validators.min(0)]],
+                dataVencimento: [dataVencimento],
+                dataPagamento: [dataPagamento],
+                observacao: [subFinanc.observacao],
+                desconto: [subFinanc.desconto],
+                juros: [subFinanc.juros],
+                multa: [subFinanc.multa],
+                formaPagamentoId: [subFinanc.formaPagamentoId],
+                tipoPagamentoId: [subFinanc.tipoPagamentoId],
+              })
+            );
+          });
+        }
+
+    console.log(this.formulario.value);
   }
 
   fecharModal() {
+    let btnCancelar = document.getElementById('btnCancelar') as HTMLElement;
     this.formulario.reset();
+    btnCancelar.click();
   }
 
   onSubmit() {
+
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
       return;
     }
-
+    debugger
     const dataToSave = this.formulario.value as FinancReceber;
 
     const saveOperation = dataToSave.id
@@ -243,6 +295,20 @@ export class ModalFinanceiroReceber implements OnInit {
       error: (err) => {
         console.error('Erro ao buscar tipo de pagamento:', err);
         this.errorMessage = 'Erro ao carregar os tipo de pagamento. Tente novamente mais tarde.';
+      }
+    })
+  }
+
+  buscarPaciente(): void {
+    this.pacienteService.Listar().subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.listaPacientes = data.dados;
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao buscar pacientes:', err);
+        this.errorMessage = 'Erro ao carregar os pacientes. Tente novamente mais tarde.';
       }
     })
   }
