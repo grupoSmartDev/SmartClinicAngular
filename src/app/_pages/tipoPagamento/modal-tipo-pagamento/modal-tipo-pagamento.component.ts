@@ -69,6 +69,8 @@ export class ModalTipoPagamentoComponent {
     }
   
     fecharModal() {
+      let btnCancelar = document.getElementById('btnCancelar') as HTMLElement;
       this.formulario.reset();
+      btnCancelar.click();
     }
 }
