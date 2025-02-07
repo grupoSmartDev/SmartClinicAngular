@@ -215,7 +215,7 @@ export class ModalFinanceiroReceber implements OnInit {
           financReceberId: [null],
           parcela: [i + 1],
           valor: [valorParcela, [Validators.required, Validators.min(0)]],
-          dataVencimento: [null],
+          dataVencimento: [dataVencimento.toISOString().split('T')[0], Validators.required],
           dataPagamento: [null],
           observacao: [''],
           desconto: [0],

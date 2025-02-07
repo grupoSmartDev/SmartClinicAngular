@@ -10,11 +10,14 @@ import { FormaPagamentoService } from '../../../_services/forma-pagamento.servic
 import { PacienteService } from '../../../_services/paciente.service';
 import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service';
 import { FinancPagarService } from '../../../_services/financ-pagar.service';
+import { DatePtBrPipe } from '../../../date-pt-br.pipe';
+import { Paciente } from '../../../_module/pacienteModule';
 
 @Component({
   selector: 'app-modal-financ-pagar',
   templateUrl: './modal-financ-pagar.component.html',
-  styleUrl: './modal-financ-pagar.component.css'
+  styleUrl: './modal-financ-pagar.component.css',
+  providers : [DatePtBrPipe]
 })
 export class ModalFinancPagarComponent {
   @ViewChild('modalComponent') modalComponent?: ElementRef;
@@ -23,7 +26,7 @@ export class ModalFinancPagarComponent {
 
   formulario!: FormGroup;
 
-  listaCliente = [{ id: 1, nome: 'Cliente 1', cpf: '12341' }, { id: 2, nome: 'Cliente 2', cpf: '12341' }];
+  listaPacientes : Paciente[] = []
   listaCentroDeCusto! : CentroDeCusto[];
   listaFormaPagamento! : FormaPagamento[];
   listaTipoPagamento! : TipoPagamento[];
@@ -40,7 +43,8 @@ export class ModalFinancPagarComponent {
     private centroCustoService : CentroDeCustoService,
     private formaPagamentoService : FormaPagamentoService,
     private pacienteService : PacienteService,
-    private tipoPagamentoService : TipoPagamentoService
+    private tipoPagamentoService : TipoPagamentoService,
+    private datePipe : DatePtBrPipe
   ) {
     this.formulario = this.fb.group({
       id: [],
@@ -72,6 +76,7 @@ export class ModalFinancPagarComponent {
     this.buscarCC();
     this.buscarFP();
     this.buscarTP();
+    this.buscarPaciente();
   }
 
   filterOptions(): void {
@@ -88,7 +93,49 @@ export class ModalFinancPagarComponent {
   }
 
   carregarDados(financPagar: any) {
+
+    while(this.subFinancPagar.length !== 0){
+      this.subFinancPagar.removeAt(0);
+    }
+
     this.formulario.patchValue(this.data);
+    let dataEmissao = this.formulario.get("dataEmissao")?.value;
+
+    if(dataEmissao){
+      dataEmissao = this.datePipe.formatToHtmlDate(dataEmissao);
+      this.formulario.patchValue({dataEmissao})
+    }
+
+    if (this.data.subFinancPagar && this.data.subFinancPagar.length > 0) {
+      this.data.subFinancPagar.forEach(subFinanc => {
+        let dataVencimento : any = subFinanc.dataVencimento;
+        if(dataVencimento){
+          dataVencimento =  this.datePipe.formatToHtmlDate(dataVencimento);
+        }
+
+        let dataPagamento : any = subFinanc.dataPagamento;
+        if(dataPagamento){
+          dataPagamento =  this.datePipe.formatToHtmlDate(dataPagamento);
+        }
+
+        this.subFinancPagar.push(
+          this.fb.group({
+            id: [subFinanc.id],
+            financReceberId: [subFinanc.financPagarId],
+            parcela: [subFinanc.parcela],
+            valor: [subFinanc.valor, [Validators.required, Validators.min(0)]],
+            dataVencimento: [dataVencimento],
+            dataPagamento: [dataPagamento],
+            observacao: [subFinanc.observacao],
+            desconto: [subFinanc.desconto],
+            juros: [subFinanc.juros],
+            multa: [subFinanc.multa],
+            formaPagamentoId: [subFinanc.formaPagamentoId],
+            tipoPagamentoId: [subFinanc.tipoPagamentoId],
+          })
+        );
+      });
+    }
   }
 
   fecharModal() {
@@ -256,6 +303,20 @@ export class ModalFinancPagarComponent {
       error: (err) => {
         console.error('Erro ao buscar tipo de pagamento:', err);
         this.errorMessage = 'Erro ao carregar os tipo de pagamento. Tente novamente mais tarde.';
+      }
+    })
+  }
+
+  buscarPaciente(): void {
+    this.pacienteService.Listar().subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.listaPacientes = data.dados;
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao buscar pacientes:', err);
+        this.errorMessage = 'Erro ao carregar os pacientes. Tente novamente mais tarde.';
       }
     })
   }

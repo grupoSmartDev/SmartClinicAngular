@@ -42,7 +42,7 @@
               <div class="col-md-4">
                 <div>
                   <label for="paciente" class="form-label">Paciente</label>
-                  <input
+                  <!-- <input
                     id="paciente"
                     type="text"
                     [formControl]="myControl"
@@ -61,7 +61,13 @@
                     <li *ngFor="let option of filteredOptions" (click)="selectOption(option)">
                       {{ option }}
                     </li>
-                  </ul>
+                  </ul> -->
+                  <select name="" class="form-select form-select-sm" id="" formControlName="pacienteId">
+                    <option value="">Selecione um paciente</option>
+                    @for (item of listaPacientes; track $index) {
+                      <option value="{{ item.id }}">{{ item.nome }} - {{ item.cpf }}</option>
+                    }
+                  </select>
                 </div>  
                 <inpute type="hidden" formControlName="pacienteId" />
               </div>
