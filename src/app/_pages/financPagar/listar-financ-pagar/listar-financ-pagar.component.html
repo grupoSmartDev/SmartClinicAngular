@@ -59,7 +59,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row mb-2">
   <div class="col-12">
     @if (lista.length > 0) {
     <div class="table-responsive">
@@ -79,7 +79,7 @@
               {{ item.id }}
             </td>
             <td>
-              {{ item.dataEmissao }}
+              {{ item.dataEmissao | datePtBr }}
             </td>
             <td>
               {{ item.descricao }}
@@ -113,22 +113,22 @@
     <img src="public\image\semRegistro.svg" alt="" />
     }
 
-    <!-- Paginação Bootstrap -->
-    <div class="row justify-content-center">
-      <div class="">
-        <pagination
-          [totalItems]="totalItems"
-          [(ngModel)]="currentPage"
-          [itemsPerPage]="pageSize"
-          (pageChanged)="onPageChange($event.page)"
-          previousText="&lsaquo;"
-          nextText="&rsaquo;"
-          firstText="&laquo;"
-          lastText="&raquo;"
-        >
-        </pagination>
-      </div>
-    </div>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="">
+    <pagination
+      [totalItems]="totalItems"
+      [(ngModel)]="currentPage"
+      [itemsPerPage]="pageSize"
+      (pageChanged)="onPageChange($event.page)"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+    >
+    </pagination>
   </div>
 </div>
 

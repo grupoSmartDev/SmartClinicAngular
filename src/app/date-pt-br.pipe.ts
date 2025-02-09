@@ -8,16 +8,17 @@ export class DatePtBrPipe implements PipeTransform {
     if (!value) return '';
     if (value === null || value === undefined) return '';
 
-    // Garantir que o valor seja uma data
+    // Criar a data e ajustar para meio-dia do mesmo dia para evitar problemas de timezone
     const date = new Date(value);
+    date.setHours(12, 0, 0, 0);
 
-    // Formatar apenas dia, mês e ano (dd/MM/yyyy)
+    // Formatar para pt-BR (dd/MM/yyyy)
     return date.toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
     });
-  }
+}
 
   formatToHtmlDate(date: string | Date): string {
     const d = new Date(date);
