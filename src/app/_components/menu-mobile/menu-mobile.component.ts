@@ -4,6 +4,7 @@ import { INavbarData, fadeInOut } from '../side-bar/helper';
 import { navbarData } from '../side-bar/nav-data';
 import { Router } from '@angular/router';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import { AuthService } from '../../_services/auth.service';
 interface SideNavToggle {
   screenWidth: number;
   collapsed: boolean;
@@ -38,7 +39,7 @@ export class MenuMobileComponent implements OnInit {
   isMenuOpen: { [key: string]: boolean } = {};
   
 
-  constructor(private tabService: TabService, public router: Router) {}
+  constructor(private tabService: TabService, public router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
     // Inicialização dos estados dos submenus
@@ -92,5 +93,15 @@ shrinkItems(item: INavbarData): void {
   // Abre a aba utilizando o TabService
   openTab(path: string, title: string) {
     this.tabService.openTab({ path, title });
+  }
+
+  logout(){
+    try {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 }

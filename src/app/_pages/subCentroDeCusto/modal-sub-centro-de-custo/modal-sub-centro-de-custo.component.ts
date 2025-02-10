@@ -71,7 +71,9 @@ export class ModalSubCentroDeCustoComponent {
   }
 
   fecharModal() {
+    let btnCancelar = document.getElementById('btnCancelar') as HTMLElement;
     this.formulario.reset();
+    btnCancelar.click();
   }
 
   carregarCC(): void {

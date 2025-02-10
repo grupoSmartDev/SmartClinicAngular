@@ -5,7 +5,7 @@ export class FichaAvaliacao {
     pacienteId?: number;
     paciente?:Paciente;
     dataAvaliacao?: Date;
-    profissional?: string;
+    profissionalId?: string;
     especialidade?: string;
     idade?: number;
     altura?: number;

@@ -110,7 +110,7 @@ export class FichaAvaliacaoComponent {
   }
 
   onSubmit() {
-    debugger
+    
     if (this.fichaForm.valid) {
       console.log('Formulário enviado:', this.fichaForm.value);
 
@@ -122,8 +122,8 @@ export class FichaAvaliacaoComponent {
     saveOperation.subscribe({
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
-        this.toast.success(`Evolução ${action} com sucesso!`, 'Parabéns');
-        
+        this.toast.success(`Ficha de avaliação ${action} com sucesso!`, 'Parabéns');
+        this.fecharModal();
       },
       error: () => {
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
