@@ -114,13 +114,14 @@
               <h5>Informações de Registro</h5>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-4">
               <label for="conselhoId" class="form-label">Conselho</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="conselhoId"
-              />
+              <select class="form-select form-select-sm" formControlName="conselhoId">
+                <option value="">Selecione o Conselho</option>
+                @for (item of listaConselho; track item.id) {
+                  <option value="{{ item.id }}">{{ item.nome }}</option>
+                }
+              </select>
             </div>
 
             <div class="col-md-3">
@@ -254,11 +255,11 @@
             </div>
 
             <!-- Controle de Acesso -->
-            <div class="col-12">
+            <!-- <div class="col-12">
               <h5>Controle de Acesso</h5>
-            </div>
+            </div> -->
 
-            <div class="col-md-2">
+            <!-- <div class="col-md-2">
               <label for="ehUsuario" class="form-label">Usuário?</label>
               <select
                 class="form-select form-select-sm"
@@ -268,7 +269,7 @@
                 <option value="true">Sim</option>
                 <option value="false">Não</option>
               </select>
-            </div>
+            </div> -->
           </div>
 
         </form>

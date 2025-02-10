@@ -8,6 +8,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { UsuarioService } from '../../../_services/usuario.service';
 import { Profissao } from '../../../_module/profissaoModule';
 import { ProfissaoService } from '../../../_services/profissao.service';
+import { ConselhoService } from '../../../_services/conselho.service';
+import { Conselho } from '../../../_module/conselhoModule';
 
 @Component({
   selector: 'app-modal-profissional',
@@ -21,7 +23,8 @@ export class ModalProfissionalComponent {
     private router: Router,
     private fb: FormBuilder,
     private usuarioService : UsuarioService,
-    private profissaoService : ProfissaoService
+    private profissaoService : ProfissaoService,
+    private conselhoService : ConselhoService
   ) { 
     this.formulario = this.fb.group({
       id: [null],
@@ -63,12 +66,14 @@ export class ModalProfissionalComponent {
   lista: Profissional[] = [];
   listaProfissao : Profissao[] = [];
   formulario : FormGroup;
+  listaConselho : Conselho[] = [];
 
 
 
   ngOnInit() {
     this.carregarCC();
     this.getProfissao();
+    this.getConselho();
   }
 
   onSubmit(){
@@ -159,6 +164,19 @@ export class ModalProfissionalComponent {
       },
       error(err) {
         console.error('Erro ao buscar Profissional:', err)
+      },
+    })
+  }
+
+  getConselho(){
+    this.conselhoService.Listar(undefined,undefined,undefined,undefined,undefined,false).subscribe({
+      next : (data) => {
+        if(data.dados){
+          this.listaConselho = data.dados;
+        }
+      },
+      error(err) {
+        console.error('Erro ao buscar Conselho:', err)
       },
     })
   }

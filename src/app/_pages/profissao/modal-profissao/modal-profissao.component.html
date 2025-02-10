@@ -13,7 +13,7 @@
                   <label for="Id" class="form-label">Cód.</label>
                   <input type="text" class="form-control form-control-sm" id="Id" readonly formControlName="id" />
               </div>
-              <div class="col-md-3">
+              <div class="col-md-10">
                   <label for="nome" class="form-label">Descrição</label>
                   <input type="text" required class="form-control form-control-sm required" formControlName="descricao" 
                   [ngClass]="{'is-invalid': formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched}"/>

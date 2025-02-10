@@ -20,11 +20,11 @@ export class ConselhoService {
     sigla: ''
   }));
 
-  Listar(page: number, pageSize: number, nomeFiltro?: string, siglaFiltro?: string, idFiltro?: string, paginar: boolean = false): Observable<ResponseModel<Conselho[]>> {
+  Listar(page?: number, pageSize?: number, nomeFiltro?: string, siglaFiltro?: string, idFiltro?: string, paginar: boolean = false): Observable<ResponseModel<Conselho[]>> {
     let params = new HttpParams()
-      .set('page', page.toString())
-      .set('pageSize', pageSize.toString());
-
+      
+    if(page) params = params.set('page', page.toString());
+    if(pageSize) params = params.set('pageSize', pageSize.toString());
     if (nomeFiltro) params = params.set('nomeFiltro', nomeFiltro);
     if (siglaFiltro) params = params.set('siglaFiltro', siglaFiltro);
     if (idFiltro) params = params.set('idFiltro', idFiltro);
