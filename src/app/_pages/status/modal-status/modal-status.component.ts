@@ -19,7 +19,7 @@ export class ModalStatusComponent {
     private fb: FormBuilder) {
     this.formulario = this.fb.group({
       id: [null],
-      cor: [null, Validators.required],
+      cor: ['000', Validators.required],
       legenda: [null, Validators.required],
       status: [null, Validators.required],
     });
