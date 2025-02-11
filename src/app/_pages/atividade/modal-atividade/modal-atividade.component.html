@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Exercício</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Atividade</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -19,11 +19,11 @@
                   [ngClass]="{'is-invalid' : formulario.get('titulo')?.invalid && formulario.get('titulo')?.touched}"
                   >
                   <div *ngIf="formulario.get('titulo')?.invalid && formulario.get('titulo')?.touched" class="invalid-feedback">
-                    O campo titulo é obrigatório.
+                    O campo atividade é obrigatório.
                   </div>
               </div>
               <div class="col-md-2">
-                  <label for="capacidade" class="form-label">tempo</label>
+                  <label for="capacidade" class="form-label">tempo (min)</label>
                   <input type="number" class="form-control form-control-sm" formControlName="tempo">
               </div>
           <div class="col-md-12">
