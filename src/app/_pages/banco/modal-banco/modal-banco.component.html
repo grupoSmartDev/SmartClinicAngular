@@ -23,7 +23,7 @@
               </div>
               <div class="col-md-3">
                 <label for="codigo" class="form-label">Código</label>
-                <input type="text" class="form-control form-control-sm" formControlName="codigo" 
+                <input type="text" class="form-control form-control-sm" formControlName="codigo" onlyNumbers
                 [ngClass]="{ 'is-invalid': formulario.get('codigo')?.invalid && formulario.get('codigo')?.touched }"/>
                 <div *ngIf="formulario.get('codigo')?.invalid && formulario.get('codigo')?.touched" class="invalid-feedback">
                   O campo código é obrigatório.
@@ -31,7 +31,7 @@
               </div>
               <div class="col-md-3">
                 <label for="agencia" class="form-label">Agência</label>
-                <input type="text" class="form-control form-control-sm" formControlName="agencia" 
+                <input type="text" class="form-control form-control-sm" formControlName="agencia" onlyNumbers
                 [ngClass]="{ 'is-invalid': formulario.get('agencia')?.invalid && formulario.get('agencia')?.touched }"/>
                 <div *ngIf="formulario.get('agencia')?.invalid && formulario.get('agencia')?.touched" class="invalid-feedback">
                   O campo agência é obrigatório.
@@ -39,7 +39,7 @@
               </div>
               <div class="col-md-4">
                 <label for="numeroConta" class="form-label">Número da Conta</label>
-                <input type="text" class="form-control form-control-sm" formControlName="numeroConta" 
+                <input type="text" class="form-control form-control-sm" formControlName="numeroConta" onlyNumbers
                 [ngClass]="{ 'is-invalid': formulario.get('numeroConta')?.invalid && formulario.get('numeroConta')?.touched }"/>
                    <div *ngIf="formulario.get('numeroConta')?.invalid && formulario.get('numeroConta')?.touched" class="invalid-feedback">
                   O campo número da conta é obrigatório.
@@ -93,23 +93,23 @@
               </div>
               <div class="col-md-4">
                 <label for="codigoConvenio" class="form-label">Código Convênio</label>
-                <input type="text" class="form-control form-control-sm" formControlName="codigoConvenio" />
+                <input type="text" class="form-control form-control-sm" formControlName="codigoConvenio" onlyNumbers/>
               </div>
               <div class="col-md-4">
                 <label for="carteira" class="form-label">Carteira</label>
-                <input type="text" class="form-control form-control-sm" formControlName="carteira" />
+                <input type="text" class="form-control form-control-sm" formControlName="carteira" onlyNumbers/>
               </div>
               <div class="col-md-4">
                 <label for="variacaoCarteira" class="form-label">Variação Carteira</label>
-                <input type="text" class="form-control form-control-sm" formControlName="variacaoCarteira" />
+                <input type="text" class="form-control form-control-sm" formControlName="variacaoCarteira" onlyNumbers/>
               </div>
               <div class="col-md-4">
                 <label for="codigoBeneficiario" class="form-label">Código Beneficiário</label>
-                <input type="text" class="form-control form-control-sm" formControlName="codigoBeneficiario" />
+                <input type="text" class="form-control form-control-sm" formControlName="codigoBeneficiario" onlyNumbers />
               </div>
               <div class="col-md-4">
                 <label for="numeroContrato" class="form-label">Número do Contrato</label>
-                <input type="text" class="form-control form-control-sm" formControlName="numeroContrato" />
+                <input type="text" class="form-control form-control-sm" formControlName="numeroContrato" onlyNumbers/>
               </div>
               <div class="col-md-4">
                 <label for="codigoTransmissao" class="form-label">Código de Transmissão</label>
