@@ -66,7 +66,7 @@ export class ModalProcedimentoComponent {
       descricao : [null, Validators.required],
       nome: [null, Validators.required],
       preco : [null, Validators.required],
-      duracao : [null],
+      duracao : [''],
       ativo : [true],
       categoriaID : [null],
     })
