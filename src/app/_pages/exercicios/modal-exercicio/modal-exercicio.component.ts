@@ -17,12 +17,12 @@ export class ModalExercicioComponent {
     private fb : FormBuilder) {
       this.formulario = this.fb.group({
         id : [null],
-        titulo : [null, Validators.required],
-        descricao : [null],
+        descricao : ['', Validators.required],
         tempo : [null],
         repeticoes : [null],
         series : [null],
-        evolucaoId : [null]
+        evolucaoId : [null],
+        peso : [null],
       })
      }
 

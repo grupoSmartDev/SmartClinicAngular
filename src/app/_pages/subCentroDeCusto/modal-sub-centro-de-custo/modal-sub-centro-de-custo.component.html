@@ -5,7 +5,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Sub Centro De Custo</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="fecharModal()"  aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="formulario">
@@ -40,7 +40,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" (click)="onSubmit()" class="btn btn-success"><i class="bi bi-check"></i> Confirmar</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="fecharModal()" id="btnCancelar"><i class="bi bi-x"></i> Cancelar</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="fecharModal()"  id="btnCancelar"><i class="bi bi-x"></i> Cancelar</button>
         </div>
       </div>
     </div>

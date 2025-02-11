@@ -4,7 +4,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Exercício</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="fecharModal()"  aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="formulario">
@@ -14,12 +14,12 @@
                   <input type="text" class="form-control form-control-sm" id="Id" readonly formControlName="id" />
               </div>
               <div class="col-md-4">
-                  <label for="titulo" class="form-label">Exercício</label>
-                  <input type="text" required class="form-control form-control-sm required" formControlName="titulo" 
-                   [ngClass]="{'is-invalid' : formulario.get('titulo')?.invalid && formulario.get('titulo')?.touched}"
+                  <label for="descricao" class="form-label">Descrição</label>
+                  <input type="text" required class="form-control form-control-sm required" formControlName="descricao" 
+                   [ngClass]="{'is-invalid' : formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched}"
                   >
-                  <div *ngIf="formulario.get('titulo')?.invalid && formulario.get('titulo')?.touched" class="invalid-feedback">
-                    O campo exercício é obrigatório.
+                  <div *ngIf="formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched" class="invalid-feedback">
+                    O campo Descrição é obrigatório.
                   </div>
               </div>
               <div class="col-md-2">
@@ -34,16 +34,13 @@
               <label for="capacidade" class="form-label">Séries</label>
               <input type="number" class="form-control form-control-sm" formControlName="series">
           </div>
-          <div class="col-md-12">
-            <label for="localizacao" class="form-label">Descrição</label>
-            <input type="text" required class="form-control form-control-sm" formControlName="descricao" />
-        </div>
+
           </div>
           </form>
         </div>
         <div class="modal-footer">
             <button type="button"  (click)="onSubmit()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>
-            <button type="button" class="btn btn-danger" id="btnCancelar" data-bs-dismiss="modal" aria-label="Close" (click)="fecharModal()"><i class="bi bi-x"></i>Cancelar</button>
+            <button type="button" class="btn btn-danger" id="btnCancelar" data-bs-dismiss="modal" (click)="fecharModal()"  aria-label="Close" (click)="fecharModal()"><i class="bi bi-x"></i>Cancelar</button>
         </div>
       </div>
     </div>
