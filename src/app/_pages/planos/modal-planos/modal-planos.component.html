@@ -55,9 +55,70 @@
             </div>  
           </div>
  
+          <div class="card mb-4 mt-4">
+            <div class="card-header">
+              <h5 class="mb-0">Valor por período</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-6 col-md-3">
+                  <label for="valorMensal" class="form-label">Mensal <span>(R$){{valorMensalCalculado}}</span></label>
+                  <input type="number" class="form-control form-control-sm" id="valorMensal"
+                    name="valorMensal" (change)="calculoValorMensal($event)" formControlName="valorMensal">
+                </div>
+                <div class="col-6 col-md-3">
+                  <label for="valorBimestral" class="form-label">Bimestral</label>
+                  <input type="number" class="form-control form-control-sm" id="valorBimestral"  name="valorBimestral" 
+                  formControlName="valorBimestral"
+                  [ngClass]="{'is-invalid' : formulario.get('valorBimestral')?.invalid && formulario.get('valorBimestral')?.touched}"
+                  >
+                  <div *ngIf="formulario.get('valorBimestral')?.invalid && formulario.get('valorBimestral')?.touched" class="invalid-feedback">
+                    O campo valor bimestral é obrigatório.
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label for="valorTrimestral" class="form-label">Trimestral</label>
+                  <input type="number" class="form-control form-control-sm" id="valorTrimestral"  name="valorTrimestral"
+                   formControlName="valorTrimestral"
+                   [ngClass]="{'is-invalid' : formulario.get('valorTrimestral')?.invalid && formulario.get('valorTrimestral')?.touched}"
+                   >
+                   <div *ngIf="formulario.get('valorTrimestral')?.invalid && formulario.get('valorTrimestral')?.touched" class="invalid-feedback">
+                     O campo valor trimestral é obrigatório.
+                   </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label for="valorQuadrimestral" class="form-label">Quadrimestral</label>
+                  <input type="number" class="form-control form-control-sm" id="valorQuadrimestral"  name="valorQuadrimestral" formControlName="valorQuadrimestral"
+                  [ngClass]="{'is-invalid' : formulario.get('valorQuadrimestral')?.invalid && formulario.get('valorQuadrimestral')?.touched}"
+                  >
+                  <div *ngIf="formulario.get('valorQuadrimestral')?.invalid && formulario.get('valorQuadrimestral')?.touched" class="invalid-feedback">
+                    O campo valor quadrimestral é obrigatório.
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label for="valorSemestral" class="form-label">Semestral</label>
+                  <input type="number" class="form-control form-control-sm" id="valorSemestral"  name="valorSemestral" formControlName="valorSemestral"
+                  [ngClass]="{'is-invalid' : formulario.get('valorSemestral')?.invalid && formulario.get('valorSemestral')?.touched}"
+                  >
+                  <div *ngIf="formulario.get('valorSemestral')?.invalid && formulario.get('valorSemestral')?.touched" class="invalid-feedback">
+                    O campo valor semestral é obrigatório.
+                  </div>
+                </div>
+                <div class="col-6 col-md-3">
+                  <label for="valorAnual" class="form-label">Anual</label>
+                  <input type="number" class="form-control form-control-sm" id="valorAnual"  name="valorAnual" formControlName="valorAnual"
+                  [ngClass]="{'is-invalid' : formulario.get('valorAnual')?.invalid && formulario.get('valorAnual')?.touched}"
+                  >
+                  <div *ngIf="formulario.get('valorAnual')?.invalid && formulario.get('valorAnual')?.touched" class="invalid-feedback">
+                    O campo valor anual é obrigatório.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <!-- Valores dos Planos -->
-          <h6 class="mt-4">Valores por Período</h6>
+          <!-- <h6 class="mt-4">Valores por Período</h6>
           <div class="row">
             <div class="col-6 col-md-3">
               <label for="valorMensal" class="form-label">Mensal <span>(R$){{valorMensalCalculado}}</span></label>
@@ -111,7 +172,7 @@
                 O campo valor anual é obrigatório.
               </div>
             </div>
-          </div>
+          </div> -->
           
         </form>
       </div>

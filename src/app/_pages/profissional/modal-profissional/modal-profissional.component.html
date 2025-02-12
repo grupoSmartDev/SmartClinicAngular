@@ -23,13 +23,102 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="formulario">
+
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Informações Pessoais</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-2">
+                  <label for="id" class="form-label">Cód.</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="id"
+                    readonly
+                    formControlName="id"
+                  />
+                </div>
+    
+                <div class="col-md-5">
+                  <label for="nome" class="form-label">Nome</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="nome"
+                    [ngClass]="{'is-invalid' : formulario.get('nome')?.invalid && formulario.get('nome')?.touched}"
+                  />
+                  <div *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="invalid-feedback">
+                    O campo nome é obrigatório.
+                  </div>
+                </div>
+    
+                <div class="col-md-5">
+                  <label for="email" class="form-label">E-mail</label>
+                  <input
+                    type="email"
+                    class="form-control form-control-sm"
+                    formControlName="email"
+                    [ngClass]="{'is-invalid' : formulario.get('email')?.invalid && formulario.get('email')?.touched}"
+                    />
+                    <div *ngIf="formulario.get('email')?.invalid && formulario.get('email')?.touched" class="invalid-feedback">
+                      O campo E-mail é obrigatório.
+                    </div>
+                </div>
+    
+                <div class="col-md-3">
+                  <label for="cpf" class="form-label">CPF</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="cpf"
+                    mask="000.000.000-00"
+                    placeholder="000.000.000-00"
+                    [ngClass]="{'is-invalid' : formulario.get('cpf')?.invalid && formulario.get('cpf')?.touched}"
+                    />
+                    <div *ngIf="formulario.get('cpf')?.invalid && formulario.get('cpf')?.touched" class="invalid-feedback">
+                      O campo CPF é obrigatório.
+                    </div>
+                </div>
+    
+                <div class="col-md-3">
+                  <label for="sexo" class="form-label">Sexo</label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="sexo"
+                  >
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                    <option value="O">Outros</option>
+                  </select>
+                </div>
+    
+          
+    
+                <div class="col-md-3">
+                  <label for="celular" class="form-label">Celular</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="celular"
+                    mask="(00) 00000-0000"
+                    [ngClass]="{'is-invalid' : formulario.get('celular')?.invalid && formulario.get('celular')?.touched}"
+                    />
+                    <div *ngIf="formulario.get('celular')?.invalid && formulario.get('celular')?.touched" class="invalid-feedback">
+                      O campo Celular é obrigatório.
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="row g-3">
             <!-- Informações Pessoais -->
-            <div class="col-12">
+            <!-- <div class="col-12">
               <h5>Informações Pessoais</h5>
-            </div>
+            </div> -->
 
-            <div class="col-md-2">
+            <!-- <div class="col-md-2">
               <label for="id" class="form-label">Cód.</label>
               <input
                 type="text"
@@ -107,14 +196,90 @@
                 <div *ngIf="formulario.get('celular')?.invalid && formulario.get('celular')?.touched" class="invalid-feedback">
                   O campo Celular é obrigatório.
                 </div>
+            </div> -->
+
+
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0">Informações de Registro</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="conselhoId" class="form-label">Conselho</label>
+                    <select class="form-select form-select-sm" formControlName="conselhoId">
+                      <option value="">Selecione o Conselho</option>
+                      @for (item of listaConselho; track item.id) {
+                        <option value="{{ item.id }}">{{ item.nome }}</option>
+                      }
+                    </select>
+                  </div>
+      
+                  <div class="col-md-3">
+                    <label for="registroConselho" class="form-label">Registro Conselho</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="registroConselho"
+                    />
+                  </div>
+      
+                  <div class="col-md-2">
+                    <label for="ufConselho" class="form-label">UF Conselho</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="ufConselho"
+                    />
+                  </div>
+      
+                  <div class="col-md-3">
+                    <label for="profissaoId" class="form-label">Profissão</label>
+                 
+                    <select class="form-select form-select-sm" formControlName="profissaoId">
+                      <option value="">Selecione...</option>
+                      @for (item of listaProfissao; track item.id) {
+                        <option value="{{ item.id }}">{{ item.descricao }}</option>
+                      }
+                    </select>
+                  </div>
+      
+                  <div class="col-md-3">
+                    <label for="cbo" class="form-label">CBO</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="cbo"
+                    />
+                  </div>
+      
+                  <div class="col-md-3">
+                    <label for="rqe" class="form-label">RQE</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="rqe"
+                    />
+                  </div>
+      
+                  <div class="col-md-3">
+                    <label for="cnes" class="form-label">CNES</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="cnes"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Informações de Registro -->
-            <div class="col-12">
+            <!-- <div class="col-12">
               <h5>Informações de Registro</h5>
-            </div>
+            </div> -->
 
-            <div class="col-md-4">
+            <!-- <div class="col-md-4">
               <label for="conselhoId" class="form-label">Conselho</label>
               <select class="form-select form-select-sm" formControlName="conselhoId">
                 <option value="">Selecione o Conselho</option>
@@ -178,14 +343,93 @@
                 class="form-control form-control-sm"
                 formControlName="cnes"
               />
+            </div> -->
+
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0">Informações de Pagamento</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3">
+                    <label for="tipoPagamento" class="form-label">Tipo de Pagamento</label>
+                    <select
+                      class="form-select form-select-sm"
+                      formControlName="tipoPagamento"
+                    >
+                      <option value="Pix">Pix</option>
+                      <option value="Boleto">Boleto</option>
+                      <option value="Transferência">Transferência</option>
+                    </select>
+                  </div>
+      
+                  <div class="col-md-3">
+                    <label for="chavePix" class="form-label">Chave Pix</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="chavePix"
+                    />
+                  </div>
+      
+                  <div class="col-md-3">
+                    <label for="bancoNome" class="form-label">Banco</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="bancoNome"
+                    />
+                  </div>
+      
+                  <div class="col-md-2">
+                    <label for="bancoAgencia" class="form-label">Agência</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="bancoAgencia"
+                    />
+                  </div>
+      
+                  <div class="col-md-2">
+                    <label for="bancoConta" class="form-label">Conta</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="bancoConta"
+                    />
+                  </div>
+      
+                  <div class="col-md-2">
+                    <label for="bancoTipoConta" class="form-label">Tipo de Conta</label>
+                    <select
+                      class="form-select form-select-sm"
+                      formControlName="bancoTipoConta"
+                    >
+                      <option value="Corrente">Corrente</option>
+                      <option value="Poupança">Poupança</option>
+                    </select>
+                  </div>
+      
+                  <div class="col-md-3">
+                    <label for="bancoCpfTitular" class="form-label">CPF Titular</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="bancoCpfTitular"
+                      mask="000.000.000-00"
+                    />
+                  </div>
+      
+                </div>
+              </div>
             </div>
 
             <!-- Informações de Pagamento -->
-            <div class="col-12">
+            <!-- <div class="col-12">
               <h5>Informações de Pagamento</h5>
-            </div>
+            </div> -->
 
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
               <label for="tipoPagamento" class="form-label">Tipo de Pagamento</label>
               <select
                 class="form-select form-select-sm"
@@ -252,7 +496,7 @@
                 formControlName="bancoCpfTitular"
                 mask="000.000.000-00"
               />
-            </div>
+            </div> -->
 
             <!-- Controle de Acesso -->
             <!-- <div class="col-12">
