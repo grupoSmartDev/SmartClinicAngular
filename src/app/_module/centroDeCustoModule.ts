@@ -4,5 +4,5 @@ export interface CentroDeCusto{
     id : string;
     tipo : string;
     descricao : string;
-    subCentroDeCusto? : [SubCentroDeCusto];
+    subCentrosCusto? : [SubCentroDeCusto];
 }

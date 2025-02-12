@@ -1,9 +1,12 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
 import { ToastrService } from 'ngx-toastr';
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { ResponseModel } from '../../../_module/ResponseModule';
+import { SubCentroDeCusto } from '../../../_module/subCentroDeCustoModule';
+import { id } from '@swimlane/ngx-charts';
+
 
 @Component({
   selector: 'app-modal-centro-de-custo',
@@ -26,9 +29,27 @@ export class ModalCentroDeCustoComponent {
       id: [null],
       tipo: [null, Validators.required],
       descricao: [null, Validators.required],
+      subCentrosCusto : this.fb.array<SubCentroDeCusto>([])
     });
   }
 
+  get subCentrosCusto() {
+    return this.formulario.get('subCentrosCusto') as FormArray;
+  }
+
+  adicionarSubCentroDeCusto() {
+    debugger
+    const novoItem = this.fb.group({
+      id: [null],
+      nome : ['', Validators.required],
+    });
+
+    this.subCentrosCusto.push(novoItem);
+  }
+
+  removerSubCentroDeCusto(index: number) {
+    this.subCentrosCusto.removeAt(index);
+  }
   onSubmit() {
     
     if (this.formulario.invalid) {

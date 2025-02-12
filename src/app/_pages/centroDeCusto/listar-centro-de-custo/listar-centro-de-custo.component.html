@@ -51,7 +51,7 @@
               {{ item.id }}
             </td>
             <td>
-              {{ item.tipo }}
+              {{ item.tipo == "R" ? "Receita" : "Despesa" }}
             </td>
             <td>
               {{ item.descricao }} 
