@@ -78,7 +78,23 @@ export class ModalCentroDeCustoComponent {
   }
 
   carregarData(centroDeCusto: CentroDeCusto) {
+    while (this.subCentrosCusto.length !== 0) {
+      this.subCentrosCusto.removeAt(0);
+    }
+
     this.formulario.patchValue(centroDeCusto);
+
+    if (this.centroDeCusto.subCentrosCusto && this.centroDeCusto.subCentrosCusto.length > 0) {
+      this.centroDeCusto.subCentrosCusto.forEach(subCentro => {
+        
+        this.subCentrosCusto.push(
+          this.fb.group({
+            id: [subCentro.id],
+            nome: [subCentro.nome, Validators.required],
+          })
+        );
+      });
+    }
   }
 
   fecharModal() {
@@ -86,4 +102,6 @@ export class ModalCentroDeCustoComponent {
     this.formulario.reset();
     btnCancelar.click();
   }
+
+
 }

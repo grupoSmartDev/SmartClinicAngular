@@ -6,5 +6,6 @@ export interface PlanoContaSub{
     PlanoConta : PlanoContas, 
     nome : string,
     tipo : string, //tem que herdar do pai. na hora de criar tem que passar igual. 
+    codigo : string,
     inativo : boolean
 }

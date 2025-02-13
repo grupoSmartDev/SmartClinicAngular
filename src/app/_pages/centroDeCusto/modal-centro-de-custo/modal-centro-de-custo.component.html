@@ -51,9 +51,11 @@
                 </div>
               </div>
               <div class="col-md-9"></div>
-              <div class="col-md-3 col-12">
-                <button (click)="adicionarSubCentroDeCusto()" type="button" class="btn btn-sm btn-primary">Adicionar Sub Centro de custo</button>
-              </div>
+              @if (centroDeCusto.id) {
+                <div class="col-md-3 col-12">
+                  <button (click)="adicionarSubCentroDeCusto()" type="button" class="btn btn-sm btn-primary">Adicionar Sub Centro de custo</button>
+                </div>
+              }
             </div>
 
             <div formArrayName="subCentrosCusto" class="mt-2">

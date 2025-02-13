@@ -15,7 +15,7 @@ export class ModalPlanoContasComponent {
   @Output() dadosAtualizados = new EventEmitter<void>();
 
   listaPlanoContasSub : PlanoContaSub[] = [];
-
+  formulario! : FormGroup;
   
   constructor(private toast: ToastrService,
     private planoContaService: PlanoContasService,
@@ -29,14 +29,14 @@ export class ModalPlanoContasComponent {
       nome : [null, Validators.required],
       tipo : [null,Validators.required],
       ativo : [true],
-      planoContaSub : this.fb.array([])
+      subPlanos : this.fb.array<PlanoContaSub>([])
     })
   }
 
-  formulario! : FormGroup;
   
-  get planoContaSub(): FormArray {
-    return this.formulario.get('planoContaSub') as FormArray;
+  
+  get subPlanos() {
+    return this.formulario.get('subPlanos') as FormArray;
   }
 
 onSubmit(){
@@ -49,6 +49,7 @@ onSubmit(){
 
   const dataToSave = this.formulario.value as PlanoContas;
 
+ 
   const saveOperation = dataToSave.id
     ? this.planoContaService.Atualizar(dataToSave)
     : this.planoContaService.Criar(dataToSave);
@@ -69,7 +70,27 @@ onSubmit(){
 
 
   carregarDados(plano: any) {
-    this.formulario.patchValue(this.data);
+debugger
+    while(this.subPlanos.length !== 0){
+      this.subPlanos.removeAt(0);
+    }
+
+    this.formulario.patchValue(plano);
+
+    if (this.data.subPlanos && this.data.subPlanos.length > 0) {
+      this.data.subPlanos.forEach(planoSub => {
+        
+        this.subPlanos.push(
+          this.fb.group({
+            id: [planoSub.id],
+            nome: [planoSub.nome, Validators.required],
+            tipo: [this.data.tipo, Validators.required],
+            inativo: [planoSub.inativo],
+            codigo : [planoSub.codigo, Validators.required],
+          })
+        );
+      });
+    }
   }
 
   fecharModal() {
@@ -80,14 +101,17 @@ onSubmit(){
 
 
   adicionarSub(): void {
-    //se eu precisar pegar todas as informações posso fazer um filter no array de planoContaSub e retirar o plano com o id que eu receber no adicionar. 
+    //se eu precisar pegar todas as informações posso fazer um filter no array de subPlanos e retirar o plano com o id que eu receber no adicionar. 
     const novoItem = this.fb.group({
       id: [null],
+      nome : ['', Validators.required],
+      tipo : [this.data.tipo, Validators.required],
+      codigo : ['', Validators.required],
     });
-    this.planoContaSub.push(novoItem);
+    this.subPlanos.push(novoItem);
   }
 
   removerSub(index: number): void {
-    this.planoContaSub.removeAt(index);
+    this.subPlanos.removeAt(index);
   }
 }

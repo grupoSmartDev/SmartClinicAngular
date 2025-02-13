@@ -6,7 +6,7 @@ export interface PlanoContas{
     nome : string,
     tipo : string,
     inativo : boolean,
-    planoContaSub : PlanoContaSub[]
+    subPlanos : PlanoContaSub[]
 }
 
 

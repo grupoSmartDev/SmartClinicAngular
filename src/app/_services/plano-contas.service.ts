@@ -12,7 +12,7 @@ export class PlanoContasService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string = environment.apiUrl + 'api/planoContas/';
+  baseURL: string = environment.apiUrl + 'api/planoConta/';
 
   Listar(
     page?: number,

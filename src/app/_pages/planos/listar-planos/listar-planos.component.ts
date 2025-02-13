@@ -6,6 +6,7 @@ import { ModalSalasComponent } from '../../sala/modal-salas/modal-salas.componen
 import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
 import * as bootstrap from 'bootstrap';
 import { ModalPlanosComponent } from '../modal-planos/modal-planos.component';
+import { ModalPlanoContasComponent } from '../../planoContas/modal-plano-contas/modal-plano-contas.component';
 
 @Component({
   selector: 'app-listar-planos',
@@ -13,7 +14,7 @@ import { ModalPlanosComponent } from '../modal-planos/modal-planos.component';
   styleUrl: './listar-planos.component.css'
 })
 export class ListarPlanosComponent {
-  @ViewChild(ModalPlanosComponent) modalComponent!: ModalPlanosComponent;
+  @ViewChild(ModalPlanoContasComponent) modalComponent!: ModalPlanoContasComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
   lista: Plano[] = [];
   errorMessage: string = '';

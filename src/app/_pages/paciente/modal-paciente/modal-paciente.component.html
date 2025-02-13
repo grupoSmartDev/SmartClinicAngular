@@ -26,8 +26,94 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="formulario">
+
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Informações Pessoais</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="nome" class="form-label">Nome</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="nome"
+                  />
+                </div>
+  
+                <div class="col-md-3">
+                  <label for="cpf" class="form-label">CPF</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="cpf"
+                    mask="000.000.000-00"
+                  />
+                </div>
+  
+                <div class="col-md-3">
+                  <label for="rg" class="form-label">RG</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="rg"
+                  />
+                </div>
+  
+                <div class="col-md-3">
+                  <label for="sexo" class="form-label">Sexo</label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="sexo"
+                  >
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                    <option value="O">Outro</option>
+                  </select>
+                </div>
+  
+                <div class="col-md-3">
+                  <label for="dataNascimento" class="form-label"
+                    >Data de Nascimento</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control form-control-sm"
+                    formControlName="dataNascimento"
+                  />
+                </div>
+  
+                <div class="col-md-3">
+                  <label for="estadoCivil" class="form-label">Estado Civil</label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="estadoCivil"
+                  >
+                    <option value="S">Solteiro</option>
+                    <option value="C">Casado</option>
+                    <option value="D">Divorciado</option>
+                    <option value="V">Viúvo</option>
+                  </select>
+                </div>
+  
+                <div class="col-md-3">
+                  <label for="profissao" class="form-label">Profissão</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="profissao"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+
           <!-- Informações Pessoais -->
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <h5 class="border-bottom pb-2">Informações Pessoais</h5>
             <div class="row g-3">
               <div class="col-md-6">
@@ -103,10 +189,50 @@
                 />
               </div>
             </div>
+          </div> -->
+
+          
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Informações de Contato</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="celular" class="form-label">Celular</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="celular"
+                    mask="(00) 00000-0000"
+                  />
+                </div>
+  
+                <div class="col-md-4">
+                  <label for="telefone" class="form-label">Telefone</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="telefone"
+                    mask="(00) 0000-0000"
+                  />
+                </div>
+  
+                <div class="col-md-4">
+                  <label for="email" class="form-label">E-mail</label>
+                  <input
+                    type="email"
+                    class="form-control form-control-sm"
+                    formControlName="email"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
+
           <!-- Contato -->
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <h5 class="border-bottom pb-2">Informações de Contato</h5>
             <div class="row g-3">
               <div class="col-md-4">
@@ -138,10 +264,102 @@
                 />
               </div>
             </div>
+          </div> -->
+
+
+
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Endereço</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-3">
+                  <label for="cep" class="form-label">CEP</label>
+                  <div class="input-group input-group-sm">
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="cep"
+                      id="cep"
+                      mask="00000-000"
+                    />
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      (click)="buscarCEP()"
+                    >
+                      <i class="bi bi-search"></i>
+                    </button>
+                  </div>
+                </div>
+  
+                <div class="col-md-3">
+                  <label for="bairro" class="form-label">Bairro</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="bairro"
+                  />
+                </div>
+  
+                <div class="col-md-3">
+                  <label for="cidade" class="form-label">Cidade</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="cidade"
+                  />
+                </div>
+  
+                <div class="col-md-1 col-6">
+                  <label for="uf" class="form-label">UF</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="uf"
+                  />
+                </div>
+                <div class="col-md-2 col-6">
+                  <label for="pais" class="form-label">País</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="pais"
+                  />
+                </div>
+  
+                <div class="col-md-3">
+                  <label for="complemento" class="form-label">Complemento</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="complemento"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="logradouro" class="form-label">Logradouro</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="logradouro"
+                  />
+                </div>
+                <div class="col-md-2">
+                  <label for="numero" class="form-label">Número</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="numero"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
+
           <!-- Endereço -->
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <h5 class="border-bottom pb-2">Endereço</h5>
             <div class="row g-3">
               <div class="col-md-3">
@@ -225,10 +443,62 @@
               </div>
           
             </div>
+          </div> -->
+
+
+          
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Convênio</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="convenioId" class="form-label">Convênio</label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="convenioId"
+                  >
+                    <option value="">Selecione...</option>
+                    @for (item of convenios; track $index) {
+                    <option value="{{ item.id }}">{{ item.nome }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="comoConheceu" class="form-label">Plano</label>
+                  <select
+                    formControlName="planoId"
+                    class="form-select form-select-sm"
+                    id=""
+                  >
+                    <option value=0>Selecione...</option>
+                    @for (item of planos; track $index) {
+                    <option value="{{ item.id }}">{{ item.descricao }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="comoConheceu" class="form-label"
+                    >Profissional</label
+                  >
+                  <select
+                    formControlName="profissionalId"
+                    class="form-select form-select-sm"
+                    id=""
+                  >
+                    <option value="">Selecione...</option>
+                    @for (item of profissionais; track $index) {
+                    <option value="{{ item.id }}">{{ item.nome }}</option>
+                    } 
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Convênio -->
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <h5 class="border-bottom pb-2">Convênio</h5>
             <div class="row g-3">
               <div class="col-md-4">
@@ -273,10 +543,88 @@
               </div>
              
             </div>
+          </div> -->
+
+          
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Preferencias e como conheceu</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="preferenciaDeContato" class="form-label"
+                    >Preferência de Contato</label
+                  >
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="preferenciaDeContato"
+                  >
+                    <option value="T">Telefone</option>
+                    <option value="E">E-mail</option>
+                    <option value="W">WhatsApp</option>
+                  </select>
+                </div>
+  
+                <div class="col-md-4">
+                  <label for="permitirLembretes" class="form-label"
+                    >Permitir Lembretes</label
+                  >
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="permitirLembretes"
+                  >
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="comoConheceu" class="form-label"
+                    >Como Conheceu</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="comoConheceu"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
+
+          
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Informações Básicas</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="breveDiagnostico" class="form-label"
+                    >Breve Diagnostico</label
+                  >
+                  <textarea
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="breveDiagnostico"
+                  >
+                  </textarea>
+                </div>
+                <div class="col-md-6">
+                  <label for="medicamento" class="form-label">Medicamento</label>
+                  <textarea
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="medicamento"
+                  >
+                  </textarea>
+                </div>
+              </div>
+            </div>
+          </div>
           <!-- Preferência de Contato e Lembretes -->
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <h5 class="border-bottom pb-2">Preferências e Como Conheceu</h5>
             <div class="row g-3">
               <div class="col-md-4">
@@ -314,8 +662,8 @@
                   class="form-control form-control-sm"
                   formControlName="comoConheceu"
                 />
-              </div>
-              <div class="col-md-6">
+              </div> 
+               <div class="col-md-6">
                 <label for="breveDiagnostico" class="form-label"
                   >Breve Diagnostico</label
                 >
@@ -336,8 +684,32 @@
                 </textarea>
               </div>
             </div>
+          </div> -->
+
+
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Outros</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="responsavel" class="form-label">Responsável</label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="responsavel"
+                  >
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="mb-3">
+
+
+
+          <!-- <div class="mb-3">
             <h5 class="border-bottom pb-2">Outros</h5>
             <div class="row g-3">
               <div class="col-md-6">
@@ -351,7 +723,7 @@
                 </select>
               </div>
             </div>
-          </div>
+          </div> -->
         </form>
       </div>
       <div class="modal-footer justify-content-end">
