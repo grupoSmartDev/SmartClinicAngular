@@ -53,7 +53,7 @@ export class ModalFinancPagarComponent {
       dataEmissao: ['', Validators.required],
       valorOriginal : [null],
       valorPago : [null],
-      parcela: ['1', [Validators.required, Validators.min(1)]],
+      parcela: [1, [Validators.required, Validators.min(1)]],
       valor: [0, [Validators.required, Validators.min(1)]],
       status : [null],
       notaFiscal : [null],
