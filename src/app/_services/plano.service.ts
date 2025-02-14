@@ -20,7 +20,8 @@ export class PlanoService {
     pageSize?: number,
     descricaoFiltro? : string,
     idFiltro? : string,
-    paginar?: boolean
+    paginar?: boolean,
+    paraPaciente?: boolean
   ): Observable<ResponseModel<Plano[]>> {
     
     let params = new HttpParams()
@@ -30,6 +31,7 @@ export class PlanoService {
     if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
     if (idFiltro) params = params.set('idFiltro', idFiltro);
     if (paginar) params = params.set('paginar', paginar);
+    if (paraPaciente) params = params.set('paraPaciente', paraPaciente);
     
     return this.http.get<ResponseModel<Plano[]>>(`${this.baseURL}Listar`, { params });
   }
