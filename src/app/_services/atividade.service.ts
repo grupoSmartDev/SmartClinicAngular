@@ -15,20 +15,20 @@ export class AtividadeService {
   baseURL: string = environment.apiUrl + 'api/Atividade/';
 
   Listar(
-    page?: number,
+    pageNumber?: number,
     pageSize?: number,
     atividadeFiltro? : string,
-    idFiltro? : string,
+    codigoFiltro? : string,
     descricaoFiltro? : string,
     paginar?: boolean
   ): Observable<ResponseModel<Atividade[]>> {
     
     let params = new HttpParams()
 
-    if (page) params = params.set('page', page.toString());
+    if (pageNumber) params = params.set('pageNumber', pageNumber.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (atividadeFiltro) params = params.set('atividadeFiltro', atividadeFiltro);
-    if (idFiltro) params = params.set('idFiltro', idFiltro);
+    if (codigoFiltro) params = params.set('codigoFiltro', codigoFiltro);
     if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
     if (paginar) params = params.set('paginar', paginar);
     

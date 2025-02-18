@@ -22,11 +22,11 @@ export class ListaAtividadeComponent {
 
     //paginacao
     totalItems: number = 0;
-    pageSize: number = 10;
+    pageSize: number = 3;
     currentPage: number = 1;
     // filtros
     atividadeFiltro: string = '';
-    idFiltro: string = '';
+    codigoFiltro: string = '';
     descricaoFiltro: string = '';
     paginar : boolean = true;
 
@@ -38,11 +38,12 @@ export class ListaAtividadeComponent {
 
   loadData(): void {
     this.atividadeService.Listar(this.currentPage, this.pageSize,
-      this.atividadeFiltro, this.idFiltro, this.descricaoFiltro,
+      this.atividadeFiltro, this.codigoFiltro, this.descricaoFiltro,
       this.paginar).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
+          this.totalItems = data.totalCount ?? 0;
         }
       },
       error: (err) => {
