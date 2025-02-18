@@ -41,6 +41,58 @@ export class FinancReceberService {
     return this.http.get<ResponseModel<FinancReceber[]>>(`${this.baseURL}Listar`, { params });
   }
 
+  ListarAnalitico(
+    page?: number,
+    pageSize?: number,
+    descricaoFiltro? : string,
+    idFiltro? : string,
+    dataEmissaoFiltro? : string,
+    pacienteFiltro? : string,
+    pacienteIdFiltro? : string,
+    ccFiltro? : string,
+    paginar?: boolean
+  ): Observable<ResponseModel<FinancReceber[]>> {
+    
+    let params = new HttpParams()
+
+    if (page) params = params.set('page', page.toString());
+    if (pageSize) params = params.set('pageSize', pageSize.toString());
+    if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
+    if (idFiltro) params = params.set('idFiltro', idFiltro);
+    if (dataEmissaoFiltro) params = params.set('dataEmissaoFiltro', dataEmissaoFiltro);
+    if (pacienteFiltro) params = params.set('pacienteFiltro', pacienteFiltro);
+    if (pacienteIdFiltro) params = params.set('pacienteIdFiltro', pacienteIdFiltro);
+    if (ccFiltro) params = params.set('ccFiltro', ccFiltro);
+    if (paginar) params = params.set('paginar', paginar);
+    
+    return this.http.get<ResponseModel<FinancReceber[]>>(`${this.baseURL}ListarAnalitico`, { params });
+  }
+
+
+  ListarSintetico(
+    page?: number,
+    pageSize?: number,
+    idPaiFiltro? : string,
+    parcelaNumeroFiltro? : string,
+    vencimentoInicio? : string,
+    vencimentoFim? : string,
+    paginar?: boolean
+  ): Observable<ResponseModel<FinancReceber[]>> {
+    
+    let params = new HttpParams()
+
+    if (page) params = params.set('page', page.toString());
+    if (pageSize) params = params.set('pageSize', pageSize.toString());
+    if (idPaiFiltro) params = params.set('idPaiFiltro', idPaiFiltro);
+    if (parcelaNumeroFiltro) params = params.set('parcelaNumeroFiltro', parcelaNumeroFiltro);
+    if (vencimentoInicio) params = params.set('vencimentoInicio', vencimentoInicio);
+    if (vencimentoFim) params = params.set('vencimentoFim', vencimentoFim);
+    if (paginar) params = params.set('paginar', paginar);
+    
+    return this.http.get<ResponseModel<FinancReceber[]>>(`${this.baseURL}ListarSintetico`, { params });
+  }
+
+  // CRUD
   Criar(financReceber: FinancReceber): Observable<ResponseModel<FinancReceber>> {
     return this.http.post<ResponseModel<FinancReceber>>(`${this.baseURL}Criar`, financReceber);
   }

@@ -33,6 +33,7 @@ import { ListarProfissaoComponent } from './_pages/profissao/listar-profissao/li
 import { ListarPlanoContasSubComponent } from './_pages/planoContasSub/listar-plano-contas-sub/listar-plano-contas-sub.component';
 import { ListarPlanoContasComponent } from './_pages/planoContas/listar-plano-contas/listar-plano-contas.component';
 import { AuthGuard } from './auth.guard';
+import { ListarReceberSinteticoComponent } from './_pages/financReceber/listar-receber-sintetico/listar-receber-sintetico.component';
 
 
 const routes: Routes = [
@@ -67,7 +68,8 @@ const routes: Routes = [
       { path: 'plano/listar', component: ListarPlanosComponent}, // pagina para testes
       { path: 'procedimento/listar', component: ListaProcedimentoComponent}, // pagina para testes
       { path: 'categoria/listar', component: ListarCategoriaComponent}, // pagina para testes
-      { path: 'FinancReceber/listar', component: ListarFinancReceberComponent}, // pagina para testes
+      { path: 'FinancReceber/listarAnalitico', component: ListarFinancReceberComponent}, // pagina para testes
+      { path: 'FinancReceber/listarSintetico', component: ListarReceberSinteticoComponent}, // pagina para testes
       { path: 'financPagar/listar', component: ListarFinancPagarComponent}, // pagina para testes
       { path: 'profissao/listar', component: ListarProfissaoComponent}, // pagina para testes
       { path: 'planoContas/listar', component: ListarPlanoContasComponent}, // pagina para testes

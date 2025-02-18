@@ -44,7 +44,7 @@ export class ListarFinancReceberComponent {
   }
 
   loadData(): void {
-    this.financReceberService.Listar(
+    this.financReceberService.ListarAnalitico(
       this.currentPage,this.pageSize,this.descricaoFiltro,this.idFiltro,
       this.dataEmissaoFiltro,this.pacienteFiltro,this.pacienteIdFiltro,this.ccFiltro, this.paginar
     ).subscribe({

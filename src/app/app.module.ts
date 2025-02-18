@@ -114,7 +114,7 @@ import { FichaAvaliacaoComponent } from './_pages/paciente/ficha-avaliacao/ficha
 import { MenuComponent } from './_components/menu/menu.component';
 import { CadastroRapidoPacienteComponent } from './_components/cadastro-rapido-paciente/cadastro-rapido-paciente.component';
 import { HistoricoPlanoComponent } from './_pages/paciente/historico-plano/historico-plano.component';
-
+import { ListarReceberSinteticoComponent } from './_pages/financReceber/listar-receber-sintetico/listar-receber-sintetico.component';
 
 
 
@@ -215,6 +215,7 @@ import { HistoricoPlanoComponent } from './_pages/paciente/historico-plano/histo
     MenuComponent,
     CadastroRapidoPacienteComponent,
     HistoricoPlanoComponent,
+    ListarReceberSinteticoComponent,
   ],
   imports: [
     BrowserModule,

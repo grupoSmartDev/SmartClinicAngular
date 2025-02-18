@@ -1,18 +1,48 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { CalendarOptions } from '@fullcalendar/core/index.js';
+// agenda.component.ts
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { CalendarOptions, EventClickArg,  } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import { ModalAgendaComponent } from './modal-agenda/modal-agenda.component';
 import * as bootstrap from 'bootstrap';
+import { Agenda } from '../../_module/agendaModule';
+import { AgendaService } from '../../_services/agenda.service';
+import { ToastrService } from 'ngx-toastr';
+
+interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;
+  end?: string;
+}
 
 @Component({
   selector: 'app-agenda',
-  templateUrl: './agenda.component.html',
+  template: `
+    <full-calendar [options]="calendarOptions"></full-calendar>
+    <app-modal-agenda
+      #modalAgenda
+      [selectedEvent]="selectedEvent"
+      [selectedDate]="selectedDate"
+      (onSave)="handleAgendamentoSave($event)"
+    ></app-modal-agenda>
+  `,
   styleUrls: ['./agenda.component.css']
 })
-export class AgendaComponent implements AfterViewInit {
+export class AgendaComponent implements OnInit, AfterViewInit {
   @ViewChild('modalAgenda') modalAgenda!: ModalAgendaComponent;
+  
+  public selectedEvent: CalendarEvent | null = null;
+  public selectedDate: string = '';
+  
+  public events: CalendarEvent[] = [];
+  private bootstrapModal: bootstrap.Modal | null = null;
+
+  constructor(
+    private agendaService: AgendaService,
+    private toastr: ToastrService
+  ) {}
 
   calendarOptions: CalendarOptions = {
     themeSystem: 'bootstrap',
@@ -21,63 +51,102 @@ export class AgendaComponent implements AfterViewInit {
     editable: true,
     selectable: true,
     locale: 'pt-br',
-    height: '60vh',
-    events: [
-      { title: 'Consulta João', date: '2024-10-07', id: '1' },
-      { title: 'Consulta Maria', date: '2024-10-08', id: '2' },
-      { title: 'Sessão de fisioterapia', start: '2024-10-09T10:00:00', end: '2024-10-09T12:00:00', id: '3' },
-    ],
+    height: '70vh',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+    events: [],
     dateClick: this.handleDateClick.bind(this),
     eventClick: this.handleEventClick.bind(this),
+    eventTimeFormat: {
+      hour: '2-digit',
+      minute: '2-digit',
+      meridiem: false,
+      hour12: false
+    }
   };
 
-  ngAfterViewInit() {
-    console.log('ModalAgenda inicializado:', this.modalAgenda);
+  ngOnInit(): void {
+    this.loadEvents();
   }
 
-  // Clique em uma data para criar um novo agendamento
-  handleDateClick(arg: any) {
-    if (!this.modalAgenda) {
-      console.error('ModalAgenda não foi inicializado.');
+  ngAfterViewInit(): void {
+    const modalElement = document.getElementById('modalAgenda');
+    if (modalElement) {
+      this.bootstrapModal = new bootstrap.Modal(modalElement);
+    }
+  }
+
+  private loadEvents(): void {
+    this.agendaService.Listar().subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.events = response.dados.map(this.mapAgendaToEvent);
+          this.updateCalendarEvents();
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao carregar eventos:', error);
+        this.toastr.error('Erro ao carregar os agendamentos', 'Erro');
+      }
+    });
+  }
+
+  private mapAgendaToEvent(agenda: Agenda): CalendarEvent {
+    return {
+      id: agenda.id.toString(),
+      title: agenda.titulo,
+      start: new Date(agenda.dataCompomisso).toISOString(),
+      end: agenda.DataCompromissoFim ? new Date(agenda.DataCompromissoFim).toISOString() : undefined
+    };
+  }
+
+  private updateCalendarEvents(): void {
+    this.calendarOptions.events = this.events;
+  }
+
+  handleDateClick(arg: DateClickArg): void {
+    if (!this.bootstrapModal) {
+      this.toastr.error('Erro ao abrir o modal de agendamento', 'Erro');
       return;
     }
 
-    this.modalAgenda.selectedEvent = null; // Nenhum evento selecionado
-    this.modalAgenda.selectedDate = arg.dateStr; // Define a data selecionada
-
-    const modalElement = document.getElementById('modalAgenda');
-    if (modalElement) {
-      const bootstrapModal = new bootstrap.Modal(modalElement);
-      bootstrapModal.show();
-    }
+    this.selectedEvent = null;
+    this.selectedDate = arg.dateStr;
+    
+    // Garantir que o modal foi atualizado antes de abrir
+    setTimeout(() => {
+      this.bootstrapModal?.show();
+    }, 0);
   }
 
-  // Clique em um evento existente
-  handleEventClick(arg: any) {
-    if (!this.modalAgenda) {
-      console.error('ModalAgenda não foi inicializado.');
+  handleEventClick(arg: EventClickArg): void {
+    if (!this.bootstrapModal) {
+      this.toastr.error('Erro ao abrir o modal de agendamento', 'Erro');
       return;
     }
 
-    // Filtra o evento clicado pelo ID
-    const selectedEvent = arg.event ? { 
-      id: arg.event.id, 
-      title: arg.event.title, 
-      start: arg.event.startStr, 
-      end: arg.event.endStr 
-    } : null;
-
-    this.modalAgenda.selectedEvent = selectedEvent; // Define o evento selecionado
-    this.modalAgenda.selectedDate = arg.event.startStr; // Define a data inicial do evento
-
-    const modalElement = document.getElementById('modalAgenda');
-    if (modalElement) {
-      const bootstrapModal = new bootstrap.Modal(modalElement);
-      bootstrapModal.show();
-    }
+    this.selectedEvent = {
+      id: arg.event.id,
+      title: arg.event.title,
+      start: arg.event.startStr,
+      end: arg.event.endStr
+    };
+    this.selectedDate = arg.event.startStr;
+    
+    // Garantir que o modal foi atualizado antes de abrir
+    setTimeout(() => {
+      this.bootstrapModal?.show();
+    }, 0);
   }
 
-  handleAgendamentoSave(data: any) {
-    console.log('Novo agendamento salvo:', data);
+  handleAgendamentoSave(agenda: Agenda): void {
+    this.loadEvents();
+    if (this.bootstrapModal) {
+      this.bootstrapModal.hide();
+    }
+    this.toastr.success('Agendamento salvo com sucesso!', 'Sucesso');
   }
 }

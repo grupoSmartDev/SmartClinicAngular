@@ -108,11 +108,20 @@
         <span>Contas a pagar</span>
       </a>
     </li>
+
     <li class="sidebar-item">
-      <a class="sidebar-link" (click)="openTab('/FinancReceber/listar', 'Receber')">
-        <i class="bi bi-cash-stack"></i>
-        <span>Contas a receber</span>
+      <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('contasAReceber')" data-bs-toggle="collapse">
+        <i class="bi bi-cash"></i>
+        <span>Contas a Receber</span>
       </a>
+      <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['contasAReceber'], 'show': isMenuOpen['contasAReceber']}" id="contasAReceber">
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/FinancReceber/listarAnalitico', 'Receber Analitíco')">Analitíco</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/FinancReceber/listarSintetico', 'Receber Sintético')">Sintético</a>
+        </li>
+      </ul>
     </li>
 
     <li class="sidebar-item">
