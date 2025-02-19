@@ -1,9 +1,11 @@
+import { FinancReceber } from "./financReceberModule"
 import { FormaPagamento } from "./formaPagamentoModule"
 import { TipoPagamento } from "./tipoPagamentoModule"
 
 export interface SubFinancReceber{
     id : number
     financReceberId : string
+    financReceber? : FinancReceber
     parcela : string
     valor : number
     dataVencimento: Date;

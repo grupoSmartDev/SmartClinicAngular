@@ -19,6 +19,9 @@ export class ListarFinancReceberComponent {
   @ViewChild(ModalFinanceiroReceber) modalComponent!: ModalFinanceiroReceber;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
+
+  expandedRows: Set<number> = new Set();
+
   lista: FinancReceber[] = [];
   ccLista : CentroDeCusto[] = [];
   errorMessage: string = '';
@@ -129,5 +132,21 @@ export class ListarFinancReceberComponent {
   onSearch(): void {
     this.currentPage = 1;
     this.loadData();
+  }
+
+  toggleRow(id: string): void {
+
+    let idConvertido = parseInt(id);
+    if (this.expandedRows.has(idConvertido)) {
+      this.expandedRows.delete(idConvertido);
+    } else {
+      this.expandedRows.add(idConvertido);
+    }
+  }
+
+  isExpanded(id: string): boolean {
+
+    let idConvertido = parseInt(id);
+    return this.expandedRows.has(idConvertido);
   }
 }

@@ -4,6 +4,7 @@ import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
 import { FinancReceber } from '../_module/financReceberModule';
 import { environment } from '../../environments/environment';
+import { SubFinancReceber } from '../_module/subFinancReceberModule';
 
 @Injectable({
   providedIn: 'root'
@@ -77,7 +78,7 @@ export class FinancReceberService {
     vencimentoInicio? : string,
     vencimentoFim? : string,
     paginar?: boolean
-  ): Observable<ResponseModel<FinancReceber[]>> {
+  ): Observable<ResponseModel<SubFinancReceber[]>> {
     
     let params = new HttpParams()
 
@@ -89,7 +90,7 @@ export class FinancReceberService {
     if (vencimentoFim) params = params.set('vencimentoFim', vencimentoFim);
     if (paginar) params = params.set('paginar', paginar);
     
-    return this.http.get<ResponseModel<FinancReceber[]>>(`${this.baseURL}ListarSintetico`, { params });
+    return this.http.get<ResponseModel<SubFinancReceber[]>>(`${this.baseURL}ListarSintetico`, { params });
   }
 
   // CRUD

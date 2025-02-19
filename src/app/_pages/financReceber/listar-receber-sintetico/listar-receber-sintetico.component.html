@@ -1,1 +1,133 @@
-<p>listar-receber-sintetico works!</p>
+<app-label-nome
+  [nomeTela]="'Contas a Receber - Sintético'"
+  (adicionarClicked)="openModal('')"
+></app-label-nome>
+
+<div class="row mb-2">
+  <div class="col-md-2">
+    <input
+      type="text"
+      class="form-control form-control-sm"
+      placeholder="Filtrar por código"
+      [(ngModel)]="idPaiFiltro"
+    />
+  </div>
+
+  <div class="col-md-3">
+    <input
+      type="text"
+      class="form-control form-control-sm"
+      placeholder="Filtrar por descrição"
+      [(ngModel)]="parcelaNumeroFiltro"
+    />
+  </div>
+  <div class="col-md-2">
+    <input
+      type="text"
+      class="form-control form-control-sm"
+      placeholder="Filtrar por CPF"
+      [(ngModel)]="vencimentoInicio"
+    />
+  </div>
+  <div class="col-md-2">
+    <input
+      type="date"
+      class="form-control form-control-sm"
+      placeholder="Filtrar por data de emissão"
+      [(ngModel)]="vencimentoFim"
+    />
+  </div>
+
+  <div class="col-md-1">
+    <button type="button" class="btn btn-sm btn-secondary" (click)="onSearch()">
+      <i class="bi bi-search"></i>
+    </button>
+  </div>
+</div>
+
+<div class="row mb-2">
+  <div class="col-12">
+    @if (listaSintetico.length > 0) {
+    <div class="table-responsive">
+      <table class="table table-striped table-centered mb-0">
+        <thead>
+          <tr>
+            <th>Cód.</th>
+            <th>Data Emissão</th>
+            <th>Descrição</th>
+            <th class="text-end"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listaSintetico">
+            <!-- Renderiza dinamicamente as células com base nas colunas -->
+            <td>
+              {{ item.id }}
+            </td>
+            <td>
+              {{ item.dataVencimento | datePtBr }}
+            </td>
+            <td>
+              {{item.financReceber?.descricao}}
+            </td>
+            <td>
+              {{ item.valor | currency:'BRL' }}
+            </td>  
+            <td class="text-end">
+              <a
+                href="javascript:void(0);"
+                (click)="openModal(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-pencil text-warning"></i>
+                <span class="tooltip-text">Edição rapida</span>
+              </a>
+              <a
+                href="javascript:void(0);"
+                (click)="promptDelete(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-trash3 text-danger"></i>
+                <span class="tooltip-text">Excluir</span>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    } @else {
+    <div class="alert alert-danger" role="alert">
+      Nenhum registro encontrado
+    </div>
+    <img src="public\image\semRegistro.svg" alt="" />
+    }
+  </div>
+</div>
+
+<!-- Paginação Bootstrap -->
+<div class="row justify-content-center">
+  <div class="">
+    <pagination
+      [totalItems]="totalItems"
+      [(ngModel)]="currentPage"
+      [itemsPerPage]="pageSize"
+      (pageChanged)="onPageChange($event.page)"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+    >
+    </pagination>
+  </div>
+</div>
+
+<!-- listar.component.html -->
+<app-modal-financ-receber
+  (dadosAtualizado)="atualizarLista()"
+></app-modal-financ-receber>
+
+<app-confirm-dialog
+  #confirmDialog
+  (onConfirm)="confirmDelete()"
+  (onCancel)="cancelDelete()"
+></app-confirm-dialog>

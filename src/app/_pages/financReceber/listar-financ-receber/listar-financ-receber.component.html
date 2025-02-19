@@ -1,5 +1,5 @@
 <app-label-nome
-  [nomeTela]="'Contas a Receber'"
+  [nomeTela]="'Contas a Receber - Analítico'"
   (adicionarClicked)="openModal('')"
 ></app-label-nome>
 
@@ -66,43 +66,81 @@
       <table class="table table-striped table-centered mb-0">
         <thead>
           <tr>
+            <th></th>
             <th>Cód.</th>
             <th>Data Emissão</th>
             <th>Descrição</th>
+            <th>Valor</th>
             <th class="text-end"></th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of lista">
-            <!-- Renderiza dinamicamente as células com base nas colunas -->
-            <td>
-              {{ item.id }}
-            </td>
-            <td>
-              {{ item.dataEmissao | datePtBr }}
-            </td>
-            <td>
-              {{ item.descricao }}
-            </td>
-            <td class="text-end">
-              <a
-                href="javascript:void(0);"
-                (click)="openModal(item)"
-                class="action-icon btn-tooltip"
-              >
-                <i class="bi bi-pencil text-warning"></i>
-                <span class="tooltip-text">Edição rapida</span>
-              </a>
-              <a
-                href="javascript:void(0);"
-                (click)="promptDelete(item)"
-                class="action-icon btn-tooltip"
-              >
-                <i class="bi bi-trash3 text-danger"></i>
-                <span class="tooltip-text">Excluir</span>
-              </a>
-            </td>
-          </tr>
+          @for (item of lista; track item.id) {
+            <!-- Main row -->
+            <tr>
+              <td>
+                <button 
+                  class="btn btn-sm btn-link" 
+                  (click)="toggleRow(item.id)"
+                  *ngIf="item.subFinancReceber"
+                >
+                  <i class="bi" [ngClass]="{'bi-chevron-down': isExpanded(item.id), 'bi-chevron-right': !isExpanded(item.id)}"></i>
+                </button>
+              </td>
+              <td>{{ item.id }}</td>
+              <td>{{ item.dataEmissao | datePtBr }}</td>
+              <td>{{ item.descricao }}</td>
+              <td>{{ item.valor | currencyPtBr }}</td>
+              <td class="text-end">
+                <a
+                  href="javascript:void(0);"
+                  (click)="openModal(item)"
+                  class="action-icon btn-tooltip"
+                >
+                  <i class="bi bi-pencil text-warning"></i>
+                  <span class="tooltip-text">Edição rapida</span>
+                </a>
+                <a
+                  href="javascript:void(0);"
+                  (click)="promptDelete(item)"
+                  class="action-icon btn-tooltip"
+                >
+                  <i class="bi bi-trash3 text-danger"></i>
+                  <span class="tooltip-text">Excluir</span>
+                </a>
+              </td>
+            </tr>
+            <!-- Expanded row for child items -->
+            @if (isExpanded(item.id) && item.subFinancReceber ) {
+              @for (subItem of item.subFinancReceber; track subItem.id) {
+                <tr class="table-light">
+                  <td></td>
+                  <td><small>{{ subItem.id }}</small></td>
+                  <td><small>{{ subItem.dataVencimento | datePtBr }}</small></td>
+                  <td><strong>{{ 'Parcela n° ' + subItem.parcela + '  ' + subItem.observacao}}</strong></td>
+                  <td><strong>{{ subItem.valor | currencyPtBr}}</strong></td>
+                  <td class="text-end">
+                    <a
+                      href="javascript:void(0);"
+                      (click)="openModal(subItem)"
+                      class="action-icon btn-tooltip"
+                    >
+                      <i class="bi bi-pencil text-warning"></i>
+                      <span class="tooltip-text">Edição rapida</span>
+                    </a>
+                    <a
+                      href="javascript:void(0);"
+                      (click)="promptDelete(subItem)"
+                      class="action-icon btn-tooltip"
+                    >
+                      <i class="bi bi-trash3 text-danger"></i>
+                      <span class="tooltip-text">Excluir</span>
+                    </a>
+                  </td>
+                </tr>
+              }
+            }
+          }
         </tbody>
       </table>
     </div>
