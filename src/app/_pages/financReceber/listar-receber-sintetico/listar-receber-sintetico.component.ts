@@ -51,6 +51,7 @@ export class ListarReceberSinteticoComponent {
         if (data.dados) {
           console.log(data.dados)
           this.listaSintetico = data.dados;
+          this.totalItems = data.totalCount ?? 0;
         }
       },
       error: (err) => {

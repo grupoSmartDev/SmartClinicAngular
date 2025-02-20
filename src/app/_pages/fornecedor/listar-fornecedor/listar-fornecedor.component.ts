@@ -46,7 +46,7 @@ export class ListarFornecedorComponent {
     ).subscribe({
       next: (data) => {
         this.lista = data.dados;
-        this.totalItems = data.totalCount;
+        this.totalItems = data.totalCount ?? 0;
       },
       error: (err) => {
         (this.errorMessage = err),
