@@ -35,11 +35,28 @@ export class ListarReceberSinteticoComponent {
   vencimentoFim?: string = '';
   ccFiltro?: string = '';
   paginar: boolean = true;
+  dataAtualFiltro: Date = new Date(); 
 
   constructor(private financReceberService: FinancReceberService, private toast: ToastrService, private ccService : CentroDeCustoService) { }
 
   ngOnInit(): void {
     this.loadData();
+    this.dataAtualFiltro = new Date();
+  }
+
+  isOverdue(dataVencimento: string | Date): boolean {
+    // Converte para Date se for string
+    const vencimentoDate = typeof dataVencimento === 'string' 
+      ? new Date(dataVencimento) 
+      : dataVencimento;
+
+    // Remove o horário da comparação, focando apenas na data
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    vencimentoDate.setHours(0, 0, 0, 0);
+
+    // Verifica se a data de vencimento é anterior à data atual
+    return vencimentoDate < hoje;
   }
 
   loadData(): void {

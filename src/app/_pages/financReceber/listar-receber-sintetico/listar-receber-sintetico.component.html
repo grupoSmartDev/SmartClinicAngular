@@ -54,7 +54,11 @@
           <tr>
             <th>Cód.</th>
             <th>Data Emissão</th>
+            <th>Data Vencimento</th>
+            <th>Data Pagamento</th>
             <th>Descrição</th>
+            <th>Valor</th>
+            <th>Status</th>
             <th class="text-end"></th>
           </tr>
         </thead>
@@ -65,7 +69,13 @@
               {{ item.id }}
             </td>
             <td>
+              {{ item.financReceber?.dataEmissao| datePtBr }}
+            </td>
+            <td>
               {{ item.dataVencimento | datePtBr }}
+            </td>
+            <td>
+              {{ item.dataPagamento | datePtBr }}
             </td>
             <td>
               {{item.financReceber?.descricao}}
@@ -73,14 +83,23 @@
             <td>
               {{ item.valor | currency:'BRL' }}
             </td>  
+            <td>
+              @if (item.dataPagamento) {
+                <span class="span-status-green">Pago</span>
+              } @else if (isOverdue(item.dataVencimento)) {
+                <span class="span-status-red">Vencido</span>
+              } @else {
+                <span class="span-status-orange">A Vencer</span>
+              }
+            </td>
             <td class="text-end">
               <a
                 href="javascript:void(0);"
                 (click)="openModal(item)"
                 class="action-icon btn-tooltip"
               >
-                <i class="bi bi-pencil text-warning"></i>
-                <span class="tooltip-text">Edição rapida</span>
+                <i class="bi bi-cash-stack text-warning"></i>
+                <span class="tooltip-text">Baixa</span>
               </a>
               <a
                 href="javascript:void(0);"

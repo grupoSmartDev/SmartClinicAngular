@@ -17,7 +17,7 @@ export class AtividadeService {
   Listar(
     pageNumber?: number,
     pageSize?: number,
-    atividadeFiltro? : string,
+    tituloFiltro? : string,
     codigoFiltro? : string,
     descricaoFiltro? : string,
     paginar?: boolean
@@ -27,7 +27,7 @@ export class AtividadeService {
 
     if (pageNumber) params = params.set('pageNumber', pageNumber.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
-    if (atividadeFiltro) params = params.set('atividadeFiltro', atividadeFiltro);
+    if (tituloFiltro) params = params.set('tituloFiltro', tituloFiltro);
     if (codigoFiltro) params = params.set('codigoFiltro', codigoFiltro);
     if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
     if (paginar) params = params.set('paginar', paginar);

@@ -72,10 +72,21 @@ export class AgendaComponent implements OnInit, AfterViewInit {
     this.loadEvents();
   }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
     const modalElement = document.getElementById('modalAgenda');
     if (modalElement) {
       this.bootstrapModal = new bootstrap.Modal(modalElement);
+      
+      // Evento acionado quando o modal é totalmente visível
+      modalElement.addEventListener('shown.bs.modal', () => {
+        if (this.modalAgenda) {
+          // Atualize diretamente as propriedades do componente filho
+          this.modalAgenda.selectedDate = this.selectedDate;
+          this.modalAgenda.selectedEvent = this.selectedEvent;
+          // Chame o método de inicialização de dados
+          this.modalAgenda.initializeModalData();
+        }
+      });
     }
   }
 
@@ -98,8 +109,8 @@ export class AgendaComponent implements OnInit, AfterViewInit {
     return {
       id: agenda.id.toString(),
       title: agenda.titulo,
-      start: new Date(agenda.dataCompomisso).toISOString(),
-      end: agenda.DataCompromissoFim ? new Date(agenda.DataCompromissoFim).toISOString() : undefined
+      start: new Date(agenda.dataCompromisso).toISOString(),
+      end: agenda.dataCompromisso + agenda.horaFim ? new Date(agenda.dataCompromisso + agenda.horaFim).toISOString() : undefined
     };
   }
 
@@ -108,6 +119,7 @@ export class AgendaComponent implements OnInit, AfterViewInit {
   }
 
   handleDateClick(arg: DateClickArg): void {
+    debugger
     if (!this.bootstrapModal) {
       this.toastr.error('Erro ao abrir o modal de agendamento', 'Erro');
       return;
@@ -120,6 +132,8 @@ export class AgendaComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.bootstrapModal?.show();
     }, 0);
+    
+    console.log(this.selectedDate, this.selectedEvent);
   }
 
   handleEventClick(arg: EventClickArg): void {
@@ -135,7 +149,7 @@ export class AgendaComponent implements OnInit, AfterViewInit {
       end: arg.event.endStr
     };
     this.selectedDate = arg.event.startStr;
-    
+    console.log(this.selectedDate, this.selectedEvent);
     // Garantir que o modal foi atualizado antes de abrir
     setTimeout(() => {
       this.bootstrapModal?.show();

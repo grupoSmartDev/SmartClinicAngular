@@ -1,346 +1,558 @@
-<div class="modal fade" id="modalAgenda" data-bs-backdrop="static" tabindex="-1">
+<div class="modal fade" id="modalAgenda" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modalAgendaLabel">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content border-0 shadow">
-      <!-- Header com gradiente suave -->
-      <div class="modal-header  py-3">
-        <h5 class="modal-title fs-5 fw-semibold">
-          <i class="bi bi-calendar-check me-2"></i>
+      <!-- Header -->
+      <div class="modal-header py-3" [ngClass]="{'bg-primary text-white': selectedEvent}">
+        <h5 class="modal-title fs-5 fw-semibold" id="modalAgendaLabel">
+          <i class="bi" [ngClass]="selectedEvent ? 'bi-calendar-check' : 'bi-calendar-plus'"></i>
           {{ selectedEvent ? 'Detalhes do Evento' : 'Novo Agendamento' }}
+          <span>{{ selectedEvent?.dataCompromisso }}</span>
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" (click)="fecharModal()"></button>
+        <button type="button" 
+                class="btn-close" 
+                [class.btn-close-white]="selectedEvent"
+                data-bs-dismiss="modal" 
+                (click)="fecharModal()"
+                aria-label="Fechar"></button>
       </div>
 
       <div class="modal-body p-4">
-        <!-- Conteúdo do Evento Existente -->
-        <div *ngIf="selectedEvent" class="card shadow-sm mb-4">
-          <div class="card-body">
-            <div class="d-flex align-items-center mb-3">
-              <i class="bi bi-calendar-event text-primary fs-4 me-2"></i>
-              <h6 class="mb-0">{{ selectedEvent.title }}</h6>
-            </div>
-            <div class="row g-3">
-              <div class="col-md-6">
-                <div class="d-flex align-items-center">
-                  <i class="bi bi-clock text-muted me-2"></i>
-                  <span>{{ selectedEvent.start || 'Não especificado' }} - {{ selectedEvent.end || 'Não especificado' }}</span>
-                </div>
+        <!-- Visualização do Evento -->
+        <ng-container *ngIf="selectedEvent">
+          <div class="card shadow-sm mb-4">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-calendar-event text-primary fs-4 me-2"></i>
+                <h6 class="mb-0">{{ selectedEvent.title }}</h6>
               </div>
-              <div class="col-md-6">
-                <div class="d-flex align-items-center">
-                  <i class="bi bi-calendar text-muted me-2"></i>
-                  <span>{{ selectedEvent.date || selectedEvent.start }}</span>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-clock text-muted me-2"></i>
+                    <span>{{ selectedEvent.start | date:'HH:mm' }} - {{ selectedEvent.end | date:'HH:mm' }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-calendar text-muted me-2"></i>
+                    <span>{{ selectedEvent.date | date:'dd/MM/yyyy' }}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </ng-container>
 
-        <!-- Formulário para Novo Agendamento -->
-        <div *ngIf="!selectedEvent">
-          <form [formGroup]="formulario" class="needs-validation">
-            <!-- Cabeçalho do Agendamento -->
-            <div class="card shadow-sm mb-4">
-              <div class="card-body">
-                <div class="row g-3">
-                  <div class="col-md-2">
-                    <label class="form-label small fw-semibold">Cód.</label>
-                    <input type="text" class="form-control form-control-sm bg-light" formControlName="id" readonly />
+        <!-- Formulário de Agendamento -->
+        <form *ngIf="!selectedEvent" [formGroup]="formulario" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+          <!-- Cabeçalho do Agendamento -->
+          <input type="date" name="dataCompromisso" id="" formControlName="dataCompromisso" hidden>
+          <div class="card shadow-sm mb-4">
+            <div class="card-body">
+              <div class="row g-3">
+                <!-- Campo ID -->
+                <div class="col-md-2">
+                  <label for="agendaId" class="form-label small fw-semibold">Cód.</label>
+                  <input type="text" 
+                         id="agendaId"
+                         class="form-control form-control-sm bg-light" 
+                         formControlName="id" 
+                         readonly />
+                </div>
+                
+                <!-- Campo Título -->
+                <div class="col-md-6">
+                  <label for="titulo" class="form-label small fw-semibold">
+                    Título <span class="text-danger">*</span>
+                  </label>
+                  <input type="text" 
+                         id="titulo"
+                         class="form-control form-control-sm" 
+                         formControlName="titulo" 
+                         placeholder="Digite o título do agendamento"
+                         [class.is-invalid]="formulario.get('titulo')?.invalid && formulario.get('titulo')?.touched" />
+                  <div class="invalid-feedback" *ngIf="formulario.get('titulo')?.errors?.['required']">
+                    O título é obrigatório
                   </div>
-                  <div class="col-md-6">
-                    <label class="form-label small fw-semibold">Título <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control form-control-sm" formControlName="titulo" placeholder="Digite o título do agendamento" />
+                  <div class="invalid-feedback" *ngIf="formulario.get('titulo')?.errors?.['maxlength']">
+                    O título deve ter no máximo 100 caracteres
                   </div>
-                  <div class="col-md-4">
-                    <label class="form-label small fw-semibold">Status <span class="text-danger">*</span></label>
-                    <select class="form-select form-select-sm" formControlName="statusId">
-                      <option value="" disabled>Selecione um status</option>
-                      @for (item of listaStatus; track item.id) {
-                        <option [value]="item.id">{{item.status}}</option>
-                      }
-                    </select>
+                </div>
+                
+                <!-- Campo Status -->
+                <div class="col-md-4">
+                  <label for="status" class="form-label small fw-semibold">
+                    Status <span class="text-danger">*</span>
+                  </label>
+                  <select id="status"
+                          class="form-select form-select-sm" 
+                          formControlName="statusId"
+                          [class.is-invalid]="formulario.get('statusId')?.invalid && formulario.get('statusId')?.touched">
+                    <option value="" disabled>Selecione um status</option>
+                    <option *ngFor="let item of listaStatus" [value]="item.id">
+                      {{item.status}}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Selecione um status
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Informações do Paciente e Horário -->
-            <div class="card shadow-sm mb-4">
-              <div class="card-header bg-light py-3">
-                <h6 class="mb-0 fw-semibold">Informações do Atendimento</h6>
-              </div>
-              <div class="card-body">
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <label class="form-label small fw-semibold">Paciente <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                      <input type="text" 
-                             class="form-control form-control-sm" 
-                             [(ngModel)]="searchTerm"
-                             [ngModelOptions]="{standalone: true}"
-                             placeholder="Buscar paciente..." 
-                             (input)="onSearch()" />
-                      <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPatient">
-                        <i class="bi bi-person-plus"></i>
-                      </button>
-                    </div>
-                    <!-- Lista de Pacientes -->
-                    <div class="position-relative">
-                      <ul class="list-group list-group-flush shadow-sm mt-1 position-absolute w-100" style="z-index: 1000" *ngIf="filteredPatients.length > 0">
-                        <li class="list-group-item list-group-item-action py-2 small" *ngFor="let patient of filteredPatients">
-                          <div class="d-flex justify-content-between">
-                            <span>{{ patient.name }}</span>
-                            <small class="text-muted">{{ patient.cpf }}</small>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
+          <!-- Informações do Atendimento -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light py-3">
+              <h6 class="mb-0 fw-semibold">Informações do Atendimento</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <!-- Campo Paciente -->
+                <div class="col-md-6">
+                  <label for="paciente" class="form-label small fw-semibold">
+                    Paciente <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <input type="text" 
+                           id="paciente"
+                           class="form-control form-control-sm" 
+                           [(ngModel)]="searchTerm"
+                           [ngModelOptions]="{standalone: true}"
+                           placeholder="Buscar paciente..." 
+                           (input)="onSearch()"
+                           [class.is-invalid]="formulario.get('pacienteId')?.invalid && formulario.get('pacienteId')?.touched"
+                           aria-describedby="btnNovoPaciente" />
+                    <button class="btn btn-outline-secondary btn-sm" 
+                            type="button" 
+                            id="btnNovoPaciente"
+                            data-bs-toggle="offcanvas" 
+                            data-bs-target="#offcanvasPatient"
+                            aria-label="Adicionar novo paciente">
+                      <i class="bi bi-person-plus"></i>
+                    </button>
                   </div>
-                  <div class="col-md-3">
-                    <label class="form-label small fw-semibold">Início <span class="text-danger">*</span></label>
-                    <input type="time" class="form-control form-control-sm" formControlName="horaInicio" />
-                  </div>
-                  <div class="col-md-3">
-                    <label class="form-label small fw-semibold">Fim <span class="text-danger">*</span></label>
-                    <input type="time" class="form-control form-control-sm" formControlName="DataCompromissoFim" />
+                  <!-- Lista de Pacientes Sugeridos -->
+                  <div class="position-relative">
+                    <ul class="list-group list-group-flush shadow-sm mt-1 position-absolute w-100" 
+                        style="z-index: 1000" 
+                        *ngIf="filteredPatients.length > 0">
+                      <li class="list-group-item list-group-item-action py-2 small cursor-pointer" 
+                          *ngFor="let patient of filteredPatients"
+                          (click)="selectPatient(patient)"
+                          role="button"
+                          [attr.aria-label]="'Selecionar paciente ' + patient.name">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span>{{ patient.name }}</span>
+                          <small class="text-muted">{{ patient.cpf }}</small>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
                 </div>
 
-                <div class="row g-3 mt-2">
-                  <div class="col-md-6">
-                    <label class="form-label small fw-semibold">Profissional <span class="text-danger">*</span></label>
-                    <select class="form-select form-select-sm" formControlName="profissionalId">
-                      <option value="" disabled>Selecione um profissional</option>
-                      @for (item of listaProfissional; track item.id) {
-                        <option [value]="item.id">{{item.nome}}</option>
-                      }
-                    </select>
+                <!-- Campos de Horário -->
+                <div class="col-md-3">
+                  <label for="horaInicio" class="form-label small fw-semibold">
+                    Início <span class="text-danger">*</span>
+                  </label>
+                  <input type="time" 
+                         id="horaInicio"
+                         class="form-control form-control-sm" 
+                         formControlName="horaInicio"
+                         [class.is-invalid]="(formulario.get('horaInicio')?.invalid || formulario.errors?.['invalidTimeRange']) && formulario.get('horaInicio')?.touched" />
+                  <div class="invalid-feedback" *ngIf="formulario.get('horaInicio')?.errors?.['required']">
+                    Horário inicial é obrigatório
                   </div>
-                  <div class="col-md-6">
-                    <label class="form-label small fw-semibold">Atendimento Avulso</label>
-                    <select class="form-select form-select-sm" formControlName="avulso" (change)="pagamentoAvulso()">
-                      <option value="false">Não</option>
-                      <option value="true">Sim</option>
-                    </select>
+                  <div class="invalid-feedback" *ngIf="formulario.get('horaInicio')?.errors?.['invalidTime']">
+                    Horário inválido
                   </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label for="horaFim" class="form-label small fw-semibold">
+                    Fim <span class="text-danger">*</span>
+                  </label>
+                  <input type="time" 
+                         id="horaFim"
+                         class="form-control form-control-sm" 
+                         formControlName="horaFim"
+                         [class.is-invalid]="(formulario.get('horaFim')?.invalid || formulario.errors?.['invalidTimeRange']) && formulario.get('horaFim')?.touched" />
+                  <div class="invalid-feedback" *ngIf="formulario.get('horaFim')?.errors?.['required']">
+                    Horário final é obrigatório
+                  </div>
+                  <div class="invalid-feedback" *ngIf="formulario.get('horaFim')?.errors?.['invalidTime']">
+                    Horário inválido
+                  </div>
+                  <div class="invalid-feedback" *ngIf="formulario.errors?.['invalidTimeRange']">
+                    Horário final deve ser maior que o inicial
+                  </div>
+                </div>
+              </div>
+
+              <!-- Campos Profissional e Atendimento -->
+              <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                  <label for="profissional" class="form-label small fw-semibold">
+                    Profissional <span class="text-danger">*</span>
+                  </label>
+                  <select id="profissional"
+                          class="form-select form-select-sm" 
+                          formControlName="profissionalId"
+                          [class.is-invalid]="formulario.get('profissionalId')?.invalid && formulario.get('profissionalId')?.touched">
+                    <option value="" disabled>Selecione um profissional</option>
+                    <option *ngFor="let item of listaProfissional" [value]="item.id">
+                      {{item.nome}}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Selecione um profissional
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="avulso" class="form-label small fw-semibold">Atendimento Avulso</label>
+                  <select id="avulso"
+                          class="form-select form-select-sm" 
+                          formControlName="avulso" 
+                          (change)="pagamentoAvulso()">
+                    <option value="false">Não</option>
+                    <option value="true">Sim</option>
+                  </select>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Seção de Pagamento (Condicional) -->
-            @if(camposFinancPagar) {
-              <div class="card shadow-sm mb-4" formGroupName="financReceber">
-                <div class="card-header bg-light py-3">
-                  <h6 class="mb-0 fw-semibold">Informações de Pagamento</h6>
-                </div>
-                <div class="card-body">
-                  <div class="row g-3">
-                    <div class="col-md-4">
-                      <label class="form-label small fw-semibold">Valor Total <span class="text-danger">*</span></label>
-                      <div class="input-group input-group-sm">
-                        <span class="input-group-text">R$</span>
-                        <input type="number" 
-                               class="form-control" 
-                               formControlName="valor"
-                               (change)="onValorTotalChange()"
-                               placeholder="0,00" />
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label small fw-semibold">Parcelas</label>
-                      <input type="number" 
-                             class="form-control form-control-sm" 
-                             formControlName="parcela"
-                             (change)="gerarParcelas()"
-                             min="1" />
-                    </div>
-                    <div class="col-md-4">
-                      <label class="form-label small fw-semibold">Centro de Custo</label>
-                      <select class="form-select form-select-sm" formControlName="centroCustoId">
-                        <option value="" disabled>Selecione</option>
-                        @for (item of listaCentroDeCusto; track item.id) {
-                          <option [value]="item.id">{{item.descricao}}</option>
-                        }
-                      </select>
-                    </div>
+          <!-- Seção de Pagamento -->
+          <div class="card shadow-sm mb-4" 
+               formGroupName="financReceber" 
+               *ngIf="camposFinancPagar"
+               [@fadeInOut]>
+            <div class="card-header bg-light py-3">
+              <h6 class="mb-0 fw-semibold">Informações de Pagamento</h6>
+            </div>
+            <div class="card-body">
+              <!-- Campos de Valor e Parcelas -->
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label for="valorTotal" class="form-label small fw-semibold">
+                    Valor Total <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">R$</span>
+                    <input type="number" 
+                           id="valorTotal"
+                           class="form-control" 
+                           formControlName="valor"
+                           (change)="onValorTotalChange()"
+                           placeholder="0,00"
+                           step="0.01"
+                           min="0.01"
+                           [class.is-invalid]="formulario.get('financReceber.valor')?.invalid && formulario.get('financReceber.valor')?.touched" />
                   </div>
+                  <div class="invalid-feedback" *ngIf="formulario.get('financReceber.valor')?.errors?.['required']">
+                    Valor é obrigatório
+                  </div>
+                  <div class="invalid-feedback" *ngIf="formulario.get('financReceber.valor')?.errors?.['min']">
+                    Valor deve ser maior que zero
+                  </div>
+                </div>
 
-                  <!-- Tabela de Parcelas -->
-                  <div class="table-responsive mt-4" *ngIf="subFinancReceber.controls.length > 0">
-                    <h6 class="fw-semibold mb-3">Parcelas Geradas</h6>
-                    <table class="table table-sm table-hover">
-                      <thead class="table-light">
-                        <tr>
-                          <th>#</th>
-                          <th>Vencimento</th>
-                          <th>Valor</th>
-                          <th>Forma</th>
-                          <th>Tipo</th>
-                          <th>Observação</th>
-                        </tr>
-                      </thead>
-                      <tbody formArrayName="subFinancReceber">
-                        <tr *ngFor="let parcela of subFinancReceber.controls; let i = index" [formGroupName]="i">
-                          <td class="align-middle">{{ i + 1 }}</td>
-                          <td>
-                            <input type="date" class="form-control form-control-sm" formControlName="dataVencimento" />
-                          </td>
-                          <td>
-                            <div class="input-group input-group-sm">
-                              <span class="input-group-text">R$</span>
-                              <input type="number" class="form-control" formControlName="valor" readonly />
-                            </div>
-                          </td>
-                          <td>
-                            <select class="form-select form-select-sm" formControlName="formaPagamentoId">
-                              @for (item of listaFormaPagamento; track item.id) {
-                                <option [value]="item.id">{{item.descricao}}</option>
-                              }
-                            </select>
-                          </td>
-                          <td>
-                            <select class="form-select form-select-sm" formControlName="tipoPagamentoId">
-                              @for (item of listaTipoPagamento; track item.id) {
-                                <option [value]="item.id">{{item.descricao}}</option>
-                              }
-                            </select>
-                          </td>
-                          <td>
-                            <input type="text" class="form-control form-control-sm" formControlName="observacao" placeholder="Obs." />
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                <div class="col-md-4">
+                  <label for="parcelas" class="form-label small fw-semibold">Parcelas</label>
+                  <input type="number" 
+                         id="parcelas"
+                         class="form-control form-control-sm" 
+                         formControlName="parcela"
+                         (change)="gerarParcelas()"
+                         min="1"
+                         [class.is-invalid]="formulario.get('financReceber.parcela')?.invalid && formulario.get('financReceber.parcela')?.touched" />
+                  <div class="invalid-feedback">
+                    Número de parcelas deve ser maior que zero
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label for="centroCusto" class="form-label small fw-semibold">
+                    Centro de Custo <span class="text-danger">*</span>
+                  </label>
+                  <select id="centroCusto"
+                          class="form-select form-select-sm" 
+                          formControlName="centroCustoId"
+                          [class.is-invalid]="formulario.get('financReceber.centroCustoId')?.invalid && formulario.get('financReceber.centroCustoId')?.touched">
+                    <option value="" disabled>Selecione</option>
+                    <option *ngFor="let item of listaCentroDeCusto" [value]="item.id">
+                      {{item.descricao}}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Selecione um centro de custo
                   </div>
                 </div>
               </div>
-            }
 
-            <!-- Informações Adicionais -->
-            <div class="card shadow-sm mb-4">
-              <div class="card-header bg-light py-3">
-                <h6 class="mb-0 fw-semibold">Informações Adicionais</h6>
+              <!-- Tabela de Parcelas -->
+              <div class="table-responsive mt-4" *ngIf="subFinancReceber.controls.length > 0">
+                <h6 class="fw-semibold mb-3">Parcelas Geradas</h6>
+                <table class="table table-sm table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Vencimento</th>
+                      <th scope="col">Valor</th>
+                      <th scope="col">Forma</th>
+                      <th scope="col">Tipo</th>
+                      <th scope="col">Observação</th>
+                    </tr>
+                  </thead>
+                  <tbody formArrayName="subFinancReceber">
+                    <tr *ngFor="let parcela of subFinancReceber.controls; let i = index" [formGroupName]="i">
+                      <td class="align-middle">{{ i + 1 }}</td>
+                      <td>
+                        <input type="date" 
+                               class="form-control form-control-sm" 
+                               formControlName="dataVencimento"
+                               [class.is-invalid]="parcela.get('dataVencimento')?.invalid && parcela.get('dataVencimento')?.touched" />
+                        <div class="invalid-feedback">
+                          Data de vencimento é obrigatória
+                        </div>
+                      </td>
+                      <td>
+                        <div class="input-group input-group-sm">
+                          <span class="input-group-text">R$</span>
+                          <input type="number" 
+                                 class="form-control" 
+                                 formControlName="valor" 
+                                 readonly />
+                        </div>
+                      </td>
+                      <td>
+                        <select class="form-select form-select-sm" 
+                                formControlName="formaPagamentoId"
+                                [class.is-invalid]="parcela.get('formaPagamentoId')?.invalid && parcela.get('formaPagamentoId')?.touched">
+                          <option value="" disabled>Selecione</option>
+                          <option *ngFor="let item of listaFormaPagamento" [value]="item.id">
+                            {{item.descricao}}
+                          </option>
+                        </select>
+                      </td>
+                      <td>
+                        <select class="form-select form-select-sm" 
+                                formControlName="tipoPagamentoId"
+                                [class.is-invalid]="parcela.get('tipoPagamentoId')?.invalid && parcela.get('tipoPagamentoId')?.touched">
+                          <option value="" disabled>Selecione</option>
+                          <option *ngFor="let item of listaTipoPagamento" [value]="item.id">
+                            {{item.descricao}}
+                          </option>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="text" 
+                               class="form-control form-control-sm" 
+                               formControlName="observacao" 
+                               placeholder="Obs."
+                               maxlength="200" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <div class="card-body">
-                <div class="row g-3">
-                  <div class="col-md-4">
-                    <label class="form-label small fw-semibold">Pacote</label>
-                    <select class="form-select form-select-sm" formControlName="pacoteId">
-                      <option value="" disabled>Selecione um pacote</option>
-                      @for (item of listaPlano; track item.id) {
-                        <option [value]="item.id">{{item.descricao}}</option>
-                      }
-                    </select>
-                  </div>
-                  <div class="col-md-4">
-                    <label class="form-label small fw-semibold">Sala <span class="text-danger">*</span></label>
-                    <select class="form-select form-select-sm" formControlName="salaId">
-                      <option value="" disabled>Selecione uma sala</option>
-                      @for (item of listaSala; track item.id) {
-                        <option [value]="item.id">{{item.nome}}</option>
-                      }
-                    </select>
-                  </div>
-                  <div class="col-md-4">
-                    <label class="form-label small fw-semibold">Usuário</label>
-                    <select class="form-select form-select-sm" formControlName="usuarioCriacaoId">
-                      <option value="" disabled>Selecione um usuário</option>
-                      @for (item of listaUsuario; track item.id) {
-                        <option [value]="item.id">{{item.nome}}</option>
-                      }
-                    </select>
+            </div>
+          </div>
+
+          <!-- Informações Adicionais -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light py-3">
+              <h6 class="mb-0 fw-semibold">Informações Adicionais</h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <!-- Pacote -->
+                <div class="col-md-4">
+                  <label for="pacote" class="form-label small fw-semibold">Pacote</label>
+                  <select id="pacote"
+                          class="form-select form-select-sm" 
+                          formControlName="pacoteId">
+                    <option value="" disabled>Selecione um pacote</option>
+                    <option *ngFor="let item of listaPacote" [value]="item.id">
+                      {{item.descricao}}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Sala -->
+                <div class="col-md-4">
+                  <label for="sala" class="form-label small fw-semibold">
+                    Sala <span class="text-danger">*</span>
+                  </label>
+                  <select id="sala"
+                          class="form-select form-select-sm" 
+                          formControlName="salaId"
+                          [class.is-invalid]="formulario.get('salaId')?.invalid && formulario.get('salaId')?.touched">
+                    <option value="" disabled>Selecione uma sala</option>
+                    <option *ngFor="let item of listaSala" [value]="item.id">
+                      {{item.nome}}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Selecione uma sala
                   </div>
                 </div>
 
-                <div class="row mt-3">
-                  <div class="col-12">
-                    <label class="form-label small fw-semibold">Observações</label>
-                    <textarea class="form-control form-control-sm" 
-                              formControlName="observacao" 
-                              rows="3" 
-                              placeholder="Digite aqui observações importantes..."></textarea>
-                  </div>
+                <!-- Usuário -->
+                <div class="col-md-4">
+                  <label for="usuario" class="form-label small fw-semibold">Usuário</label>
+                  <select id="usuario"
+                          class="form-select form-select-sm" 
+                          formControlName="usuarioCriacaoId">
+                    <option value="" disabled>Selecione um usuário</option>
+                    <option *ngFor="let item of listaUsuario" [value]="item.id">
+                      {{item.nome}}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Observações -->
+              <div class="row mt-3">
+                <div class="col-12">
+                  <label for="observacao" class="form-label small fw-semibold">Observações</label>
+                  <textarea id="observacao"
+                          class="form-control form-control-sm" 
+                          formControlName="observacao" 
+                          rows="3" 
+                          placeholder="Digite aqui observações importantes..."
+                          maxlength="500"></textarea>
+                  <small class="text-muted" *ngIf="formulario.get('observacao')?.value">
+                    {{ 500 - formulario.get('observacao')?.value.length }} caracteres restantes
+                  </small>
                 </div>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
 
-      <!-- Footer com botões -->
+      <!-- Footer -->
       <div class="modal-footer border-top bg-light">
-    
-        <button type="button" (click)="onSubmit()" class="btn btn-success">
-          <i class="bi bi-check"></i> Confirmar
-        </button>
-        <button
-          type="button"
-          class="btn btn-danger"
-          data-bs-dismiss="modal" (click)="fecharModal()" 
-          id="btnCancelar"
-          
-        >
-          <i class="bi bi-x"></i> Cancelar
-        </button>
+        <div class="d-flex gap-2">
+          <button type="button" 
+                  class="btn btn-success" 
+                  (click)="onSubmit()"
+                  [disabled]="isLoading">
+            <i class="bi" [ngClass]="isLoading ? 'bi-hourglass-split' : 'bi-check'"></i>
+            {{ isLoading ? 'Processando...' : 'Confirmar' }}
+          </button>
+          <button type="button"
+                  class="btn btn-outline-danger"
+                  data-bs-dismiss="modal" 
+                  (click)="fecharModal()"
+                  [disabled]="isLoading">
+            <i class="bi bi-x"></i> Cancelar
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Offcanvas de Cadastro Rápido -->
-<!-- Offcanvas de Cadastro Rápido -->
 <div class="offcanvas offcanvas-end" 
      tabindex="-1" 
      id="offcanvasPatient" 
-     style="z-index: 1056;">  <!-- Aumentado o z-index para ficar acima do modal -->
+     aria-labelledby="offcanvasPatientLabel"
+     style="z-index: 1056;">
   <div class="offcanvas-header border-bottom">
-    <h5 class="offcanvas-title fw-semibold">
+    <h5 class="offcanvas-title fw-semibold" id="offcanvasPatientLabel">
       <i class="bi bi-person-plus me-2"></i>Cadastro Rápido de Paciente
     </h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    <button type="button" 
+            class="btn-close" 
+            data-bs-dismiss="offcanvas" 
+            aria-label="Fechar"></button>
   </div>
   <div class="offcanvas-body">
-    <form (ngSubmit)="onSubmit()" class="needs-validation">
+    <form #patientForm="ngForm" (ngSubmit)="savePatient()" class="needs-validation" novalidate>
+      <!-- Nome -->
       <div class="mb-3">
-        <label class="form-label small fw-semibold">Nome Completo <span class="text-danger">*</span></label>
+        <label for="patientName" class="form-label small fw-semibold">
+          Nome Completo <span class="text-danger">*</span>
+        </label>
         <input type="text" 
+               id="patientName"
                class="form-control form-control-sm" 
                [(ngModel)]="newPatient.name" 
                name="name" 
                required 
-               placeholder="Digite o nome completo" />
+               minlength="3"
+               placeholder="Digite o nome completo"
+               #name="ngModel"
+               [class.is-invalid]="name.invalid && name.touched" />
+        <div class="invalid-feedback">
+          <span *ngIf="name.errors?.['required']">Nome é obrigatório</span>
+          <span *ngIf="name.errors?.['minlength']">Nome deve ter no mínimo 3 caracteres</span>
+        </div>
       </div>
       
+      <!-- Telefone -->
       <div class="mb-3">
-        <label class="form-label small fw-semibold">Telefone <span class="text-danger">*</span></label>
+        <label for="patientPhone" class="form-label small fw-semibold">
+          Telefone <span class="text-danger">*</span>
+        </label>
         <div class="input-group input-group-sm">
           <span class="input-group-text"><i class="bi bi-phone"></i></span>
           <input type="tel" 
+                 id="patientPhone"
                  class="form-control" 
                  [(ngModel)]="newPatient.phone" 
                  name="phone" 
                  required 
-                 placeholder="(00) 00000-0000" />
+                 placeholder="(00) 00000-0000"
+                 mask="(00) 00000-0000"
+                 #phone="ngModel"
+                 [class.is-invalid]="phone.invalid && phone.touched" />
+        </div>
+        <div class="invalid-feedback" *ngIf="phone.invalid && phone.touched">
+          Telefone é obrigatório
         </div>
       </div>
       
+      <!-- CPF -->
       <div class="mb-3">
-        <label class="form-label small fw-semibold">CPF <span class="text-danger">*</span></label>
+        <label for="patientCpf" class="form-label small fw-semibold">
+          CPF <span class="text-danger">*</span>
+        </label>
         <div class="input-group input-group-sm">
           <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
           <input type="text" 
+                 id="patientCpf"
                  class="form-control" 
                  [(ngModel)]="newPatient.cpf" 
                  name="cpf" 
                  required 
-                 placeholder="000.000.000-00" />
+                 placeholder="000.000.000-00"
+                 mask="000.000.000-00"
+                 #cpf="ngModel"
+                 [class.is-invalid]="cpf.invalid && cpf.touched" />
+        </div>
+        <div class="invalid-feedback" *ngIf="cpf.invalid && cpf.touched">
+          CPF é obrigatório
         </div>
       </div>
 
+      <!-- Botões -->
       <div class="d-grid gap-2">
-        <button type="submit" class="btn btn-primary btn-sm">
-          <i class="bi bi-save me-1"></i>Salvar Paciente
+        <button type="submit" 
+                class="btn btn-primary btn-sm"
+                [disabled]="patientForm.invalid || isLoading">
+          <i class="bi" [ngClass]="isLoading ? 'bi-hourglass-split' : 'bi-save'"></i>
+          {{ isLoading ? 'Salvando...' : 'Salvar Paciente' }}
         </button>
-        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="offcanvas">
+        <button type="button" 
+                class="btn btn-outline-secondary btn-sm" 
+                data-bs-dismiss="offcanvas"
+                [disabled]="isLoading">
           <i class="bi bi-x-lg me-1"></i>Cancelar
         </button>
       </div>
