@@ -19,7 +19,7 @@ export class ListaAtividadeComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: Atividade;
-
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
     //paginacao
     totalItems: number = 0;
     pageSize: number = 3;
@@ -105,5 +105,17 @@ export class ListaAtividadeComponent {
   onSearch(): void {
     this.currentPage = 1;
     this.loadData();
+  }
+
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+  
+  limparFiltros() {
+    this.atividadeFiltro  = '';
+    this.codigoFiltro  = '';
+    this.descricaoFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
   }
 }
