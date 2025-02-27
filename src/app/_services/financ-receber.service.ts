@@ -47,10 +47,11 @@ export class FinancReceberService {
     pageSize?: number,
     descricaoFiltro? : string,
     idFiltro? : string,
-    dataEmissaoFiltro? : string,
-    pacienteFiltro? : string,
-    pacienteIdFiltro? : string,
     ccFiltro? : string,
+    pacienteIdFiltro? : string,
+    dataBaseFiltro?: string,
+    dataFiltroInicio?: Date,
+    dataFiltroFim?: Date,
     paginar?: boolean
   ): Observable<ResponseModel<FinancReceber[]>> {
     
@@ -60,11 +61,24 @@ export class FinancReceberService {
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
     if (idFiltro) params = params.set('idFiltro', idFiltro);
-    if (dataEmissaoFiltro) params = params.set('dataEmissaoFiltro', dataEmissaoFiltro);
-    if (pacienteFiltro) params = params.set('pacienteFiltro', pacienteFiltro);
+    if (dataBaseFiltro) params = params.set('dataBaseFiltro', dataBaseFiltro);
     if (pacienteIdFiltro) params = params.set('pacienteIdFiltro', pacienteIdFiltro);
     if (ccFiltro) params = params.set('ccFiltro', ccFiltro);
     if (paginar) params = params.set('paginar', paginar);
+
+    if (dataFiltroInicio) {
+      const dataFormatada = this.formatarDataParaAPI(dataFiltroInicio);
+      if (dataFormatada) {
+        params = params.set('dataFiltroInicio', dataFormatada);
+      }
+    }
+    
+    if (dataFiltroFim) {
+      const dataFormatada = this.formatarDataParaAPI(dataFiltroFim);
+      if (dataFormatada) {
+        params = params.set('dataFiltroFim', dataFormatada);
+      }
+    }
     
     return this.http.get<ResponseModel<FinancReceber[]>>(`${this.baseURL}ListarAnalitico`, { params });
   }
