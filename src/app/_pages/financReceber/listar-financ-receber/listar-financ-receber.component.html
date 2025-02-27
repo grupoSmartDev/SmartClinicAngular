@@ -71,6 +71,7 @@
             <th>Data Emissão</th>
             <th>Descrição</th>
             <th>Valor</th>
+            <th></th>
             <th class="text-end"></th>
           </tr>
         </thead>
@@ -91,6 +92,7 @@
               <td>{{ item.dataEmissao | datePtBr }}</td>
               <td>{{ item.descricao }}</td>
               <td>{{ item.valor | currencyPtBr }}</td>
+              <td></td>
               <td class="text-end">
                 <a
                   href="javascript:void(0);"
@@ -110,8 +112,21 @@
                 </a>
               </td>
             </tr>
-            <!-- Expanded row for child items -->
-            @if (isExpanded(item.id) && item.subFinancReceber ) {
+            
+            <!-- Expanded section for child items with its own header -->
+            @if (isExpanded(item.id) && item.subFinancReceber) {
+              <!-- Subtable header -->
+              <tr class="table-primary">
+                <td></td>
+                <td><strong>Código</strong></td>
+                <td><strong>Data Vencimento</strong></td>
+                <td><strong>Detalhes</strong></td>
+                <td><strong>Valor Parcela</strong></td>
+                <td><strong>Status</strong></td>
+                <td><strong></strong></td>
+              </tr>
+              
+              <!-- Subtable rows -->
               @for (subItem of item.subFinancReceber; track subItem.id) {
                 <tr class="table-light">
                   <td></td>
@@ -119,6 +134,15 @@
                   <td><small>{{ subItem.dataVencimento | datePtBr }}</small></td>
                   <td><strong>{{ 'Parcela n° ' + subItem.parcela + '  ' + subItem.observacao}}</strong></td>
                   <td><strong>{{ subItem.valor | currencyPtBr}}</strong></td>
+                  <td>
+                    @if (subItem.dataPagamento) {
+                      <span class="span-status-green">Pago</span>
+                    } @else if (isOverdue(subItem.dataVencimento)) {
+                      <span class="span-status-red">Vencido</span>
+                    } @else {
+                      <span class="span-status-orange">A Vencer</span>
+                    }
+                  </td>
                   <td class="text-end">
                     <a
                       href="javascript:void(0);"
@@ -128,14 +152,6 @@
                       <i class="bi bi-cash-stack text-warning"></i>
                       <span class="tooltip-text">Baixar parcela</span>
                     </a>
-                    <!-- <a
-                      href="javascript:void(0);"
-                      (click)="promptDelete(subItem)"
-                      class="action-icon btn-tooltip"
-                    >
-                      <i class="bi bi-trash3 text-danger"></i>
-                      <span class="tooltip-text">Excluir</span>
-                    </a> -->
                   </td>
                 </tr>
               }

@@ -167,4 +167,19 @@ export class ListarFinancReceberComponent {
     let idConvertido = parseInt(id);
     return this.expandedRows.has(idConvertido);
   }
+  //QUANDO FOR REFATORAR, DEIXAR ISSO EM UM HELPER
+  isOverdue(dataVencimento: string | Date): boolean {
+    // Converte para Date se for string
+    const vencimentoDate = typeof dataVencimento === 'string' 
+      ? new Date(dataVencimento) 
+      : dataVencimento;
+
+    // Remove o horário da comparação, focando apenas na data
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    vencimentoDate.setHours(0, 0, 0, 0);
+
+    // Verifica se a data de vencimento é anterior à data atual
+    return vencimentoDate < hoje;
+  }
 }
