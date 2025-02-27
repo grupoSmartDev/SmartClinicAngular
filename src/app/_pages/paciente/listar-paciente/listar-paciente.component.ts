@@ -29,6 +29,7 @@ export class ListarPacienteComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dataParaExcluir!:Paciente;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;
@@ -358,5 +359,18 @@ openfichaAvaliacao(paciente: any) {
   onSearch(): void {
     this.currentPage = 1;
     this.loadData();
+  }
+
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+  
+  limparFiltros() {
+    this.nomeFiltro = '';
+    this.idFiltro = '';
+    this.cpfFiltro = '';
+    this.celularFiltro  = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
   }
 }
