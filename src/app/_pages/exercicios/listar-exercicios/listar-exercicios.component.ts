@@ -20,6 +20,7 @@ export class ListarExerciciosComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: Exercicio;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
     //paginacao
     totalItems: number = 0;
     pageSize: number = 10;
@@ -104,6 +105,18 @@ export class ListarExerciciosComponent {
   onSearch(): void {
     this.currentPage = 1;
     this.loadData();
+  }
+
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+  
+  limparFiltros() {
+    this.descricaoFiltro = '';
+    this.idFiltro = '';
+    this.exercicioFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
   }
 
 }
