@@ -73,22 +73,47 @@ export class FinancReceberService {
   ListarSintetico(
     page?: number,
     pageSize?: number,
-    idPaiFiltro? : string,
-    parcelaNumeroFiltro? : string,
-    vencimentoInicio? : string,
-    vencimentoFim? : string,
+    idPaiFiltro?: string,
+    parcelaNumeroFiltro?: string,
+    dataBaseFiltro?: string,
+    dataFiltroInicio?: Date,
+    dataFiltroFim?: Date,
+    parcelasVencidasFiltro?: boolean,
     paginar?: boolean
   ): Observable<ResponseModel<SubFinancReceber[]>> {
     
-    let params = new HttpParams()
-
-    if (page) params = params.set('page', page.toString());
+    let params = new HttpParams();
+  
+    if (page) params = params.set('pageNumber', page.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (idPaiFiltro) params = params.set('idPaiFiltro', idPaiFiltro);
     if (parcelaNumeroFiltro) params = params.set('parcelaNumeroFiltro', parcelaNumeroFiltro);
-    if (vencimentoInicio) params = params.set('vencimentoInicio', vencimentoInicio);
-    if (vencimentoFim) params = params.set('vencimentoFim', vencimentoFim);
-    if (paginar) params = params.set('paginar', paginar);
+    
+    // Melhor formatação de datas para API .NET
+    if (dataFiltroInicio) {
+      const dataFormatada = this.formatarDataParaAPI(dataFiltroInicio);
+      if (dataFormatada) {
+        params = params.set('dataFiltroInicio', dataFormatada);
+      }
+    }
+    
+    if (dataFiltroFim) {
+      const dataFormatada = this.formatarDataParaAPI(dataFiltroFim);
+      if (dataFormatada) {
+        params = params.set('dataFiltroFim', dataFormatada);
+      }
+    }
+    
+    // Parâmetros booleanos precisam ser convertidos explicitamente para string
+    if (parcelasVencidasFiltro !== undefined) {
+      params = params.set('parcelasVencidasFiltro', parcelasVencidasFiltro.toString());
+    }
+    
+    if (dataBaseFiltro) params = params.set('dataBaseFiltro', dataBaseFiltro);
+    
+    if (paginar !== undefined) {
+      params = params.set('paginar', paginar.toString());
+    }
     
     return this.http.get<ResponseModel<SubFinancReceber[]>>(`${this.baseURL}ListarSintetico`, { params });
   }
@@ -109,5 +134,30 @@ export class FinancReceberService {
   buscarClientes(query: string): Observable<any[]> {
     return this.http.get<any[]>(`https://api.example.com/clientes?nome=${query}`);
   }
+
+  BaixarParcela(subFinancReceber : SubFinancReceber) : Observable<ResponseModel<SubFinancReceber>>{
+    return this.http.put<ResponseModel<SubFinancReceber>>(`${this.baseURL}BaixarParcela`,subFinancReceber)
+  }
   
+
+  private formatarDataParaAPI(data: any): string {
+    // Verifica se o valor é uma string (formato do input date HTML)
+    if (typeof data === 'string') {
+      // Se já estiver no formato YYYY-MM-DD, apenas retorna
+      if (data.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        return data;
+      }
+      // Tenta converter para Date se for outro formato de string
+      return new Date(data).toISOString().split('T')[0];
+    }
+    
+    // Verifica se é um objeto Date válido
+    if (data instanceof Date && !isNaN(data.getTime())) {
+      return data.toISOString().split('T')[0];
+    }
+    
+    // Caso não seja possível converter, retorna string vazia
+    console.warn('Formato de data inválido:', data);
+    return '';
+  }
 }

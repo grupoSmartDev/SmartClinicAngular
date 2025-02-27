@@ -9,6 +9,7 @@ import { FinancReceber } from '../../../_module/financReceberModule';
 import { ModalFinanceiroReceber } from '../modal-financ-receber/modal-financ-receber.component';
 import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
+import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 
 @Component({
   selector: 'app-listar-financ-receber',
@@ -39,6 +40,8 @@ export class ListarFinancReceberComponent {
   pacienteIdFiltro?: string = '';
   ccFiltro?: string = '';
   paginar: boolean = true;
+
+  parcelaSelecionada: SubFinancReceber = {} as SubFinancReceber;
 
   constructor(private financReceberService: FinancReceberService, private toast: ToastrService, private ccService : CentroDeCustoService) { }
 
@@ -90,6 +93,20 @@ export class ListarFinancReceberComponent {
       const modal = new bootstrap.Modal(modalElement);
       modal.show();
     }
+  }
+
+  openModalBaixa(item: SubFinancReceber) {
+    // Importante: primeiro atualize os dados, depois abra o modal
+    this.parcelaSelecionada = { ...item }; // Criando uma cópia para não afetar o objeto original
+    
+    // Aguarde a próxima iteração do change detection antes de abrir o modal
+    setTimeout(() => {
+      const modalElement = document.getElementById('modalBaixaParcela');
+      if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+      }
+    }, 0);
   }
 
   Excluir(financReceber: FinancReceber) {

@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
 import * as bootstrap from 'bootstrap';
 import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
+import { BaixaFinancReceberSubComponent } from '../../../_components/baixa-financ-receber-sub/baixa-financ-receber-sub.component';
 
 @Component({
   selector: 'app-listar-receber-sintetico',
@@ -16,6 +17,7 @@ import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 })
 export class ListarReceberSinteticoComponent {
   @ViewChild(ModalFinanceiroReceber) modalComponent!: ModalFinanceiroReceber;
+  @ViewChild(BaixaFinancReceberSubComponent) modalBaixaComponent!: BaixaFinancReceberSubComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
   lista: FinancReceber[] = [];
@@ -24,6 +26,7 @@ export class ListarReceberSinteticoComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: SubFinancReceber;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;
@@ -31,17 +34,23 @@ export class ListarReceberSinteticoComponent {
   // filtros
   idPaiFiltro?: string = '';
   parcelaNumeroFiltro?: string = '';
-  vencimentoInicio?: string = '';
-  vencimentoFim?: string = '';
-  ccFiltro?: string = '';
+  dataBaseFiltro: string = "V";
+  dataFiltroInicio: Date = new Date();
+  dataFiltroFim: Date = new Date();
+  parcelasVencidasFiltro?: boolean = false;
   paginar: boolean = true;
+
   dataAtualFiltro: Date = new Date(); 
+  parcelaSelecionada: SubFinancReceber = {} as SubFinancReceber;
 
   constructor(private financReceberService: FinancReceberService, private toast: ToastrService, private ccService : CentroDeCustoService) { }
 
   ngOnInit(): void {
     this.loadData();
     this.dataAtualFiltro = new Date();
+
+    this.dataFiltroInicio = this.formatarDataParaInput(new Date());
+    this.dataFiltroFim = this.formatarDataParaInput(new Date());
   }
 
   isOverdue(dataVencimento: string | Date): boolean {
@@ -61,8 +70,8 @@ export class ListarReceberSinteticoComponent {
 
   loadData(): void {
     this.financReceberService.ListarSintetico(
-      this.currentPage,this.pageSize,this.idPaiFiltro,this.parcelaNumeroFiltro,
-      this.vencimentoInicio,this.vencimentoFim,this.paginar
+      this.currentPage,this.pageSize,this.idPaiFiltro,this.parcelaNumeroFiltro, this.dataBaseFiltro,
+      this.dataFiltroInicio, this.dataFiltroFim,this.parcelasVencidasFiltro, this.paginar
     ).subscribe({
       next: (data) => {
         if (data.dados) {
@@ -148,4 +157,45 @@ export class ListarReceberSinteticoComponent {
     this.currentPage = 1;
     this.loadData();
   }
+
+  limparFiltros() {
+    this.idPaiFiltro = undefined;
+    this.parcelaNumeroFiltro = undefined;
+    this.dataBaseFiltro = "V";
+    this.dataFiltroInicio = this.formatarDataParaInput(new Date());
+    this.dataFiltroFim = this.formatarDataParaInput(new Date());
+    this.parcelasVencidasFiltro = false;
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
+  }
+
+  
+
+// Adicione este método no seu componente:
+toggleFiltros() {
+  this.mostrarFiltros = !this.mostrarFiltros;
+}
+
+formatarDataParaInput(data: Date): any {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const dia = String(data.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
+openModalBaixa(item: SubFinancReceber) {
+  // Importante: primeiro atualize os dados, depois abra o modal
+  this.parcelaSelecionada = { ...item }; // Criando uma cópia para não afetar o objeto original
+  
+  // Aguarde a próxima iteração do change detection antes de abrir o modal
+  setTimeout(() => {
+    const modalElement = document.getElementById('modalBaixaParcela');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }, 0);
+}
+
+
 }

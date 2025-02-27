@@ -1,5 +1,6 @@
 import { FinancReceber } from "./financReceberModule"
 import { FormaPagamento } from "./formaPagamentoModule"
+import { Paciente } from "./pacienteModule"
 import { TipoPagamento } from "./tipoPagamentoModule"
 
 export interface SubFinancReceber{
@@ -8,6 +9,7 @@ export interface SubFinancReceber{
     financReceber? : FinancReceber
     parcela : string
     valor : number
+    valorPago : number
     dataVencimento: Date;
     dataPagamento : Date
     observacao : string
@@ -18,4 +20,5 @@ export interface SubFinancReceber{
     formaPagamento : FormaPagamento
     tipoPagamentoId: string;
     tipoPagamento: TipoPagamento;
+    paciente? : Paciente;
 }
