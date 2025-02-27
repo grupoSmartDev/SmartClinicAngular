@@ -10,6 +10,7 @@ import { ModalFinanceiroReceber } from '../modal-financ-receber/modal-financ-rec
 import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
+import { Paciente } from '../../../_module/pacienteModule';
 
 @Component({
   selector: 'app-listar-financ-receber',
@@ -25,9 +26,11 @@ export class ListarFinancReceberComponent {
 
   lista: FinancReceber[] = [];
   ccLista : CentroDeCusto[] = [];
+  pacienteLista : Paciente[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: FinancReceber;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;
@@ -35,10 +38,13 @@ export class ListarFinancReceberComponent {
   // filtros
   descricaoFiltro?: string = '';
   idFiltro?: string = '';
-  dataEmissaoFiltro?: string = '';
-  pacienteFiltro?: string = '';
+ 
   pacienteIdFiltro?: string = '';
   ccFiltro?: string = '';
+  dataBaseFiltro: string = "V";
+  dataFiltroInicio: Date = new Date();
+  dataFiltroFim: Date = new Date();
+  parcelasVencidasFiltro?: boolean = false;
   paginar: boolean = true;
 
   parcelaSelecionada: SubFinancReceber = {} as SubFinancReceber;
@@ -51,8 +57,9 @@ export class ListarFinancReceberComponent {
 
   loadData(): void {
     this.financReceberService.ListarAnalitico(
-      this.currentPage,this.pageSize,this.descricaoFiltro,this.idFiltro,
-      this.dataEmissaoFiltro,this.pacienteFiltro,this.pacienteIdFiltro,this.ccFiltro, this.paginar
+      this.currentPage,this.pageSize,this.descricaoFiltro,this.idFiltro,this.ccFiltro,
+      this.pacienteIdFiltro,this.dataBaseFiltro,this.dataFiltroInicio, this.dataFiltroFim,
+      this.paginar
     ).subscribe({
       next: (data) => {
         if (data.dados) {
@@ -181,5 +188,25 @@ export class ListarFinancReceberComponent {
 
     // Verifica se a data de vencimento é anterior à data atual
     return vencimentoDate < hoje;
+  }
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  limparFiltros() {
+    this.idFiltro = undefined;
+    this.dataBaseFiltro = "V";
+    this.dataFiltroInicio = this.formatarDataParaInput(new Date());
+    this.dataFiltroFim = this.formatarDataParaInput(new Date());
+    this.parcelasVencidasFiltro = false;
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
+  }
+
+  formatarDataParaInput(data: Date): any {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
   }
 }

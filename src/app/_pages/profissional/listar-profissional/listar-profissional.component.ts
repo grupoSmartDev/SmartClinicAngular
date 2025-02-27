@@ -20,6 +20,7 @@ export class ListarProfissionalComponent {
   errorMessage : string = '';
   idParaExcluir! : string;
   dataParaExcluir! : Profissional
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
     //paginacao
     totalItems: number = 0;
     pageSize: number = 10;
@@ -102,5 +103,18 @@ export class ListarProfissionalComponent {
   filtrar(): void {
     this.currentPage = 1;
     this.loadData();
+  }
+
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+  
+  limparFiltros() {
+    this.nomeFiltro = '';
+    this.idFiltro = '';
+    this.cpfFiltro = '';
+    this.profissaoFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.filtrar();
   }
 }

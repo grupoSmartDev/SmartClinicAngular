@@ -18,6 +18,7 @@ export class ListarProfissaoComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dataParaExcluir!: Profissao;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
 
     //paginacao
     totalItems: number = 0;
@@ -102,4 +103,18 @@ export class ListarProfissaoComponent {
     this.currentPage = 1;
     this.loadData();
   }
+
+
+
+toggleFiltros() {
+  this.mostrarFiltros = !this.mostrarFiltros;
+}
+
+limparFiltros() {
+  this.descricaoFiltro = '';
+  this.profissaoFiltro = '';
+  this.id = '';
+  // Opcional: realizar uma busca após limpar
+  this.filtrar();
+}
 }

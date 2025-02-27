@@ -3,59 +3,87 @@
   (adicionarClicked)="openModal('')"
 ></app-label-nome>
 
-<div class="row mb-2">
-  <div class="col-md-2">
-    <input
-      type="text"
-      class="form-control form-control-sm"
-      placeholder="Filtrar por código"
-      [(ngModel)]="idFiltro"
-    />
-  </div>
-
-  <div class="col-md-3">
-    <input
-      type="text"
-      class="form-control form-control-sm"
-      placeholder="Filtrar por descrição"
-      [(ngModel)]="descricaoFiltro"
-    />
-  </div>
-  <div class="col-md-2">
-    <input
-      type="text"
-      class="form-control form-control-sm"
-      placeholder="Filtrar por CPF"
-      [(ngModel)]="pacienteFiltro"
-    />
-  </div>
-  <div class="col-md-2">
-    <input
-      type="date"
-      class="form-control form-control-sm"
-      placeholder="Filtrar por data de emissão"
-      [(ngModel)]="dataEmissaoFiltro"
-    />
-  </div>
-
-  <div class="col-md-2">
-    <select
-      name=""
-      id=""
-      [(ngModel)]="ccFiltro"
-      class="form-select form-select-sm"
-    >
-      <option value="">Centro de custo</option>
-      @for (item of ccLista; track item.id) {
-      <option value="{{ item.id }}">{{ item.descricao }}</option>
-      }
-    </select>
-  </div>
-
-  <div class="col-md-1">
-    <button type="button" class="btn btn-sm btn-secondary" (click)="onSearch()">
-      <i class="bi bi-search"></i>
+<div class="card mb-3">
+  <div class="card-header bg-light d-flex justify-content-between align-items-center" 
+       (click)="toggleFiltros()" 
+       style="cursor: pointer;">
+    <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros de Pesquisa</h6>
+    <button class="btn btn-sm btn-link text-dark p-0">
+      <i class="bi" [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
     </button>
+  </div>
+  <div class="card-body py-3" [ngClass]="{'d-none': !mostrarFiltros}">
+
+    <div class="row mt-3">
+      <div class="col-md-12 text-end">
+        <button type="button" class="btn btn-sm btn-primary me-2" (click)="onSearch()">
+          <i class="bi bi-search me-1"></i> Pesquisar
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limparFiltros()">
+          <i class="bi bi-x-circle me-1"></i> Limpar Filtros
+        </button>
+      </div>
+    </div>
+    
+    <div class="row g-3 align-items-end">
+      <div class="col-md-2 col-12">
+        <label for="idPaiFiltro" class="form-label small fw-bold">Código</label>
+        <input
+          type="number"
+          id="idPaiFiltro"
+          class="form-control form-control-sm"
+          [(ngModel)]="idFiltro"
+        />
+      </div>
+
+      <div class="col-md-2 col-12">
+        <label for="" class="form-label small fw-bold">Paciente</label>
+        <select name="" id="" class="form-select form-select-sm"
+        [(ngModel)]="pacienteIdFiltro">
+          <option value="">Selecione o Paciente</option>
+          @for (item of pacienteLista; track item.id) {
+            <option value="{{item.id}}">{{item.nome}}</option>
+          }
+        </select> 
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label small fw-bold">Período</label>
+        <select 
+          class="form-select form-select-sm"
+          [(ngModel)]="dataBaseFiltro">
+          <option value="V">Data de Vencimento</option>
+          <option value="E">Data de Emissão</option>
+          <option value="P">Data de Pagamento</option>
+        </select>
+      </div>
+
+      <div class="col-md-5">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text">De</span>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                [(ngModel)]="dataFiltroInicio"
+              />
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text">Até</span>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                [(ngModel)]="dataFiltroFim"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </div>
 </div>
 
