@@ -5,7 +5,8 @@
   }
 
   .hero-section {
-    background-image: url('/assets/image/testebg.png');
+    /* background-image: url('/assets/image/testebg.png'); */
+    background: linear-gradient(to bottom, #058d5f, #065233);
     background-size: cover; /* ou outro valor como 'contain', dependendo da sua necessidade */
     background-repeat: no-repeat;
     background-position: center;
