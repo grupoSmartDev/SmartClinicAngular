@@ -401,3 +401,24 @@ textarea:focus {
     color: white;
     background-color: red;
 }
+
+/* Esconde o checkbox padrão */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  /* Estilo quando o checkbox estiver marcado */
+  input[type="checkbox"]:checked {
+    background-color: green;
+    border-color: green;
+  }
+  
+  /* Adiciona um ícone de check quando estiver marcado */
