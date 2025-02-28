@@ -18,24 +18,25 @@ export class ListaProcedimentoComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   procedimentoParaExcluir!: Procedimento;
-    //paginacao
-    totalItems: number = 0;
-    pageSize: number = 10;
-    currentPage: number = 1;
-    // filtros
-    nomeFiltro? : string = '';
-    idFiltro? : string = '';
-    descricaoFiltro? : string = '';
-    paginar?: boolean
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  //paginacao
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  // filtros
+  nomeFiltro?: string = '';
+  idFiltro?: string = '';
+  descricaoFiltro?: string = '';
+  paginar?: boolean
 
-  constructor(private procedimentoService:ProcedimentoService , private toast: ToastrService) { }
+  constructor(private procedimentoService: ProcedimentoService, private toast: ToastrService) { }
 
   ngOnInit(): void {
     this.loadData();
-  } 
+  }
 
   loadData(): void {
-    this.procedimentoService.Listar(this.currentPage,this.pageSize,this.nomeFiltro,this.idFiltro,this.descricaoFiltro,this.paginar).subscribe({
+    this.procedimentoService.Listar(this.currentPage, this.pageSize, this.nomeFiltro, this.idFiltro, this.descricaoFiltro, this.paginar).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -61,7 +62,7 @@ export class ListaProcedimentoComponent {
     }
   }
 
-  Excluir(procedimento : Procedimento) {
+  Excluir(procedimento: Procedimento) {
     let id = procedimento.id;
     this.procedimentoService.Deletar((id.toString())).subscribe({
       next: (response) => {
@@ -75,12 +76,12 @@ export class ListaProcedimentoComponent {
       }
     });
   }
-  
+
   atualizarLista(): void {
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  promptDelete(dataParaExcluir : any) {
+  promptDelete(dataParaExcluir: any) {
     this.procedimentoParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
@@ -101,5 +102,19 @@ export class ListaProcedimentoComponent {
   onSearch(): void {
     this.currentPage = 1;
     this.loadData();
+  }
+
+
+
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  limparFiltros() {
+    this.nomeFiltro = '';
+    this.idFiltro = '';
+    this.descricaoFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
   }
 }
