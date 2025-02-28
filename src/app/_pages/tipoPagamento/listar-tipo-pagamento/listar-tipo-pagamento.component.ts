@@ -22,6 +22,7 @@ export class ListarTipoPagamentoComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   tipoPagamentoParaExcluir!: TipoPagamento;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
 
     //paginacao
     totalItems: number = 0;
@@ -101,10 +102,21 @@ export class ListarTipoPagamentoComponent {
     this.loadData();
   }
 
-  filtrar(): void {
+  onSearch(): void {
     this.currentPage = 1;
     this.loadData();
   }
+ 
 
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+  
+  limparFiltros() {
+    this.idFiltro = '';
+    this.descricaoFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
+  }
 
 }
