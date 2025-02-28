@@ -12,25 +12,25 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './listar-convenio.component.css'
 })
 export class ListarConvenioComponent implements OnInit {
-constructor(private convenioService: ConvenioService, private toast: ToastrService) {}
+  constructor(private convenioService: ConvenioService, private toast: ToastrService) { }
   @ViewChild(ModalConvenioComponent) modalConvenioComponent!: ModalConvenioComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
-  lista : Convenio[] = [];
+  lista: Convenio[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   convenioParaExcluir!: Convenio;
-
-    //paginacao
-    totalItems: number = 0;
-    pageSize: number = 10;
-    currentPage: number = 1;
-    // filtros
-    idFiltro: string = '';
-    nomeFiltro: string = '';
-    registroAvsFiltro: string = '';
-    telefoneFiltro : string = '';
-    paginar : boolean = true;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  //paginacao
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  // filtros
+  idFiltro: string = '';
+  nomeFiltro: string = '';
+  registroAvsFiltro: string = '';
+  telefoneFiltro: string = '';
+  paginar: boolean = true;
 
 
   colunasConvenios = [
@@ -50,28 +50,28 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
   loadData(): void {
     this.convenioService.Listar(
       this.currentPage,
-      this.pageSize,this.nomeFiltro,this.idFiltro,
-      this.registroAvsFiltro,this.telefoneFiltro,this.paginar = true).subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.lista = data.dados;
-          this.totalItems = data.totalCount ?? 0;
+      this.pageSize, this.nomeFiltro, this.idFiltro,
+      this.registroAvsFiltro, this.telefoneFiltro, this.paginar = true).subscribe({
+        next: (data) => {
+          if (data.dados) {
+            this.lista = data.dados;
+            this.totalItems = data.totalCount ?? 0;
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar Convênio:', err);
+          this.errorMessage = 'Erro ao carregar as Convênio. Tente novamente mais tarde.';
         }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar Convênio:', err);
-        this.errorMessage = 'Erro ao carregar as Convênio. Tente novamente mais tarde.';
-      }
-    })
+      })
   }
 
   editarItem(item: any) {
     console.log('Editando item:', item);
   }
 
-  Excluir(convenio : Convenio) {
+  Excluir(convenio: Convenio) {
     let id = convenio.id;
-    
+
     this.convenioService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Convênio excluído com sucesso:', response);
@@ -89,7 +89,7 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
     console.log('Ação customizada');
   }
 
-  atualizarConvenio(){
+  atualizarConvenio() {
     this.loadData();
   }
   openModal(convenio: any) {
@@ -104,7 +104,7 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
     }
   }
 
-  promptDelete(dataParaExcluir : any) {
+  promptDelete(dataParaExcluir: any) {
     this.convenioParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
@@ -125,5 +125,20 @@ constructor(private convenioService: ConvenioService, private toast: ToastrServi
   onSearch(): void {
     this.currentPage = 1;
     this.loadData();
+  }
+
+
+
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  limparFiltros() {
+    this.idFiltro = '';
+    this.nomeFiltro = '';
+    this.registroAvsFiltro = '';
+    this.telefoneFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
   }
 }
