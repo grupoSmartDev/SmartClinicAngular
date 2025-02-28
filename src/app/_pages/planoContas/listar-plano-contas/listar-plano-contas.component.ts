@@ -102,4 +102,18 @@ export class ListarPlanoContasComponent {
     this.currentPage = 1;
     this.loadData();
   }
+
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
+
+toggleFiltros() {
+  this.mostrarFiltros = !this.mostrarFiltros;
+}
+
+limparFiltros() {
+  this.nomeFiltro = '';
+  this.idFiltro = '';
+  this.tipoFiltro = '';
+  // Opcional: realizar uma busca após limpar
+  this.onSearch();
+}
 }
