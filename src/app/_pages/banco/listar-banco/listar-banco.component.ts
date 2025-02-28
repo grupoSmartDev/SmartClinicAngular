@@ -107,4 +107,19 @@ export class ListarBancoComponent {
     this.currentPage = 1;
     this.loadData();
   }
+
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
+
+toggleFiltros() {
+  this.mostrarFiltros = !this.mostrarFiltros;
+}
+
+limparFiltros() {
+  this.nomeBancoFiltro = '';
+  this.nomeTitularFiltro = '';
+  this.idFiltro = '';
+  this.documentoTitularFiltro = '';
+  // Opcional: realizar uma busca após limpar
+  this.onSearch();
+}
 }
