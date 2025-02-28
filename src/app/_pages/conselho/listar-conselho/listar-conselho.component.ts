@@ -19,6 +19,7 @@ export class ListarConselhoComponent implements OnInit{
   errorMessage: string = '';
   idParaExcluir!: string;
   conselhoParaExcluir!: Conselho;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;
@@ -108,8 +109,21 @@ export class ListarConselhoComponent implements OnInit{
     this.loadData();
   }
 
-  filtrar(): void {
+  onSearch(): void {
     this.currentPage = 1;
     this.loadData();
   }
+
+
+
+toggleFiltros() {
+  this.mostrarFiltros = !this.mostrarFiltros;
+}
+
+limparFiltros() {
+  this.nomeFiltro = '';
+  this.siglaFiltro = '';
+  // Opcional: realizar uma busca após limpar
+  this.onSearch();
+}
 }
