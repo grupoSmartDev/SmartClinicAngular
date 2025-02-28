@@ -40,8 +40,9 @@
                 <thead>
                   <tr>
                     <th>Cód.</th>
-                    <th>Descrição</th>
-                    <th>Tempo (minutos)</th>
+                    <th>Nome</th>
+                    <th>Cód. interno</th>
+                    <th>Tipo</th>
                     <th class="text-end"></th>
                   </tr>
                 </thead>
@@ -55,7 +56,23 @@
                       {{ item.nome }}
                     </td>
                     <td>
-                      {{ item.tipo }} 
+                      {{ item.codigo }}
+                    </td>
+                    <td>
+                      @switch (item.tipo) {
+                        @case ("A") {
+                          <span class="badge bg-success">Ativo</span>
+                        }
+                        @case ("D") {
+                          <span class="badge bg-danger">Despesa</span>
+                        }
+                        @case ("R") {
+                          <span class="badge bg-success">Receita</span>
+                        }
+                        @case ("P") {
+                          <span class="badge bg-danger">Passivo</span>
+                        }
+                      }
                     </td>
                     <td class="text-end">
                       <a

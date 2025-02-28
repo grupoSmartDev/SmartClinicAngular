@@ -41,7 +41,7 @@ export class ListarFinancReceberComponent {
  
   pacienteIdFiltro?: string = '';
   ccFiltro?: string = '';
-  dataBaseFiltro: string = "V";
+  dataBaseFiltro: string = "E";
   dataFiltroInicio: Date = new Date();
   dataFiltroFim: Date = new Date();
   parcelasVencidasFiltro?: boolean = false;
