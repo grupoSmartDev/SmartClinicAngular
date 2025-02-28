@@ -22,14 +22,15 @@ export class ListarCategoriaComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: Categoria;
-    //paginacao
-    totalItems: number = 0;
-    pageSize: number = 10;
-    currentPage: number = 1;
-    // filtros
-    descricaoFiltro: string = '';
-    idFiltro: string = '';
-    paginar : boolean = true;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  //paginacao
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  // filtros
+  descricaoFiltro: string = '';
+  idFiltro: string = '';
+  paginar: boolean = true;
 
   ngOnInit(): void {
     this.loadData();
@@ -40,7 +41,7 @@ export class ListarCategoriaComponent {
   }
 
   loadData(): void {
-    this.categoriaService.Listar(this.currentPage,this.pageSize,this.descricaoFiltro,this.idFiltro,this.paginar).subscribe({
+    this.categoriaService.Listar(this.currentPage, this.pageSize, this.descricaoFiltro, this.idFiltro, this.paginar).subscribe({
       next: (data) => {
         if (data.dados) {
           this.lista = data.dados;
@@ -54,9 +55,9 @@ export class ListarCategoriaComponent {
     });
   }
 
-  
+
   openModal(categoria: any) {
-    
+
     if (categoria.id) {
       this.modal.categoria = categoria;
       this.modal.carregarDados(categoria);
@@ -68,7 +69,7 @@ export class ListarCategoriaComponent {
     }
   }
 
-  promptDelete(dataParaExcluir : any) {
+  promptDelete(dataParaExcluir: any) {
     this.dadosParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
@@ -82,7 +83,7 @@ export class ListarCategoriaComponent {
   }
 
 
-  Excluir(categoria : Categoria) {
+  Excluir(categoria: Categoria) {
     let id = categoria.id;
     this.categoriaService.Deletar(id).subscribe({
       next: (response) => {
@@ -94,7 +95,7 @@ export class ListarCategoriaComponent {
       }
     })
   }
-  
+
   onPageChange(page: number): void {
     this.currentPage = page; // Bootstrap usa paginação iniciando em 1
     this.loadData();
@@ -103,5 +104,18 @@ export class ListarCategoriaComponent {
   onSearch(): void {
     this.currentPage = 1;
     this.loadData();
+  }
+
+
+
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  limparFiltros() {
+    this.descricaoFiltro = '';
+    this.idFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
   }
 }
