@@ -20,6 +20,7 @@ export class ListarCentroDeCustoComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dataParaExcluir!: CentroDeCusto
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
 
   //paginacao
   totalItems: number = 0;
@@ -101,9 +102,24 @@ export class ListarCentroDeCustoComponent {
     this.loadData();
   }
 
-  filtrar(): void {
+  onSearch(): void {
     this.currentPage = 1;
     this.loadData();
   }
+
+
+
+toggleFiltros() {
+  this.mostrarFiltros = !this.mostrarFiltros;
+}
+
+limparFiltros() {
+  this.tipoFiltro = '';
+  this.idFiltro = '';
+  this.descricaoFiltro = '';
+  this.subCentroDeCustoFiltro = '';
+  // Opcional: realizar uma busca após limpar
+  this.onSearch();
+}
 
 }
