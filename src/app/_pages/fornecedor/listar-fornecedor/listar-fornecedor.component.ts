@@ -22,6 +22,7 @@ export class ListarFornecedorComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   fornecedorParaExcluir!:Fornecedor;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;
@@ -106,4 +107,20 @@ export class ListarFornecedorComponent {
     this.currentPage = 1;
     this.loadData();
   }
+
+
+
+toggleFiltros() {
+  this.mostrarFiltros = !this.mostrarFiltros;
+}
+
+limparFiltros() {
+  this.nomeFiltro = '';
+  this.idFiltro = '';
+  this.cpfFiltro = '';
+  this.cnpjFiltro = '';
+  this.celularFiltro = '';
+  // Opcional: realizar uma busca após limpar
+  this.onSearch();
+}
 }
