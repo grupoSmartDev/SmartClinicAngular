@@ -152,4 +152,17 @@ export class ListarComponent implements OnInit {
   cancelDelete() {
     this.idParaExcluir = '';
   }
+
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
+
+toggleFiltros() {
+  this.mostrarFiltros = !this.mostrarFiltros;
+}
+
+limparFiltros() {
+  this.statusFiltro = '';
+  this.corFiltro = '';
+  // Opcional: realizar uma busca após limpar
+  this.onSearch();
+}
 }
