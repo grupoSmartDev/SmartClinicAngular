@@ -20,6 +20,7 @@ export class ListarPlanosComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   planoParaExcluir!: Plano;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
     //paginacao
     totalItems: number = 0;
     pageSize: number = 10;
@@ -103,4 +104,17 @@ export class ListarPlanosComponent {
     this.currentPage = 1;
     this.loadData();
   }
+
+
+
+toggleFiltros() {
+  this.mostrarFiltros = !this.mostrarFiltros;
+}
+
+limparFiltros() {
+  this.descricaoFiltro = '';
+  this.idFiltro = '';
+  // Opcional: realizar uma busca após limpar
+  this.onSearch();
+}
 }
