@@ -7,6 +7,8 @@ import { ToastrService } from 'ngx-toastr';
 import * as bootstrap from 'bootstrap';
 import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
+import { SubFinancPagar } from '../../../_module/subFinancPagarModule';
+import { Paciente } from '../../../_module/pacienteModule';
 
 @Component({
   selector: 'app-listar-financ-pagar',
@@ -17,23 +19,30 @@ export class ListarFinancPagarComponent {
   @ViewChild(ModalFinancPagarComponent) modalComponent!: ModalFinancPagarComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
+  expandedRows: Set<number> = new Set();
+
   lista: FinancPagar[] = [];
   ccLista : CentroDeCusto[] = [];
+  pacienteLista : Paciente[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: FinancPagar;
+  mostrarFiltros: boolean = true; // Começa expandido por padrão
     //paginacao
     totalItems: number = 0;
     pageSize: number = 10;
     currentPage: number = 1;
     // filtros
-    descricaoFiltro? : string = '';
-    idFiltro? : string = '';
-    dataEmissaoFiltro? : string = '';
-    pacienteFiltro? : string = '';
-    pacienteIdFiltro? : string = '';
-    ccFiltro? : string = '';
-    paginar : boolean = true;
+    descricaoFiltro?: string = '';
+    idFiltro?: string = '';
+    pacienteIdFiltro?: string = '';
+    ccFiltro?: string = '';
+    dataBaseFiltro: string = "E";
+    dataFiltroInicio: Date = new Date();
+    dataFiltroFim: Date = new Date();
+    parcelasVencidasFiltro?: boolean = false;
+    paginar: boolean = true;
+    parcelaSelecionada: SubFinancPagar = {} as SubFinancPagar;
 
   constructor(private financPagarService: FinancPagarService , private toast: ToastrService, private ccService : CentroDeCustoService) { }
 
@@ -42,9 +51,10 @@ export class ListarFinancPagarComponent {
   } 
 
   loadData(): void {
-    this.financPagarService.Listar(
-      this.currentPage,this.pageSize,this.descricaoFiltro,this.idFiltro,
-      this.dataEmissaoFiltro,this.pacienteFiltro,this.pacienteIdFiltro,this.ccFiltro, this.paginar
+    this.financPagarService.ListarAnalitico(
+      this.currentPage,this.pageSize,this.descricaoFiltro,this.idFiltro,this.ccFiltro,
+      this.pacienteIdFiltro,this.dataBaseFiltro,this.dataFiltroInicio, this.dataFiltroFim,
+      this.paginar
     ).subscribe({
       next: (data) => {
         if (data.dados) {
@@ -84,6 +94,20 @@ export class ListarFinancPagarComponent {
       const modal = new bootstrap.Modal(modalElement);
       modal.show();
     }
+  }
+
+  openModalBaixa(item: SubFinancPagar) {
+    // Importante: primeiro atualize os dados, depois abra o modal
+    this.parcelaSelecionada = { ...item }; // Criando uma cópia para não afetar o objeto original
+    
+    // Aguarde a próxima iteração do change detection antes de abrir o modal
+    setTimeout(() => {
+      const modalElement = document.getElementById('modalBaixaParcela');
+      if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+      }
+    }, 0);
   }
 
   Excluir(financPagar : FinancPagar) {
@@ -126,5 +150,56 @@ export class ListarFinancPagarComponent {
   onSearch(): void {
     this.currentPage = 1;
     this.loadData();
+  }
+
+  toggleRow(id: string): void {
+
+    let idConvertido = parseInt(id);
+    if (this.expandedRows.has(idConvertido)) {
+      this.expandedRows.delete(idConvertido);
+    } else {
+      this.expandedRows.add(idConvertido);
+    }
+  }
+
+  isExpanded(id: string): boolean {
+
+    let idConvertido = parseInt(id);
+    return this.expandedRows.has(idConvertido);
+  }
+  //QUANDO FOR REFATORAR, DEIXAR ISSO EM UM HELPER
+  isOverdue(dataVencimento: string | Date): boolean {
+    // Converte para Date se for string
+    const vencimentoDate = typeof dataVencimento === 'string' 
+      ? new Date(dataVencimento) 
+      : dataVencimento;
+
+    // Remove o horário da comparação, focando apenas na data
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+    vencimentoDate.setHours(0, 0, 0, 0);
+
+    // Verifica se a data de vencimento é anterior à data atual
+    return vencimentoDate < hoje;
+  }
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  limparFiltros() {
+    this.idFiltro = undefined;
+    this.dataBaseFiltro = "V";
+    this.dataFiltroInicio = this.formatarDataParaInput(new Date());
+    this.dataFiltroFim = this.formatarDataParaInput(new Date());
+    this.parcelasVencidasFiltro = false;
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
+  }
+
+  formatarDataParaInput(data: Date): any {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
   }
 }

@@ -117,6 +117,7 @@ import { HistoricoPlanoComponent } from './_pages/paciente/historico-plano/histo
 import { ListarReceberSinteticoComponent } from './_pages/financReceber/listar-receber-sintetico/listar-receber-sintetico.component';
 import { BaixaFinancReceberSubComponent } from './_components/baixa-financ-receber-sub/baixa-financ-receber-sub.component';
 import { ListarPagarSinteticoComponent } from './_pages/financPagar/listar-pagar-sintetico/listar-pagar-sintetico.component';
+import { BaixaFinancPagarSubComponent } from './_components/baixa-financ-pagar-sub/baixa-financ-pagar-sub.component';
 
 
 
@@ -220,6 +221,7 @@ import { ListarPagarSinteticoComponent } from './_pages/financPagar/listar-pagar
     ListarReceberSinteticoComponent,
     BaixaFinancReceberSubComponent,
     ListarPagarSinteticoComponent,
+    BaixaFinancPagarSubComponent,
   ],
   imports: [
     BrowserModule,

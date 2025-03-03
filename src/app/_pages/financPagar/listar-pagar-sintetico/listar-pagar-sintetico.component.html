@@ -1,1 +1,215 @@
-<p>listar-pagar-sintetico works!</p>
+<app-label-nome
+  [nomeTela]="'Contas a Pagar - Sintético'"
+  (adicionarClicked)="openModal('')"
+></app-label-nome>
+
+<div class="card mb-3">
+  <div class="card-header bg-light d-flex justify-content-between align-items-center" 
+       (click)="toggleFiltros()" 
+       style="cursor: pointer;">
+    <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros de Pesquisa</h6>
+    <button class="btn btn-sm btn-link text-dark p-0">
+      <i class="bi" [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+    </button>
+  </div>
+  <div class="card-body py-3" [ngClass]="{'d-none': !mostrarFiltros}">
+
+    <div class="row mt-3">
+      <div class="col-md-12 text-end">
+        <button type="button" class="btn btn-sm btn-primary me-2" (click)="onSearch()">
+          <i class="bi bi-search me-1"></i> Pesquisar
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limparFiltros()">
+          <i class="bi bi-x-circle me-1"></i> Limpar Filtros
+        </button>
+      </div>
+    </div>
+    
+    <div class="row g-3 align-items-end">
+      <div class="col-md-1 col-12">
+        <label for="idPaiFiltro" class="form-label small fw-bold">Código</label>
+        <input
+          type="number"
+          id="idPaiFiltro"
+          class="form-control form-control-sm"
+          [(ngModel)]="idPaiFiltro"
+        />
+      </div>
+
+      <div class="col-md-2 col-12">
+        <label for="parcelaNumeroFiltro" class="form-label small fw-bold">Número da Parcela</label>
+        <input
+          type="number"
+          id="parcelaNumeroFiltro"
+          class="form-control form-control-sm"
+          [(ngModel)]="parcelaNumeroFiltro"
+        />
+      </div>
+
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-12">
+            <label class="form-label small fw-bold">Período</label>
+          </div>
+          <div class="col-md-4">
+            <select 
+              class="form-select form-select-sm"
+              [(ngModel)]="dataBaseFiltro">
+              <option value="V">Data de Vencimento</option>
+              <option value="E">Data de Emissão</option>
+              <option value="P">Data de Pagamento</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text">De</span>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                [(ngModel)]="dataFiltroInicio"
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text">Até</span>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                [(ngModel)]="dataFiltroFim"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-check">
+          <input 
+            class="form-check-input" 
+            type="checkbox" 
+            id="parcelasVencidas" 
+            [(ngModel)]="parcelasVencidasFiltro">
+          <label class="form-check-label" for="parcelasVencidas">
+            Apenas parcelas vencidas
+          </label>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="row mb-2">
+  <div class="col-12">
+    @if (listaSintetico.length > 0) {
+    <div class="table-responsive">
+      <table class="table table-striped table-centered mb-0">
+        <thead>
+          <tr>
+            <th>Cód. Origem</th>
+            <th>Cód. Parcela</th>
+            <th>Data Emissão</th>
+            <th>Data Vencimento</th>
+            <th>Data Pagamento</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th class="text-end"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listaSintetico">
+            <!-- Renderiza dinamicamente as células com base nas colunas -->
+            <td>
+              {{ item.financPagar?.id }}
+            </td>
+            <td>
+              {{ item.id }}
+            </td>
+            <td>
+              {{ item.financPagar?.dataEmissao| datePtBr }}
+            </td>
+            <td>
+              {{ item.dataVencimento | datePtBr }}
+            </td>
+            <td>
+              {{ item.dataPagamento | datePtBr }}
+            </td>
+            <td>
+              {{item.financPagar?.descricao}}
+            </td>
+            <td>
+              {{ item.valor | currencyPtBr }}
+            </td>  
+            <td>
+              @if (item.dataPagamento) {
+                <span class="span-status-green">Pago</span>
+              } @else if (isOverdue(item.dataVencimento)) {
+                <span class="span-status-red">Vencido</span>
+              } @else {
+                <span class="span-status-orange">A Vencer</span>
+              }
+            </td>
+            <td class="text-end">
+              <a
+                href="javascript:void(0);"
+                (click)="openModalBaixa(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-cash-stack text-warning"></i>
+                <span class="tooltip-text">Baixa</span>
+              </a>
+              <!-- <a
+                href="javascript:void(0);"
+                (click)="promptDelete(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-trash3 text-danger"></i>
+                <span class="tooltip-text">Excluir</span>
+              </a> -->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    } @else {
+    <div class="alert alert-danger" role="alert">
+      Nenhum registro encontrado
+    </div>
+    <img src="public\image\semRegistro.svg" alt="" />
+    }
+  </div>
+</div>
+
+<!-- Paginação Bootstrap -->
+<div class="row justify-content-center">
+  <div class="">
+    <pagination
+      [totalItems]="totalItems"
+      [(ngModel)]="currentPage"
+      [itemsPerPage]="pageSize"
+      (pageChanged)="onPageChange($event.page)"
+      previousText="&lsaquo;"
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+    >
+    </pagination>
+  </div>
+</div>
+
+<!-- listar.component.html -->
+<app-modal-financ-pagar
+  (dadosAtualizado)="atualizarLista()"
+></app-modal-financ-pagar>
+
+<app-baixa-financ-pagar-sub
+[financPagarSub]="parcelaSelecionada"
+(confirmarPagamento)="loadData()"
+></app-baixa-financ-pagar-sub>
+
+<app-confirm-dialog
+  #confirmDialog
+  (onConfirm)="confirmDelete()"
+  (onCancel)="cancelDelete()"
+></app-confirm-dialog>

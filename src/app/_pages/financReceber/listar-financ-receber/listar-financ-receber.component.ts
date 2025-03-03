@@ -209,4 +209,7 @@ export class ListarFinancReceberComponent {
     const dia = String(data.getDate()).padStart(2, '0');
     return `${ano}-${mes}-${dia}`;
   }
+
+  //tem que fazer lista de pacientes aqui para o filtro. 
+  
 }

@@ -74,7 +74,7 @@ export class FinancPagarService {
         dataFiltroInicio?: Date,
         dataFiltroFim?: Date,
         paginar?: boolean
-      ): Observable<ResponseModel<FinancReceber[]>> {
+      ): Observable<ResponseModel<FinancPagar[]>> {
         
         let params = new HttpParams()
     
@@ -101,7 +101,7 @@ export class FinancPagarService {
           }
         }
         
-        return this.http.get<ResponseModel<FinancReceber[]>>(`${this.baseURL}ListarAnalitico`, { params });
+        return this.http.get<ResponseModel<FinancPagar[]>>(`${this.baseURL}ListarAnalitico`, { params });
       }
 
    ListarSintetico(
