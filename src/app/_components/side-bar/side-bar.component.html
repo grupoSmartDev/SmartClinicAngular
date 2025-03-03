@@ -102,11 +102,20 @@
         <span>Agenda</span>
       </a>
     </li>
+ 
     <li class="sidebar-item">
-      <a class="sidebar-link" (click)="openTab('/financPagar/listar', 'Pagar')">
-        <i class="bi bi-cash-stack"></i>
-        <span>Contas a pagar</span>
+      <a href="#" class="sidebar-link collapsed has-dropdown" (click)="toggleSubmenu('contasAPagar')" data-bs-toggle="collapse">
+        <i class="bi bi-cash"></i>
+        <span>Contas a Pagar</span>
       </a>
+      <ul [ngClass]="{'sidebar-dropdown': true, 'collapse': !isMenuOpen['contasAPagar'], 'show': isMenuOpen['contasAPagar']}" id="contasAPagar">
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/FinancPagar/listarAnalitico', 'Pagar Analítico')">Analítico</a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/FinancPagar/listarSintetico', 'Pagar Sintético')">Sintético</a>
+        </li>
+      </ul>
     </li>
 
     <li class="sidebar-item">

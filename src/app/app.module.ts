@@ -116,6 +116,7 @@ import { CadastroRapidoPacienteComponent } from './_components/cadastro-rapido-p
 import { HistoricoPlanoComponent } from './_pages/paciente/historico-plano/historico-plano.component';
 import { ListarReceberSinteticoComponent } from './_pages/financReceber/listar-receber-sintetico/listar-receber-sintetico.component';
 import { BaixaFinancReceberSubComponent } from './_components/baixa-financ-receber-sub/baixa-financ-receber-sub.component';
+import { ListarPagarSinteticoComponent } from './_pages/financPagar/listar-pagar-sintetico/listar-pagar-sintetico.component';
 
 
 
@@ -218,6 +219,7 @@ import { BaixaFinancReceberSubComponent } from './_components/baixa-financ-receb
     HistoricoPlanoComponent,
     ListarReceberSinteticoComponent,
     BaixaFinancReceberSubComponent,
+    ListarPagarSinteticoComponent,
   ],
   imports: [
     BrowserModule,

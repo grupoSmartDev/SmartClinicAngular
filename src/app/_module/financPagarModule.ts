@@ -22,11 +22,11 @@ export interface FinancPagar{
     pacienteId: string; //ok
     paciente: Paciente; //ok
     fornecedorId: string; 
-    fornecedor: Fornecedor;
+    fornecedor?: Fornecedor;
     centroCustoId: string; //ok
     centroCusto: CentroDeCusto; //ok
     bancoId: string;
-    banco: Banco;
+    banco?: Banco;
     subFinancPagar: SubFinancPagar[];
     usuarioResponsavelId: string;
     dataUltimaAtualizacao: Date; 
