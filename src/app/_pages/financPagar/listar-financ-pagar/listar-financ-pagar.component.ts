@@ -48,6 +48,9 @@ export class ListarFinancPagarComponent {
 
   ngOnInit(): void {
     this.loadData();
+
+    this.dataFiltroInicio = this.formatarDataParaInput(new Date());
+    this.dataFiltroFim = this.formatarDataParaInput(new Date());
   } 
 
   loadData(): void {

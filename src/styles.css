@@ -109,6 +109,9 @@ main {
 
 }
 
+button:hover{
+    cursor: pointer !important;
+}
 /*botoes padrões do sistema*/
 
 .btn-success {
@@ -214,9 +217,9 @@ main {
 }
 
 .btn-primary:hover {
-    color: #fff;
-    background-color: #6973e3;
-    border-color: #6973e3;
+    color: #fff !important;
+    background-color: #6973e3 !important;
+    border-color: #6973e3 !important;
 }
 
 .btn-primary:focus {
@@ -265,6 +268,12 @@ main {
     color: #fff;
     background-color: #6c757d;
     border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover{
+    color: #fff !important;
+    background-color: #646c74 !important;
+    border-color: #646c74 !important;
 }
 
 /*botoes padrões do sistema*/
