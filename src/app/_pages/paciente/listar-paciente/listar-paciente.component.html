@@ -95,7 +95,7 @@
               {{ item.nome }}
             </td>
             <td>
-              {{ item.celular }}
+              {{ item.celular ? item.celular : '' | telefonePipe }}
             </td>
             <td>
               {{ item.email }}

@@ -118,6 +118,7 @@ import { ListarReceberSinteticoComponent } from './_pages/financReceber/listar-r
 import { BaixaFinancReceberSubComponent } from './_components/baixa-financ-receber-sub/baixa-financ-receber-sub.component';
 import { ListarPagarSinteticoComponent } from './_pages/financPagar/listar-pagar-sintetico/listar-pagar-sintetico.component';
 import { BaixaFinancPagarSubComponent } from './_components/baixa-financ-pagar-sub/baixa-financ-pagar-sub.component';
+import { TelefonePipePipe } from './telefone-pipe.pipe';
 
 
 
@@ -222,6 +223,7 @@ import { BaixaFinancPagarSubComponent } from './_components/baixa-financ-pagar-s
     BaixaFinancReceberSubComponent,
     ListarPagarSinteticoComponent,
     BaixaFinancPagarSubComponent,
+    TelefonePipePipe,
   ],
   imports: [
     BrowserModule,
