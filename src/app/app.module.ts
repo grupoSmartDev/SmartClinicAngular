@@ -119,6 +119,13 @@ import { BaixaFinancReceberSubComponent } from './_components/baixa-financ-receb
 import { ListarPagarSinteticoComponent } from './_pages/financPagar/listar-pagar-sintetico/listar-pagar-sintetico.component';
 import { BaixaFinancPagarSubComponent } from './_components/baixa-financ-pagar-sub/baixa-financ-pagar-sub.component';
 import { TelefonePipePipe } from './telefone-pipe.pipe';
+import { HeroComponent } from './_lp/components/hero/hero.component';
+import { SegundaDobraComponent } from './_lp/components/segunda-dobra/segunda-dobra.component';
+import { TerceiraDobraComponent } from './_lp/components/terceira-dobra/terceira-dobra.component';
+import { QuartaDobraComponent } from './_lp/components/quarta-dobra/quarta-dobra.component';
+import { QuintaDobraComponent } from './_lp/components/quinta-dobra/quinta-dobra.component';
+import { SextaDobraComponent } from './_lp/components/sexta-dobra/sexta-dobra.component';
+import { FacDobraComponent } from './_lp/components/fac-dobra/fac-dobra.component';
 
 
 
@@ -224,6 +231,13 @@ import { TelefonePipePipe } from './telefone-pipe.pipe';
     ListarPagarSinteticoComponent,
     BaixaFinancPagarSubComponent,
     TelefonePipePipe,
+    HeroComponent,
+    SegundaDobraComponent,
+    TerceiraDobraComponent,
+    QuartaDobraComponent,
+    QuintaDobraComponent,
+    SextaDobraComponent,
+    FacDobraComponent,
   ],
   imports: [
     BrowserModule,
