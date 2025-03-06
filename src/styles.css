@@ -46,21 +46,22 @@ html {
 
 @media (max-width: 767.98px) {
     .main {
-      margin-top: 3rem !important;
+        margin-top: 3rem !important;
     }
 
-    .form-control{
-        margin-top: 0.5rem !important;
-    }
-    .btn{
+    .form-control {
         margin-top: 0.5rem !important;
     }
 
-    .card{
+    .btn {
         margin-top: 0.5rem !important;
     }
-    
-  }
+
+    .card {
+        margin-top: 0.5rem !important;
+    }
+
+}
 
 .btn:focus,
 .btn:active:focus,
@@ -109,9 +110,10 @@ main {
 
 }
 
-button:hover{
+button:hover {
     cursor: pointer !important;
 }
+
 /*botoes padrões do sistema*/
 
 .btn-success {
@@ -124,7 +126,7 @@ button:hover{
     /* --ct-btn-border-color */
 }
 
-.bg-success-aba{
+.bg-success-aba {
     background-color: #87d4b2 !important;
     color: #fff;
 }
@@ -270,7 +272,7 @@ button:hover{
     border-color: #6c757d;
 }
 
-.btn-outline-secondary:hover{
+.btn-outline-secondary:hover {
     color: #fff !important;
     background-color: #646c74 !important;
     border-color: #646c74 !important;
@@ -336,21 +338,24 @@ textarea:focus {
 
 .table-responsive {
     width: 100% !important;
-    overflow-x: auto !important; /* Permite o scroll horizontal */
-    -webkit-overflow-scrolling: touch !important; /* Suporte para scroll suave em dispositivos touch */
-  }
-  
-  .table {
-    min-width: 600px !important; /* Largura mínima para evitar colapsos em telas pequenas */
-  }
+    overflow-x: auto !important;
+    /* Permite o scroll horizontal */
+    -webkit-overflow-scrolling: touch !important;
+    /* Suporte para scroll suave em dispositivos touch */
+}
 
-  .btn-tooltip {
+.table {
+    min-width: 600px !important;
+    /* Largura mínima para evitar colapsos em telas pequenas */
+}
+
+.btn-tooltip {
     position: relative;
     cursor: pointer;
-  }
-  
+}
 
-  .tooltip-text {
+
+.tooltip-text {
     font: 0.6em sans-serif;
     visibility: hidden;
     width: 8rem;
@@ -359,53 +364,54 @@ textarea:focus {
     text-align: center;
     padding: 5px;
     border-radius: 5px;
-  
+
     /* Posicionamento */
     position: absolute;
     right: -160%;
-    bottom: 125%; /* Ajuste a posição da tooltip */
-    
+    bottom: 125%;
+    /* Ajuste a posição da tooltip */
+
     transform: translateX(-50%);
     z-index: 1;
-  
+
     /* Animação */
     opacity: 0;
     transition: opacity 0.3s;
-  }
-  
-  .btn-tooltip:hover .tooltip-text {
+}
+
+.btn-tooltip:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
-  }
+}
 
-  table {
+table {
     width: 100% !important;
     word-wrap: break-word;
-  }
-  
+}
 
 
 
-  .span-status-green{
+
+.span-status-green {
     border: 1px solid green;
-    padding : 0.2rem;
+    padding: 0.2rem;
     border-radius: 1rem;
     color: white;
     background-color: green;
 }
 
 
-.span-status-orange{
+.span-status-orange {
     border: 1px solid orange;
-    padding : 0.2rem;
+    padding: 0.2rem;
     border-radius: 1rem;
     color: white;
     background-color: orange;
 }
 
-.span-status-red{
+.span-status-red {
     border: 1px solid red;
-    padding : 0.2rem;
+    padding: 0.2rem;
     border-radius: 1rem;
     color: white;
     background-color: red;
@@ -422,12 +428,12 @@ input[type="checkbox"] {
     outline: none;
     cursor: pointer;
     position: relative;
-  }
-  
-  /* Estilo quando o checkbox estiver marcado */
-  input[type="checkbox"]:checked {
+}
+
+/* Estilo quando o checkbox estiver marcado */
+input[type="checkbox"]:checked {
     background-color: green;
     border-color: green;
-  }
-  
-  /* Adiciona um ícone de check quando estiver marcado */
+}
+
+/* Adiciona um ícone de check quando estiver marcado */

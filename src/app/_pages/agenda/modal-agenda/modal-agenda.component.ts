@@ -58,10 +58,23 @@ export class ModalAgendaComponent implements OnInit {
   listaPacote: any[] = [];
   listaUsuario: any[] = [];
 
+  recorrenciaAtiva = false;
+  dataFimRecorrencia: string = '';
+
   private patients: Patient[] = [
     { id: 1, name: 'João Silva', cpf: '123.456.789-00', phone: '(11) 99999-9999' },
     { id: 2, name: 'Maria Oliveira', cpf: '987.654.321-00', phone: '(11) 88888-8888' },
     { id: 3, name: 'Carlos Souza', cpf: '456.123.789-00', phone: '(11) 77777-7777' }
+  ];
+
+  diasDaSemana = [
+    { id: 0, nome: 'Domingo' },
+    { id: 1, nome: 'Segunda' },
+    { id: 2, nome: 'Terça' },
+    { id: 3, nome: 'Quarta' },
+    { id: 4, nome: 'Quinta' },
+    { id: 5, nome: 'Sexta' },
+    { id: 6, nome: 'Sábado' }
   ];
 
   constructor(
@@ -81,6 +94,7 @@ export class ModalAgendaComponent implements OnInit {
 
   private initializeForm(): void {
     this.formulario = this.fb.group({
+      // Mantenha todos os campos existentes...
       id: [null],
       titulo: [null, [Validators.required, Validators.maxLength(100)]],
       dataCompromisso: [null, [Validators.required]],
@@ -97,6 +111,7 @@ export class ModalAgendaComponent implements OnInit {
       pacoteId: [null],
       financReceberId: [null],
       financReceber: this.fb.group({
+        // Mantenha os campos do financReceber...
         id: [null],
         idOrigem: [''],
         nrDocto: [''],
@@ -127,19 +142,39 @@ export class ModalAgendaComponent implements OnInit {
       usuarioAlteracaoId: [null],
       notificarPaciente: [false],
       notificarProfissional: [false],
-      dataAlteracao: [null]
+      dataAlteracao: [null],
+
+      // Novos campos para recorrência
+      recorrencia: [false],
+      dataFimRecorrencia: [null],
+      diasRecorrencia: this.fb.array([])
     }, { validators: this.validateTimeRange });
+
+    // Inicializar dias da semana para recorrência
+    this.initDiasRecorrencia();
 
     // Monitorar mudanças no campo avulso para atualizar as validações
     this.formulario.get('avulso')?.valueChanges.subscribe(value => {
       this.atualizarValidacoesFinanceiras(value);
     });
+
+    // Monitorar mudanças no campo recorrencia
+    this.formulario.get('recorrencia')?.valueChanges.subscribe(value => {
+      this.recorrenciaAtiva = !!value;
+      if (this.recorrenciaAtiva) {
+        this.formulario.get('dataFimRecorrencia')?.setValidators([Validators.required]);
+      } else {
+        this.formulario.get('dataFimRecorrencia')?.clearValidators();
+      }
+      this.formulario.get('dataFimRecorrencia')?.updateValueAndValidity();
+    });
   }
+
 
   // Método para atualizar as validações de campos financeiros
   private atualizarValidacoesFinanceiras(isAvulso: boolean): void {
     const financReceberGroup = this.formulario.get('financReceber') as FormGroup;
-    
+
     // Se avulso for true, aplica validações, senão remove
     if (isAvulso) {
       this.camposFinancPagar = true;
@@ -149,14 +184,14 @@ export class ModalAgendaComponent implements OnInit {
       this.camposFinancPagar = false;
       financReceberGroup.get('valor')?.clearValidators();
       financReceberGroup.get('centroCustoId')?.clearValidators();
-      
+
       // Limpa o array de subFinancReceber
       const subFinancArray = financReceberGroup.get('subFinancReceber') as FormArray;
       while (subFinancArray.length > 0) {
         subFinancArray.removeAt(0);
       }
     }
-    
+
     // Atualiza os estados de validação
     financReceberGroup.get('valor')?.updateValueAndValidity();
     financReceberGroup.get('centroCustoId')?.updateValueAndValidity();
@@ -175,60 +210,60 @@ export class ModalAgendaComponent implements OnInit {
     // } else if (this.selectedEvent) {
     //   this.populateForm(this.selectedEvent);
     // }
-  
+
     // this.atualizarValidacoesFinanceiras(this.formulario.get('avulso')?.value === true);
   }
 
   // Novo método para inicializar os dados do modal
-initializeModalData(): void {
-  console.log('Modal: Inicializando dados com:', this.selectedDate, this.selectedEvent);
-  
-  // Resetar o formulário antes de qualquer preenchimento
-  this.formulario.reset();
-  
-  // Aplicar as validações iniciais
-  this.atualizarValidacoesFinanceiras(false);
-  
-  // Inicializar campos com base no contexto
-  if (!this.selectedEvent && this.selectedDate) {
-    this.formulario.patchValue({
-      dataCompromisso: this.selectedDate,
-      horaInicio: '08:00',
-      horaFim: '09:00',
-      avulso: false
-    });
-  } else if (this.selectedEvent) {
-    this.populateForm(this.selectedEvent);
+  initializeModalData(): void {
+    console.log('Modal: Inicializando dados com:', this.selectedDate, this.selectedEvent);
+
+    // Resetar o formulário antes de qualquer preenchimento
+    this.formulario.reset();
+
+    // Aplicar as validações iniciais
+    this.atualizarValidacoesFinanceiras(false);
+
+    // Inicializar campos com base no contexto
+    if (!this.selectedEvent && this.selectedDate) {
+      this.formulario.patchValue({
+        dataCompromisso: this.selectedDate,
+        horaInicio: '08:00',
+        horaFim: '09:00',
+        avulso: false
+      });
+    } else if (this.selectedEvent) {
+      this.populateForm(this.selectedEvent);
+    }
   }
-}
 
   private populateForm(event: any): void {
     // Reset do formulário antes de preencher para evitar estados inconsistentes
     this.formulario.reset();
-    
+
     // Preenchimento dos campos básicos
     this.formulario.patchValue({
       ...event
     });
-    
+
     // Tratamento especial para financReceber se existir
     if (event.financReceber) {
       const financForm = this.formulario.get('financReceber') as FormGroup;
       financForm.patchValue({
         ...event.financReceber
       });
-      
+
       // Limpar e recriar o array de subFinancReceber
       const subFinancArray = financForm.get('subFinancReceber') as FormArray;
       subFinancArray.clear();
-      
+
       if (event.financReceber.subFinancReceber?.length) {
         event.financReceber.subFinancReceber.forEach((subFinanc: any) => {
           subFinancArray.push(this.createSubFinancForm(subFinanc));
         });
       }
     }
-    
+
     // Atualizar o estado dos campos financeiros com base no valor de avulso
     this.pagamentoAvulso();
   }
@@ -240,7 +275,7 @@ initializeModalData(): void {
       parcela: [data?.parcela || 1, [Validators.required, Validators.min(1)]],
       valor: [data?.valor || 0, [Validators.required, Validators.min(0.01)]],
       dataVencimento: [
-        data?.dataVencimento || new Date().toISOString().split('T')[0], 
+        data?.dataVencimento || new Date().toISOString().split('T')[0],
         [Validators.required]
       ],
       dataPagamento: [data?.dataPagamento || ''],
@@ -324,10 +359,10 @@ initializeModalData(): void {
     // Corrigido para garantir que estamos lidando com um valor booleano
     const avulsoControl = this.formulario.get('avulso');
     const isAvulso = avulsoControl?.value === true || avulsoControl?.value === 'true';
-    
+
     // Atualiza o valor para garantir que seja booleano
     avulsoControl?.setValue(isAvulso);
-    
+
     // Atualiza validações e UI
     this.atualizarValidacoesFinanceiras(isAvulso);
 
@@ -345,23 +380,23 @@ initializeModalData(): void {
   gerarParcelas(): void {
     const valorTotal = this.formulario.get('financReceber.valor')?.value || 0;
     const quantidadeParcelas = this.formulario.get('financReceber.parcela')?.value || 1;
-    
+
     if (valorTotal <= 0 || quantidadeParcelas <= 0) {
       this.toastr.warning('Informe um valor válido e número de parcelas', 'Aviso');
       return;
     }
-    
+
     this.subFinancReceber.clear();
     const valorParcela = Number((valorTotal / quantidadeParcelas).toFixed(2));
     let valorRestante = Number((valorTotal - (valorParcela * quantidadeParcelas)).toFixed(2));
-    
+
     for (let i = 0; i < quantidadeParcelas; i++) {
       const dataVencimento = new Date();
       dataVencimento.setMonth(dataVencimento.getMonth() + i);
-      
+
       // Adicionar o restante de centavos à primeira parcela para evitar diferenças por arredondamento
       const valorAjustado = i === 0 ? Number((valorParcela + valorRestante).toFixed(2)) : valorParcela;
-      
+
       this.subFinancReceber.push(this.fb.group({
         id: [null],
         financReceberId: [null],
@@ -396,39 +431,39 @@ initializeModalData(): void {
 
   async onSubmit(): Promise<void> {
     console.log('Formulário submetido:', this.formulario.value);
-    
+
     // Validar apenas os campos relevantes com base no status de avulso
     const isAvulso = this.formulario.get('avulso')?.value === true;
-    
+
     // Para fins de validação, vamos ignorar o financReceber se avulso for false
     if (!isAvulso) {
       const financReceberGroup = this.formulario.get('financReceber') as FormGroup;
       financReceberGroup.setErrors(null);
-      
+
       // Garantir que os controles internos não causem problemas de validação
       Object.keys(financReceberGroup.controls).forEach(key => {
         financReceberGroup.get(key)?.setErrors(null);
       });
     }
-    
+
     if (this.formulario.invalid) {
       this.markFormGroupTouched(this.formulario);
       this.logInvalidFields(this.formulario);
       this.toastr.error('Por favor, preencha os campos obrigatórios', 'Erro');
       return;
     }
-    
+
     this.isLoading = true;
     try {
       const agendaData = this.prepararDadosAgenda();
       let result;
-      
+
       if (agendaData.id) {
         result = await firstValueFrom(this.agendaService.Atualizar(agendaData));
       } else {
         result = await firstValueFrom(this.agendaService.Criar(agendaData));
       }
-      
+
       const action = agendaData.id ? 'atualizado' : 'criado';
       this.toastr.success(`Agenda ${action} com sucesso!`, 'Sucesso');
       this.onSave.emit();
@@ -439,13 +474,44 @@ initializeModalData(): void {
       this.isLoading = false;
     }
   }
-  
+
+  initDiasRecorrencia(): void {
+    const diasRecorrenciaArray = this.formulario.get('diasRecorrencia') as FormArray;
+
+    // Limpar o array existente
+    while (diasRecorrenciaArray.length > 0) {
+      diasRecorrenciaArray.removeAt(0);
+    }
+
+    // Criar um controle para cada dia da semana
+    this.diasDaSemana.forEach(dia => {
+      diasRecorrenciaArray.push(this.createDiaSemanaControl(dia.id));
+    });
+  }
+
+  createDiaSemanaControl(diaSemana: number): FormGroup {
+    // Usar o horário padrão do formulário principal apenas para o dia atual
+    const horaInicio = this.formulario?.get('horaInicio')?.value || '08:00';
+    const horaFim = this.formulario?.get('horaFim')?.value || '09:00';
+    const profissionalId = this.formulario?.get('profissionalId')?.value || null;
+    const salaId = this.formulario?.get('salaId')?.value || null;
+
+    return this.fb.group({
+      diaSemana: [diaSemana],
+      ativo: [false],
+      horaInicio: [horaInicio, [this.timeValidator]],
+      horaFim: [horaFim, [this.timeValidator]],
+      profissionalId: [profissionalId],
+      salaId: [salaId]
+    }, { validators: this.validateTimeRange });
+  }
+
   // Função para registrar campos inválidos no console
   private logInvalidFields(formGroup: FormGroup): void {
     console.log('Campos inválidos:');
     Object.keys(formGroup.controls).forEach(controlName => {
       const control = formGroup.get(controlName);
-      
+
       if (control instanceof FormGroup) {
         // Se for um subgrupo, verifica recursivamente
         this.logInvalidFields(control);
@@ -453,7 +519,7 @@ initializeModalData(): void {
         // Registra o nome do campo e os erros de validação
         console.log(`Campo: ${controlName}`);
         console.log('Erros:', control.errors);
-        
+
         // Opcionalmente, também podemos verificar os tipos específicos de erro
         if (control.errors?.['required']) {
           console.log(`- Campo ${controlName} é obrigatório`);
@@ -471,14 +537,31 @@ initializeModalData(): void {
       }
     });
   }
-  
+
+  get diasRecorrenciaArray(): FormArray {
+    return this.formulario.get('diasRecorrencia') as FormArray;
+  }
 
   private prepararDadosAgenda(): Agenda {
     const formData = this.formulario.value;
-    
+
     // Garantir que avulso seja um booleano
     formData.avulso = formData.avulso === true || formData.avulso === 'true';
-    
+
+    // Tratar recorrência
+    if (formData.recorrencia) {
+      // Criar array de dias da semana para recorrência
+      formData.diasRecorrencia = formData.diasRecorrencia
+        .filter((dia: any) => dia.ativo)
+        .map((dia: any) => dia.diaSemana);
+
+      formData.dataFimRecorrencia = formData.dataFimRecorrencia;
+    } else {
+      // Se não houver recorrência, remover dados relacionados
+      formData.diasRecorrencia = null;
+      formData.dataFimRecorrencia = null;
+    }
+
     // Tratar financeiro apenas se for pagamento avulso
     if (formData.avulso) {
       // Se for avulso, incluímos os dados financeiros
@@ -486,7 +569,7 @@ initializeModalData(): void {
         formData.financReceber.pacienteId = formData.pacienteId;
         formData.financReceber.descricao = `${formData.titulo} - ${formData.observacao || ''}`;
         formData.financReceber.dataEmissao = new Date();
-        
+
         // Validar se há parcelas e se estão configuradas corretamente
         if (formData.financReceber.subFinancReceber && formData.financReceber.subFinancReceber.length > 0) {
           // Garantir que valores estão no formato correto
@@ -511,19 +594,19 @@ initializeModalData(): void {
   private markFormGroupTouched(formGroup: FormGroup): void {
     // Se avulso for false, não precisamos marcar os campos financeiros
     const isAvulso = formGroup.get('avulso')?.value === true;
-    
+
     Object.values(formGroup.controls).forEach(control => {
       // Pular a validação de financReceber se avulso for false
       if (!isAvulso && control === formGroup.get('financReceber')) {
         return;
       }
-      
+
       control.markAsTouched();
-      
+
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
       }
-      
+
       if (control instanceof FormArray) {
         control.controls.forEach(ctrl => {
           if (ctrl instanceof FormGroup) {
@@ -537,47 +620,47 @@ initializeModalData(): void {
   }
 
   // Validadores customizados
-  private timeValidator(control: AbstractControl): {[key: string]: any} | null {
+  private timeValidator(control: AbstractControl): { [key: string]: any } | null {
     if (!control.value) {
       return null;
     }
-    
+
     const TIME_PATTERN = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/;
     return TIME_PATTERN.test(control.value) ? null : { invalidTime: true };
   }
-  
-  private validateTimeRange(group: AbstractControl): {[key: string]: any} | null {
+
+  private validateTimeRange(group: AbstractControl): { [key: string]: any } | null {
     const formGroup = group as FormGroup;
     const horaInicio = formGroup.get('horaInicio')?.value;
     const horaFim = formGroup.get('horaFim')?.value;
-    
+
     if (!horaInicio || !horaFim) {
       return null;
     }
-    
+
     const parseTime = (time: string): number | null => {
       const parts = time.split(':');
       if (parts.length !== 2) {
         return null;
       }
-      
+
       const hours = parseInt(parts[0], 10);
       const minutes = parseInt(parts[1], 10);
-      
+
       if (isNaN(hours) || isNaN(minutes)) {
         return null;
       }
-      
+
       return hours * 60 + minutes;
     };
-    
+
     const inicio = parseTime(horaInicio);
     const fim = parseTime(horaFim);
-    
+
     if (!inicio || !fim) {
       return null;
     }
-    
+
     return inicio >= fim ? { invalidTimeRange: true } : null;
   }
 
@@ -645,7 +728,7 @@ initializeModalData(): void {
   private handleError(message: string, error: any): void {
     console.error(`${message}:`, error);
     let errorDetail = '';
-    
+
     if (error?.error?.message) {
       errorDetail = error.error.message;
     } else if (error?.message) {
@@ -653,9 +736,36 @@ initializeModalData(): void {
     } else {
       errorDetail = 'Ocorreu um erro desconhecido';
     }
-    
+
     this.toastr.error(`${message}. ${errorDetail}`, 'Erro');
   }
 
-  savePatient(){}
+  savePatient() { }
+
+  toggleDiaSemana(index: number): void {
+    const diaControl = this.diasRecorrenciaArray.at(index) as FormGroup;
+    const ativoControl = diaControl.get('ativo');
+
+    if (ativoControl) {
+      ativoControl.setValue(!ativoControl.value);
+    }
+  }
+
+  copiarHorarioPrincipal(): void {
+    const horaInicio = this.formulario.get('horaInicio')?.value;
+    const horaFim = this.formulario.get('horaFim')?.value;
+    const profissionalId = this.formulario.get('profissionalId')?.value;
+    const salaId = this.formulario.get('salaId')?.value;
+
+    if (!horaInicio || !horaFim) return;
+
+    this.diasRecorrenciaArray.controls.forEach(control => {
+      if (control.get('ativo')?.value) {
+        control.get('horaInicio')?.setValue(horaInicio);
+        control.get('horaFim')?.setValue(horaFim);
+        control.get('profissionalId')?.setValue(profissionalId);
+        control.get('salaId')?.setValue(salaId);
+      }
+    });
+  }
 }
