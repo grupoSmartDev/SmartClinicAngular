@@ -127,6 +127,7 @@ import { QuintaDobraComponent } from './_lp/components/quinta-dobra/quinta-dobra
 import { SextaDobraComponent } from './_lp/components/sexta-dobra/sexta-dobra.component';
 import { FacDobraComponent } from './_lp/components/fac-dobra/fac-dobra.component';
 import { PriceComponent } from './_lp/components/price/price.component';
+import { CalendarioComponent } from './_components/calendario/calendario.component';
 
 
 
@@ -240,6 +241,7 @@ import { PriceComponent } from './_lp/components/price/price.component';
     SextaDobraComponent,
     FacDobraComponent,
     PriceComponent,
+    CalendarioComponent,
   ],
   imports: [
     BrowserModule,
