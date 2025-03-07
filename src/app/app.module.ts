@@ -126,6 +126,7 @@ import { QuartaDobraComponent } from './_lp/components/quarta-dobra/quarta-dobra
 import { QuintaDobraComponent } from './_lp/components/quinta-dobra/quinta-dobra.component';
 import { SextaDobraComponent } from './_lp/components/sexta-dobra/sexta-dobra.component';
 import { FacDobraComponent } from './_lp/components/fac-dobra/fac-dobra.component';
+import { PriceComponent } from './_lp/components/price/price.component';
 
 
 
@@ -238,6 +239,7 @@ import { FacDobraComponent } from './_lp/components/fac-dobra/fac-dobra.componen
     QuintaDobraComponent,
     SextaDobraComponent,
     FacDobraComponent,
+    PriceComponent,
   ],
   imports: [
     BrowserModule,
