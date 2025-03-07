@@ -1,9 +1,9 @@
 <app-label-nome
   [nomeTela]="'Profissão'"
   (adicionarClicked)="openModal('')"
+  (exportarExcel)="exportarExcel()"
+  (exportarPDF)="exportarPDF()"
 ></app-label-nome>
-
-
 
 <div class="card mb-3">
   <div class="card-header bg-light d-flex justify-content-between align-items-center" 
@@ -43,6 +43,21 @@
 </div>
 
 <div class="row mb-2">
+  <div class="col-12 d-flex justify-content-between align-items-center mb-2">
+    <!-- Botão de exportação com dropdown -->
+    <div class="dropdown">
+      <button class="btn btn-sm btn-success dropdown-toggle" type="button" id="exportarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-file-earmark-arrow-down me-1"></i> Exportar
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="exportarDropdown">
+        <li><a class="dropdown-item" href="javascript:void(0);" (click)="exportarPDF()"><i class="bi bi-file-earmark-pdf me-1"></i> Exportar PDF</a></li>
+        <li><a class="dropdown-item" href="javascript:void(0);" (click)="exportarExcel()"><i class="bi bi-file-earmark-excel me-1"></i> Exportar CSV (Excel)</a></li>
+      </ul>
+    </div>
+    
+    <!-- Outros botões de ação podem ser adicionados aqui se necessário -->
+  </div>
+  
   <div class="col-12">
     @if (lista.length > 0) {
     <div class="table-responsive">

@@ -33,6 +33,19 @@ export class ListarProfissaoComponent {
 
   ngOnInit(): void {
     this.loadData();
+
+    this.lista = [{
+      id : 1,
+      descricao : 'teste'
+    },
+    {
+      id : 2,
+      descricao : 'teste 2'
+    },{
+      id : 3,
+      descricao : 'teste 3'
+    },
+  ]
   } 
 
   loadData(): void {
@@ -116,5 +129,114 @@ limparFiltros() {
   this.id = '';
   // Opcional: realizar uma busca após limpar
   this.filtrar();
+}
+
+exportarExcel(): void {
+  if (this.lista.length === 0) {
+    alert('Não há dados para exportar.');
+    return;
+  }
+
+  // Criar uma tabela HTML
+  let tableHtml = '<table border="1">';
+  
+  // Adicionar cabeçalho
+  tableHtml += '<tr><th>Código</th><th>Nome</th></tr>';
+  
+  // Adicionar dados
+  this.lista.forEach(item => {
+    tableHtml += `<tr><td>${item.id}</td><td>${item.descricao}</td></tr>`;
+  });
+  
+  // Fechar a tabela
+  tableHtml += '</table>';
+  
+  // Configurar para download
+  const blob = new Blob(['\ufeff', tableHtml], {
+    type: 'application/vnd.ms-excel;charset=utf-8'
+  });
+  
+  // Criar link de download
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'profissoes.xls';
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Método para exportar para PDF usando impressão do navegador
+exportarPDF(): void {
+  if (this.lista.length === 0) {
+    alert('Não há dados para exportar.');
+    return;
+  }
+
+  // Criar uma nova janela para o PDF
+  const printWindow = window.open('', '_blank');
+  
+  if (printWindow) {
+    // Estilo para a página de impressão
+    let html = `
+      <html>
+        <head>
+          <title>Relatório de Profissões</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #333; font-size: 24px; margin-bottom: 10px; }
+            .data { color: #666; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background-color: #f2f2f2; padding: 8px; text-align: left; border: 1px solid #ddd; }
+            td { padding: 8px; border: 1px solid #ddd; }
+            tr:nth-child(even) { background-color: #f9f9f9; }
+            @media print {
+              body { -webkit-print-color-adjust: exact; }
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Relatório de Profissões</h1>
+          <div class="data">Data de Exportação: ${new Date().toLocaleDateString()}</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nome</th>
+              </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    // Adicionar linhas da tabela
+    this.lista.forEach(item => {
+      html += `
+        <tr>
+          <td>${item.id}</td>
+          <td>${item.descricao}</td>
+        </tr>
+      `;
+    });
+    
+    // Fechar a tabela e a estrutura HTML
+    html += `
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+    
+    // Escrever o HTML na nova janela
+    printWindow.document.write(html);
+    printWindow.document.close();
+    
+    // Esperar pelo carregamento da página
+    printWindow.onload = function() {
+      // Usar a função de impressão do navegador que permite salvar como PDF
+      printWindow.print();
+    };
+  } else {
+    alert('Não foi possível abrir a janela de impressão. Verifique se os pop-ups estão bloqueados.');
+  }
 }
 }

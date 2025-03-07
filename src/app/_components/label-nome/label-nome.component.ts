@@ -9,8 +9,19 @@ export class LabelNomeComponent {
   @Input() nomeTela : string = "";
   @Input() exibirBotaoAdicionar : boolean = true;
   @Output() adicionarClicked: EventEmitter<void> = new EventEmitter<void>();
+  @Output() exportarPDF: EventEmitter<void> = new EventEmitter<void>();
+  @Output() exportarExcel: EventEmitter<void> = new EventEmitter<void>();
 
   onAdicionarClick(): void {
     this.adicionarClicked.emit();
   }
+
+  onExportarExcel():void{
+    this.exportarExcel.emit();
+  }
+  
+  onExportarPDF():void{
+    this.exportarPDF.emit();
+  }
+
 }
