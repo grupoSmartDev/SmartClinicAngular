@@ -20,7 +20,9 @@ interface CalendarEvent {
 @Component({
   selector: 'app-agenda',
   template: `
-    <full-calendar [options]="calendarOptions"></full-calendar>
+    <!-- <full-calendar [options]="calendarOptions"></full-calendar>
+     -->
+    <app-calendario>
     <app-modal-agenda
       #modalAgenda
       [selectedEvent]="selectedEvent"
