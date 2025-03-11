@@ -11,7 +11,14 @@ import { PacienteService } from '../../../_services/paciente.service';
 
 import { ProfissionalService } from '../../../_services/profissional.service';
 
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 
 import { Exercicio } from '../../../_module/exercicioModule';
 
@@ -27,7 +34,13 @@ import { Plano, TipoMes } from '../../../_module/planoModule';
 
 import { PlanoService } from '../../../_services/plano.service';
 import { DatePtBrPipe } from '../../../date-pt-br.pipe';
+import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service';
+import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
+import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
+import { FormaPagamento } from '../../../_module/formaPagamentoModule';
+import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
 
+//alterar esses dtos
 interface FinanceiroDto {
   valor: any;
   formaPagamentoId: any;
@@ -62,21 +75,15 @@ interface PlanoVinculacaoDto {
 }
 
 @Component({
-
   selector: 'app-paciente-completo',
 
   templateUrl: './paciente-completo.component.html',
 
   styleUrl: './paciente-completo.component.css',
 
-  providers: [DatePtBrPipe]
-
+  providers: [DatePtBrPipe],
 })
-
-
-
 export class PacienteCompletoComponent implements OnInit {
-
   diasDaSemana = [
     { id: 0, nome: 'Domingo', valor: 0 },
     { id: 1, nome: 'Segunda', valor: 1 },
@@ -87,22 +94,25 @@ export class PacienteCompletoComponent implements OnInit {
     { id: 6, nome: 'Sábado', valor: 6 },
   ];
 
-  constructor(private pacienteService: PacienteService,
+  constructor(
+    private pacienteService: PacienteService,
     private toastr: ToastrService,
     private router: Router,
     private profissionalService: ProfissionalService,
     private fb: FormBuilder,
     private evolucaoService: EvolucaoService,
     private planoService: PlanoService,
-    private datePipe: DatePtBrPipe) { }
-
+    private tipoPagamentoService: TipoPagamentoService,
+    private centroCustoService: CentroDeCustoService,
+    private datePipe: DatePtBrPipe
+  ) {}
 
   Paciente: Paciente = {} as Paciente;
   listaProfissional: Profissional[] = [];
-  listaTipoPagamento: any[] = [];
+  listaTipoPagamento: TipoPagamento[] = [];
   listaSala: any[] = [];
-  listaCentroDeCusto: any[] = [];
-  listaFormaPagamento: any[] = [];
+  listaCentroDeCusto: CentroDeCusto[] = [];
+  listaFormaPagamento: FormaPagamento[] = [];
   formEvolucao!: FormGroup;
   formPlano!: FormGroup;
   valorTotalReceita = 0;
@@ -115,55 +125,19 @@ export class PacienteCompletoComponent implements OnInit {
 
   @Output() evolucaoAtualizado = new EventEmitter<void>();
 
-
   ngOnInit(): void {
-    this.preencherFormulario();
+    this.preencherFormularioEvolucao();
     this.preencherFormularioPlano();
-    this.inicializarFormulario();
-
-    this.getPlanos();
-    this.getProfissional();
-
+    this.inicializarFormularioPlano();
+    this.iniciarGettersLista();
   }
 
-  onSubmit() {
+  onSubmit() {}
+  fecharModal() {}
 
-  }
-
-  fecharModal() {
-
-  }
-
-  getProfissional() {
-    this.profissionalService.Listar(undefined, undefined, undefined, undefined, undefined, undefined, false).subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.listaProfissional = data.dados;
-        }
-      },
-      error(err) {
-        console.error('Erro ao buscar Profissional:', err)
-      },
-    })
-  }
-
-  getPlanos() {
-    this.planoService.Listar().subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.listaPlanos = data.dados.filter(x => x.pacienteId == null || x.pacienteId == undefined || x.pacienteId == 0);
-        }
-      },
-      error(err) {
-        console.error('Erro ao buscar Planos:', err)
-      },
-    })
-  }
-
-  preencherFormulario() {
-
+  //PREENCHER FORMULARIOS / INICIAR FORMULARIOS
+  preencherFormularioEvolucao() {
     this.formEvolucao = this.fb.group({
-
       id: [''],
       observacao: ['', Validators.required],
       pacienteId: ['', Validators.required],
@@ -171,15 +145,11 @@ export class PacienteCompletoComponent implements OnInit {
       dataEvolucao: ['', Validators.required],
       exercicios: this.fb.array<Exercicio>([]),
       atividades: this.fb.array<Atividade>([]),
-
     });
-
   }
 
   preencherFormularioPlano() {
-
     this.formPlano = this.fb.group({
-
       id: [''],
       idOriginal: [''],
       descricao: ['', Validators.required],
@@ -200,294 +170,39 @@ export class PacienteCompletoComponent implements OnInit {
       financeiroId: ['', Validators.required],
       tipoMes: ['', Validators.required],
       gerarFinanceiro: [false],
-      gerarAgendamento: [false]
+      gerarAgendamento: [false],
     });
 
-    if (this.formPlano.get('dataInicio')) { }
-  }
-
-  get exercicios(): FormArray {
-    return this.formEvolucao.get('exercicios') as FormArray;
-  }
-
-
-
-  get atividades(): FormArray {
-    return this.formEvolucao.get('atividades') as FormArray;
-  }
-
-  openDialog(evolucao: any) {
-
-    const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
-    if (dialog) {
-      dialog.showModal();
-
-      // Limpar os arrays primeiro
-      while (this.exercicios.length) {
-        this.exercicios.removeAt(0);
-      }
-      while (this.atividades.length) {
-        this.atividades.removeAt(0);
-      }
-
-      // Fazer o patch dos campos simples
-      this.formEvolucao.patchValue({
-        id: evolucao.id,
-        descricao: evolucao.descricao,
-        pacienteId: evolucao.pacienteId,
-        profissionalId: evolucao.profissionalId,
-        dataEvolucao: evolucao.dataEvolucao,
-        observacao: evolucao.observacao
-      });
-
-      if (evolucao.dataEvolucao) {
-        const dataFormatada = this.datePipe.formatToHtmlDate(evolucao.dataEvolucao);
-        this.formEvolucao.get('dataEvolucao')?.setValue(dataFormatada);
-      }
-
-
-
-      this.formEvolucao.get('profissionalId')?.setValue(this.Paciente.profissionalId);
-
-
-      // Adicionar exercícios
-      if (evolucao.exercicios?.length) {
-        evolucao.exercicios.forEach((exercicios: Exercicio) => {
-          const exercicioGroup = this.fb.group({
-            obs: [exercicios.obs, Validators.required],
-            descricao: [exercicios.descricao, Validators.required],
-            tempo: [exercicios.tempo, Validators.required],
-            repeticoes: [exercicios.repeticoes, Validators.required],
-            series: [exercicios.series, Validators.required],
-            evolucaoId: [exercicios.evolucaoId]
-          });
-          this.exercicios.push(exercicioGroup);
-        });
-      }
-
-      // Adicionar atividades
-      if (evolucao.atividades?.length) {
-        evolucao.atividades.forEach((atividades: Atividade) => {
-          const atividadeGroup = this.fb.group({
-            titulo: [atividades.titulo, Validators.required],
-            descricao: [atividades.descricao, Validators.required],
-            tempo: [atividades.tempo, Validators.required],
-            evolucaoId: [atividades.evolucaoId]
-          });
-          this.atividades.push(atividadeGroup);
-        });
-      }
+    if (this.formPlano.get('dataInicio')) {
     }
   }
 
-
-
-  closeDialog() {
-
-    const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
-
-    if (dialog) {
-
-      dialog.close(); // Remove apenas o atributo do modal específico
-
-    }
-
-  }
-
-
-  closeDialogPlanos() {
-
-    const dialog = document.getElementById('dialog_plano') as HTMLDialogElement;
-
-    if (dialog) {
-
-      dialog.close(); // Remove apenas o atributo do modal específico
-
-    }
-
-  }
-
-  adicionarExercicio(): void {
-
-    const novoItem = this.fb.group({
-      obs: ['', Validators.required],
+  inicializarFormularioPlano(): void {
+    this.formPlano = this.fb.group({
+      id: [''],
+      planoId: ['', Validators.required],
+      tipoAssinatura: ['', Validators.required],
       descricao: ['', Validators.required],
-      tempo: ['', Validators.required],
-      repeticoes: ['', Validators.required],
-      series: ['', Validators.required],
-      evolucaoId: ['']
+      valor: ['', Validators.required],
+      dataInicio: [new Date().toISOString().split('T')[0], Validators.required],
+      dataFim: ['', Validators.required],
+      gerarFinanceiro: [false],
+      gerarAgendamento: [false],
+      financeiro: this.fb.group({
+        valor: [0, [Validators.required, Validators.min(0.01)]],
+        formaPagamentoId: ['', Validators.required],
+        tipoPagamentoId: ['', Validators.required],
+        centroCustoId: ['', Validators.required],
+        observacao: [''],
+      }),
+      agendamento: this.fb.group({
+        diasRecorrencia: this.fb.array(this.criarDiasRecorrencia()),
+      }),
     });
 
-    this.exercicios.push(novoItem);
-
-  }
-
-  removerExercicio(index: number): void {
-    this.exercicios.removeAt(index);
-  }
-
-
-
-  adicionarAtividade(): void {
-    const novoItem = this.fb.group({
-      titulo: ['', Validators.required],
-      descricao: ['', Validators.required],
-      tempo: ['', Validators.required],
-      evolucaoId: ['']
-    });
-
-    this.atividades.push(novoItem);
-
-  }
-
-
-
-  removerAtividade(index: number): void {
-    this.atividades.removeAt(index);
-  }
-
-
-
-  carregarDados(dados: any) {
-    this.formEvolucao.patchValue(this.exercicios);
-  }
-
-
-
-  salvarEvolucao(): void {
-    this.formEvolucao.patchValue({
-      pacienteId: this.Paciente.id
-    });
-    // Log do valor atual do formulário
-    console.log('Valor do formulário:', this.formEvolucao.value);
-
-    // Log do status de cada campo
-    Object.keys(this.formEvolucao.controls).forEach(key => {
-      const control = this.formEvolucao.get(key);
-      console.log(`Campo ${key}:`);
-      console.log('- Valor:', control?.value);
-      console.log('- Status:', control?.status);
-      console.log('- Erros:', control?.errors);
-
-      // Se for um FormArray, verificar cada item
-      if (control instanceof FormArray) {
-        control.controls.forEach((item, index) => {
-          console.log(`- Item ${index}:`, item.errors);
-        });
-      }
-    });
-
-    const dataToSave = this.formEvolucao.value;
-    dataToSave.pacienteId = this.Paciente.id;
-
-    if (this.formEvolucao.invalid) {
-      this.toastr.error('Preencha todos os campos', 'Erro ao cadastrar uma evolução');
-      return;
-    }
-    const saveOperation = dataToSave.id
-      ? this.evolucaoService.Atualizar(dataToSave)
-      : this.evolucaoService.Criar(dataToSave);
-    saveOperation.subscribe({
-      next: () => {
-        const action = dataToSave.id ? 'atualizado' : 'criado';
-        this.toastr.success(`Evolução ${action} com sucesso!`, 'Parabéns');
-        this.closeDialog();
-      },
-      error: () => {
-        this.toastr.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
-      },
-    });
-
-  }
-
-
-
-  calcularValorTotalReceita(): number {
-
-    let total = 0;
-
-    this.Paciente.financReceber?.forEach((item) => {
-
-      item.subFinancReceber?.forEach((itemSub) => {
-
-        total += itemSub.valor;
-
-      });
-
-    });
-
-    return total;
-
-  }
-
-
-
-  quantidadeAulasFeitas(): number {
-
-    let quantidade = 0;
-
-    this.Paciente.agendamentos?.forEach((item) => {
-
-      item.dataCancelamento ? quantidade++ : null;
-
-    })
-
-    return quantidade;
-
-  }
-
-  loadPlanos() {
-
-    this.planoService.Listar(this.Paciente.id).subscribe({
-
-      next: (response) => {
-
-        this.listaPlanos = response.dados.filter(x => x.pacienteId == null || x.pacienteId == undefined || x.pacienteId == 0);
-
-      },
-
-      error: (err) => {
-
-        console.error('Erro ao buscar planos:', err);
-
-        this.toastr.error('Tente novamente ou fale com o suporte', 'Erro ao buscar planos');
-
-      }
-
-    });
-
-  }
-
-
-  openModalRenovarPlanoS(plano: any) {
-    const dialog = document.getElementById('dialog_plano') as HTMLDialogElement;
-    if (dialog) {
-      this.preencherFormularioPlano(); // Reseta e inicializa o formPlano
-      if (plano) {
-        console.log('Plano recebido:', plano);
-        this.formPlano.patchValue(plano);
-        console.log('Form após patch:', this.formPlano.value);
-
-        if (plano.dataInicio) {
-          const dataFormatada = this.datePipe.formatToHtmlDate(plano.dataInicio);
-          this.formPlano.get('dataInicio')?.setValue(dataFormatada);
-        }
-
-        if (plano.dataFim) {
-          const dataFormatada = this.datePipe.formatToHtmlDate(plano.dataFim);
-          this.formPlano.get('dataFim')?.setValue(dataFormatada);
-        }
-      }
-      dialog.showModal();
-    }
-  }
-
-  compararDataParaRenovarPlano(plano: any): boolean {
-
-    const dataAtual = new Date();
-    const dataPlano = new Date(plano.dataFim);
-
-    return dataPlano > dataAtual;
+    // Desabilitar campos de financeiro e agendamento inicialmente
+    this.formPlano.get('financeiro')?.disable();
+    this.formPlano.get('agendamento')?.disable();
   }
 
   carregarFormularioPlano() {
@@ -507,20 +222,270 @@ export class PacienteCompletoComponent implements OnInit {
       pacienteId: [null],
       financeiroId: [null],
       tipoMes: [''],
-      planoId: [null]
-    })
+      planoId: [null],
+    });
+  }
+  //GET'S
+  get exercicios(): FormArray {
+    return this.formEvolucao.get('exercicios') as FormArray;
+  }
+
+  get atividades(): FormArray {
+    return this.formEvolucao.get('atividades') as FormArray;
+  }
+
+  openDialog(evolucao: any) {
+    const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
+    if (dialog) {
+      dialog.showModal();
+
+      // Limpar os arrays primeiro
+      while (this.exercicios.length) {
+        this.exercicios.removeAt(0);
+      }
+      while (this.atividades.length) {
+        this.atividades.removeAt(0);
+      }
+
+      // Fazer o patch dos campos simples
+      this.formEvolucao.patchValue({
+        id: evolucao.id,
+        descricao: evolucao.descricao,
+        pacienteId: evolucao.pacienteId,
+        profissionalId: evolucao.profissionalId,
+        dataEvolucao: evolucao.dataEvolucao,
+        observacao: evolucao.observacao,
+      });
+
+      if (evolucao.dataEvolucao) {
+        const dataFormatada = this.datePipe.formatToHtmlDate(
+          evolucao.dataEvolucao
+        );
+        this.formEvolucao.get('dataEvolucao')?.setValue(dataFormatada);
+      }
+
+      this.formEvolucao
+        .get('profissionalId')
+        ?.setValue(this.Paciente.profissionalId);
+
+      // Adicionar exercícios
+      if (evolucao.exercicios?.length) {
+        evolucao.exercicios.forEach((exercicios: Exercicio) => {
+          const exercicioGroup = this.fb.group({
+            obs: [exercicios.obs, Validators.required],
+            descricao: [exercicios.descricao, Validators.required],
+            tempo: [exercicios.tempo, Validators.required],
+            repeticoes: [exercicios.repeticoes, Validators.required],
+            series: [exercicios.series, Validators.required],
+            evolucaoId: [exercicios.evolucaoId],
+          });
+          this.exercicios.push(exercicioGroup);
+        });
+      }
+
+      // Adicionar atividades
+      if (evolucao.atividades?.length) {
+        evolucao.atividades.forEach((atividades: Atividade) => {
+          const atividadeGroup = this.fb.group({
+            titulo: [atividades.titulo, Validators.required],
+            descricao: [atividades.descricao, Validators.required],
+            tempo: [atividades.tempo, Validators.required],
+            evolucaoId: [atividades.evolucaoId],
+          });
+          this.atividades.push(atividadeGroup);
+        });
+      }
+    }
+  }
+
+  closeDialog() {
+    const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
+
+    if (dialog) {
+      dialog.close(); // Remove apenas o atributo do modal específico
+    }
+  }
+
+  closeDialogPlanos() {
+    const dialog = document.getElementById('dialog_plano') as HTMLDialogElement;
+
+    if (dialog) {
+      dialog.close(); // Remove apenas o atributo do modal específico
+    }
+  }
+
+  adicionarExercicio(): void {
+    const novoItem = this.fb.group({
+      obs: ['', Validators.required],
+      descricao: ['', Validators.required],
+      tempo: ['', Validators.required],
+      repeticoes: ['', Validators.required],
+      series: ['', Validators.required],
+      evolucaoId: [''],
+    });
+
+    this.exercicios.push(novoItem);
+  }
+
+  removerExercicio(index: number): void {
+    this.exercicios.removeAt(index);
+  }
+
+  adicionarAtividade(): void {
+    const novoItem = this.fb.group({
+      titulo: ['', Validators.required],
+      descricao: ['', Validators.required],
+      tempo: ['', Validators.required],
+      evolucaoId: [''],
+    });
+
+    this.atividades.push(novoItem);
+  }
+
+  removerAtividade(index: number): void {
+    this.atividades.removeAt(index);
+  }
+
+  carregarDados(dados: any) {
+    this.formEvolucao.patchValue(this.exercicios);
+  }
+
+  salvarEvolucao(): void {
+    this.formEvolucao.patchValue({
+      pacienteId: this.Paciente.id,
+    });
+    // Log do valor atual do formulário
+    console.log('Valor do formulário:', this.formEvolucao.value);
+
+    // Log do status de cada campo
+    Object.keys(this.formEvolucao.controls).forEach((key) => {
+      const control = this.formEvolucao.get(key);
+      console.log(`Campo ${key}:`);
+      console.log('- Valor:', control?.value);
+      console.log('- Status:', control?.status);
+      console.log('- Erros:', control?.errors);
+
+      // Se for um FormArray, verificar cada item
+      if (control instanceof FormArray) {
+        control.controls.forEach((item, index) => {
+          console.log(`- Item ${index}:`, item.errors);
+        });
+      }
+    });
+
+    const dataToSave = this.formEvolucao.value;
+    dataToSave.pacienteId = this.Paciente.id;
+
+    if (this.formEvolucao.invalid) {
+      this.toastr.error(
+        'Preencha todos os campos',
+        'Erro ao cadastrar uma evolução'
+      );
+      return;
+    }
+    const saveOperation = dataToSave.id
+      ? this.evolucaoService.Atualizar(dataToSave)
+      : this.evolucaoService.Criar(dataToSave);
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toastr.success(`Evolução ${action} com sucesso!`, 'Parabéns');
+        this.closeDialog();
+      },
+      error: () => {
+        this.toastr.error(
+          'Ocorreu um erro ao salvar. Tente novamente.',
+          'Erro'
+        );
+      },
+    });
+  }
+
+  calcularValorTotalReceita(): number {
+    let total = 0;
+
+    this.Paciente.financReceber?.forEach((item) => {
+      item.subFinancReceber?.forEach((itemSub) => {
+        total += itemSub.valor;
+      });
+    });
+
+    return total;
+  }
+
+  quantidadeAulasFeitas(): number {
+    let quantidade = 0;
+
+    this.Paciente.agendamentos?.forEach((item) => {
+      item.dataCancelamento ? quantidade++ : null;
+    });
+
+    return quantidade;
+  }
+
+  loadPlanos() {
+    this.planoService.Listar(this.Paciente.id).subscribe({
+      next: (response) => {
+        this.listaPlanos = response.dados.filter(
+          (x) =>
+            x.pacienteId == null ||
+            x.pacienteId == undefined ||
+            x.pacienteId == 0
+        );
+      },
+
+      error: (err) => {
+        console.error('Erro ao buscar planos:', err);
+
+        this.toastr.error(
+          'Tente novamente ou fale com o suporte',
+          'Erro ao buscar planos'
+        );
+      },
+    });
+  }
+
+  openModalRenovarPlanoS(plano: any) {
+    const dialog = document.getElementById('dialog_plano') as HTMLDialogElement;
+    if (dialog) {
+      this.preencherFormularioPlano(); // Reseta e inicializa o formPlano
+      if (plano) {
+        console.log('Plano recebido:', plano);
+        this.formPlano.patchValue(plano);
+        console.log('Form após patch:', this.formPlano.value);
+
+        if (plano.dataInicio) {
+          const dataFormatada = this.datePipe.formatToHtmlDate(
+            plano.dataInicio
+          );
+          this.formPlano.get('dataInicio')?.setValue(dataFormatada);
+        }
+
+        if (plano.dataFim) {
+          const dataFormatada = this.datePipe.formatToHtmlDate(plano.dataFim);
+          this.formPlano.get('dataFim')?.setValue(dataFormatada);
+        }
+      }
+      dialog.showModal();
+    }
+  }
+
+  compararDataParaRenovarPlano(plano: any): boolean {
+    const dataAtual = new Date();
+    const dataPlano = new Date(plano.dataFim);
+
+    return dataPlano > dataAtual;
   }
 
   salvarPlanoS(): void {
-
     this.formPlano.patchValue({
-      pacienteId: this.Paciente.id
+      pacienteId: this.Paciente.id,
     });
     // Log do valor atual do formulário
     console.log('Valor do formulário:', this.formPlano.value);
 
     // Log do status de cada campo
-    Object.keys(this.formPlano.controls).forEach(key => {
+    Object.keys(this.formPlano.controls).forEach((key) => {
       const control = this.formPlano.get(key);
       console.log(`Campo ${key}:`);
       console.log('- Valor:', control?.value);
@@ -536,15 +501,21 @@ export class PacienteCompletoComponent implements OnInit {
     });
 
     if (this.formPlano.invalid) {
-      this.toastr.error('Preencha todos os campos', 'Erro ao cadastrar uma evolução');
-      return
+      this.toastr.error(
+        'Preencha todos os campos',
+        'Erro ao cadastrar uma evolução'
+      );
+      return;
     }
 
     const dataToSave = this.formPlano.value;
 
-    const planoIdForm = (document.getElementById('planoId') as HTMLSelectElement)?.value ?? '';
+    const planoIdForm =
+      (document.getElementById('planoId') as HTMLSelectElement)?.value ?? '';
 
-    let planoSelecionado = this.listaPlanos.find(x => x.id == parseFloat(planoIdForm));
+    let planoSelecionado = this.listaPlanos.find(
+      (x) => x.id == parseFloat(planoIdForm)
+    );
     if (planoSelecionado) {
       dataToSave.idOriginal = planoSelecionado.id;
       dataToSave.tempoMinutos = planoSelecionado.tempoMinutos;
@@ -564,9 +535,10 @@ export class PacienteCompletoComponent implements OnInit {
 
     dataToSave.pacienteId = this.Paciente.id;
 
-    const saveOperation = dataToSave.id && dataToSave.idOriginal
-      ? this.planoService.Atualizar(dataToSave)
-      : this.planoService.PlanoParaPaciente(dataToSave);
+    const saveOperation =
+      dataToSave.id && dataToSave.idOriginal
+        ? this.planoService.Atualizar(dataToSave)
+        : this.planoService.PlanoParaPaciente(dataToSave);
     saveOperation.subscribe({
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
@@ -574,28 +546,43 @@ export class PacienteCompletoComponent implements OnInit {
         this.closeDialog();
       },
       error: () => {
-        this.toastr.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+        this.toastr.error(
+          'Ocorreu um erro ao salvar. Tente novamente.',
+          'Erro'
+        );
       },
     });
-
   }
 
   calcularDataFimS() {
-
     const dataInicio = this.formPlano.get('dataInicio')?.value;
-    const tipoMes = document.getElementById('tipoAssinatura') as HTMLSelectElement;
+    const tipoMes = document.getElementById(
+      'tipoAssinatura'
+    ) as HTMLSelectElement;
 
     if (dataInicio && tipoMes.value) {
       const inicio = new Date(dataInicio);
       let meses = 0;
 
       switch (tipoMes.value) {
-        case 'm': meses = 1; break;
-        case 'b': meses = 2; break;
-        case 't': meses = 3; break;
-        case 'q': meses = 4; break;
-        case 's': meses = 6; break;
-        case 'a': meses = 12; break;
+        case 'm':
+          meses = 1;
+          break;
+        case 'b':
+          meses = 2;
+          break;
+        case 't':
+          meses = 3;
+          break;
+        case 'q':
+          meses = 4;
+          break;
+        case 's':
+          meses = 6;
+          break;
+        case 'a':
+          meses = 12;
+          break;
       }
 
       const dataFim = new Date(inicio);
@@ -606,45 +593,20 @@ export class PacienteCompletoComponent implements OnInit {
     }
   }
 
-
-  //NOVO RENOVAR PLANO
-  inicializarFormulario(): void {
-    this.formPlano = this.fb.group({
-      id: [''],
-      planoId: ['', Validators.required],
-      tipoAssinatura: ['', Validators.required],
-      descricao: ['', Validators.required],
-      valor: ['', Validators.required],
-      dataInicio: [new Date().toISOString().split('T')[0], Validators.required],
-      dataFim: ['', Validators.required],
-      gerarFinanceiro: [false],
-      gerarAgendamento: [false],
-      financeiro: this.fb.group({
-        valor: [0, [Validators.required, Validators.min(0.01)]],
-        formaPagamentoId: ['', Validators.required],
-        tipoPagamentoId: ['', Validators.required],
-        centroCustoId: ['', Validators.required],
-        observacao: ['']
-      }),
-      agendamento: this.fb.group({
-        diasRecorrencia: this.fb.array(this.criarDiasRecorrencia())
-      })
-    });
-
-    // Desabilitar campos de financeiro e agendamento inicialmente
-    this.formPlano.get('financeiro')?.disable();
-    this.formPlano.get('agendamento')?.disable();
-  }
-
   criarDiasRecorrencia(): FormGroup[] {
-    return this.diasDaSemana.map(() => this.fb.group({
-      diaSemana: [0],
-      ativo: [false],
-      horaInicio: ['', Validators.required],
-      horaFim: ['', Validators.required],
-      profissionalId: [''],
-      salaId: ['']
-    }, { validators: this.horaFimMaiorQueHoraInicio() }));
+    return this.diasDaSemana.map(() =>
+      this.fb.group(
+        {
+          diaSemana: [0],
+          ativo: [false],
+          horaInicio: ['', Validators.required],
+          horaFim: ['', Validators.required],
+          profissionalId: [''],
+          salaId: [''],
+        },
+        { validators: this.horaFimMaiorQueHoraInicio() }
+      )
+    );
   }
 
   horaFimMaiorQueHoraInicio(): ValidatorFn {
@@ -653,7 +615,7 @@ export class PacienteCompletoComponent implements OnInit {
       const fim = control.get('horaFim')?.value;
 
       if (inicio && fim && inicio >= fim) {
-        return { 'invalidTimeRange': true };
+        return { invalidTimeRange: true };
       }
       return null;
     };
@@ -683,7 +645,9 @@ export class PacienteCompletoComponent implements OnInit {
       return;
     }
 
-    const dialogPlano = document.getElementById('dialog_plano') as HTMLDialogElement;
+    const dialogPlano = document.getElementById(
+      'dialog_plano'
+    ) as HTMLDialogElement;
     if (dialogPlano) {
       this.resetForm();
 
@@ -694,7 +658,7 @@ export class PacienteCompletoComponent implements OnInit {
           id: '',
           tipoAssinatura: plano.tipoMes,
           descricao: plano.descricao,
-          dataInicio: new Date().toISOString().split('T')[0]
+          dataInicio: new Date().toISOString().split('T')[0],
         });
         this.calcularDataFim();
       } else {
@@ -707,7 +671,9 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   closeDialogPlano(): void {
-    const dialogPlano = document.getElementById('dialog_plano') as HTMLDialogElement;
+    const dialogPlano = document.getElementById(
+      'dialog_plano'
+    ) as HTMLDialogElement;
     if (dialogPlano) {
       dialogPlano.close();
       this.resetForm();
@@ -715,14 +681,14 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   resetForm(): void {
-    this.inicializarFormulario();
+    this.inicializarFormularioPlano();
     this.planoSelecionado = null;
   }
 
   onPlanoSelecionado(): void {
-    debugger
+    debugger;
     let idPlano = this.formPlano.get('planoId')?.value;
-    let planoFiltrado = this.listaPlanos.filter(x => x.id == idPlano);
+    let planoFiltrado = this.listaPlanos.filter((x) => x.id == idPlano);
 
     // const plano = this.listaPlanos.find(p => p.id === planoId);
 
@@ -732,7 +698,7 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   calcularDataFim(): void {
-    debugger
+    debugger;
     const dataInicio = this.formPlano.get('dataInicio')?.value;
     const tipoAssinatura = this.formPlano.get('tipoAssinatura')?.value;
 
@@ -742,37 +708,63 @@ export class PacienteCompletoComponent implements OnInit {
     let dataFim = new Date(inicio);
 
     switch (tipoAssinatura) {
-      case 'm': dataFim.setMonth(dataFim.getMonth() + 1); break; // Mensal
-      case 'b': dataFim.setMonth(dataFim.getMonth() + 2); break; // Bimestral
-      case 't': dataFim.setMonth(dataFim.getMonth() + 3); break; // Trimestral
-      case 'q': dataFim.setMonth(dataFim.getMonth() + 4); break; // Quadrimestral
-      case 's': dataFim.setMonth(dataFim.getMonth() + 6); break; // Semestral
-      case 'a': dataFim.setFullYear(dataFim.getFullYear() + 1); break; // Anual
+      case 'm':
+        dataFim.setMonth(dataFim.getMonth() + 1);
+        break; // Mensal
+      case 'b':
+        dataFim.setMonth(dataFim.getMonth() + 2);
+        break; // Bimestral
+      case 't':
+        dataFim.setMonth(dataFim.getMonth() + 3);
+        break; // Trimestral
+      case 'q':
+        dataFim.setMonth(dataFim.getMonth() + 4);
+        break; // Quadrimestral
+      case 's':
+        dataFim.setMonth(dataFim.getMonth() + 6);
+        break; // Semestral
+      case 'a':
+        dataFim.setFullYear(dataFim.getFullYear() + 1);
+        break; // Anual
     }
 
     // Subtrair 1 dia para não contar o último dia
     dataFim.setDate(dataFim.getDate() - 1);
 
     this.formPlano.patchValue({
-      dataFim: dataFim.toISOString().split('T')[0]
+      dataFim: dataFim.toISOString().split('T')[0],
     });
 
-    //passar para o input o valor do plano selecionado 
-    if (this.formPlano.get('planoId')?.value && this.formPlano.get('tipoAssinatura')?.value) {
+    //passar para o input o valor do plano selecionado
+    if (
+      this.formPlano.get('planoId')?.value &&
+      this.formPlano.get('tipoAssinatura')?.value
+    ) {
       let idPlano = this.formPlano.get('planoId')?.value;
       let tipoAssinatura = this.formPlano.get('tipoAssinatura')?.value;
       let valor = 0;
 
-      let planoFiltrado = this.listaPlanos.filter(x => x.id == idPlano);
+      let planoFiltrado = this.listaPlanos.filter((x) => x.id == idPlano);
       if (planoFiltrado.length > 0) {
-
         switch (tipoAssinatura) {
-          case 'm': valor = planoFiltrado[0].valorMensal || 0; break; // Mensal
-          case 'b': valor = planoFiltrado[0].valorBimestral || 0; break; // Bimestral
-          case 't': valor = planoFiltrado[0].valorTrimestral || 0; break; // Trimestral
-          case 'q': valor = planoFiltrado[0].valorQuadrimestral || 0; break; // Quadrimestral
-          case 's': valor = planoFiltrado[0].valorSemestral || 0; break; // Semestral
-          case 'a': valor = planoFiltrado[0].valorAnual || 0; break; // Anual 
+          case 'm':
+            valor = planoFiltrado[0].valorMensal || 0;
+            break; // Mensal
+          case 'b':
+            valor = planoFiltrado[0].valorBimestral || 0;
+            break; // Bimestral
+          case 't':
+            valor = planoFiltrado[0].valorTrimestral || 0;
+            break; // Trimestral
+          case 'q':
+            valor = planoFiltrado[0].valorQuadrimestral || 0;
+            break; // Quadrimestral
+          case 's':
+            valor = planoFiltrado[0].valorSemestral || 0;
+            break; // Semestral
+          case 'a':
+            valor = planoFiltrado[0].valorAnual || 0;
+            break; // Anual
         }
 
         this.formPlano.get('valor')?.setValue(valor);
@@ -813,12 +805,24 @@ export class PacienteCompletoComponent implements OnInit {
     let valor = 0;
 
     switch (tipoAssinatura) {
-      case 'm': valor = this.planoSelecionado[0].valorMensal || 0; break;
-      case 'b': valor = this.planoSelecionado[0].valorBimestral || 0; break;
-      case 't': valor = this.planoSelecionado[0].valorTrimestral || 0; break;
-      case 'q': valor = this.planoSelecionado[0].valorQuadrimestral || 0; break;
-      case 's': valor = this.planoSelecionado[0].valorSemestral || 0; break;
-      case 'a': valor = this.planoSelecionado[0].valorAnual || 0; break;
+      case 'm':
+        valor = this.planoSelecionado[0].valorMensal || 0;
+        break;
+      case 'b':
+        valor = this.planoSelecionado[0].valorBimestral || 0;
+        break;
+      case 't':
+        valor = this.planoSelecionado[0].valorTrimestral || 0;
+        break;
+      case 'q':
+        valor = this.planoSelecionado[0].valorQuadrimestral || 0;
+        break;
+      case 's':
+        valor = this.planoSelecionado[0].valorSemestral || 0;
+        break;
+      case 'a':
+        valor = this.planoSelecionado[0].valorAnual || 0;
+        break;
     }
 
     this.formPlano.get('financeiro.valor')?.setValue(valor);
@@ -832,12 +836,15 @@ export class PacienteCompletoComponent implements OnInit {
     if (!this.planoSelecionado) return;
 
     const limiteDias = this.planoSelecionado.diasSemana || 0;
-    let diasSelecionados = this.diasRecorrenciaArray.controls
-      .filter(control => control.get('ativo')?.value)
-      .length;
+    let diasSelecionados = this.diasRecorrenciaArray.controls.filter(
+      (control) => control.get('ativo')?.value
+    ).length;
 
     if (diasSelecionados > limiteDias) {
-      this.toastr.warning(`O plano permite selecionar apenas ${limiteDias} dia(s) da semana`, 'Aviso');
+      this.toastr.warning(
+        `O plano permite selecionar apenas ${limiteDias} dia(s) da semana`,
+        'Aviso'
+      );
 
       // Desmarcar o último selecionado
       for (let i = this.diasRecorrenciaArray.controls.length - 1; i >= 0; i--) {
@@ -877,14 +884,20 @@ export class PacienteCompletoComponent implements OnInit {
             horaInicio: horarioInicioPrincipal,
             horaFim: horarioFimPrincipal,
             profissionalId: profissionalPrincipal,
-            salaId: salaPrincipal
+            salaId: salaPrincipal,
           });
         }
       }
 
-      this.toastr.success('Horários copiados para todos os dias selecionados', 'Sucesso');
+      this.toastr.success(
+        'Horários copiados para todos os dias selecionados',
+        'Sucesso'
+      );
     } else {
-      this.toastr.warning('Selecione e configure pelo menos um dia para copiar o horário', 'Aviso');
+      this.toastr.warning(
+        'Selecione e configure pelo menos um dia para copiar o horário',
+        'Aviso'
+      );
     }
   }
 
@@ -967,7 +980,6 @@ export class PacienteCompletoComponent implements OnInit {
     // Você pode emitir um evento para o componente pai
   }
 
-
   // Método corrigido para resolver o problema com a data
   verificarRenovacao(): void {
     if (this.Paciente && this.Paciente.plano) {
@@ -1018,17 +1030,19 @@ export class PacienteCompletoComponent implements OnInit {
       gerarFinanceiro: this.formPlano.get('gerarFinanceiro')?.value,
       gerarAgendamento: this.formPlano.get('gerarAgendamento')?.value,
       financeiro: null,
-      agendamento: null
+      agendamento: null,
     };
 
     // Adicionar informações financeiras se necessário
     if (planoVinculacao.gerarFinanceiro) {
       planoVinculacao.financeiro = {
         valor: this.formPlano.get('financeiro.valor')?.value,
-        formaPagamentoId: this.formPlano.get('financeiro.formaPagamentoId')?.value,
-        tipoPagamentoId: this.formPlano.get('financeiro.tipoPagamentoId')?.value,
+        formaPagamentoId: this.formPlano.get('financeiro.formaPagamentoId')
+          ?.value,
+        tipoPagamentoId: this.formPlano.get('financeiro.tipoPagamentoId')
+          ?.value,
         centroCustoId: this.formPlano.get('financeiro.centroCustoId')?.value,
-        observacao: this.formPlano.get('financeiro.observacao')?.value || ''
+        observacao: this.formPlano.get('financeiro.observacao')?.value || '',
       };
     }
 
@@ -1045,19 +1059,19 @@ export class PacienteCompletoComponent implements OnInit {
             horaInicio: control.get('horaInicio')?.value,
             horaFim: control.get('horaFim')?.value,
             profissionalId: control.get('profissionalId')?.value,
-            salaId: control.get('salaId')?.value
+            salaId: control.get('salaId')?.value,
           });
         }
       }
 
       planoVinculacao.agendamento = {
-        diasRecorrencia: diasAtivos
+        diasRecorrencia: diasAtivos,
       };
     }
 
     // Enviar para o backend
     this.planoService.vincularPlano(planoVinculacao).subscribe(
-      response => {
+      (response) => {
         if (response && response.status) {
           this.toastr.success(response.mensagem, 'Sucesso');
           this.closeDialogPlano();
@@ -1067,14 +1081,85 @@ export class PacienteCompletoComponent implements OnInit {
           this.toastr.error(response.mensagem, 'Erro');
         }
       },
-      error => {
+      (error) => {
         this.toastr.error('Erro ao vincular plano', 'Erro');
         console.error(error);
       }
     );
   }
+
+  // SESSAO DE GET'S
+  getTipoPagamento(): void {
+    this.tipoPagamentoService.ListarTipoPagamento().subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.listaTipoPagamento = response.dados;
+        }
+      },
+      error: (e) => {
+        console.log(e);
+      },
+    });
+  }
+
+  getCentroDeCusto(): void {
+    this.centroCustoService.Listar().subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.listaCentroDeCusto = response.dados;
+        }
+      },
+      error: (e) => {
+        console.log(e);
+      },
+    });
+  }
+
+  getProfissional() {
+    this.profissionalService
+      .Listar(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        false
+      )
+      .subscribe({
+        next: (data) => {
+          if (data.dados) {
+            this.listaProfissional = data.dados;
+          }
+        },
+        error(err) {
+          console.error('Erro ao buscar Profissional:', err);
+        },
+      });
+  }
+
+  getPlanos() {
+    this.planoService.Listar().subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.listaPlanos = data.dados.filter(
+            (x) =>
+              x.pacienteId == null ||
+              x.pacienteId == undefined ||
+              x.pacienteId == 0
+          );
+        }
+      },
+      error(err) {
+        console.error('Erro ao buscar Planos:', err);
+      },
+    });
+  }
+
+  iniciarGettersLista(): void {
+    this.getPlanos();
+    this.getCentroDeCusto();
+    this.getTipoPagamento();
+    this.getProfissional();
+  }
 }
-
-
-
-
