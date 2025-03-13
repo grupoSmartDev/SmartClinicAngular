@@ -660,7 +660,7 @@
                 name=""
                 class="form-select form-select-sm"
                 (change)="calcularDataFim()"
-                id="tipoAssinatura"
+                id="tipoMes"
               >
                 <option value="">Selecione...</option>
                 <option value="m">Mensal</option>
@@ -780,13 +780,11 @@
               </div>
             </div>
             <div class="col-md-3">
-              <label for="tipoAssinatura" class="form-label"
-                >Tipo de assinatura</label
-              >
+              <label for="tipoMes" class="form-label">Tipo de assinatura</label>
               <select
                 class="form-select form-select-sm"
-                formControlName="tipoAssinatura"
-                id="tipoAssinatura"
+                formControlName="tipoMes"
+                id="tipoMes"
                 (change)="calcularDataFim()"
               >
                 <option value="">Selecione...</option>
@@ -800,8 +798,8 @@
               <div
                 class="invalid-feedback"
                 *ngIf="
-                  formPlano.get('tipoAssinatura')?.invalid &&
-                  formPlano.get('tipoAssinatura')?.touched
+                  formPlano.get('tipoMes')?.invalid &&
+                  formPlano.get('tipoMes')?.touched
                 "
               >
                 Selecione o tipo de assinatura
@@ -936,135 +934,219 @@
           </div>
 
           <!-- Seção de Financeiro (condicionalmente visível) -->
+
+          <!-- Estrutura completa corrigida para a seção de Financeiro -->
+          <!-- Seção completa de financeiro corrigida para evitar problemas de tipagem -->
+
           <div
             class="card shadow-sm mb-4"
             *ngIf="formPlano.get('gerarFinanceiro')?.value"
             [@fadeInOut]
-            formGroupName="financeiro"
           >
             <div class="card-header bg-light py-3">
               <h6 class="mb-0 fw-semibold">Informações de Pagamento</h6>
             </div>
             <div class="card-body">
-              <div class="row g-3">
-                <div class="col-md-4">
-                  <label for="valorTotal" class="form-label small fw-semibold">
-                    Valor Total <span class="text-danger">*</span>
-                  </label>
-                  <div class="input-group input-group-sm">
-                    <span class="input-group-text">R$</span>
+              <!-- Usando ngIf para garantir que financeiroGroup não é null -->
+              <ng-container
+                *ngIf="formPlano.get('financeiro') as financeiroGroup"
+              >
+                <!-- Campos de Valor e Parcelas -->
+                <div class="row g-3 justify-content-end">
+                  <div class="col-md-2">
+                    <label
+                      for="valorTotal"
+                      class="form-label small fw-semibold"
+                    >
+                      Valor Total <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text">R$</span>
+                      <input
+                        type="number"
+                        id="valorTotal"
+                        class="form-control"
+                        [formControl]="$any(financeiroGroup.get('valor'))"
+                        (change)="gerarParcelas()"
+                        placeholder="0,00"
+                        step="0.01"
+                        min="0.01"
+                        [class.is-invalid]="
+                          financeiroGroup.get('valor')?.invalid &&
+                          financeiroGroup.get('valor')?.touched
+                        "
+                      />
+                    </div>
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="financeiroGroup.get('valor')?.errors?.['required']"
+                    >
+                      Valor é obrigatório
+                    </div>
+                    <div
+                      class="invalid-feedback"
+                      *ngIf="financeiroGroup.get('valor')?.errors?.['min']"
+                    >
+                      Valor deve ser maior que zero
+                    </div>
+                  </div>
+
+                  <div class="col-md-2">
+                    <label for="parcelas" class="form-label small fw-semibold"
+                      >Parcelas</label
+                    >
                     <input
                       type="number"
-                      id="valorTotal"
-                      class="form-control"
-                      formControlName="valor"
-                      placeholder="0,00"
-                      step="0.01"
-                      min="0.01"
-                      [readOnly]="true"
+                      id="parcelas"
+                      class="form-control form-control-sm"
+                      [formControl]="$any(financeiroGroup.get('parcela'))"
+                      (change)="gerarParcelas()"
+                      min="1"
+                      [class.is-invalid]="
+                        financeiroGroup.get('parcela')?.invalid &&
+                        financeiroGroup.get('parcela')?.touched
+                      "
                     />
+                    <div class="invalid-feedback">
+                      Número de parcelas deve ser maior que zero
+                    </div>
                   </div>
-                  <div
-                    class="invalid-feedback"
-                    *ngIf="formPlano.get('financeiro.valor')?.errors?.['required']"
-                  >
-                    Valor é obrigatório
+
+                  <div class="col-md-3">
+                    <label
+                      for="centroCusto"
+                      class="form-label small fw-semibold"
+                    >
+                      Centro de Custo <span class="text-danger">*</span>
+                    </label>
+                    <select
+                      id="centroCusto"
+                      class="form-select form-select-sm"
+                      [formControl]="$any(financeiroGroup.get('centroCustoId'))"
+                      [class.is-invalid]="
+                        financeiroGroup.get('centroCustoId')?.invalid &&
+                        financeiroGroup.get('centroCustoId')?.touched
+                      "
+                    >
+                      <option value="" disabled>Selecione</option>
+                      <option
+                        *ngFor="let item of listaCentroDeCusto"
+                        [value]="item.id"
+                      >
+                        {{ item.descricao }}
+                      </option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Selecione um centro de custo
+                    </div>
                   </div>
                 </div>
 
-                <div class="col-md-4">
-                  <label
-                    for="formaPagamento"
-                    class="form-label small fw-semibold"
-                  >
-                    Forma de Pagamento <span class="text-danger">*</span>
-                  </label>
-                  <select
-                    id="formaPagamento"
-                    class="form-select form-select-sm"
-                    formControlName="formaPagamentoId"
-                    (change)="onFormaPagamentoChange()"
-                  >
-                    <option value="" disabled>Selecione</option>
-                    <option
-                      *ngFor="let item of listaFormaPagamento"
-                      [value]="item.id"
-                    >
-                      {{ item.descricao }}
-                    </option>
-                  </select>
-                  <div
-                    class="invalid-feedback"
-                    *ngIf="
-                      formPlano.get('financeiro.formaPagamentoId')?.invalid &&
-                      formPlano.get('financeiro.formaPagamentoId')?.touched
-                    "
-                  >
-                    Selecione uma forma de pagamento
-                  </div>
+                <!-- Tabela de Parcelas -->
+                <div
+                  class="table-responsive mt-4"
+                  *ngIf="getSubFinancControls().length > 0"
+                >
+                  <h6 class="fw-semibold mb-3">Parcelas Geradas</h6>
+                  <table class="table table-sm table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Vencimento</th>
+                        <th scope="col">Valor</th>
+                        <th scope="col">Forma</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Observação</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container
+                        *ngFor="
+                          let parcela of getSubFinancControls();
+                          let i = index
+                        "
+                      >
+                        <tr [formGroup]="$any(parcela)">
+                          <td class="align-middle">{{ i + 1 }}</td>
+                          <td>
+                            <input
+                              type="date"
+                              class="form-control form-control-sm"
+                              formControlName="dataVencimento"
+                              [class.is-invalid]="
+                                parcela.get('dataVencimento')?.invalid &&
+                                parcela.get('dataVencimento')?.touched
+                              "
+                            />
+                            <div class="invalid-feedback">
+                              Data de vencimento é obrigatória
+                            </div>
+                          </td>
+                          <td>
+                            <div class="input-group input-group-sm">
+                              <span class="input-group-text">R$</span>
+                              <input
+                                type="number"
+                                class="form-control"
+                                formControlName="valor"
+                                readonly
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <select
+                              class="form-select form-select-sm"
+                              formControlName="formaPagamentoId"
+                              [class.is-invalid]="
+                                parcela.get('formaPagamentoId')?.invalid &&
+                                parcela.get('formaPagamentoId')?.touched
+                              "
+                            >
+                              <option value="" disabled>Selecione</option>
+                              <option
+                                *ngFor="let item of listaFormaPagamento"
+                                [value]="item.id"
+                              >
+                                {{ item.descricao }}
+                              </option>
+                            </select>
+                          </td>
+                          <td>
+                            <select
+                              class="form-select form-select-sm"
+                              formControlName="tipoPagamentoId"
+                              [class.is-invalid]="
+                                parcela.get('tipoPagamentoId')?.invalid &&
+                                parcela.get('tipoPagamentoId')?.touched
+                              "
+                            >
+                              <option value="" disabled>Selecione</option>
+                              <option
+                                *ngFor="let item of listaTipoPagamento"
+                                [value]="item.id"
+                              >
+                                {{ item.descricao }}
+                              </option>
+                            </select>
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              class="form-control form-control-sm"
+                              formControlName="observacao"
+                              placeholder="Obs."
+                              maxlength="200"
+                            />
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
                 </div>
-
-                <div class="col-md-4">
-                  <label
-                    for="tipoPagamento"
-                    class="form-label small fw-semibold"
-                  >
-                    Tipo de Pagamento <span class="text-danger">*</span>
-                  </label>
-                  <select
-                    id="tipoPagamento"
-                    class="form-select form-select-sm"
-                    formControlName="tipoPagamentoId"
-                  >
-                    <option value="" disabled>Selecione</option>
-                    <option
-                      *ngFor="let item of listaTipoPagamento"
-                      [value]="item.id"
-                    >
-                      {{ item.descricao }}
-                    </option>
-                  </select>
-                  <div
-                    class="invalid-feedback"
-                    *ngIf="
-                      formPlano.get('financeiro.tipoPagamentoId')?.invalid &&
-                      formPlano.get('financeiro.tipoPagamentoId')?.touched
-                    "
-                  >
-                    Selecione um tipo de pagamento
-                  </div>
-                </div>
-
-                <div class="col-md-12">
-                  <label for="centroCusto" class="form-label small fw-semibold">
-                    Centro de Custo <span class="text-danger">*</span>
-                  </label>
-                  <select
-                    id="centroCusto"
-                    class="form-select form-select-sm"
-                    formControlName="centroCustoId"
-                  >
-                    <option value="" disabled>Selecione</option>
-                    <option
-                      *ngFor="let item of listaCentroDeCusto"
-                      [value]="item.id"
-                    >
-                      {{ item.descricao }}
-                    </option>
-                  </select>
-                  <div
-                    class="invalid-feedback"
-                    *ngIf="
-                      formPlano.get('financeiro.centroCustoId')?.invalid &&
-                      formPlano.get('financeiro.centroCustoId')?.touched
-                    "
-                  >
-                    Selecione um centro de custo
-                  </div>
-                </div>
-              </div>
+              </ng-container>
             </div>
           </div>
+
           <div
             class="card shadow-sm mb-4"
             *ngIf="formPlano.get('gerarAgendamento')?.value"

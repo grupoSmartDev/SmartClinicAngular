@@ -18,7 +18,7 @@
             [ngClass]="selectedEvent ? 'bi-calendar-check' : 'bi-calendar-plus'"
           ></i>
           {{ selectedEvent ? "Detalhes do Evento" : "Novo Agendamento" }}
-          <span>{{ selectedEvent?.dataCompromisso }}</span>
+          <span>{{ selectedEvent?.data }}</span>
         </h5>
         <button
           type="button"
@@ -69,13 +69,7 @@
           novalidate
         >
           <!-- Cabeçalho do Agendamento -->
-          <input
-            type="date"
-            name="dataCompromisso"
-            id=""
-            formControlName="dataCompromisso"
-            hidden
-          />
+          <input type="date" name="data" id="" formControlName="data" hidden />
           <div class="card shadow-sm mb-4">
             <div class="card-body">
               <div class="row g-3">

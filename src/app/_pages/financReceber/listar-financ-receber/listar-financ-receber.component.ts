@@ -25,8 +25,8 @@ export class ListarFinancReceberComponent {
   expandedRows: Set<number> = new Set();
 
   lista: FinancReceber[] = [];
-  ccLista : CentroDeCusto[] = [];
-  pacienteLista : Paciente[] = [];
+  ccLista: CentroDeCusto[] = [];
+  pacienteLista: Paciente[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: FinancReceber;
@@ -38,7 +38,7 @@ export class ListarFinancReceberComponent {
   // filtros
   descricaoFiltro?: string = '';
   idFiltro?: string = '';
- 
+
   pacienteIdFiltro?: string = '';
   ccFiltro?: string = '';
   dataBaseFiltro: string = "E";
@@ -49,7 +49,7 @@ export class ListarFinancReceberComponent {
 
   parcelaSelecionada: SubFinancReceber = {} as SubFinancReceber;
 
-  constructor(private financReceberService: FinancReceberService, private toast: ToastrService, private ccService : CentroDeCustoService) { }
+  constructor(private financReceberService: FinancReceberService, private toast: ToastrService, private ccService: CentroDeCustoService) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -60,8 +60,8 @@ export class ListarFinancReceberComponent {
 
   loadData(): void {
     this.financReceberService.ListarAnalitico(
-      this.currentPage,this.pageSize,this.descricaoFiltro,this.idFiltro,this.ccFiltro,
-      this.pacienteIdFiltro,this.dataBaseFiltro,this.dataFiltroInicio, this.dataFiltroFim,
+      this.currentPage, this.pageSize, this.descricaoFiltro, this.idFiltro, this.ccFiltro,
+      this.pacienteIdFiltro, this.dataBaseFiltro, this.dataFiltroInicio, this.dataFiltroFim,
       this.paginar
     ).subscribe({
       next: (data) => {
@@ -77,7 +77,7 @@ export class ListarFinancReceberComponent {
     });
   }
 
-  
+
   loadCC(): void {
     this.ccService.Listar(
     ).subscribe({
@@ -108,7 +108,7 @@ export class ListarFinancReceberComponent {
   openModalBaixa(item: SubFinancReceber) {
     // Importante: primeiro atualize os dados, depois abra o modal
     this.parcelaSelecionada = { ...item }; // Criando uma cópia para não afetar o objeto original
-    
+
     // Aguarde a próxima iteração do change detection antes de abrir o modal
     setTimeout(() => {
       const modalElement = document.getElementById('modalBaixaParcela');
@@ -121,6 +121,10 @@ export class ListarFinancReceberComponent {
 
   Excluir(financReceber: FinancReceber) {
     let id = financReceber.id;
+
+    if (!id) {
+      return
+    }
 
     this.financReceberService.Deletar(id.toString()).subscribe({
       next: (response) => {
@@ -139,7 +143,7 @@ export class ListarFinancReceberComponent {
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  promptDelete(dataParaExcluir : any) {
+  promptDelete(dataParaExcluir: any) {
     this.dadosParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
@@ -162,9 +166,9 @@ export class ListarFinancReceberComponent {
     this.loadData();
   }
 
-  toggleRow(id: string): void {
+  toggleRow(id: number): void {
 
-    let idConvertido = parseInt(id);
+    let idConvertido = id;
     if (this.expandedRows.has(idConvertido)) {
       this.expandedRows.delete(idConvertido);
     } else {
@@ -172,16 +176,16 @@ export class ListarFinancReceberComponent {
     }
   }
 
-  isExpanded(id: string): boolean {
+  isExpanded(id: number): boolean {
 
-    let idConvertido = parseInt(id);
+    let idConvertido = id;
     return this.expandedRows.has(idConvertido);
   }
   //QUANDO FOR REFATORAR, DEIXAR ISSO EM UM HELPER
   isOverdue(dataVencimento: string | Date): boolean {
     // Converte para Date se for string
-    const vencimentoDate = typeof dataVencimento === 'string' 
-      ? new Date(dataVencimento) 
+    const vencimentoDate = typeof dataVencimento === 'string'
+      ? new Date(dataVencimento)
       : dataVencimento;
 
     // Remove o horário da comparação, focando apenas na data
@@ -214,5 +218,5 @@ export class ListarFinancReceberComponent {
   }
 
   //tem que fazer lista de pacientes aqui para o filtro. 
-  
+
 }

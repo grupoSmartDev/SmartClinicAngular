@@ -97,7 +97,7 @@ export class ModalAgendaComponent implements OnInit {
       // Mantenha todos os campos existentes...
       id: [null],
       titulo: [null, [Validators.required, Validators.maxLength(100)]],
-      dataCompromisso: [null, [Validators.required]],
+      data: [null, [Validators.required]],
       horaInicio: [null, [Validators.required, this.timeValidator]],
       horaFim: [null, [Validators.required, this.timeValidator]],
       dataCancelamento: [null],
@@ -200,18 +200,18 @@ export class ModalAgendaComponent implements OnInit {
   ngOnInit(): void {
     this.loadInitialData();
     // debugger
-    // console.log(this.selectedEvent, this.selectedDate);
-    // if (!this.selectedEvent && this.selectedDate) {
-    //   this.formulario.patchValue({
-    //     dataCompromisso: this.selectedDate,
-    //     horaInicio: '08:00',
-    //     horaFim: '09:00'
-    //   });
-    // } else if (this.selectedEvent) {
-    //   this.populateForm(this.selectedEvent);
-    // }
+    console.log(this.selectedEvent, this.selectedDate);
+    if (!this.selectedEvent && this.selectedDate) {
+      this.formulario.patchValue({
+        data: this.selectedDate,
+        horaInicio: '08:00',
+        horaFim: '09:00'
+      });
+    } else if (this.selectedEvent) {
+      this.populateForm(this.selectedEvent);
+    }
 
-    // this.atualizarValidacoesFinanceiras(this.formulario.get('avulso')?.value === true);
+    this.atualizarValidacoesFinanceiras(this.formulario.get('avulso')?.value === true);
   }
 
   // Novo método para inicializar os dados do modal
@@ -227,7 +227,7 @@ export class ModalAgendaComponent implements OnInit {
     // Inicializar campos com base no contexto
     if (!this.selectedEvent && this.selectedDate) {
       this.formulario.patchValue({
-        dataCompromisso: this.selectedDate,
+        data: this.selectedDate,
         horaInicio: '08:00',
         horaFim: '09:00',
         avulso: false
@@ -403,13 +403,13 @@ export class ModalAgendaComponent implements OnInit {
         parcela: [i + 1],
         valor: [valorAjustado, [Validators.required, Validators.min(0.01)]],
         dataVencimento: [dataVencimento.toISOString().split('T')[0], [Validators.required]],
-        dataPagamento: [''],
+        dataPagamento: [null],
         observacao: [''],
         desconto: [0],
         juros: [0],
         multa: [0],
-        formaPagamentoId: [''],
-        tipoPagamentoId: ['']
+        formaPagamentoId: [null],
+        tipoPagamentoId: [null]
       }));
     }
   }
@@ -430,6 +430,7 @@ export class ModalAgendaComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
+    debugger
     console.log('Formulário submetido:', this.formulario.value);
 
     // Validar apenas os campos relevantes com base no status de avulso
@@ -543,6 +544,7 @@ export class ModalAgendaComponent implements OnInit {
   }
 
   private prepararDadosAgenda(): Agenda {
+    debugger
     const formData = this.formulario.value;
 
     // Garantir que avulso seja um booleano

@@ -1,16 +1,10 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Paciente } from '../../../_module/pacienteModule';
-
 import { Profissional } from '../../../_module/profissionalModule';
-
 import { Router } from '@angular/router';
-
 import { ToastrService } from 'ngx-toastr';
-
 import { PacienteService } from '../../../_services/paciente.service';
-
 import { ProfissionalService } from '../../../_services/profissional.service';
-
 import {
   AbstractControl,
   FormArray,
@@ -19,19 +13,11 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-
 import { Exercicio } from '../../../_module/exercicioModule';
-
 import { Atividade } from '../../../_module/atividadeModule';
-
 import { Evolucao } from '../../../_module/evolucaoModule';
-
 import { EvolucaoService } from '../../../_services/evolucao.service';
-
-import { ResponseModel } from '../../../_module/ResponseModule';
-
 import { Plano, TipoMes } from '../../../_module/planoModule';
-
 import { PlanoService } from '../../../_services/plano.service';
 import { DatePtBrPipe } from '../../../date-pt-br.pipe';
 import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service';
@@ -39,14 +25,17 @@ import { CentroDeCustoService } from '../../../_services/centro-de-custo.service
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { FormaPagamento } from '../../../_module/formaPagamentoModule';
 import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
+import { trigger, transition, style, animate } from '@angular/animations';
+import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 
-//alterar esses dtos
+// DTOs
 interface FinanceiroDto {
-  valor: any;
-  formaPagamentoId: any;
-  tipoPagamentoId: any;
-  centroCustoId: any;
+  valor: number;
+  formaPagamentoId: string | number;
+  tipoPagamentoId: string | number;
+  centroCustoId: string | number;
   observacao: string;
+  subFinancReceber?: any[];
 }
 
 interface DiaSemanaDto {
@@ -54,8 +43,8 @@ interface DiaSemanaDto {
   ativo: boolean;
   horaInicio: string;
   horaFim: string;
-  profissionalId: any;
-  salaId: any;
+  profissionalId: string | number;
+  salaId: string | number;
 }
 
 interface AgendamentoDto {
@@ -63,27 +52,46 @@ interface AgendamentoDto {
 }
 
 interface PlanoVinculacaoDto {
-  planoModeloId: any;
-  pacienteId: any;
-  tipoAssinatura: string;
+  planoModeloId: string | number;
+  pacienteId: string | number;
+  tipoMes: string;
   dataInicio: string;
   dataFim: string;
   gerarFinanceiro: boolean;
   gerarAgendamento: boolean;
   financeiro: FinanceiroDto | null;
   agendamento: AgendamentoDto | null;
+  descricao: string;
+  tempoMinutos: number;
+  diasSemana: number;
+  valorBimestral?: number;
+  valorTrimestral?: number;
+  valorQuadrimestral?: number;
+  valorSemestral?: number;
+  valorAnual?: number;
+  valorMensal?: number;
+
 }
 
 @Component({
   selector: 'app-paciente-completo',
-
   templateUrl: './paciente-completo.component.html',
-
   styleUrl: './paciente-completo.component.css',
-
   providers: [DatePtBrPipe],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [
+        animate('300ms', style({ opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class PacienteCompletoComponent implements OnInit {
+  // Dias da semana para uso na interface
   diasDaSemana = [
     { id: 0, nome: 'Domingo', valor: 0 },
     { id: 1, nome: 'Segunda', valor: 1 },
@@ -93,6 +101,25 @@ export class PacienteCompletoComponent implements OnInit {
     { id: 5, nome: 'Sexta', valor: 5 },
     { id: 6, nome: 'Sábado', valor: 6 },
   ];
+
+  // Propriedades da classe
+  Paciente: Paciente = {} as Paciente;
+  listaProfissional: Profissional[] = [];
+  listaTipoPagamento: TipoPagamento[] = [];
+  listaSala: any[] = [];
+  listaCentroDeCusto: CentroDeCusto[] = [];
+  listaFormaPagamento: FormaPagamento[] = [];
+  formEvolucao!: FormGroup;
+  formPlano!: FormGroup;
+  valorTotalReceita = 0;
+  listaPlanos: Plano[] = [];
+  dataAtual = new Date();
+  camposFinancReceber = false;
+  isRenovacao: boolean = false;
+  podeRenovar: boolean = false;
+  planoSelecionado: any = null;
+
+  @Output() evolucaoAtualizado = new EventEmitter<void>();
 
   constructor(
     private pacienteService: PacienteService,
@@ -105,37 +132,20 @@ export class PacienteCompletoComponent implements OnInit {
     private tipoPagamentoService: TipoPagamentoService,
     private centroCustoService: CentroDeCustoService,
     private datePipe: DatePtBrPipe
-  ) {}
-
-  Paciente: Paciente = {} as Paciente;
-  listaProfissional: Profissional[] = [];
-  listaTipoPagamento: TipoPagamento[] = [];
-  listaSala: any[] = [];
-  listaCentroDeCusto: CentroDeCusto[] = [];
-  listaFormaPagamento: FormaPagamento[] = [];
-  formEvolucao!: FormGroup;
-  formPlano!: FormGroup;
-  valorTotalReceita = 0;
-  listaPlanos: Plano[] = [];
-  dataAtual = new Date();
-
-  isRenovacao: boolean = false;
-  podeRenovar: boolean = false;
-  planoSelecionado: any = null;
-
-  @Output() evolucaoAtualizado = new EventEmitter<void>();
+  ) { }
 
   ngOnInit(): void {
     this.preencherFormularioEvolucao();
-    this.preencherFormularioPlano();
     this.inicializarFormularioPlano();
     this.iniciarGettersLista();
+    this.verificarRenovacao();
   }
 
-  onSubmit() {}
-  fecharModal() {}
+  // Métodos básicos de UI
+  onSubmit() { }
+  fecharModal() { }
 
-  //PREENCHER FORMULARIOS / INICIAR FORMULARIOS
+  // FORMULÁRIOS
   preencherFormularioEvolucao() {
     this.formEvolucao = this.fb.group({
       id: [''],
@@ -148,53 +158,30 @@ export class PacienteCompletoComponent implements OnInit {
     });
   }
 
-  preencherFormularioPlano() {
-    this.formPlano = this.fb.group({
-      id: [''],
-      idOriginal: [''],
-      descricao: ['', Validators.required],
-      pacienteId: ['', Validators.required],
-      profissionalId: ['', Validators.required],
-      tempoMinimo: ['', Validators.required],
-      diasSemana: ['', Validators.required],
-      centroCustoId: ['', Validators.required],
-      valorBimestral: ['', Validators.required],
-      valorTrimestral: ['', Validators.required],
-      valorQuadrimensal: ['', Validators.required],
-      valorSemestral: ['', Validators.required],
-      valorAnual: ['', Validators.required],
-      valorMensal: ['', Validators.required],
-      dataInicio: ['', Validators.required],
-      dataFim: ['', Validators.required],
-      ativo: ['', Validators.required],
-      financeiroId: ['', Validators.required],
-      tipoMes: ['', Validators.required],
-      gerarFinanceiro: [false],
-      gerarAgendamento: [false],
-    });
-
-    if (this.formPlano.get('dataInicio')) {
-    }
-  }
-
-  inicializarFormularioPlano(): void {
+  inicializarFormularioPlanso(): void {
     this.formPlano = this.fb.group({
       id: [''],
       planoId: ['', Validators.required],
-      tipoAssinatura: ['', Validators.required],
+      tipoMes: ['', Validators.required],
       descricao: ['', Validators.required],
-      valor: ['', Validators.required],
+      valor: [0, Validators.required],
       dataInicio: [new Date().toISOString().split('T')[0], Validators.required],
       dataFim: ['', Validators.required],
-      gerarFinanceiro: [false],
+      gerarFinanceiro: [true],
       gerarAgendamento: [false],
+
+      // Financeiro
       financeiro: this.fb.group({
         valor: [0, [Validators.required, Validators.min(0.01)]],
         formaPagamentoId: ['', Validators.required],
         tipoPagamentoId: ['', Validators.required],
         centroCustoId: ['', Validators.required],
         observacao: [''],
+        parcela: [1, [Validators.required, Validators.min(1)]],
+        subFinancReceber: this.fb.array([])
       }),
+
+      // Agendamento
       agendamento: this.fb.group({
         diasRecorrencia: this.fb.array(this.criarDiasRecorrencia()),
       }),
@@ -205,27 +192,7 @@ export class PacienteCompletoComponent implements OnInit {
     this.formPlano.get('agendamento')?.disable();
   }
 
-  carregarFormularioPlano() {
-    this.formPlano = this.fb.group({
-      id: [null],
-      descricao: [null, Validators.required],
-      tempoMinutos: [0],
-      diasSemana: [1, Validators.required],
-      centroDeCustoId: [null],
-      valorBimestral: [0, [Validators.required, Validators.min(0)]],
-      valorTrimestral: [0, [Validators.required, Validators.min(0)]],
-      valorQuadrimestral: [0, [Validators.required, Validators.min(0)]],
-      valorSemestral: [0, [Validators.required, Validators.min(0)]],
-      valorAnual: [0, [Validators.required, Validators.min(0)]],
-      valorMensal: [0, [Validators.required, Validators.min(0)]],
-      data: [null],
-      pacienteId: [null],
-      financeiroId: [null],
-      tipoMes: [''],
-      planoId: [null],
-    });
-  }
-  //GET'S
+  // GETTERS para FormArrays
   get exercicios(): FormArray {
     return this.formEvolucao.get('exercicios') as FormArray;
   }
@@ -234,6 +201,15 @@ export class PacienteCompletoComponent implements OnInit {
     return this.formEvolucao.get('atividades') as FormArray;
   }
 
+  get subFinancRecebers(): FormArray {
+    return this.formPlano.get('financeiro.subFinancReceber') as FormArray;
+  }
+
+  get diasRecorrenciaArray(): FormArray {
+    return this.formPlano.get('agendamento.diasRecorrencia') as FormArray;
+  }
+
+  // DIÁLOGOS
   openDialog(evolucao: any) {
     const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
     if (dialog) {
@@ -247,14 +223,12 @@ export class PacienteCompletoComponent implements OnInit {
         this.atividades.removeAt(0);
       }
 
-      // Fazer o patch dos campos simples
+      // Preencher formulário com dados da evolução
       this.formEvolucao.patchValue({
-        id: evolucao.id,
-        descricao: evolucao.descricao,
-        pacienteId: evolucao.pacienteId,
-        profissionalId: evolucao.profissionalId,
-        dataEvolucao: evolucao.dataEvolucao,
-        observacao: evolucao.observacao,
+        id: evolucao.id || '',
+        pacienteId: evolucao.pacienteId || this.Paciente.id,
+        profissionalId: evolucao.profissionalId || this.Paciente.profissionalId,
+        observacao: evolucao.observacao || '',
       });
 
       if (evolucao.dataEvolucao) {
@@ -264,33 +238,29 @@ export class PacienteCompletoComponent implements OnInit {
         this.formEvolucao.get('dataEvolucao')?.setValue(dataFormatada);
       }
 
-      this.formEvolucao
-        .get('profissionalId')
-        ?.setValue(this.Paciente.profissionalId);
-
-      // Adicionar exercícios
+      // Adicionar exercícios se existirem
       if (evolucao.exercicios?.length) {
-        evolucao.exercicios.forEach((exercicios: Exercicio) => {
+        evolucao.exercicios.forEach((exercicio: Exercicio) => {
           const exercicioGroup = this.fb.group({
-            obs: [exercicios.obs, Validators.required],
-            descricao: [exercicios.descricao, Validators.required],
-            tempo: [exercicios.tempo, Validators.required],
-            repeticoes: [exercicios.repeticoes, Validators.required],
-            series: [exercicios.series, Validators.required],
-            evolucaoId: [exercicios.evolucaoId],
+            obs: [exercicio.obs, Validators.required],
+            descricao: [exercicio.descricao, Validators.required],
+            tempo: [exercicio.tempo, Validators.required],
+            repeticoes: [exercicio.repeticoes, Validators.required],
+            series: [exercicio.series, Validators.required],
+            evolucaoId: [exercicio.evolucaoId],
           });
           this.exercicios.push(exercicioGroup);
         });
       }
 
-      // Adicionar atividades
+      // Adicionar atividades se existirem
       if (evolucao.atividades?.length) {
-        evolucao.atividades.forEach((atividades: Atividade) => {
+        evolucao.atividades.forEach((atividade: Atividade) => {
           const atividadeGroup = this.fb.group({
-            titulo: [atividades.titulo, Validators.required],
-            descricao: [atividades.descricao, Validators.required],
-            tempo: [atividades.tempo, Validators.required],
-            evolucaoId: [atividades.evolucaoId],
+            titulo: [atividade.titulo, Validators.required],
+            descricao: [atividade.descricao, Validators.required],
+            tempo: [atividade.tempo, Validators.required],
+            evolucaoId: [atividade.evolucaoId],
           });
           this.atividades.push(atividadeGroup);
         });
@@ -300,20 +270,20 @@ export class PacienteCompletoComponent implements OnInit {
 
   closeDialog() {
     const dialog = document.getElementById('dialog_teste') as HTMLDialogElement;
-
     if (dialog) {
-      dialog.close(); // Remove apenas o atributo do modal específico
+      dialog.close();
     }
   }
 
-  closeDialogPlanos() {
+  closeDialogPlano() {
     const dialog = document.getElementById('dialog_plano') as HTMLDialogElement;
-
     if (dialog) {
-      dialog.close(); // Remove apenas o atributo do modal específico
+      dialog.close();
+      this.resetForm();
     }
   }
 
+  // MÉTODOS DE GERENCIAMENTO DE FORMULÁRIO
   adicionarExercicio(): void {
     const novoItem = this.fb.group({
       obs: ['', Validators.required],
@@ -346,35 +316,10 @@ export class PacienteCompletoComponent implements OnInit {
     this.atividades.removeAt(index);
   }
 
-  carregarDados(dados: any) {
-    this.formEvolucao.patchValue(this.exercicios);
-  }
-
   salvarEvolucao(): void {
     this.formEvolucao.patchValue({
       pacienteId: this.Paciente.id,
     });
-    // Log do valor atual do formulário
-    console.log('Valor do formulário:', this.formEvolucao.value);
-
-    // Log do status de cada campo
-    Object.keys(this.formEvolucao.controls).forEach((key) => {
-      const control = this.formEvolucao.get(key);
-      console.log(`Campo ${key}:`);
-      console.log('- Valor:', control?.value);
-      console.log('- Status:', control?.status);
-      console.log('- Erros:', control?.errors);
-
-      // Se for um FormArray, verificar cada item
-      if (control instanceof FormArray) {
-        control.controls.forEach((item, index) => {
-          console.log(`- Item ${index}:`, item.errors);
-        });
-      }
-    });
-
-    const dataToSave = this.formEvolucao.value;
-    dataToSave.pacienteId = this.Paciente.id;
 
     if (this.formEvolucao.invalid) {
       this.toastr.error(
@@ -383,16 +328,23 @@ export class PacienteCompletoComponent implements OnInit {
       );
       return;
     }
+
+    const dataToSave = this.formEvolucao.value;
+    dataToSave.pacienteId = this.Paciente.id;
+
     const saveOperation = dataToSave.id
       ? this.evolucaoService.Atualizar(dataToSave)
       : this.evolucaoService.Criar(dataToSave);
+
     saveOperation.subscribe({
       next: () => {
-        const action = dataToSave.id ? 'atualizado' : 'criado';
+        const action = dataToSave.id ? 'atualizada' : 'criada';
         this.toastr.success(`Evolução ${action} com sucesso!`, 'Parabéns');
         this.closeDialog();
+        this.evolucaoAtualizado.emit();
       },
-      error: () => {
+      error: (err) => {
+        console.error('Erro ao salvar evolução:', err);
         this.toastr.error(
           'Ocorreu um erro ao salvar. Tente novamente.',
           'Erro'
@@ -401,14 +353,19 @@ export class PacienteCompletoComponent implements OnInit {
     });
   }
 
+  // MÉTODOS DE CÁLCULO
   calcularValorTotalReceita(): number {
     let total = 0;
 
-    this.Paciente.financReceber?.forEach((item) => {
-      item.subFinancReceber?.forEach((itemSub) => {
-        total += itemSub.valor;
+    if (this.Paciente.financReceber) {
+      this.Paciente.financReceber.forEach((item) => {
+        if (item.subFinancReceber) {
+          item.subFinancReceber.forEach((itemSub) => {
+            total += itemSub.valor || 0;
+          });
+        }
       });
-    });
+    }
 
     return total;
   }
@@ -416,229 +373,16 @@ export class PacienteCompletoComponent implements OnInit {
   quantidadeAulasFeitas(): number {
     let quantidade = 0;
 
-    this.Paciente.agendamentos?.forEach((item) => {
-      item.dataCancelamento ? quantidade++ : null;
-    });
+    if (this.Paciente.agendamentos) {
+      this.Paciente.agendamentos.forEach((item) => {
+        if (item.dataCancelamento) quantidade++;
+      });
+    }
 
     return quantidade;
   }
 
-  loadPlanos() {
-    this.planoService.Listar(this.Paciente.id).subscribe({
-      next: (response) => {
-        this.listaPlanos = response.dados.filter(
-          (x) =>
-            x.pacienteId == null ||
-            x.pacienteId == undefined ||
-            x.pacienteId == 0
-        );
-      },
-
-      error: (err) => {
-        console.error('Erro ao buscar planos:', err);
-
-        this.toastr.error(
-          'Tente novamente ou fale com o suporte',
-          'Erro ao buscar planos'
-        );
-      },
-    });
-  }
-
-  openModalRenovarPlanoS(plano: any) {
-    const dialog = document.getElementById('dialog_plano') as HTMLDialogElement;
-    if (dialog) {
-      this.preencherFormularioPlano(); // Reseta e inicializa o formPlano
-      if (plano) {
-        console.log('Plano recebido:', plano);
-        this.formPlano.patchValue(plano);
-        console.log('Form após patch:', this.formPlano.value);
-
-        if (plano.dataInicio) {
-          const dataFormatada = this.datePipe.formatToHtmlDate(
-            plano.dataInicio
-          );
-          this.formPlano.get('dataInicio')?.setValue(dataFormatada);
-        }
-
-        if (plano.dataFim) {
-          const dataFormatada = this.datePipe.formatToHtmlDate(plano.dataFim);
-          this.formPlano.get('dataFim')?.setValue(dataFormatada);
-        }
-      }
-      dialog.showModal();
-    }
-  }
-
-  compararDataParaRenovarPlano(plano: any): boolean {
-    const dataAtual = new Date();
-    const dataPlano = new Date(plano.dataFim);
-
-    return dataPlano > dataAtual;
-  }
-
-  salvarPlanoS(): void {
-    this.formPlano.patchValue({
-      pacienteId: this.Paciente.id,
-    });
-    // Log do valor atual do formulário
-    console.log('Valor do formulário:', this.formPlano.value);
-
-    // Log do status de cada campo
-    Object.keys(this.formPlano.controls).forEach((key) => {
-      const control = this.formPlano.get(key);
-      console.log(`Campo ${key}:`);
-      console.log('- Valor:', control?.value);
-      console.log('- Status:', control?.status);
-      console.log('- Erros:', control?.errors);
-
-      // Se for um FormArray, verificar cada item
-      if (control instanceof FormArray) {
-        control.controls.forEach((item, index) => {
-          console.log(`- Item ${index}:`, item.errors);
-        });
-      }
-    });
-
-    if (this.formPlano.invalid) {
-      this.toastr.error(
-        'Preencha todos os campos',
-        'Erro ao cadastrar uma evolução'
-      );
-      return;
-    }
-
-    const dataToSave = this.formPlano.value;
-
-    const planoIdForm =
-      (document.getElementById('planoId') as HTMLSelectElement)?.value ?? '';
-
-    let planoSelecionado = this.listaPlanos.find(
-      (x) => x.id == parseFloat(planoIdForm)
-    );
-    if (planoSelecionado) {
-      dataToSave.idOriginal = planoSelecionado.id;
-      dataToSave.tempoMinutos = planoSelecionado.tempoMinutos;
-      dataToSave.diasSemana = planoSelecionado.diasSemana;
-      dataToSave.centroCustoId = planoSelecionado.centroCustoId;
-      dataToSave.descricao = planoSelecionado.descricao;
-      dataToSave.valorBimestral = planoSelecionado.valorBimestral;
-      dataToSave.valorTrimestral = planoSelecionado.valorTrimestral;
-      dataToSave.valorQuadrimestral = planoSelecionado.valorQuadrimestral;
-      dataToSave.valorSemestral = planoSelecionado.valorSemestral;
-      dataToSave.valorAnual = planoSelecionado.valorAnual;
-      dataToSave.valorMensal = planoSelecionado.valorMensal;
-      dataToSave.tipoMes = planoSelecionado.tipoMes;
-      dataToSave.dataInicio = planoSelecionado.dataInicio;
-      dataToSave.dataFim = planoSelecionado.dataFim;
-    }
-
-    dataToSave.pacienteId = this.Paciente.id;
-
-    const saveOperation =
-      dataToSave.id && dataToSave.idOriginal
-        ? this.planoService.Atualizar(dataToSave)
-        : this.planoService.PlanoParaPaciente(dataToSave);
-    saveOperation.subscribe({
-      next: () => {
-        const action = dataToSave.id ? 'atualizado' : 'criado';
-        this.toastr.success(`Evolução ${action} com sucesso!`, 'Parabéns');
-        this.closeDialog();
-      },
-      error: () => {
-        this.toastr.error(
-          'Ocorreu um erro ao salvar. Tente novamente.',
-          'Erro'
-        );
-      },
-    });
-  }
-
-  calcularDataFimS() {
-    const dataInicio = this.formPlano.get('dataInicio')?.value;
-    const tipoMes = document.getElementById(
-      'tipoAssinatura'
-    ) as HTMLSelectElement;
-
-    if (dataInicio && tipoMes.value) {
-      const inicio = new Date(dataInicio);
-      let meses = 0;
-
-      switch (tipoMes.value) {
-        case 'm':
-          meses = 1;
-          break;
-        case 'b':
-          meses = 2;
-          break;
-        case 't':
-          meses = 3;
-          break;
-        case 'q':
-          meses = 4;
-          break;
-        case 's':
-          meses = 6;
-          break;
-        case 'a':
-          meses = 12;
-          break;
-      }
-
-      const dataFim = new Date(inicio);
-      dataFim.setMonth(dataFim.getMonth() + meses);
-
-      const dataFormatada = this.datePipe.formatToHtmlDate(dataFim);
-      this.formPlano.get('dataFim')?.setValue(dataFormatada);
-    }
-  }
-
-  criarDiasRecorrencia(): FormGroup[] {
-    return this.diasDaSemana.map(() =>
-      this.fb.group(
-        {
-          diaSemana: [0],
-          ativo: [false],
-          horaInicio: ['', Validators.required],
-          horaFim: ['', Validators.required],
-          profissionalId: [''],
-          salaId: [''],
-        },
-        { validators: this.horaFimMaiorQueHoraInicio() }
-      )
-    );
-  }
-
-  horaFimMaiorQueHoraInicio(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const inicio = control.get('horaInicio')?.value;
-      const fim = control.get('horaFim')?.value;
-
-      if (inicio && fim && inicio >= fim) {
-        return { invalidTimeRange: true };
-      }
-      return null;
-    };
-  }
-
-  get diasRecorrenciaArray(): FormArray {
-    return this.formPlano.get('agendamento.diasRecorrencia') as FormArray;
-  }
-
-  // verificarRenovacaoS(): void {
-  //   if (this.Paciente && this.Paciente.plano) {
-  //     const plano = this.Paciente.plano;
-  //     const dataFim = new Date(plano.dataFim);
-  //     const hoje = new Date();
-
-  //     this.isRenovacao = true;
-  //     this.podeRenovar = dataFim < hoje;
-  //   } else {
-  //     this.isRenovacao = false;
-  //     this.podeRenovar = true;
-  //   }
-  // }
-
+  // MÉTODOS DE PLANO
   openModalRenovarPlano(plano: any): void {
     if (this.isRenovacao && !this.podeRenovar) {
       this.toastr.warning('O plano atual ainda está vigente', 'Aviso');
@@ -648,35 +392,26 @@ export class PacienteCompletoComponent implements OnInit {
     const dialogPlano = document.getElementById(
       'dialog_plano'
     ) as HTMLDialogElement;
+
     if (dialogPlano) {
       this.resetForm();
 
       if (plano && plano.id) {
-        // Estamos renovando um plano existente
+        // Renovando um plano existente
         this.isRenovacao = true;
         this.formPlano.patchValue({
           id: '',
-          tipoAssinatura: plano.tipoMes,
+          tipoMes: plano.tipoMes,
           descricao: plano.descricao,
           dataInicio: new Date().toISOString().split('T')[0],
         });
         this.calcularDataFim();
       } else {
-        // Estamos adicionando um novo plano
+        // Adicionando um novo plano
         this.isRenovacao = false;
       }
 
       dialogPlano.showModal();
-    }
-  }
-
-  closeDialogPlano(): void {
-    const dialogPlano = document.getElementById(
-      'dialog_plano'
-    ) as HTMLDialogElement;
-    if (dialogPlano) {
-      dialogPlano.close();
-      this.resetForm();
     }
   }
 
@@ -686,46 +421,33 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   onPlanoSelecionado(): void {
-    debugger;
-    let idPlano = this.formPlano.get('planoId')?.value;
-    let planoFiltrado = this.listaPlanos.filter((x) => x.id == idPlano);
+    const idPlano = this.formPlano.get('planoId')?.value;
+    if (!idPlano) return;
 
-    // const plano = this.listaPlanos.find(p => p.id === planoId);
+    this.planoSelecionado = this.listaPlanos.filter(x => x.id == idPlano);
 
-    if (planoFiltrado) {
-      this.planoSelecionado = planoFiltrado;
+    // Atualizar valores se um plano for selecionado
+    if (this.planoSelecionado && this.planoSelecionado.length > 0) {
+      this.calcularDataFim();
     }
   }
 
   calcularDataFim(): void {
-    debugger;
     const dataInicio = this.formPlano.get('dataInicio')?.value;
-    const tipoAssinatura = this.formPlano.get('tipoAssinatura')?.value;
+    const tipoMes = this.formPlano.get('tipoMes')?.value;
 
-    if (!dataInicio || !tipoAssinatura) return;
+    if (!dataInicio || !tipoMes) return;
 
     const inicio = new Date(dataInicio);
     let dataFim = new Date(inicio);
 
-    switch (tipoAssinatura) {
-      case 'm':
-        dataFim.setMonth(dataFim.getMonth() + 1);
-        break; // Mensal
-      case 'b':
-        dataFim.setMonth(dataFim.getMonth() + 2);
-        break; // Bimestral
-      case 't':
-        dataFim.setMonth(dataFim.getMonth() + 3);
-        break; // Trimestral
-      case 'q':
-        dataFim.setMonth(dataFim.getMonth() + 4);
-        break; // Quadrimestral
-      case 's':
-        dataFim.setMonth(dataFim.getMonth() + 6);
-        break; // Semestral
-      case 'a':
-        dataFim.setFullYear(dataFim.getFullYear() + 1);
-        break; // Anual
+    switch (tipoMes) {
+      case 'm': dataFim.setMonth(dataFim.getMonth() + 1); break; // Mensal
+      case 'b': dataFim.setMonth(dataFim.getMonth() + 2); break; // Bimestral
+      case 't': dataFim.setMonth(dataFim.getMonth() + 3); break; // Trimestral
+      case 'q': dataFim.setMonth(dataFim.getMonth() + 4); break; // Quadrimestral
+      case 's': dataFim.setMonth(dataFim.getMonth() + 6); break; // Semestral
+      case 'a': dataFim.setFullYear(dataFim.getFullYear() + 1); break; // Anual
     }
 
     // Subtrair 1 dia para não contar o último dia
@@ -735,49 +457,36 @@ export class PacienteCompletoComponent implements OnInit {
       dataFim: dataFim.toISOString().split('T')[0],
     });
 
-    //passar para o input o valor do plano selecionado
-    if (
-      this.formPlano.get('planoId')?.value &&
-      this.formPlano.get('tipoAssinatura')?.value
-    ) {
-      let idPlano = this.formPlano.get('planoId')?.value;
-      let tipoAssinatura = this.formPlano.get('tipoAssinatura')?.value;
-      let valor = 0;
+    // Atualizar valor do plano baseado no tipo de assinatura
+    this.atualizarValorPlano();
 
-      let planoFiltrado = this.listaPlanos.filter((x) => x.id == idPlano);
-      if (planoFiltrado.length > 0) {
-        switch (tipoAssinatura) {
-          case 'm':
-            valor = planoFiltrado[0].valorMensal || 0;
-            break; // Mensal
-          case 'b':
-            valor = planoFiltrado[0].valorBimestral || 0;
-            break; // Bimestral
-          case 't':
-            valor = planoFiltrado[0].valorTrimestral || 0;
-            break; // Trimestral
-          case 'q':
-            valor = planoFiltrado[0].valorQuadrimestral || 0;
-            break; // Quadrimestral
-          case 's':
-            valor = planoFiltrado[0].valorSemestral || 0;
-            break; // Semestral
-          case 'a':
-            valor = planoFiltrado[0].valorAnual || 0;
-            break; // Anual
-        }
-
-        this.formPlano.get('valor')?.setValue(valor);
-      }
-    }
-
-    // Se houver plano selecionado e o checkbox de financeiro estiver marcado, atualizar valor
-    if (this.planoSelecionado && this.formPlano.get('gerarFinanceiro')?.value) {
+    // Atualizar valor do financeiro se ativado
+    if (this.formPlano.get('gerarFinanceiro')?.value) {
       this.atualizarValorFinanceiro();
     }
   }
 
-  toggleFinanceiroFields(): void {
+  atualizarValorPlano(): void {
+    if (!this.planoSelecionado || this.planoSelecionado.length === 0) return;
+
+    const tipoMes = this.formPlano.get('tipoMes')?.value;
+    let valor = 0;
+
+    const plano = this.planoSelecionado[0];
+
+    switch (tipoMes) {
+      case 'm': valor = plano.valorMensal || 0; break;
+      case 'b': valor = plano.valorBimestral || 0; break;
+      case 't': valor = plano.valorTrimestral || 0; break;
+      case 'q': valor = plano.valorQuadrimestral || 0; break;
+      case 's': valor = plano.valorSemestral || 0; break;
+      case 'a': valor = plano.valorAnual || 0; break;
+    }
+
+    this.formPlano.get('valor')?.setValue(valor);
+  }
+
+  toggleFinanceiroFieldss(): void {
     const gerarFinanceiro = this.formPlano.get('gerarFinanceiro')?.value;
 
     if (gerarFinanceiro) {
@@ -785,6 +494,11 @@ export class PacienteCompletoComponent implements OnInit {
       this.atualizarValorFinanceiro();
     } else {
       this.formPlano.get('financeiro')?.disable();
+
+      // Limpar subFinancReceber
+      while (this.subFinancReceber.length) {
+        this.subFinancReceber.removeAt(0);
+      }
     }
   }
 
@@ -799,45 +513,73 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   atualizarValorFinanceiro(): void {
-    if (!this.planoSelecionado) return;
+    if (!this.planoSelecionado || this.planoSelecionado.length === 0) return;
 
-    const tipoAssinatura = this.formPlano.get('tipoAssinatura')?.value;
+    const tipoMes = this.formPlano.get('tipoMes')?.value;
     let valor = 0;
 
-    switch (tipoAssinatura) {
-      case 'm':
-        valor = this.planoSelecionado[0].valorMensal || 0;
-        break;
-      case 'b':
-        valor = this.planoSelecionado[0].valorBimestral || 0;
-        break;
-      case 't':
-        valor = this.planoSelecionado[0].valorTrimestral || 0;
-        break;
-      case 'q':
-        valor = this.planoSelecionado[0].valorQuadrimestral || 0;
-        break;
-      case 's':
-        valor = this.planoSelecionado[0].valorSemestral || 0;
-        break;
-      case 'a':
-        valor = this.planoSelecionado[0].valorAnual || 0;
-        break;
+    const plano = this.planoSelecionado[0];
+
+    switch (tipoMes) {
+      case 'm': valor = plano.valorMensal || 0; break;
+      case 'b': valor = plano.valorBimestral || 0; break;
+      case 't': valor = plano.valorTrimestral || 0; break;
+      case 'q': valor = plano.valorQuadrimestral || 0; break;
+      case 's': valor = plano.valorSemestral || 0; break;
+      case 'a': valor = plano.valorAnual || 0; break;
     }
 
     this.formPlano.get('financeiro.valor')?.setValue(valor);
+
+    // Gerar parcelas
+    this.gerarParcelas();
   }
 
-  onFormaPagamentoChange(): void {
-    // Se necessário, adicionar lógica específica quando a forma de pagamento mudar
+  gerarParcelass(): void {
+    const valorTotal = this.formPlano.get('financeiro.valor')?.value || 0;
+    const quantidadeParcelas = this.formPlano.get('financeiro.parcela')?.value || 1;
+
+    if (valorTotal <= 0 || quantidadeParcelas <= 0) {
+      return;
+    }
+
+    // Limpar array existente
+    while (this.subFinancReceber.length) {
+      this.subFinancReceber.removeAt(0);
+    }
+
+    const valorParcela = Number((valorTotal / quantidadeParcelas).toFixed(2));
+    let valorRestante = Number((valorTotal - (valorParcela * quantidadeParcelas)).toFixed(2));
+
+    for (let i = 0; i < quantidadeParcelas; i++) {
+      const dataVencimento = new Date();
+      dataVencimento.setMonth(dataVencimento.getMonth() + i);
+
+      // Ajustar valor primeira parcela
+      const valorAjustado = i === 0 ? Number((valorParcela + valorRestante).toFixed(2)) : valorParcela;
+
+      this.subFinancReceber.push(this.fb.group({
+        id: [null],
+        financReceberId: [null],
+        parcela: [i + 1],
+        valor: [valorAjustado, [Validators.required, Validators.min(0.01)]],
+        dataVencimento: [dataVencimento.toISOString().split('T')[0], [Validators.required]],
+        dataPagamento: [''],
+        observacao: [''],
+        desconto: [0],
+        juros: [0],
+        multa: [0],
+        tipoPagamentoId: ['']
+      }));
+    }
   }
 
   verificarLimiteDiasSemana(): void {
-    if (!this.planoSelecionado) return;
+    if (!this.planoSelecionado || this.planoSelecionado.length === 0) return;
 
-    const limiteDias = this.planoSelecionado.diasSemana || 0;
-    let diasSelecionados = this.diasRecorrenciaArray.controls.filter(
-      (control) => control.get('ativo')?.value
+    const limiteDias = this.planoSelecionado[0].diasSemana || 0;
+    const diasSelecionados = this.diasRecorrenciaArray.controls.filter(
+      control => control.get('ativo')?.value
     ).length;
 
     if (diasSelecionados > limiteDias) {
@@ -901,86 +643,118 @@ export class PacienteCompletoComponent implements OnInit {
     }
   }
 
-  // salvarPlano(): void {
-  //   if (this.formPlano.invalid) {
-  //     this.toastr.error('Existem campos inválidos no formulário', 'Erro');
-  //     return;
-  //   }
+  salvarPlano(): void {
+    if (this.formPlano.invalid) {
+      this.toastr.error('Existem campos inválidos no formulário', 'Erro');
+      this.mostrarCamposInvalidos(this.formPlano);
+      return;
+    }
 
-  //   // Montar objeto para envio
-  //   const planoVinculacao = {
-  //     planoModeloId: this.formPlano.get('planoId')?.value,
-  //     pacienteId: this.Paciente.id,
-  //     tipoAssinatura: this.formPlano.get('tipoAssinatura')?.value,
-  //     dataInicio: this.formPlano.get('dataInicio')?.value,
-  //     dataFim: this.formPlano.get('dataFim')?.value,
-  //     gerarFinanceiro: this.formPlano.get('gerarFinanceiro')?.value,
-  //     gerarAgendamento: this.formPlano.get('gerarAgendamento')?.value,
-  //     financeiro: null,
-  //     agendamento: null
-  //   };
+    debugger
+    // Montar objeto para envio
+    const planoVinculacao: PlanoVinculacaoDto = {
+      planoModeloId: this.formPlano.get('planoId')?.value,
+      pacienteId: this.Paciente.id,
+      tipoMes: this.formPlano.get('tipoMes')?.value,
+      dataInicio: this.formPlano.get('dataInicio')?.value,
+      dataFim: this.formPlano.get('dataFim')?.value,
+      gerarFinanceiro: this.formPlano.get('gerarFinanceiro')?.value,
+      gerarAgendamento: this.formPlano.get('gerarAgendamento')?.value,
+      financeiro: null,
+      agendamento: null,
+      descricao: this.formPlano.get('descricao')?.value || '',
+      diasSemana: this.planoSelecionado[0].diasSemana,
+      tempoMinutos: this.planoSelecionado[0].tempoMinutos,
+      valorBimestral: this.planoSelecionado[0].valorBimestral,
+      valorTrimestral: this.planoSelecionado[0].valorTrimestral,
+      valorQuadrimestral: this.planoSelecionado[0].valorQuadrimestral,
+      valorSemestral: this.planoSelecionado[0].valorSemestral,
+      valorAnual: this.planoSelecionado[0].valorAnual,
+      valorMensal: this.planoSelecionado[0].valorMensal,
+    };
 
-  //   // Adicionar informações financeiras se necessário
-  //   if (planoVinculacao.gerarFinanceiro) {
-  //     planoVinculacao.financeiro = {
-  //       valor: this.formPlano.get('financeiro.valor')?.value,
-  //       formaPagamentoId: this.formPlano.get('financeiro.formaPagamentoId')?.value,
-  //       tipoPagamentoId: this.formPlano.get('financeiro.tipoPagamentoId')?.value,
-  //       centroCustoId: this.formPlano.get('financeiro.centroCustoId')?.value,
-  //       observacao: this.formPlano.get('financeiro.observacao')?.value || ''
-  //     };
-  //   }
+    // Adicionar informações financeiras se necessário
+    if (planoVinculacao.gerarFinanceiro) {
 
-  //   // Adicionar informações de agendamento se necessário
-  //   if (planoVinculacao.gerarAgendamento) {
-  //     const diasAtivos = [];
+      const subFinancControls = this.getSubFinancControls();
+      const subFinanceItems = subFinancControls.map(control => {
+        // Converter cada controle para um objeto
+        return {
+          id: null,
+          financReceberId: null,
+          parcela: control.get('parcela')?.value,
+          valor: control.get('valor')?.value,
+          dataVencimento: control.get('dataVencimento')?.value,
+          dataPagamento: control.get('dataPagamento')?.value || null,
+          observacao: control.get('observacao')?.value || '',
+          desconto: control.get('desconto')?.value || 0,
+          juros: control.get('juros')?.value || 0,
+          multa: control.get('multa')?.value || 0,
+          tipoPagamentoId: control.get('tipoPagamentoId')?.value
+        };
+      });
 
-  //     for (let i = 0; i < this.diasRecorrenciaArray.controls.length; i++) {
-  //       const control = this.diasRecorrenciaArray.controls[i];
-  //       if (control.get('ativo')?.value) {
-  //         diasAtivos.push({
-  //           diaSemana: this.diasDaSemana[i].valor,
-  //           ativo: true,
-  //           horaInicio: control.get('horaInicio')?.value,
-  //           horaFim: control.get('horaFim')?.value,
-  //           profissionalId: control.get('profissionalId')?.value,
-  //           salaId: control.get('salaId')?.value
-  //         });
-  //       }
-  //     }
+      planoVinculacao.financeiro = {
+        valor: this.formPlano.get('financeiro.valor')?.value,
+        formaPagamentoId: this.formPlano.get('financeiro.formaPagamentoId')?.value,
+        tipoPagamentoId: this.formPlano.get('financeiro.tipoPagamentoId')?.value,
+        centroCustoId: this.formPlano.get('financeiro.centroCustoId')?.value,
+        observacao: this.formPlano.get('financeiro.observacao')?.value || '',
+        subFinancReceber: subFinanceItems,
 
-  //     planoVinculacao.agendamento = {
-  //       diasRecorrencia: diasAtivos
-  //     };
-  //   }
+      };
+    }
 
-  //   // Enviar para o backend
-  //   this.planoService.vincularPlano(planoVinculacao).subscribe(
-  //     response => {
-  //       if (response && response.status) {
-  //         this.toastr.success(response.mensagem, 'Sucesso');
-  //         this.closeDialogPlano();
-  //         // Atualizar a lista de planos do paciente
-  //         this.atualizarPacientePlano();
-  //       } else {
-  //         this.toastr.error(response.mensagem, 'Erro');
-  //       }
-  //     },
-  //     error => {
-  //       this.toastr.error('Erro ao vincular plano', 'Erro');
-  //       console.error(error);
-  //     }
-  //   );
-  // }
+
+
+
+    // Adicionar informações de agendamento se necessário
+    if (planoVinculacao.gerarAgendamento) {
+      const diasAtivos: DiaSemanaDto[] = [];
+
+      for (let i = 0; i < this.diasRecorrenciaArray.controls.length; i++) {
+        const control = this.diasRecorrenciaArray.controls[i];
+        if (control.get('ativo')?.value) {
+          diasAtivos.push({
+            diaSemana: this.diasDaSemana[i].valor,
+            ativo: true,
+            horaInicio: control.get('horaInicio')?.value,
+            horaFim: control.get('horaFim')?.value,
+            profissionalId: control.get('profissionalId')?.value,
+            salaId: control.get('salaId')?.value,
+          });
+        }
+      }
+
+      planoVinculacao.agendamento = {
+        diasRecorrencia: diasAtivos,
+      };
+    }
+
+    // Enviar para o backend
+    this.planoService.vincularPlano(planoVinculacao).subscribe({
+      next: (response) => {
+        if (response && response.status) {
+          this.toastr.success(response.mensagem, 'Sucesso');
+          this.closeDialogPlano();
+          // Atualizar a lista de planos do paciente
+          this.atualizarPacientePlano();
+        } else {
+          this.toastr.error(response.mensagem || 'Erro desconhecido', 'Erro');
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao vincular plano:', error);
+        this.toastr.error('Erro ao vincular plano. Verifique o console para mais detalhes.', 'Erro');
+      }
+    });
+  }
 
   atualizarPacientePlano(): void {
     // Recarregar informações do paciente
-    // Esta função deve ser implementada no componente principal
-    // que contém este componente de plano
-    // Você pode emitir um evento para o componente pai
+
   }
 
-  // Método corrigido para resolver o problema com a data
   verificarRenovacao(): void {
     if (this.Paciente && this.Paciente.plano) {
       const plano = this.Paciente.plano;
@@ -1013,91 +787,79 @@ export class PacienteCompletoComponent implements OnInit {
     }
   }
 
-  // Método corrigido para resolver o problema de tipagem
-  salvarPlano(): void {
-    if (this.formPlano.invalid) {
-      this.toastr.error('Existem campos inválidos no formulário', 'Erro');
-      return;
-    }
-
-    // Montar objeto para envio com tipos corretos
-    const planoVinculacao: PlanoVinculacaoDto = {
-      planoModeloId: this.formPlano.get('planoId')?.value,
-      pacienteId: this.Paciente.id,
-      tipoAssinatura: this.formPlano.get('tipoAssinatura')?.value,
-      dataInicio: this.formPlano.get('dataInicio')?.value,
-      dataFim: this.formPlano.get('dataFim')?.value,
-      gerarFinanceiro: this.formPlano.get('gerarFinanceiro')?.value,
-      gerarAgendamento: this.formPlano.get('gerarAgendamento')?.value,
-      financeiro: null,
-      agendamento: null,
-    };
-
-    // Adicionar informações financeiras se necessário
-    if (planoVinculacao.gerarFinanceiro) {
-      planoVinculacao.financeiro = {
-        valor: this.formPlano.get('financeiro.valor')?.value,
-        formaPagamentoId: this.formPlano.get('financeiro.formaPagamentoId')
-          ?.value,
-        tipoPagamentoId: this.formPlano.get('financeiro.tipoPagamentoId')
-          ?.value,
-        centroCustoId: this.formPlano.get('financeiro.centroCustoId')?.value,
-        observacao: this.formPlano.get('financeiro.observacao')?.value || '',
-      };
-    }
-
-    // Adicionar informações de agendamento se necessário
-    if (planoVinculacao.gerarAgendamento) {
-      const diasAtivos: DiaSemanaDto[] = [];
-
-      for (let i = 0; i < this.diasRecorrenciaArray.controls.length; i++) {
-        const control = this.diasRecorrenciaArray.controls[i];
-        if (control.get('ativo')?.value) {
-          diasAtivos.push({
-            diaSemana: this.diasDaSemana[i].valor,
-            ativo: true,
-            horaInicio: control.get('horaInicio')?.value,
-            horaFim: control.get('horaFim')?.value,
-            profissionalId: control.get('profissionalId')?.value,
-            salaId: control.get('salaId')?.value,
-          });
-        }
-      }
-
-      planoVinculacao.agendamento = {
-        diasRecorrencia: diasAtivos,
-      };
-    }
-
-    // Enviar para o backend
-    this.planoService.vincularPlano(planoVinculacao).subscribe(
-      (response) => {
-        if (response && response.status) {
-          this.toastr.success(response.mensagem, 'Sucesso');
-          this.closeDialogPlano();
-          // Atualizar a lista de planos do paciente
-          this.atualizarPacientePlano();
-        } else {
-          this.toastr.error(response.mensagem, 'Erro');
-        }
-      },
-      (error) => {
-        this.toastr.error('Erro ao vincular plano', 'Erro');
-        console.error(error);
-      }
+  // Helpers
+  criarDiasRecorrencia(): FormGroup[] {
+    return this.diasDaSemana.map((dia) =>
+      this.fb.group(
+        {
+          diaSemana: [dia.valor],
+          ativo: [false],
+          horaInicio: ['', Validators.required],
+          horaFim: ['', Validators.required],
+          profissionalId: [''],
+          salaId: [''],
+        },
+        { validators: this.horaFimMaiorQueHoraInicio() }
+      )
     );
   }
 
-  // SESSAO DE GET'S
-  getTipoPagamento(): void {
-    this.tipoPagamentoService.ListarTipoPagamento().subscribe({
-      next: (response) => {
-        if (response.dados) {
-          this.listaTipoPagamento = response.dados;
+  horaFimMaiorQueHoraInicio(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const inicio = control.get('horaInicio')?.value;
+      const fim = control.get('horaFim')?.value;
+
+      if (inicio && fim && inicio >= fim) {
+        return { invalidTimeRange: true };
+      }
+      return null;
+    };
+  }
+
+  mostrarCamposInvalidos(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+
+      if (control instanceof FormGroup) {
+        this.mostrarCamposInvalidos(control);
+      } else if (control instanceof FormArray) {
+        for (let i = 0; i < control.length; i++) {
+          if (control.at(i) instanceof FormGroup) {
+            this.mostrarCamposInvalidos(control.at(i) as FormGroup);
+          }
+        }
+      } else {
+        if (control?.invalid) {
+          console.error(`Campo inválido: ${key}`, control.errors);
+        }
+      }
+    });
+  }
+
+  // MÉTODOS DE CARREGAMENTO DE DADOS
+  iniciarGettersLista(): void {
+    this.getPlanos();
+    this.getCentroDeCusto();
+    this.getTipoPagamento();
+    this.getProfissional();
+    this.getFormaPagamento();
+    this.getSalas();
+  }
+
+  getPlanos() {
+    this.planoService.Listar().subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.listaPlanos = data.dados.filter(
+            (x) =>
+              x.pacienteId == null ||
+              x.pacienteId == undefined ||
+              x.pacienteId == 0
+          );
         }
       },
-      error: (e) => {
-        console.log(e);
+      error: (err) => {
+        console.error('Erro ao buscar Planos:', err);
       },
     });
   }
@@ -1110,9 +872,64 @@ export class PacienteCompletoComponent implements OnInit {
         }
       },
       error: (e) => {
-        console.log(e);
+        console.error('Erro ao buscar Centros de Custo:', e);
       },
     });
+  }
+
+  getTipoPagamento(): void {
+    this.tipoPagamentoService.ListarTipoPagamento().subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.listaTipoPagamento = response.dados;
+        }
+      },
+      error: (e) => {
+        console.error('Erro ao buscar Tipos de Pagamento:', e);
+      },
+    });
+  }
+
+  getFormaPagamento(): void {
+    // Implemente o serviço para buscar formas de pagamento
+    // Exemplo:
+    /*
+    this.formaPagamentoService.Listar().subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.listaFormaPagamento = response.dados;
+        }
+      },
+      error: (e) => {
+        console.error('Erro ao buscar Formas de Pagamento:', e);
+      },
+    });
+    */
+    // Simulação de dados
+
+  }
+
+  getSalas(): void {
+    // Implemente o serviço para buscar salas
+    // Exemplo:
+    /*
+    this.salaService.Listar().subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.listaSala = response.dados;
+        }
+      },
+      error: (e) => {
+        console.error('Erro ao buscar Salas:', e);
+      },
+    });
+    */
+    // Simulação de dados
+    this.listaSala = [
+      { id: 1, nome: 'Sala 1' },
+      { id: 2, nome: 'Sala 2' },
+      { id: 3, nome: 'Sala 3' }
+    ];
   }
 
   getProfissional() {
@@ -1132,34 +949,162 @@ export class PacienteCompletoComponent implements OnInit {
             this.listaProfissional = data.dados;
           }
         },
-        error(err) {
+        error: (err) => {
           console.error('Erro ao buscar Profissional:', err);
         },
       });
   }
 
-  getPlanos() {
-    this.planoService.Listar().subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.listaPlanos = data.dados.filter(
-            (x) =>
-              x.pacienteId == null ||
-              x.pacienteId == undefined ||
-              x.pacienteId == 0
-          );
-        }
-      },
-      error(err) {
-        console.error('Erro ao buscar Planos:', err);
-      },
+  // Substituir o método de inicialização do formulário na classe PacienteCompletoComponent
+
+  inicializarFormularioPlano(): void {
+    this.formPlano = this.fb.group({
+      id: [''],
+      planoId: ['', Validators.required],
+      tipoMes: ['', Validators.required],
+      descricao: ['', Validators.required],
+      valor: [0, Validators.required],
+      dataInicio: [new Date().toISOString().split('T')[0], Validators.required],
+      dataFim: ['', Validators.required],
+      gerarFinanceiro: [true],
+      gerarAgendamento: [false],
+      // Financeiro definido sem subFormArray inicialmente
+      financeiro: this.fb.group({
+        valor: [0, [Validators.required, Validators.min(0.01)]],
+        parcela: [1, [Validators.required, Validators.min(1)]],
+        formaPagamentoId: [''],
+        tipoPagamentoId: [''],
+        centroCustoId: [''],
+        observacao: ['']
+      }),
+      // Agendamento
+      agendamento: this.fb.group({
+        diasRecorrencia: this.fb.array(this.criarDiasRecorrencia()),
+      }),
     });
+
+    // Desabilitar campos de financeiro e agendamento inicialmente
+    this.formPlano.get('financeiro')?.disable();
+    this.formPlano.get('agendamento')?.disable();
   }
 
-  iniciarGettersLista(): void {
-    this.getPlanos();
-    this.getCentroDeCusto();
-    this.getTipoPagamento();
-    this.getProfissional();
+  // Substituir o método get subFinancReceber()
+  // Remover o método antigo e usar este
+  get subFinancReceber(): FormArray {
+    // Verificar se o subFinancReceber já existe, se não, criá-lo
+    const financeiroGroup = this.formPlano.get('financeiro') as FormGroup;
+    if (!financeiroGroup.contains('subFinancReceber')) {
+      financeiroGroup.addControl('subFinancReceber', this.fb.array([]));
+    }
+    return financeiroGroup.get('subFinancReceber') as FormArray;
+  }
+
+  // Substituir o método gerarParcelas()
+  gerarParcelas(): void {
+    // Obter valores do formulário
+    const valorTotal = this.formPlano.get('financeiro.valor')?.value || 0;
+    const quantidadeParcelas = this.formPlano.get('financeiro.parcela')?.value || 1;
+
+    if (valorTotal <= 0 || quantidadeParcelas <= 0) {
+      this.toastr.warning('Informe um valor válido e número de parcelas', 'Aviso');
+      return;
+    }
+
+    // Limpar array existente
+    const financeiroGroup = this.formPlano.get('financeiro') as FormGroup;
+
+    // Verificar se o subFinancReceber já existe, se não, criá-lo
+    if (!financeiroGroup.contains('subFinancReceber')) {
+      financeiroGroup.addControl('subFinancReceber', this.fb.array([]));
+    }
+
+    const subFinancArray = financeiroGroup.get('subFinancReceber') as FormArray;
+
+    // Limpar parcelas existentes
+    while (subFinancArray.length > 0) {
+      subFinancArray.removeAt(0);
+    }
+
+    // Calcular valor das parcelas
+    const valorParcela = Number((valorTotal / quantidadeParcelas).toFixed(2));
+    let valorRestante = Number((valorTotal - (valorParcela * quantidadeParcelas)).toFixed(2));
+
+    // Gerar novas parcelas
+    for (let i = 0; i < quantidadeParcelas; i++) {
+      const dataVencimento = new Date();
+      dataVencimento.setMonth(dataVencimento.getMonth() + i);
+
+      // Ajustar valor primeira parcela
+      const valorAjustado = i === 0 ? Number((valorParcela + valorRestante).toFixed(2)) : valorParcela;
+
+      subFinancArray.push(this.fb.group({
+        id: [null],
+        financReceberId: [null],
+        parcela: [i + 1],
+        valor: [valorAjustado, [Validators.required, Validators.min(0.01)]],
+        dataVencimento: [dataVencimento.toISOString().split('T')[0], [Validators.required]],
+        dataPagamento: [''],
+        observacao: [''],
+        desconto: [0],
+        juros: [0],
+        multa: [0],
+        formaPagamentoId: [''],
+        tipoPagamentoId: ['']
+      }));
+    }
+
+    // Forçar detecção de mudanças no componente
+    // Isso pode ser necessário para o Angular atualizar a UI corretamente
+    this.formPlano.updateValueAndValidity();
+  }
+
+  // Substituir o método toggleFinanceiroFields()
+  toggleFinanceiroFields(): void {
+    const gerarFinanceiro = this.formPlano.get('gerarFinanceiro')?.value;
+
+    if (gerarFinanceiro) {
+      this.formPlano.get('financeiro')?.enable();
+
+      // Verificar se o subFinancReceber já existe, se não, criá-lo
+      const financeiroGroup = this.formPlano.get('financeiro') as FormGroup;
+      if (!financeiroGroup.contains('subFinancReceber')) {
+        financeiroGroup.addControl('subFinancReceber', this.fb.array([]));
+      }
+
+      // Gerar parcelas iniciais
+      this.atualizarValorFinanceiro();
+    } else {
+      this.formPlano.get('financeiro')?.disable();
+
+      // Não remover o controle, apenas limpar o array
+      const financeiroGroup = this.formPlano.get('financeiro') as FormGroup;
+      if (financeiroGroup.contains('subFinancReceber')) {
+        const subFinancArray = financeiroGroup.get('subFinancReceber') as FormArray;
+        while (subFinancArray.length > 0) {
+          subFinancArray.removeAt(0);
+        }
+      }
+    }
+  }
+
+  getFinanceiroGroup(): FormGroup {
+    const financeiro = this.formPlano.get('financeiro');
+    if (financeiro instanceof FormGroup) {
+      return financeiro;
+    }
+    // Caso não seja um FormGroup (o que não deveria acontecer), cria um vazio para evitar erros
+    return this.fb.group({});
+  }
+
+  // Método auxiliar que retorna os controles do subFinancReceber com tipagem segura
+  getSubFinancControls(): AbstractControl[] {
+    const financeiro = this.formPlano.get('financeiro');
+    if (financeiro instanceof FormGroup) {
+      const subFinancArray = financeiro.get('subFinancReceber');
+      if (subFinancArray instanceof FormArray) {
+        return subFinancArray.controls;
+      }
+    }
+    return [];
   }
 }

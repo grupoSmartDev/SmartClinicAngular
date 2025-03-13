@@ -1,6 +1,6 @@
 // agenda.component.ts
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { CalendarOptions, EventClickArg,  } from '@fullcalendar/core';
+import { CalendarOptions, EventClickArg, } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
@@ -22,6 +22,7 @@ interface CalendarEvent {
   template: `
     <!-- <full-calendar [options]="calendarOptions"></full-calendar>
      -->
+    
     <app-calendario>
     <app-modal-agenda
       #modalAgenda
@@ -34,17 +35,17 @@ interface CalendarEvent {
 })
 export class AgendaComponent implements OnInit, AfterViewInit {
   @ViewChild('modalAgenda') modalAgenda!: ModalAgendaComponent;
-  
+
   public selectedEvent: CalendarEvent | null = null;
   public selectedDate: string = '';
-  
+
   public events: CalendarEvent[] = [];
   private bootstrapModal: bootstrap.Modal | null = null;
 
   constructor(
     private agendaService: AgendaService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   calendarOptions: CalendarOptions = {
     themeSystem: 'bootstrap',
@@ -72,13 +73,14 @@ export class AgendaComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.loadEvents();
+    console.log(this.events);
   }
 
   ngAfterViewInit() {
     const modalElement = document.getElementById('modalAgenda');
     if (modalElement) {
       this.bootstrapModal = new bootstrap.Modal(modalElement);
-      
+
       // Evento acionado quando o modal é totalmente visível
       modalElement.addEventListener('shown.bs.modal', () => {
         if (this.modalAgenda) {
@@ -111,8 +113,8 @@ export class AgendaComponent implements OnInit, AfterViewInit {
     return {
       id: agenda.id.toString(),
       title: agenda.titulo,
-      start: new Date(agenda.dataCompromisso).toISOString(),
-      end: agenda.dataCompromisso + agenda.horaFim ? new Date(agenda.dataCompromisso + agenda.horaFim).toISOString() : undefined
+      start: new Date(agenda.data).toISOString(),
+      end: agenda.data + agenda.horaFim ? new Date(agenda.data + agenda.horaFim).toISOString() : undefined
     };
   }
 
@@ -129,12 +131,12 @@ export class AgendaComponent implements OnInit, AfterViewInit {
 
     this.selectedEvent = null;
     this.selectedDate = arg.dateStr;
-    
+
     // Garantir que o modal foi atualizado antes de abrir
     setTimeout(() => {
       this.bootstrapModal?.show();
     }, 0);
-    
+
     console.log(this.selectedDate, this.selectedEvent);
   }
 

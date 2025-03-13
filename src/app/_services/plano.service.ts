@@ -78,6 +78,6 @@ export class PlanoService {
   }
 
   vincularPlano(vinculacaoDto: any): Observable<any> {
-    return this.http.post<any>(`${this.baseURL}/vincular`, vinculacaoDto);
+    return this.http.post<any>(`${this.baseURL}PlanoParaPaciente`, vinculacaoDto);
   }
 }

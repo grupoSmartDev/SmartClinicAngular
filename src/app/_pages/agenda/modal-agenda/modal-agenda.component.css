@@ -1,3 +1,103 @@
 .offcanvas {
-    max-width: 400px;
+  max-width: 400px;
+}
+
+/* modal-agenda.component.css */
+
+/* Estilos para o modal */
+.modal-lg {
+  max-width: 900px;
+}
+
+/* Estilos para os cartões */
+.card {
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+  padding: 0.75rem 1rem;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+/* Estilos para botões */
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-outline-primary {
+  color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+}
+
+/* Estilos para form-switch (toggle) */
+.form-check-input:checked {
+  background-color: #198754;
+  border-color: #198754;
+}
+
+.form-switch .form-check-input {
+  width: 2.5em;
+  height: 1.25em;
+}
+
+/* Estilos para tabela de recorrência */
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table th {
+  font-weight: 500;
+  background-color: #f8f9fa;
+}
+
+/* Estilo para campos obrigatórios */
+.form-label:after {
+  content: " *";
+  color: #dc3545;
+}
+
+.form-label:not([required]):after {
+  content: "";
+}
+
+/* Estilos para validação de formulário */
+.form-control.ng-invalid.ng-touched,
+.form-select.ng-invalid.ng-touched {
+  border-color: #dc3545;
+}
+
+.form-control.ng-valid.ng-touched,
+.form-select.ng-valid.ng-touched {
+  border-color: #198754;
+}
+
+/* Ajustes para dispositivos móveis */
+@media (max-width: 767.98px) {
+  .table-responsive {
+    border: 0;
   }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .row>div[class^="col-"] {
+    margin-bottom: 1rem;
+  }
+}

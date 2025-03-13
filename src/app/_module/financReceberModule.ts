@@ -7,30 +7,30 @@ import { SubFinancReceber } from "./subFinancReceberModule"
 import { TipoPagamento } from "./tipoPagamentoModule"
 
 export interface FinancReceber {
-    id: string;
-    idOrigem: string; 
-    nrDocto: string; 
+    id?: number;
+    idOrigem?: string;
+    nrDocto: string;
     dataEmissao: Date;
     valorOriginal: number;
     valorPago: number;
     parcela: number;
-    valor : number;
+    valor: number;
     status: StatusPagamento;
-    notaFiscal: string; 
-    descricao: string; 
+    notaFiscal: string;
+    descricao: string;
     classificacao: string;
-    observacao: string; 
-    pacienteId: string; 
-    paciente: Paciente; 
-    fornecedorId: string; 
+    observacao: string;
+    pacienteId: string;
+    paciente: Paciente;
+    fornecedorId: string;
     fornecedor?: Fornecedor;
-    centroCustoId: string; 
-    centroCusto: CentroDeCusto; 
+    centroCustoId: string;
+    centroCusto: CentroDeCusto;
     bancoId: string;
     banco?: Banco;
     subFinancReceber: SubFinancReceber[];
     usuarioResponsavelId: string;
-    dataUltimaAtualizacao: Date; 
+    dataUltimaAtualizacao: Date;
 }
 
 export enum StatusPagamento {
