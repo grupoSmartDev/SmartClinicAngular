@@ -8,10 +8,7 @@
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content border-0 shadow">
       <!-- Header -->
-      <div
-        class="modal-header py-3"
-        [ngClass]="{ 'bg-primary text-white': selectedEvent }"
-      >
+      <div class="modal-header py-3">
         <h5 class="modal-title fs-5 fw-semibold" id="modalAgendaLabel">
           <i
             class="bi"
@@ -32,6 +29,9 @@
 
       <div class="modal-body p-4">
         <!-- Visualização do Evento -->
+        <!--AQUI EU VOU COLOCAR UM BOTAO, ONDE VAI SERVIR PARA, CONFIRMAR O ATENDIMENTO, CANCELAR O ATENDIMENTO, REAGENDAR, PRECISO TAMBEM DE UM BOTÃO QUE VA LEVAR PARA A TELA DE ATENDIMENTO 
+        COMPLETO DO PACIENTE, OU ENTAO, LEVAR PARA A TELA DE EVOLUCAO
+        VR COM O PESSOAL SE VAI SER POSSIVEL EDITAR DIRETO PELA AGENDA, OU EU CLICO NO PACIENTE E VOU PARA A TELA DO PACIENTE EM SI. -->
         <ng-container *ngIf="selectedEvent">
           <div class="card shadow-sm mb-4">
             <div class="card-body">
@@ -62,7 +62,6 @@
 
         <!-- Formulário de Agendamento -->
         <form
-          *ngIf="!selectedEvent"
           [formGroup]="formulario"
           (ngSubmit)="onSubmit()"
           class="needs-validation"

@@ -29,6 +29,7 @@ interface Agendamento {
   dataFim?: Date;
   duracao: number;
   status: 'confirmado' | 'pendente';
+  agenda?: Agenda;
 }
 
 @Component({
@@ -54,6 +55,7 @@ export class CalendarioComponent {
   public events: CalendarEvent[] = [];
   public agendamentos: Agendamento[] = [];
   private bootstrapModal: bootstrap.Modal | null = null;
+  eventoParaModal: Agenda = {} as Agenda;
 
   // Nomes dos meses em português
   nomesMeses: string[] = [
@@ -84,6 +86,7 @@ export class CalendarioComponent {
           // Atualize diretamente as propriedades do componente filho
           this.modalAgenda.selectedDate = this.selectedDate;
           this.modalAgenda.selectedEvent = this.selectedEvent;
+          this.modalAgenda.eventoEscolhido = this.eventoParaModal;
           // Chame o método de inicialização de dados
           this.modalAgenda.initializeModalData();
         }
@@ -356,6 +359,7 @@ export class CalendarioComponent {
 
   // Manipulador de clique em um dia - compatível com interface existente
   handleDateClick(dia: Dia, hora?: number): void {
+    debugger
     if (!this.bootstrapModal) {
       this.toastr.error('Erro ao abrir o modal de agendamento', 'Erro');
       return;
@@ -381,6 +385,7 @@ export class CalendarioComponent {
 
   // Manipulador de clique em um evento - compatível com interface existente
   handleEventClick(agendamento: Agendamento): void {
+    debugger
     if (!this.bootstrapModal) {
       this.toastr.error('Erro ao abrir o modal de agendamento', 'Erro');
       return;
@@ -393,6 +398,19 @@ export class CalendarioComponent {
       start: agendamento.data.toISOString(),
       end: agendamento.dataFim?.toISOString()
     };
+
+    let agendaParaModal: Agenda | null = null;
+
+    this.agendaService.Listar().subscribe({
+      next: (response) => {
+        // Find the matching agenda item and assign it
+        const matchingAgenda = response.dados.filter(agenda => agenda.id.toString() === agendamento.id);
+        if (matchingAgenda.length > 0) {
+          agendaParaModal = matchingAgenda[0]; // Assign the first matching item
+          this.eventoParaModal = agendaParaModal;
+        }
+      },
+    });
 
     this.selectedDate = agendamento.data.toISOString();
     this.diaSelecionado = agendamento.data.getDate();

@@ -57,6 +57,7 @@ export class ModalAgendaComponent implements OnInit {
   listaTipoPagamento: TipoPagamento[] = [];
   listaPacote: any[] = [];
   listaUsuario: any[] = [];
+  eventoEscolhido: Agenda = {} as Agenda;
 
   recorrenciaAtiva = false;
   dataFimRecorrencia: string = '';
@@ -216,6 +217,7 @@ export class ModalAgendaComponent implements OnInit {
 
   // Novo método para inicializar os dados do modal
   initializeModalData(): void {
+    debugger
     console.log('Modal: Inicializando dados com:', this.selectedDate, this.selectedEvent);
 
     // Resetar o formulário antes de qualquer preenchimento
@@ -223,6 +225,9 @@ export class ModalAgendaComponent implements OnInit {
 
     // Aplicar as validações iniciais
     this.atualizarValidacoesFinanceiras(false);
+    let eventoExistente: Boolean = false;
+
+
 
     // Inicializar campos com base no contexto
     if (!this.selectedEvent && this.selectedDate) {
@@ -233,36 +238,49 @@ export class ModalAgendaComponent implements OnInit {
         avulso: false
       });
     } else if (this.selectedEvent) {
-      this.populateForm(this.selectedEvent);
+      eventoExistente = true;
+      this.populateForm(this.selectedEvent, eventoExistente);
     }
   }
 
-  private populateForm(event: any): void {
+  private populateForm(event: any, eventoExistente: Boolean = false): void {
     // Reset do formulário antes de preencher para evitar estados inconsistentes
     this.formulario.reset();
 
-    // Preenchimento dos campos básicos
-    this.formulario.patchValue({
-      ...event
-    });
-
-    // Tratamento especial para financReceber se existir
-    if (event.financReceber) {
-      const financForm = this.formulario.get('financReceber') as FormGroup;
-      financForm.patchValue({
-        ...event.financReceber
+    //TERMINAR DE PREENCHER O METODO COM AS INFORMAÇÕES; COLCOAR UMA OPÇÃO DE FINANCEIRO GERADO, E COMEÇAR A TRBALHAR COM O TRATAMENTO DO STATUS DO EVENTO. 
+    //VERIFICAR FUNÇÃO DE REAGENDAMENTO PARA CASO O PACIENTE NÃO VENHA. 
+    if (eventoExistente) {
+      this.formulario.patchValue({
+        ...this.eventoEscolhido
+      })
+    }
+    else {
+      // Preenchimento dos campos básicos
+      this.formulario.patchValue({
+        ...event
       });
 
-      // Limpar e recriar o array de subFinancReceber
-      const subFinancArray = financForm.get('subFinancReceber') as FormArray;
-      subFinancArray.clear();
-
-      if (event.financReceber.subFinancReceber?.length) {
-        event.financReceber.subFinancReceber.forEach((subFinanc: any) => {
-          subFinancArray.push(this.createSubFinancForm(subFinanc));
+      // Tratamento especial para financReceber se existir
+      if (event.financReceber) {
+        const financForm = this.formulario.get('financReceber') as FormGroup;
+        financForm.patchValue({
+          ...event.financReceber
         });
+
+        // Limpar e recriar o array de subFinancReceber
+        const subFinancArray = financForm.get('subFinancReceber') as FormArray;
+        subFinancArray.clear();
+
+        if (event.financReceber.subFinancReceber?.length) {
+          event.financReceber.subFinancReceber.forEach((subFinanc: any) => {
+            subFinancArray.push(this.createSubFinancForm(subFinanc));
+          });
+        }
       }
     }
+
+
+
 
     // Atualizar o estado dos campos financeiros com base no valor de avulso
     this.pagamentoAvulso();
