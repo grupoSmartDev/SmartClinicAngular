@@ -23,6 +23,8 @@ import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service'
 import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
 import { SalasService } from '../../../_services/salas.service';
 import { map } from 'rxjs/operators';
+import { Paciente } from '../../../_module/pacienteModule';
+import { PacienteService } from '../../../_services/paciente.service';
 
 interface Patient {
   id?: number;
@@ -45,7 +47,7 @@ export class ModalAgendaComponent implements OnInit {
   errorMessage = '';
   camposFinancPagar = false;
   searchTerm: string = '';
-  filteredPatients: Patient[] = [];
+  filteredPatients: Paciente[] = [];
   newPatient: Patient = { name: '', phone: '', cpf: '' };
   isLoading = false;
 
@@ -62,11 +64,7 @@ export class ModalAgendaComponent implements OnInit {
   recorrenciaAtiva = false;
   dataFimRecorrencia: string = '';
 
-  private patients: Patient[] = [
-    { id: 1, name: 'João Silva', cpf: '123.456.789-00', phone: '(11) 99999-9999' },
-    { id: 2, name: 'Maria Oliveira', cpf: '987.654.321-00', phone: '(11) 88888-8888' },
-    { id: 3, name: 'Carlos Souza', cpf: '456.123.789-00', phone: '(11) 77777-7777' }
-  ];
+  patients!: Paciente[];
 
   diasDaSemana = [
     { id: 0, nome: 'Domingo' },
@@ -84,6 +82,7 @@ export class ModalAgendaComponent implements OnInit {
     private centroDeCustoService: CentroDeCustoService,
     private profissionalService: ProfissionalService,
     private financReceberService: FinancReceberService,
+    private pacienteService: PacienteService,
     private agendaService: AgendaService,
     private tipoPagamentoService: TipoPagamentoService,
     private formaPagamentoService: FormaPagamentoService,
@@ -200,7 +199,7 @@ export class ModalAgendaComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadInitialData();
-    // debugger
+    debugger
     console.log(this.selectedEvent, this.selectedDate);
     if (!this.selectedEvent && this.selectedDate) {
       this.formulario.patchValue({
@@ -213,6 +212,21 @@ export class ModalAgendaComponent implements OnInit {
     }
 
     this.atualizarValidacoesFinanceiras(this.formulario.get('avulso')?.value === true);
+
+    if (this.eventoEscolhido) {
+
+      this.pacienteService.Listar().subscribe({
+        next: (result) => {
+          this.patients = result.dados;
+        }
+      })
+
+
+      let inputPaciente = document.getElementById('paciente') as HTMLInputElement;
+      inputPaciente.value = this.patients.filter((x: any) => x.id == this.eventoEscolhido.pacienteId)[0].nome ?? '';
+
+    }
+
   }
 
   // Novo método para inicializar os dados do modal
@@ -253,6 +267,48 @@ export class ModalAgendaComponent implements OnInit {
       this.formulario.patchValue({
         ...this.eventoEscolhido
       })
+
+      if (this.eventoEscolhido.avulso) {
+        this.formulario.get('avulso')?.setValue(true);
+        let input = document.getElementById('avulso') as HTMLSelectElement;
+
+        input.focus()
+
+      }
+
+      if (event.financReceber) {
+        const financForm = this.formulario.get('financReceber') as FormGroup;
+        financForm.patchValue({
+          ...event.financReceber
+        });
+
+        // Limpar e recriar o array de subFinancReceber
+        const subFinancArray = financForm.get('subFinancReceber') as FormArray;
+        subFinancArray.clear();
+
+        if (event.financReceber.subFinancReceber?.length) {
+          event.financReceber.subFinancReceber.forEach((subFinanc: any) => {
+            subFinancArray.push(this.createSubFinancForm(subFinanc));
+          });
+        }
+      }
+
+      if (this.eventoEscolhido) {
+
+        this.pacienteService.Listar().subscribe({
+          next: (result) => {
+            this.patients = result.dados;
+          }
+        })
+
+
+        let inputPaciente = document.getElementById('paciente') as HTMLInputElement;
+        inputPaciente.value = this.patients.filter((x: any) => x.id == this.eventoEscolhido.pacienteId)[0].nome ?? '';
+
+      }
+
+
+
     }
     else {
       // Preenchimento dos campos básicos
@@ -278,9 +334,6 @@ export class ModalAgendaComponent implements OnInit {
         }
       }
     }
-
-
-
 
     // Atualizar o estado dos campos financeiros com base no valor de avulso
     this.pagamentoAvulso();
@@ -355,21 +408,21 @@ export class ModalAgendaComponent implements OnInit {
   onSearch(): void {
     if (this.searchTerm.length >= 3) {
       this.filteredPatients = this.patients.filter(patient =>
-        patient.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        patient.cpf.includes(this.searchTerm) ||
-        patient.phone.includes(this.searchTerm)
+        patient.nome?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        patient.cpf?.includes(this.searchTerm) ||
+        patient.celular?.includes(this.searchTerm)
       );
     } else {
       this.filteredPatients = [];
     }
   }
 
-  selectPatient(patient: Patient): void {
+  selectPatient(patient: Paciente): void {
     this.formulario.patchValue({
       pacienteId: patient.id,
       'financReceber.pacienteId': patient.id
     });
-    this.searchTerm = patient.name;
+    this.searchTerm = patient.nome || '';
     this.filteredPatients = [];
   }
 

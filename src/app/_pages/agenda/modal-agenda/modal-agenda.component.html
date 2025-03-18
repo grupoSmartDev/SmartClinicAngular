@@ -35,26 +35,22 @@
         <ng-container *ngIf="selectedEvent">
           <div class="card shadow-sm mb-4">
             <div class="card-body">
-              <div class="d-flex align-items-center mb-3">
-                <i class="bi bi-calendar-event text-primary fs-4 me-2"></i>
-                <h6 class="mb-0">{{ selectedEvent.title }}</h6>
-              </div>
               <div class="row g-3">
-                <div class="col-md-6">
-                  <div class="d-flex align-items-center">
-                    <i class="bi bi-clock text-muted me-2"></i>
-                    <span
-                      >{{ selectedEvent.start | date : "HH:mm" }} -
-                      {{ selectedEvent.end | date : "HH:mm" }}</span
-                    >
-                  </div>
+                <div class="col-md-8 d-flex gap-2">
+                  <button class="btn btn-sm btn-secondary">
+                    <i class="bi bi-calendar-check"></i> Confirmar
+                  </button>
+                  <button class="btn btn-sm btn-secondary">
+                    <i class="bi bi-calendar-date"></i> Reagendar
+                  </button>
+                  <button class="btn btn-sm btn-secondary">
+                    <i class="bi bi-calendar-x"></i> Cancelar
+                  </button>
+                  <button class="btn btn-sm btn-secondary">
+                    <i class="bi bi-person-vcard"></i> Paciente Completo
+                  </button>
                 </div>
-                <div class="col-md-6">
-                  <div class="d-flex align-items-center">
-                    <i class="bi bi-calendar text-muted me-2"></i>
-                    <span>{{ selectedEvent.date | date : "dd/MM/yyyy" }}</span>
-                  </div>
-                </div>
+                <div class="col-md-4"></div>
               </div>
             </div>
           </div>
@@ -96,6 +92,7 @@
                     id="titulo"
                     class="form-control form-control-sm"
                     formControlName="titulo"
+                    [readonly]="selectedEvent"
                     placeholder="Digite o título do agendamento"
                     [class.is-invalid]="
                       formulario.get('titulo')?.invalid &&
@@ -161,6 +158,7 @@
                       [(ngModel)]="searchTerm"
                       [ngModelOptions]="{ standalone: true }"
                       placeholder="Buscar paciente..."
+                      [readonly]="selectedEvent"
                       (input)="onSearch()"
                       [class.is-invalid]="
                         formulario.get('pacienteId')?.invalid &&
@@ -175,6 +173,7 @@
                       data-bs-toggle="offcanvas"
                       data-bs-target="#offcanvasPatient"
                       aria-label="Adicionar novo paciente"
+                      [disabled]="eventoEscolhido"
                     >
                       <i class="bi bi-person-plus"></i>
                     </button>
@@ -192,13 +191,13 @@
                         (click)="selectPatient(patient)"
                         role="button"
                         [attr.aria-label]="
-                          'Selecionar paciente ' + patient.name
+                          'Selecionar paciente ' + patient.nome
                         "
                       >
                         <div
                           class="d-flex justify-content-between align-items-center"
                         >
-                          <span>{{ patient.name }}</span>
+                          <span>{{ patient.nome }}</span>
                           <small class="text-muted">{{ patient.cpf }}</small>
                         </div>
                       </li>
@@ -216,6 +215,7 @@
                     id="horaInicio"
                     class="form-control form-control-sm"
                     formControlName="horaInicio"
+                    [readonly]="selectedEvent"
                     [class.is-invalid]="(formulario.get('horaInicio')?.invalid || formulario.errors?.['invalidTimeRange']) && formulario.get('horaInicio')?.touched"
                   />
                   <div
@@ -241,6 +241,7 @@
                     id="horaFim"
                     class="form-control form-control-sm"
                     formControlName="horaFim"
+                    [readonly]="selectedEvent"
                     [class.is-invalid]="(formulario.get('horaFim')?.invalid || formulario.errors?.['invalidTimeRange']) && formulario.get('horaFim')?.touched"
                   />
                   <div
@@ -493,6 +494,7 @@
                     <input
                       type="number"
                       id="valorTotal"
+                      [readonly]="selectedEvent"
                       class="form-control"
                       formControlName="valor"
                       (change)="onValorTotalChange()"
@@ -528,6 +530,7 @@
                     id="parcelas"
                     class="form-control form-control-sm"
                     formControlName="parcela"
+                    [readonly]="selectedEvent"
                     (change)="gerarParcelas()"
                     min="1"
                     [class.is-invalid]="
@@ -779,7 +782,7 @@
           </button>
           <button
             type="button"
-            class="btn btn-outline-danger"
+            class="btn btn-danger"
             data-bs-dismiss="modal"
             (click)="fecharModal()"
             [disabled]="isLoading"
