@@ -153,6 +153,7 @@
                   <div class="input-group">
                     <input
                       type="text"
+                      autocomplete="off"
                       id="paciente"
                       class="form-control form-control-sm"
                       [(ngModel)]="searchTerm"
@@ -308,166 +309,6 @@
                     <option value="true">Sim</option>
                   </select>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card shadow-sm mb-4" *ngIf="!selectedEvent">
-            <div
-              class="card-header bg-light py-3 d-flex justify-content-between align-items-center"
-            >
-              <h6 class="mb-0 fw-semibold">Recorrência</h6>
-              <div class="form-check form-switch">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="recorrenciaSwitch"
-                  formControlName="recorrencia"
-                />
-                <label class="form-check-label small" for="recorrenciaSwitch"
-                  >Ativar recorrência</label
-                >
-              </div>
-            </div>
-
-            <div class="card-body" *ngIf="recorrenciaAtiva">
-              <!-- Data Final da Recorrência -->
-              <div class="row mb-4">
-                <div class="col-md-6">
-                  <label
-                    for="dataFimRecorrencia"
-                    class="form-label small fw-semibold"
-                  >
-                    Data Final da Recorrência <span class="text-danger">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    id="dataFimRecorrencia"
-                    class="form-control form-control-sm"
-                    formControlName="dataFimRecorrencia"
-                    [class.is-invalid]="
-                      formulario.get('dataFimRecorrencia')?.invalid &&
-                      formulario.get('dataFimRecorrencia')?.touched
-                    "
-                  />
-                  <div
-                    class="invalid-feedback"
-                    *ngIf="formulario.get('dataFimRecorrencia')?.errors?.['required']"
-                  >
-                    Data final da recorrência é obrigatória
-                  </div>
-                </div>
-
-                <div class="col-md-6 d-flex align-items-end">
-                  <button
-                    type="button"
-                    class="btn btn-outline-primary btn-sm"
-                    (click)="copiarHorarioPrincipal()"
-                  >
-                    <i class="bi bi-clipboard"></i> Copiar horário principal
-                    para dias selecionados
-                  </button>
-                </div>
-              </div>
-
-              <!-- Tabela de Configuração dos Dias da Semana -->
-              <div class="table-responsive">
-                <table class="table table-hover table-sm">
-                  <thead class="table-light">
-                    <tr>
-                      <th scope="col" style="width: 80px">Dia</th>
-                      <th scope="col" style="width: 80px">Ativo</th>
-                      <th scope="col">Início</th>
-                      <th scope="col">Fim</th>
-                      <th scope="col">Profissional</th>
-                      <th scope="col">Sala</th>
-                    </tr>
-                  </thead>
-                  <tbody formArrayName="diasRecorrencia">
-                    <tr
-                      *ngFor="
-                        let dia of diasRecorrenciaArray.controls;
-                        let i = index
-                      "
-                      [formGroupName]="i"
-                    >
-                      <td class="align-middle">{{ diasDaSemana[i].nome }}</td>
-                      <td class="text-center">
-                        <div
-                          class="form-check form-switch d-flex justify-content-center"
-                        >
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            formControlName="ativo"
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <input
-                          type="time"
-                          class="form-control form-control-sm"
-                          formControlName="horaInicio"
-                          [class.is-invalid]="
-                            dia.get('horaInicio')?.invalid &&
-                            dia.get('horaInicio')?.touched
-                          "
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="time"
-                          class="form-control form-control-sm"
-                          formControlName="horaFim"
-                          [class.is-invalid]="
-                            dia.get('horaFim')?.invalid &&
-                            dia.get('horaFim')?.touched
-                          "
-                        />
-                        <div
-                          class="invalid-feedback"
-                          *ngIf="dia.errors?.['invalidTimeRange']"
-                        >
-                          Horário final deve ser maior que o inicial
-                        </div>
-                      </td>
-                      <td>
-                        <select
-                          class="form-select form-select-sm"
-                          formControlName="profissionalId"
-                        >
-                          <option value="" disabled>Selecione</option>
-                          <option
-                            *ngFor="let prof of listaProfissional"
-                            [value]="prof.id"
-                          >
-                            {{ prof.nome }}
-                          </option>
-                        </select>
-                      </td>
-                      <td>
-                        <select
-                          class="form-select form-select-sm"
-                          formControlName="salaId"
-                        >
-                          <option value="" disabled>Selecione</option>
-                          <option
-                            *ngFor="let sala of listaSala"
-                            [value]="sala.id"
-                          >
-                            {{ sala.nome }}
-                          </option>
-                        </select>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="alert alert-info small mt-3">
-                <i class="bi bi-info-circle-fill me-2"></i>
-                Configure os horários específicos para cada dia da semana.
-                Marque apenas os dias que deseja incluir na recorrência.
               </div>
             </div>
           </div>
@@ -759,6 +600,167 @@
                     caracteres restantes
                   </small>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm mb-4" *ngIf="!selectedEvent">
+            <div
+              class="card-header bg-light py-3 d-flex justify-content-between align-items-center"
+            >
+              <h6 class="mb-0 fw-semibold">Recorrência</h6>
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="recorrenciaSwitch"
+                  formControlName="recorrencia"
+                />
+                <label class="form-check-label small" for="recorrenciaSwitch"
+                  >Ativar recorrência</label
+                >
+              </div>
+            </div>
+
+            <div class="card-body" *ngIf="recorrenciaAtiva">
+              <!-- Data Final da Recorrência -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label
+                    for="dataFimRecorrencia"
+                    class="form-label small fw-semibold"
+                  >
+                    Data Final da Recorrência <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="dataFimRecorrencia"
+                    class="form-control form-control-sm"
+                    formControlName="dataFimRecorrencia"
+                    [class.is-invalid]="
+                      formulario.get('dataFimRecorrencia')?.invalid &&
+                      formulario.get('dataFimRecorrencia')?.touched
+                    "
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="formulario.get('dataFimRecorrencia')?.errors?.['required']"
+                  >
+                    Data final da recorrência é obrigatória
+                  </div>
+                </div>
+
+                <div class="col-md-6 d-flex align-items-end">
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="copiarHorarioPrincipal()"
+                  >
+                    <i class="bi bi-clipboard"></i> Copiar horário principal
+                    para dias selecionados
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tabela de Configuração dos Dias da Semana -->
+              <div class="table-responsive">
+                <table class="table table-hover table-sm">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col" style="width: 80px">Dia</th>
+                      <th scope="col" style="width: 80px">Ativo</th>
+                      <th scope="col">Início</th>
+                      <th scope="col">Fim</th>
+                      <th scope="col">Profissional</th>
+                      <th scope="col">Sala</th>
+                    </tr>
+                  </thead>
+                  <tbody formArrayName="diasRecorrencia">
+                    <tr
+                      *ngFor="
+                        let dia of diasRecorrenciaArray.controls;
+                        let i = index
+                      "
+                      [formGroupName]="i"
+                    >
+                      <input type="hidden" formControlName="diaSemana" />
+                      <td class="align-middle">{{ diasDaSemana[i].nome }}</td>
+                      <td class="text-center">
+                        <div
+                          class="form-check form-switch d-flex justify-content-center"
+                        >
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            formControlName="ativo"
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <input
+                          type="time"
+                          class="form-control form-control-sm"
+                          formControlName="horaInicio"
+                          [class.is-invalid]="
+                            dia.get('horaInicio')?.invalid &&
+                            dia.get('horaInicio')?.touched
+                          "
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="time"
+                          class="form-control form-control-sm"
+                          formControlName="horaFim"
+                          [class.is-invalid]="
+                            dia.get('horaFim')?.invalid &&
+                            dia.get('horaFim')?.touched
+                          "
+                        />
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="dia.errors?.['invalidTimeRange']"
+                        >
+                          Horário final deve ser maior que o inicial
+                        </div>
+                      </td>
+                      <td>
+                        <select
+                          class="form-select form-select-sm"
+                          formControlName="profissionalId"
+                        >
+                          <option value="" disabled>Selecione</option>
+                          <option
+                            *ngFor="let prof of listaProfissional"
+                            [value]="prof.id"
+                          >
+                            {{ prof.nome }}
+                          </option>
+                        </select>
+                      </td>
+                      <td>
+                        <select
+                          class="form-select form-select-sm"
+                          formControlName="salaId"
+                        >
+                          <option value="" disabled>Selecione</option>
+                          <option
+                            *ngFor="let sala of listaSala"
+                            [value]="sala.id"
+                          >
+                            {{ sala.nome }}
+                          </option>
+                        </select>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="alert alert-info small mt-3">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                Configure os horários específicos para cada dia da semana.
+                Marque apenas os dias que deseja incluir na recorrência.
               </div>
             </div>
           </div>

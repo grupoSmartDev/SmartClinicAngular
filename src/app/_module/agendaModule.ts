@@ -29,5 +29,29 @@ export interface Agenda {
     notificarPaciente?: boolean;   // Indica se o paciente deve ser notificado (opcional)
     notificarProfissional?: boolean; // Indica se o profissional deve ser notificado (opcional)
     dataAlteracao?: Date,
+    // Novas propriedades de recorrência
+    recorrencia?: boolean;
+    dataFimRecorrencia?: Date;
+    diasRecorrencia?: DiaRecorrencia[];
 }
 
+// Nova interface para representar dia de recorrência
+export interface DiaRecorrencia {
+    index: number;
+    diaSemana: DayOfWeek; // Enum do .NET
+    horaInicio: string;
+    horaFim: string;
+    profissionalId?: string;
+    salaId?: string;
+}
+
+// Enum correspondente ao DayOfWeek do .NET
+export enum DayOfWeek {
+    Sunday = 0,
+    Monday = 1,
+    Tuesday = 2,
+    Wednesday = 3,
+    Thursday = 4,
+    Friday = 5,
+    Saturday = 6
+}

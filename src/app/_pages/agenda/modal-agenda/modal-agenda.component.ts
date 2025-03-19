@@ -158,14 +158,25 @@ export class ModalAgendaComponent implements OnInit {
       this.atualizarValidacoesFinanceiras(value);
     });
 
-    // Monitorar mudanças no campo recorrencia
     this.formulario.get('recorrencia')?.valueChanges.subscribe(value => {
       this.recorrenciaAtiva = !!value;
+      const diasRecorrenciaArray = this.formulario.get('diasRecorrencia') as FormArray;
+
       if (this.recorrenciaAtiva) {
+        // Reabilitar todos os controles
+        diasRecorrenciaArray.controls.forEach(control => {
+          control.enable();
+        });
         this.formulario.get('dataFimRecorrencia')?.setValidators([Validators.required]);
       } else {
+        // Desabilitar todos os controles
+        diasRecorrenciaArray.controls.forEach(control => {
+          control.disable();
+          control.get('ativo')?.setValue(false);
+        });
         this.formulario.get('dataFimRecorrencia')?.clearValidators();
       }
+
       this.formulario.get('dataFimRecorrencia')?.updateValueAndValidity();
     });
   }
@@ -226,6 +237,22 @@ export class ModalAgendaComponent implements OnInit {
       inputPaciente.value = this.patients.filter((x: any) => x.id == this.eventoEscolhido.pacienteId)[0].nome ?? '';
 
     }
+
+    this.formulario.get('horaInicio')?.valueChanges.subscribe(() => {
+      this.updateDiasRecorrenciaDefaults();
+    });
+
+    this.formulario.get('horaFim')?.valueChanges.subscribe(() => {
+      this.updateDiasRecorrenciaDefaults();
+    });
+
+    this.formulario.get('profissionalId')?.valueChanges.subscribe(() => {
+      this.updateDiasRecorrenciaDefaults();
+    });
+
+    this.formulario.get('salaId')?.valueChanges.subscribe(() => {
+      this.updateDiasRecorrenciaDefaults();
+    });
 
   }
 
@@ -556,26 +583,54 @@ export class ModalAgendaComponent implements OnInit {
     }
 
     // Criar um controle para cada dia da semana
-    this.diasDaSemana.forEach(dia => {
-      diasRecorrenciaArray.push(this.createDiaSemanaControl(dia.id));
+    this.diasDaSemana.forEach((dia, index) => {
+      // Crie o controle com o índice correto
+      const diaControl = this.fb.group({
+        diaSemana: [dia.id], // Use o ID do dia (0 = Domingo, 1 = Segunda, etc.)
+        ativo: [false],
+        horaInicio: ['08:00', [this.timeValidator]],
+        horaFim: ['09:00', [this.timeValidator]],
+        profissionalId: [null],
+        salaId: [null]
+      }, { validators: this.validateTimeRange });
+
+      // Adicione ao FormArray
+      diasRecorrenciaArray.push(diaControl);
     });
   }
 
   createDiaSemanaControl(diaSemana: number): FormGroup {
-    // Usar o horário padrão do formulário principal apenas para o dia atual
-    const horaInicio = this.formulario?.get('horaInicio')?.value || '08:00';
-    const horaFim = this.formulario?.get('horaFim')?.value || '09:00';
-    const profissionalId = this.formulario?.get('profissionalId')?.value || null;
-    const salaId = this.formulario?.get('salaId')?.value || null;
-
     return this.fb.group({
-      diaSemana: [diaSemana],
+      index: [diaSemana], // Use diaSemana diretamente como valor inicial do index
+      diaSemana: [diaSemana], // Mantenha também o diaSemana separado
       ativo: [false],
-      horaInicio: [horaInicio, [this.timeValidator]],
-      horaFim: [horaFim, [this.timeValidator]],
-      profissionalId: [profissionalId],
-      salaId: [salaId]
+      horaInicio: ['08:00', [this.timeValidator]],
+      horaFim: ['09:00', [this.timeValidator]],
+      profissionalId: [null],
+      salaId: [null]
     }, { validators: this.validateTimeRange });
+  }
+
+  // Método para atualizar os valores padrão dos dias de recorrência
+  updateDiasRecorrenciaDefaults(): void {
+    const diasRecorrenciaArray = this.formulario.get('diasRecorrencia') as FormArray;
+
+    // Atualizar horários padrão
+    const horaInicio = this.formulario.get('horaInicio')?.value || '08:00';
+    const horaFim = this.formulario.get('horaFim')?.value || '09:00';
+    const profissionalId = this.formulario.get('profissionalId')?.value;
+    const salaId = this.formulario.get('salaId')?.value;
+
+    // Para cada dia na semana
+    diasRecorrenciaArray.controls.forEach((control, index) => {
+      // NÃO modifique o diaSemana, apenas os outros valores
+      control.get('horaInicio')?.setValue(horaInicio);
+      control.get('horaFim')?.setValue(horaFim);
+      control.get('profissionalId')?.setValue(profissionalId);
+      control.get('salaId')?.setValue(salaId);
+      // Mantenha o diaSemana igual ao índice
+      control.get('diaSemana')?.setValue(index);
+    });
   }
 
   // Função para registrar campos inválidos no console
@@ -621,16 +676,26 @@ export class ModalAgendaComponent implements OnInit {
     // Garantir que avulso seja um booleano
     formData.avulso = formData.avulso === true || formData.avulso === 'true';
 
-    // Tratar recorrência
-    if (formData.recorrencia) {
-      // Criar array de dias da semana para recorrência
-      formData.diasRecorrencia = formData.diasRecorrencia
-        .filter((dia: any) => dia.ativo)
-        .map((dia: any) => dia.diaSemana);
+    formData.pacoteId == '' ? formData.pacoteId = null : formData.pacoteId;
 
-      formData.dataFimRecorrencia = formData.dataFimRecorrencia;
+    if (formData.recorrencia) {
+      // Filtrar dias ativos e incluir o índice correto
+      formData.diasRecorrencia = formData.diasRecorrencia
+        .map((dia: any, index: number) => ({
+          ...dia,
+          diaSemana: index // AQUI definimos explicitamente o diaSemana como o índice do array
+        }))
+        .filter((dia: any) => dia.ativo === true)
+        .map((dia: any) => ({
+          diaSemana: dia.diaSemana, // Usar o diaSemana que definimos acima
+          horaInicio: dia.horaInicio,
+          horaFim: dia.horaFim,
+          profissionalId: dia.profissionalId,
+          salaId: dia.salaId
+        }));
+
+      console.log('Dias de Recorrência Processados:', formData.diasRecorrencia);
     } else {
-      // Se não houver recorrência, remover dados relacionados
       formData.diasRecorrencia = null;
       formData.dataFimRecorrencia = null;
     }
@@ -820,7 +885,13 @@ export class ModalAgendaComponent implements OnInit {
     const ativoControl = diaControl.get('ativo');
 
     if (ativoControl) {
-      ativoControl.setValue(!ativoControl.value);
+      const novoValor = !ativoControl.value;
+      ativoControl.setValue(novoValor);
+
+      // Certifique-se de que o índice do dia da semana está correto quando ativado
+      if (novoValor) {
+        diaControl.get('diaSemana')?.setValue(index);
+      }
     }
   }
 
