@@ -7,6 +7,7 @@
       [(ngModel)]="selectedProfissional"
       class="form-select form-select-sm"
     >
+      <option value="0">Todos</option>
       <option *ngFor="let prof of profissionais" [value]="prof.id">
         {{ prof.nome }}
       </option>
@@ -74,5 +75,3 @@
   <!-- <app-agenda></app-agenda> -->
   <app-calendario></app-calendario>
 </div>
-
-

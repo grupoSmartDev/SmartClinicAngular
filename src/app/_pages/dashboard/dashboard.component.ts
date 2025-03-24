@@ -9,7 +9,7 @@ import { Profissional } from '../../_module/profissionalModule';
   styleUrls: ['./dashboard.component.css'] // Corrigi a propriedade styleUrl para styleUrls
 })
 export class DashboardComponent implements OnInit {
-  profissionais : Profissional[] = [];
+  profissionais: Profissional[] = [];
   selectedProfissional: number = 0;  // ID do profissional selecionado
   startDate: string;  // Data de início do filtro
   endDate: string;    // Data de término do filtro
@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit {
     const today = new Date();
     this.startDate = this.formatDate(today);
     this.endDate = this.formatDate(today);
-    
+
   }
 
   ngOnInit(): void {
@@ -77,10 +77,10 @@ export class DashboardComponent implements OnInit {
     this.carregarContadores(); // Recarrega os contadores com os filtros aplicados
   }
 
-  getProfissional(){
-    this.profissionalService.Listar(undefined,undefined,undefined,undefined,undefined,undefined,false).subscribe({
-      next : (data) => {
-        if(data.dados){
+  getProfissional() {
+    this.profissionalService.Listar(undefined, undefined, undefined, undefined, undefined, undefined, false).subscribe({
+      next: (data) => {
+        if (data.dados) {
           this.profissionais = data.dados;
         }
       },

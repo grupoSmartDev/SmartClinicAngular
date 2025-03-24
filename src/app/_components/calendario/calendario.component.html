@@ -1,176 +1,262 @@
 <!-- calendario-agendamento.component.html -->
 <div class="calendario-container">
-    <div class="cabecalho-calendario">
-      <div class="controles-navegacao">
-        <button class="btn-navegacao" (click)="mesAnterior()">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        
-        <h2 class="titulo-mes">
-          {{ nomesMeses[mesAtual] }} {{ anoAtual }}
-        </h2>
-        
-        <button class="btn-navegacao" (click)="proximoMes()">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-      
-      <div class="controles-visualizacao">
-        <button 
-          [ngClass]="{'btn-visualizacao': true, 'ativo': visualizacaoAtual === 'mes'}"
-          (click)="mudarVisualizacao('mes')">
-          Mês
-        </button>
-        <button 
-          [ngClass]="{'btn-visualizacao': true, 'ativo': visualizacaoAtual === 'semana'}"
-          (click)="mudarVisualizacao('semana')">
-          Semana
-        </button>
-        <button 
-          [ngClass]="{'btn-visualizacao': true, 'ativo': visualizacaoAtual === 'dia'}"
-          (click)="mudarVisualizacao('dia')">
-          Dia
-        </button>
+  <div class="cabecalho-calendario">
+    <div class="controles-navegacao">
+      <button class="btn-navegacao" (click)="mesAnterior()">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+
+      <h2 class="titulo-mes">{{ nomesMeses[mesAtual] }} {{ anoAtual }}</h2>
+
+      <button class="btn-navegacao" (click)="proximoMes()">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="controles-visualizacao">
+      <button
+        [ngClass]="{
+          'btn-visualizacao': true,
+          ativo: visualizacaoAtual === 'mes'
+        }"
+        (click)="mudarVisualizacao('mes')"
+      >
+        Mês
+      </button>
+      <button
+        [ngClass]="{
+          'btn-visualizacao': true,
+          ativo: visualizacaoAtual === 'semana'
+        }"
+        (click)="mudarVisualizacao('semana')"
+      >
+        Semana
+      </button>
+      <button
+        [ngClass]="{
+          'btn-visualizacao': true,
+          ativo: visualizacaoAtual === 'dia'
+        }"
+        (click)="mudarVisualizacao('dia')"
+      >
+        Dia
+      </button>
+    </div>
+  </div>
+
+  <!-- Visualização de Mês -->
+  <div *ngIf="visualizacaoAtual === 'mes'" class="visualizacao-mes">
+    <div class="cabecalho-semana">
+      <div *ngFor="let dia of diasSemana" class="celula-dia-semana">
+        {{ dia }}
       </div>
     </div>
-    
-    <!-- Visualização de Mês -->
-    <div *ngIf="visualizacaoAtual === 'mes'" class="visualizacao-mes">
-      <div class="cabecalho-semana">
-        <div *ngFor="let dia of diasSemana" class="celula-dia-semana">
-          {{ dia }}
+
+    <div class="grade-mes">
+      <div
+        *ngFor="let dia of gerarDiasMes()"
+        [ngClass]="{
+          'celula-dia': true,
+          'outro-mes': !dia.atual,
+          hoje: ehHoje(dia.numero, dia.mes, dia.ano),
+          'com-agendamentos':
+            verificarAgendamentos(dia.numero, dia.mes, dia.ano).length > 0
+        }"
+        (click)="handleDateClick(dia)"
+      >
+        <div class="numero-dia">
+          {{ dia.numero }}
         </div>
-      </div>
-      
-      <div class="grade-mes">
-        <div 
-          *ngFor="let dia of gerarDiasMes()" 
-          [ngClass]="{
-            'celula-dia': true,
-            'outro-mes': !dia.atual,
-            'hoje': ehHoje(dia.numero, dia.mes, dia.ano),
-            'com-agendamentos': verificarAgendamentos(dia.numero, dia.mes, dia.ano).length > 0
-          }"
-          (click)="handleDateClick(dia)"
-        >
-          <div class="numero-dia">
-            {{ dia.numero }}
-          </div>
-          
-          <div class="container-agendamentos">
-            <ng-container *ngIf="verificarAgendamentos(dia.numero, dia.mes, dia.ano).length > 0">
-              <div 
-                *ngFor="let agendamento of verificarAgendamentos(dia.numero, dia.mes, dia.ano).slice(0, 2)" 
-                [ngClass]="{'agendamento-item': true, 'confirmado': agendamento.status === 'confirmado', 'pendente': agendamento.status === 'pendente'}"
-                (click)="$event.stopPropagation(); handleEventClick(agendamento)"
-              >
-                {{ formatarHora(agendamento.data.getHours(), agendamento.data.getMinutes()) }} - 
-                {{ agendamento.paciente.split(' ')[0] }}
-              </div>
-              
-              <div *ngIf="verificarAgendamentos(dia.numero, dia.mes, dia.ano).length > 2" class="mais-agendamentos">
-                +{{ verificarAgendamentos(dia.numero, dia.mes, dia.ano).length - 2 }} mais
-              </div>
-            </ng-container>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Visualização de Semana -->
-    <div *ngIf="visualizacaoAtual === 'semana'" class="visualizacao-semana">
-      <div class="cabecalho-semana-detalhado">
-        <div class="celula-hora-vazia"></div>
-        <div 
-          *ngFor="let dia of gerarDiasSemana(diaSelecionado)" 
-          [ngClass]="{'celula-dia-semana-detalhado': true, 'outro-mes': !dia.atual, 'hoje': ehHoje(dia.numero, dia.mes, dia.ano)}"
-        >
-          <div class="nome-dia-semana">{{ diasSemana[dia.diaSemana || 0] }}</div>
-          <div class="numero-dia-semana">{{ dia.numero }}</div>
-        </div>
-      </div>
-      
-      <div class="grade-semana">
-        <ng-container *ngFor="let hora of gerarHoras()">
-          <div class="linha-hora">
-            <div class="celula-hora">
-              {{ hora }}:00
-            </div>
-            
-            <div 
-              *ngFor="let dia of gerarDiasSemana(diaSelecionado)" 
-              class="celula-agendamento"
-              (click)="handleDateClick(dia, hora)"
+
+        <div class="container-agendamentos">
+          <ng-container
+            *ngIf="
+              verificarAgendamentos(dia.numero, dia.mes, dia.ano).length > 0
+            "
+          >
+            <div
+              *ngFor="
+                let agendamento of verificarAgendamentos(
+                  dia.numero,
+                  dia.mes,
+                  dia.ano
+                ).slice(0, 2)
+              "
+              [ngClass]="{
+                'agendamento-item': true,
+                confirmado: agendamento.status === 'confirmado',
+                pendente: agendamento.status === 'pendente'
+              }"
+              (click)="$event.stopPropagation(); handleEventClick(agendamento)"
             >
-              <div 
-                *ngFor="let agendamento of filtrarAgendamentosPorHora(verificarAgendamentos(dia.numero, dia.mes, dia.ano), hora)" 
-                [ngClass]="{'agendamento-item': true, 'confirmado': agendamento.status === 'confirmado', 'pendente': agendamento.status === 'pendente'}"
-                (click)="$event.stopPropagation(); handleEventClick(agendamento)"
-              >
-                {{ formatarHora(agendamento.data.getHours(), agendamento.data.getMinutes()) }} - 
-                {{ agendamento.paciente }}
-              </div>
+              {{
+                formatarHora(
+                  agendamento.data.getHours(),
+                  agendamento.data.getMinutes()
+                )
+              }}
+              -
+              {{ agendamento.paciente.split(" ")[0] }}
             </div>
-          </div>
-        </ng-container>
-      </div>
-    </div>
-    
-    <!-- Visualização de Dia -->
-    <div *ngIf="visualizacaoAtual === 'dia'" class="visualizacao-dia">
-      <div class="cabecalho-dia">
-        <div class="dia-selecionado">
-          <div class="nome-dia-semana">
-            <!-- Usando método auxiliar em vez de expressão complexa -->
-            {{ getDiaSemanaAtual() }}
-          </div>
-          <div class="data-completa">
-            {{ diaSelecionado }} de {{ nomesMeses[mesAtual] }}
-          </div>
+
+            <div
+              *ngIf="
+                verificarAgendamentos(dia.numero, dia.mes, dia.ano).length > 2
+              "
+              class="mais-agendamentos"
+            >
+              +{{
+                verificarAgendamentos(dia.numero, dia.mes, dia.ano).length - 2
+              }}
+              mais
+            </div>
+          </ng-container>
         </div>
-      </div>
-      
-      <div class="grade-dia">
-        <ng-container *ngFor="let hora of gerarHoras()">
-          <div class="linha-hora-dia">
-            <div class="hora-dia">
-              {{ hora }}:00
-            </div>
-            
-            <div class="conteudo-hora-dia">
-              <!-- Usando método auxiliar para verificar agendamentos -->
-              <ng-container *ngIf="verificarAgendamentosEmHora(diaSelecionado, mesAtual, anoAtual, hora).length > 0; else semAgendamento">
-                <div 
-                  *ngFor="let agendamento of verificarAgendamentosEmHora(diaSelecionado, mesAtual, anoAtual, hora)" 
-                  [ngClass]="{'agendamento-detalhado': true, 'confirmado': agendamento.status === 'confirmado', 'pendente': agendamento.status === 'pendente'}"
-                  (click)="handleEventClick(agendamento)"
-                >
-                  <div class="nome-paciente">{{ agendamento.paciente }}</div>
-                  <div class="detalhes-agendamento">
-                    {{ formatarHora(agendamento.data.getHours(), agendamento.data.getMinutes()) }} - {{ agendamento.duracao }} min
-                  </div>
-                </div>
-              </ng-container>
-              
-              <ng-template #semAgendamento>
-                <div 
-                  class="slot-vazio" 
-                  (click)="handleDateClick(criarObjetoDia(diaSelecionado, mesAtual, anoAtual), hora)"
-                >
-                  <i class="fas fa-plus"></i> Adicionar agendamento
-                </div>
-              </ng-template>
-            </div>
-          </div>
-        </ng-container>
       </div>
     </div>
   </div>
-  
-  <!-- Manter referência ao seu modal existente -->
-  <app-modal-agenda
-    #modalAgenda
-    [selectedEvent]="selectedEvent"
-    [selectedDate]="selectedDate"
-    (onSave)="handleAgendamentoSave($event)"
-  ></app-modal-agenda>
+
+  <!-- Visualização de Semana -->
+  <div *ngIf="visualizacaoAtual === 'semana'" class="visualizacao-semana">
+    <div class="cabecalho-semana-detalhado">
+      <div class="celula-hora-vazia"></div>
+      <div
+        *ngFor="let dia of gerarDiasSemana(diaSelecionado)"
+        [ngClass]="{
+          'celula-dia-semana-detalhado': true,
+          'outro-mes': !dia.atual,
+          hoje: ehHoje(dia.numero, dia.mes, dia.ano)
+        }"
+      >
+        <div class="nome-dia-semana">{{ diasSemana[dia.diaSemana || 0] }}</div>
+        <div class="numero-dia-semana">{{ dia.numero }}</div>
+      </div>
+    </div>
+
+    <div class="grade-semana">
+      <ng-container *ngFor="let hora of gerarHoras()">
+        <div class="linha-hora">
+          <div class="celula-hora">{{ hora }}:00</div>
+
+          <div
+            *ngFor="let dia of gerarDiasSemana(diaSelecionado)"
+            class="celula-agendamento"
+            (click)="handleDateClick(dia, hora)"
+          >
+            <div
+              *ngFor="
+                let agendamento of filtrarAgendamentosPorHora(
+                  verificarAgendamentos(dia.numero, dia.mes, dia.ano),
+                  hora
+                )
+              "
+              [ngClass]="{
+                'agendamento-item': true,
+                confirmado: agendamento.status === 'confirmado',
+                pendente: agendamento.status === 'pendente'
+              }"
+              (click)="$event.stopPropagation(); handleEventClick(agendamento)"
+            >
+              {{
+                formatarHora(
+                  agendamento.data.getHours(),
+                  agendamento.data.getMinutes()
+                )
+              }}
+              -
+              {{ agendamento.paciente }}
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Visualização de Dia -->
+  <div *ngIf="visualizacaoAtual === 'dia'" class="visualizacao-dia">
+    <div class="cabecalho-dia">
+      <div class="dia-selecionado">
+        <div class="nome-dia-semana">
+          <!-- Usando método auxiliar em vez de expressão complexa -->
+          {{ getDiaSemanaAtual() }}
+        </div>
+        <div class="data-completa">
+          {{ diaSelecionado }} de {{ nomesMeses[mesAtual] }}
+        </div>
+      </div>
+    </div>
+
+    <div class="grade-dia">
+      <ng-container *ngFor="let hora of gerarHoras()">
+        <div class="linha-hora-dia">
+          <div class="hora-dia">{{ hora }}:00</div>
+
+          <div class="conteudo-hora-dia">
+            <!-- Usando método auxiliar para verificar agendamentos -->
+            <ng-container
+              *ngIf="
+                verificarAgendamentosEmHora(
+                  diaSelecionado,
+                  mesAtual,
+                  anoAtual,
+                  hora
+                ).length > 0;
+                else semAgendamento
+              "
+            >
+              <div
+                *ngFor="
+                  let agendamento of verificarAgendamentosEmHora(
+                    diaSelecionado,
+                    mesAtual,
+                    anoAtual,
+                    hora
+                  )
+                "
+                [ngClass]="{
+                  'agendamento-detalhado': true,
+                  confirmado: agendamento.status === 'confirmado',
+                  pendente: agendamento.status === 'pendente'
+                }"
+                (click)="handleEventClick(agendamento)"
+              >
+                <div class="nome-paciente">{{ agendamento.paciente }}</div>
+                <div class="detalhes-agendamento">
+                  {{
+                    formatarHora(
+                      agendamento.data.getHours(),
+                      agendamento.data.getMinutes()
+                    )
+                  }}
+                  - {{ agendamento.duracao }} min
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-template #semAgendamento>
+              <div
+                class="slot-vazio"
+                (click)="
+                  handleDateClick(
+                    criarObjetoDia(diaSelecionado, mesAtual, anoAtual),
+                    hora
+                  )
+                "
+              >
+                <i class="fas fa-plus"></i> Adicionar agendamento
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- Manter referência ao seu modal existente -->
+<app-modal-agenda
+  #modalAgenda
+  [selectedEvent]="selectedEvent"
+  [selectedDate]="selectedDate"
+  (onSave)="handleAgendamentoSave($event)"
+></app-modal-agenda>

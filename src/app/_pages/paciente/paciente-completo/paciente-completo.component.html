@@ -106,7 +106,12 @@
                         </h3>
                         <!-- <p>Idade 29 anos</p> -->
                         <p>
-                          <i class="bi bi-whatsapp"></i> {{ Paciente.celular }}
+                          <a
+                            target="_blank"
+                            href="https://wa.me/55{{ Paciente.celular }}"
+                            ><i class="bi bi-whatsapp"></i>
+                            {{ Paciente.celular }}</a
+                          >
                         </p>
                         <p>
                           <i class="bi bi-envelope"></i>
@@ -1319,7 +1324,7 @@
   <!-- Modal de Renovação de Plano -->
   <dialog id="dialog_renovar_plano" class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
+      <div class="modal-header">
         <h5 class="modal-title">Renovar Plano - {{ Paciente.nome }}</h5>
         <button
           type="button"
