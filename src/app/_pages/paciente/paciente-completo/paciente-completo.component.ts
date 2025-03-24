@@ -39,6 +39,18 @@ interface FinanceiroDto {
   subFinancReceber?: any[];
 }
 
+interface PlanoRenovacaoDto {
+  planoId: number;
+  descricao: string;
+  tipoMes: string;
+  dataInicio: string;
+  dataFim: string;
+  gerarFinanceiro: boolean;
+  gerarAgendamento: boolean;
+  financeiro: FinanceiroDto | null;
+  agendamento: AgendamentoDto | null;
+}
+
 interface DiaSemanaDto {
   diaSemana: number;
   ativo: boolean;
@@ -125,6 +137,7 @@ export class PacienteCompletoComponent implements OnInit {
   listaFormaPagamento: FormaPagamento[] = [];
   formEvolucao!: FormGroup;
   formPlano!: FormGroup;
+  formRenovacao!: FormGroup;
   valorTotalReceita = 0;
   listaPlanos: Plano[] = [];
   dataAtual = new Date();
@@ -397,7 +410,7 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   // MÉTODOS DE PLANO
-  openModalRenovarPlano(plano: any): void {
+  openModalRenovarPlanos(plano: any): void {
     if (this.isRenovacao && !this.podeRenovar) {
       this.toastr.warning('O plano atual ainda está vigente', 'Aviso');
       return;
@@ -773,12 +786,8 @@ export class PacienteCompletoComponent implements OnInit {
     });
   }
 
-  atualizarPacientePlano(): void {
-    // Recarregar informações do paciente
 
-  }
-
-  verificarRenovacao(): void {
+  verificarRenovacaos(): void {
     if (this.Paciente && this.Paciente.plano) {
       const plano = this.Paciente.plano;
       this.isRenovacao = true;
@@ -1171,4 +1180,550 @@ export class PacienteCompletoComponent implements OnInit {
     }
     return [];
   }
+
+
+
+
+
+  // Getters essenciais para o formulário de renovação
+  get diasRecorrenciaRenovacaoArray(): FormArray {
+    const control = this.formRenovacao?.get('agendamento.diasRecorrencia');
+    if (!control || !(control instanceof FormArray)) {
+      return this.fb.array([]);
+    }
+    return control as FormArray;
+  }
+
+  get subFinancControls(): AbstractControl[] {
+    const financeiroGroup = this.formRenovacao?.get('financeiro');
+    if (financeiroGroup instanceof FormGroup) {
+      const subFinancArray = financeiroGroup.get('subFinancReceber');
+      if (subFinancArray instanceof FormArray) {
+        return subFinancArray.controls;
+      }
+    }
+    return [];
+  }
+
+  get hasSubFinancItems(): boolean {
+    return this.subFinancControls.length > 0;
+  }
+
+  // Método para abrir o modal de renovação do plano
+  openModalRenovarPlano(plano: any): void {
+    if (!plano || !plano.id) {
+      // Nesse caso, é uma adição de plano, não uma renovação
+      this.openModalAdicionarPlano();
+      return;
+    }
+
+    // Verificar se o plano atual ainda está vigente
+    if (!this.podeRenovar) {
+      this.toastr.warning('O plano atual ainda está vigente', 'Aviso');
+      return;
+    }
+
+    const dialogRenovarPlano = document.getElementById('dialog_renovar_plano') as HTMLDialogElement;
+    if (dialogRenovarPlano) {
+      // Inicializar formulário de renovação
+      this.initFormRenovacao(plano);
+      // Mostrar o diálogo
+      dialogRenovarPlano.showModal();
+    }
+  }
+
+  // Método para abrir o diálogo de adição de plano
+  openModalAdicionarPlano(): void {
+    const dialogPlano = document.getElementById('dialog_plano') as HTMLDialogElement;
+    if (dialogPlano) {
+      this.isRenovacao = false;
+      this.resetForm();
+      dialogPlano.showModal();
+    }
+  }
+
+  // Método para inicializar o formulário de renovação
+  initFormRenovacao(plano: any): void {
+    // Calcular novas datas com base no tipo de assinatura
+    const hoje = new Date();
+    let dataInicio: string;
+
+    // Se o plano atual já terminou, usar a data de hoje
+    // Se não, usar a data logo após o fim do plano atual
+    if (plano.dataFim) {
+      const dataFimAtual = new Date(plano.dataFim);
+      if (dataFimAtual > hoje) {
+        // O plano ainda não acabou, usar a data após o término
+        const novaDataInicio = new Date(dataFimAtual);
+        novaDataInicio.setDate(novaDataInicio.getDate() + 1);
+        dataInicio = novaDataInicio.toISOString().split('T')[0];
+      } else {
+        // O plano já acabou, usar a data de hoje
+        dataInicio = hoje.toISOString().split('T')[0];
+      }
+    } else {
+      // Se não tiver data fim, usar a data de hoje
+      dataInicio = hoje.toISOString().split('T')[0];
+    }
+
+    this.formRenovacao = this.fb.group({
+      planoId: [plano.id, Validators.required],
+      descricao: [plano.descricao, Validators.required],
+      tipoMes: [plano.tipoMes, Validators.required],
+      dataInicio: [dataInicio, Validators.required],
+      dataFim: ['', Validators.required], // Será calculado automaticamente
+      gerarFinanceiro: [true],
+      gerarAgendamento: [true],
+
+      // Grupo financeiro
+      financeiro: this.fb.group({
+        valor: [this.calcularValorPlano(plano.tipoMes, plano), [Validators.required, Validators.min(0.01)]],
+        parcela: [1, [Validators.required, Validators.min(1)]],
+        formaPagamentoId: [null],
+        tipoPagamentoId: [null, Validators.required],
+        centroCustoId: ['', Validators.required],
+        observacao: ['Renovação de plano'],
+        subFinancReceber: this.fb.array([])
+      }),
+
+      // Grupo agendamento - usando os mesmos dias da semana do plano atual
+      agendamento: this.fb.group({
+        diasRecorrencia: this.fb.array(this.criarDiasRecorrenciaRenovacao(plano))
+      })
+    });
+
+    // Calcular a data final com base no tipo de assinatura
+    this.calcularDataFimRenovacao();
+
+    // Adicionar listeners para controles
+    this.formRenovacao.get('tipoMes')?.valueChanges.subscribe(() => {
+      this.calcularDataFimRenovacao();
+      this.atualizarValorPlanoRenovacao();
+    });
+
+    this.formRenovacao.get('dataInicio')?.valueChanges.subscribe(() => {
+      this.calcularDataFimRenovacao();
+    });
+
+    this.formRenovacao.get('gerarFinanceiro')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.formRenovacao.get('financeiro')?.enable();
+        this.gerarParcelasRenovacao();
+      } else {
+        this.formRenovacao.get('financeiro')?.disable();
+      }
+    });
+
+    this.formRenovacao.get('gerarAgendamento')?.valueChanges.subscribe(value => {
+      if (value) {
+        this.formRenovacao.get('agendamento')?.enable();
+      } else {
+        this.formRenovacao.get('agendamento')?.disable();
+      }
+    });
+
+    // Inicialmente, gerar parcelas se financeiro estiver ativado
+    if (this.formRenovacao.get('gerarFinanceiro')?.value) {
+      this.gerarParcelasRenovacao();
+    }
+  }
+
+  // Método para obter os dias de agendamento do plano atual
+  getDiasAgendamentoPlanoAtual(planoAtual: any): any[] {
+    if (!planoAtual || !planoAtual.id) {
+      return [];
+    }
+
+    // Se o plano tiver agendamentos:
+    if (planoAtual.agendamentos && planoAtual.agendamentos.length > 0) {
+      // Mapear os agendamentos para obter informações únicas por dia da semana
+      const diasMap = new Map<number, any>();
+
+      planoAtual.agendamentos.forEach((agendamento: any) => {
+        if (agendamento.data) {
+          const data = new Date(agendamento.data);
+          const diaSemana = data.getDay(); // 0 = Domingo, 1 = Segunda, etc.
+
+          // Só registrar um agendamento por dia da semana (o primeiro encontrado)
+          if (!diasMap.has(diaSemana)) {
+            diasMap.set(diaSemana, {
+              diaSemana: diaSemana,
+              horaInicio: agendamento.horaInicio || '08:00',
+              horaFim: agendamento.horaFim || '09:00',
+              profissionalId: agendamento.profissionalId || '',
+              salaId: agendamento.salaId || ''
+            });
+          }
+        }
+      });
+
+      // Converter o mapa para um array
+      return Array.from(diasMap.values());
+    }
+
+    // Se o plano tiver configuração de recorrência
+    if (planoAtual.diasRecorrencia && planoAtual.diasRecorrencia.length > 0) {
+      return planoAtual.diasRecorrencia.map((dia: any) => ({
+        diaSemana: dia.diaSemana,
+        horaInicio: dia.horaInicio || '08:00',
+        horaFim: dia.horaFim || '09:00',
+        profissionalId: dia.profissionalId || '',
+        salaId: dia.salaId || ''
+      }));
+    }
+
+    return [];
+  }
+
+  // Método para criar os controles do FormArray para os dias de recorrência na renovação
+  criarDiasRecorrenciaRenovacao(planoAtual: any): FormGroup[] {
+    const diasControls: FormGroup[] = [];
+
+    // Obter os agendamentos do plano atual para identificar dias e horários
+    const diasAgendamento = this.getDiasAgendamentoPlanoAtual(planoAtual);
+
+    // Criar um controle para cada dia da semana
+    this.diasDaSemana.forEach((dia, index) => {
+      // Verificar se este dia tem agendamento no plano atual
+      const agendamentoDia = diasAgendamento.find(d => d.diaSemana === index);
+
+      const diaControl = this.fb.group({
+        diaSemana: [index],
+        ativo: [!!agendamentoDia], // Ativo se houver agendamento para este dia
+        horaInicio: [
+          agendamentoDia?.horaInicio || '08:00',
+          [Validators.required, this.timeValidator]
+        ],
+        horaFim: [
+          agendamentoDia?.horaFim || '09:00',
+          [Validators.required, this.timeValidator]
+        ],
+        profissionalId: [agendamentoDia?.profissionalId || null],
+        salaId: [agendamentoDia?.salaId || null]
+      }, { validators: this.validateTimeRange });
+
+      diasControls.push(diaControl);
+    });
+
+    return diasControls;
+  }
+
+  // Método para calcular a data final do plano renovado
+  calcularDataFimRenovacao(): void {
+    const dataInicio = this.formRenovacao.get('dataInicio')?.value;
+    const tipoMes = this.formRenovacao.get('tipoMes')?.value;
+
+    if (!dataInicio || !tipoMes) return;
+
+    const inicio = new Date(dataInicio);
+    let dataFim = new Date(inicio);
+
+    switch (tipoMes) {
+      case 'm': dataFim.setMonth(dataFim.getMonth() + 1); break; // Mensal
+      case 'b': dataFim.setMonth(dataFim.getMonth() + 2); break; // Bimestral
+      case 't': dataFim.setMonth(dataFim.getMonth() + 3); break; // Trimestral
+      case 'q': dataFim.setMonth(dataFim.getMonth() + 4); break; // Quadrimestral
+      case 's': dataFim.setMonth(dataFim.getMonth() + 6); break; // Semestral
+      case 'a': dataFim.setFullYear(dataFim.getFullYear() + 1); break; // Anual
+    }
+
+    // Subtrair 1 dia para não contar o último dia
+    dataFim.setDate(dataFim.getDate() - 1);
+
+    this.formRenovacao.patchValue({
+      dataFim: dataFim.toISOString().split('T')[0],
+    });
+  }
+
+  // Método para atualizar o valor do plano renovado com base no tipo de assinatura
+  atualizarValorPlanoRenovacao(): void {
+    const planoAtual = this.getPlanoAtual();
+    if (!planoAtual) return;
+
+    const tipoMes = this.formRenovacao.get('tipoMes')?.value;
+    let valor = 0;
+
+    switch (tipoMes) {
+      case 'm': valor = planoAtual.valorMensal || 0; break;
+      case 'b': valor = planoAtual.valorBimestral || 0; break;
+      case 't': valor = planoAtual.valorTrimestral || 0; break;
+      case 'q': valor = planoAtual.valorQuadrimestral || 0; break;
+      case 's': valor = planoAtual.valorSemestral || 0; break;
+      case 'a': valor = planoAtual.valorAnual || 0; break;
+    }
+
+    this.formRenovacao.get('financeiro.valor')?.setValue(valor);
+    this.gerarParcelasRenovacao();
+  }
+
+  // Método para obter o plano atual para renovação
+  getPlanoAtual(): any {
+    // Se você está renovando o plano existente do paciente:
+    if (this.Paciente && this.Paciente.plano) {
+      return this.Paciente.plano;
+    }
+
+    // Alternativamente, você pode buscar o plano pelo ID selecionado:
+    const planoId = this.formRenovacao?.get('planoId')?.value;
+    if (planoId && this.listaPlanos) {
+      return this.listaPlanos.find(p => p.id === planoId) || null;
+    }
+
+    return null;
+  }
+
+  // Método para calcular o valor do plano com base no tipo de assinatura
+  calcularValorPlano(tipoMes: string, plano: any): number {
+    if (!plano) return 0;
+
+    switch (tipoMes) {
+      case 'm': return plano.valorMensal || 0;
+      case 'b': return plano.valorBimestral || 0;
+      case 't': return plano.valorTrimestral || 0;
+      case 'q': return plano.valorQuadrimestral || 0;
+      case 's': return plano.valorSemestral || 0;
+      case 'a': return plano.valorAnual || 0;
+      default: return 0;
+    }
+  }
+
+  // Método para gerar parcelas na renovação
+  gerarParcelasRenovacao(): void {
+    const valorTotal = this.formRenovacao?.get('financeiro.valor')?.value || 0;
+    const quantidadeParcelas = this.formRenovacao?.get('financeiro.parcela')?.value || 1;
+
+    if (valorTotal <= 0 || quantidadeParcelas <= 0) {
+      return;
+    }
+
+    // Garantir que o controle existe
+    const financeiroGroup = this.formRenovacao?.get('financeiro') as FormGroup;
+    if (!financeiroGroup) return;
+
+    if (!financeiroGroup.contains('subFinancReceber')) {
+      financeiroGroup.addControl('subFinancReceber', this.fb.array([]));
+    }
+
+    const subFinancArray = financeiroGroup.get('subFinancReceber') as FormArray;
+
+    // Limpar parcelas existentes
+    while (subFinancArray.length > 0) {
+      subFinancArray.removeAt(0);
+    }
+
+    // Calcular valor das parcelas com precisão
+    const valorParcela = Number((valorTotal / quantidadeParcelas).toFixed(2));
+    let valorRestante = Number((valorTotal - (valorParcela * quantidadeParcelas)).toFixed(2));
+
+    // Gerar novas parcelas
+    const dataInicio = new Date(this.formRenovacao?.get('dataInicio')?.value);
+
+    for (let i = 0; i < quantidadeParcelas; i++) {
+      const dataVencimento = new Date(dataInicio);
+      dataVencimento.setMonth(dataVencimento.getMonth() + i);
+
+      // Ajustar valor primeira parcela (adiciona o resto da divisão)
+      const valorAjustado = i === 0 ?
+        Number((valorParcela + valorRestante).toFixed(2)) :
+        valorParcela;
+
+      subFinancArray.push(this.fb.group({
+        id: [null],
+        financReceberId: [null],
+        parcela: [i + 1],
+        valor: [valorAjustado, [Validators.required, Validators.min(0.01)]],
+        dataVencimento: [dataVencimento.toISOString().split('T')[0], [Validators.required]],
+        dataPagamento: [null],
+        observacao: [''],
+        desconto: [0],
+        juros: [0],
+        multa: [0],
+        tipoPagamentoId: [financeiroGroup.get('tipoPagamentoId')?.value || null],
+        formaPagamentoId: null
+      }));
+    }
+  }
+
+  // Método para copiar horário principal para todos os dias selecionados
+
+
+  // Método para verificar o limite de dias selecionados
+
+
+  // Método para salvar a renovação do plano
+  salvarRenovacaoPlano(): void {
+    if (!this.formRenovacao) {
+      this.toastr.error('Formulário de renovação não inicializado', 'Erro');
+      return;
+    }
+
+    if (this.formRenovacao.invalid) {
+      this.toastr.error('Existem campos inválidos no formulário', 'Erro');
+      this.mostrarCamposInvalidos(this.formRenovacao);
+      return;
+    }
+
+    // Montar objeto para envio
+    const planoRenovacao: PlanoRenovacaoDto = {
+      planoId: Number(this.formRenovacao.get('planoId')?.value),
+      descricao: this.formRenovacao.get('descricao')?.value,
+      tipoMes: this.formRenovacao.get('tipoMes')?.value,
+      dataInicio: this.formRenovacao.get('dataInicio')?.value,
+      dataFim: this.formRenovacao.get('dataFim')?.value,
+      gerarFinanceiro: this.formRenovacao.get('gerarFinanceiro')?.value,
+      gerarAgendamento: this.formRenovacao.get('gerarAgendamento')?.value,
+      financeiro: null,
+      agendamento: null
+    };
+
+    // Adicionar informações financeiras se necessário
+    if (planoRenovacao.gerarFinanceiro) {
+      const financeiroGroup = this.formRenovacao.get('financeiro') as FormGroup;
+      const subFinancArray = financeiroGroup.get('subFinancReceber');
+
+      const subFinanceItems: any[] = [];
+
+      // Verificar se subFinancArray é um FormArray antes de acessar controls
+      if (subFinancArray instanceof FormArray) {
+        for (let i = 0; i < subFinancArray.length; i++) {
+          const control = subFinancArray.at(i) as FormGroup;
+
+          subFinanceItems.push({
+            parcela: Number(control.get('parcela')?.value),
+            valor: Number(control.get('valor')?.value),
+            dataVencimento: control.get('dataVencimento')?.value,
+            dataPagamento: control.get('dataPagamento')?.value || null,
+            observacao: control.get('observacao')?.value || '',
+            desconto: Number(control.get('desconto')?.value || 0),
+            juros: Number(control.get('juros')?.value || 0),
+            multa: Number(control.get('multa')?.value || 0),
+            tipoPagamentoId: financeiroGroup.get('tipoPagamentoId')?.value,
+            formaPagamentoId: null
+          });
+        }
+      }
+
+      planoRenovacao.financeiro = {
+        valor: Number(financeiroGroup.get('valor')?.value),
+        formaPagamentoId: null,
+        tipoPagamentoId: financeiroGroup.get('tipoPagamentoId')?.value,
+        centroCustoId: financeiroGroup.get('centroCustoId')?.value,
+        observacao: financeiroGroup.get('observacao')?.value || '',
+        subFinancReceber: subFinanceItems
+      };
+    }
+
+    // Adicionar informações de agendamento se necessário
+    if (planoRenovacao.gerarAgendamento) {
+      const diasRecorrenciaArray = this.formRenovacao.get('agendamento.diasRecorrencia');
+      const diasAtivos: DiaSemanaDto[] = [];
+
+      // Verificar se diasRecorrenciaArray é um FormArray antes de iterar
+      if (diasRecorrenciaArray instanceof FormArray) {
+        for (let i = 0; i < diasRecorrenciaArray.length; i++) {
+          const control = diasRecorrenciaArray.at(i) as FormGroup;
+          if (control.get('ativo')?.value === true) {
+            diasAtivos.push({
+              diaSemana: Number(control.get('diaSemana')?.value),
+              ativo: true,
+              horaInicio: control.get('horaInicio')?.value,
+              horaFim: control.get('horaFim')?.value,
+              profissionalId: control.get('profissionalId')?.value,
+              salaId: control.get('salaId')?.value
+            });
+          }
+        }
+      }
+
+      if (diasAtivos.length === 0) {
+        this.toastr.error('Selecione pelo menos um dia para agendamento', 'Erro');
+        return;
+      }
+
+      planoRenovacao.agendamento = {
+        horaInicio: '00:00',
+        horaFim: '00:00',
+        titulo: `Atendimento - ${this.Paciente.nome}`,
+        pacienteId: this.Paciente.id,
+        recorrencia: true,
+        dataFimRecorrencia: planoRenovacao.dataFim,
+        diasRecorrencia: diasAtivos
+      } as AgendamentoDto;
+    }
+
+    // Enviar para o backend
+    this.planoService.renovarPlano(planoRenovacao).subscribe({
+      next: (response) => {
+        if (response && response.status) {
+          this.toastr.success(response.mensagem || 'Plano renovado com sucesso!', 'Sucesso');
+          this.closeDialogRenovacaoPlano();
+          // Atualizar a lista de planos do paciente
+          this.atualizarPacientePlano();
+        } else {
+          this.toastr.error(response.mensagem || 'Erro ao renovar plano', 'Erro');
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao renovar plano:', error);
+        let mensagemErro = 'Erro ao renovar plano.';
+
+        if (error.error && error.error.mensagem) {
+          mensagemErro = error.error.mensagem;
+        } else if (error.message) {
+          mensagemErro += ' ' + error.message;
+        }
+
+        this.toastr.error(mensagemErro, 'Erro');
+      }
+    });
+  }
+
+  // Método para fechar o diálogo de renovação
+  closeDialogRenovacaoPlano(): void {
+    const dialog = document.getElementById('dialog_renovar_plano') as HTMLDialogElement;
+    if (dialog) {
+      dialog.close();
+    }
+  }
+
+  // Método para atualizar os dados do paciente após renovação
+  atualizarPacientePlano(): void {
+    // Buscar dados atualizados do paciente
+    if (this.Paciente && this.Paciente.id) {
+
+    }
+  }
+
+  // Método para verificar se o plano atual pode ser renovado
+  verificarRenovacao(): void {
+    if (this.Paciente && this.Paciente.plano) {
+      const plano = this.Paciente.plano;
+      this.isRenovacao = true;
+
+      // Verificar se dataFim é válida
+      if (plano.dataFim) {
+        try {
+          const dataFim = new Date(plano.dataFim);
+          const hoje = new Date();
+
+          // Permite renovar se a data de fim já passou ou está a menos de 30 dias de vencer
+          const umMesAntesDoFim = new Date(dataFim);
+          umMesAntesDoFim.setMonth(umMesAntesDoFim.getMonth() - 1);
+
+          this.podeRenovar = hoje >= umMesAntesDoFim;
+        } catch (error) {
+          console.error('Erro ao processar data de fim do plano:', error);
+          this.podeRenovar = true; // Por padrão, permite renovar
+        }
+      } else {
+        // Se não houver data fim, permite renovar
+        this.podeRenovar = true;
+      }
+    } else {
+      this.isRenovacao = false;
+      this.podeRenovar = true;
+    }
+  }
+
+
 }

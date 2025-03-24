@@ -52,6 +52,10 @@ export class PlanoService {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
 
+  renovarPlano(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.baseURL}RenovarPlano`, payload);
+  }
+
 
   getAll(): Observable<any> {
     return this.http.get<any>(this.baseURL);
