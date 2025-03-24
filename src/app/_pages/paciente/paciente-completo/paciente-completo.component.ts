@@ -27,11 +27,12 @@ import { FormaPagamento } from '../../../_module/formaPagamentoModule';
 import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
+import { Agenda } from '../../../_module/agendaModule';
 
 // DTOs
 interface FinanceiroDto {
   valor: number;
-  formaPagamentoId: string | number;
+  formaPagamentoId?: number | null;
   tipoPagamentoId: string | number;
   centroCustoId: string | number;
   observacao: string;
@@ -48,6 +49,18 @@ interface DiaSemanaDto {
 }
 
 interface AgendamentoDto {
+  id?: number;
+  titulo?: string;
+  data?: string;
+  horaInicio?: string;
+  horaFim?: string;
+  pacienteId?: number;
+  profissionalId?: number;
+  salaId?: number;
+  avulso?: boolean;
+  observacao?: string;
+  recorrencia?: boolean;
+  dataFimRecorrencia?: string;
   diasRecorrencia: DiaSemanaDto[];
 }
 
@@ -70,6 +83,7 @@ interface PlanoVinculacaoDto {
   valorSemestral?: number;
   valorAnual?: number;
   valorMensal?: number;
+  formaPagamentoId?: number | null;
 
 }
 
@@ -173,7 +187,7 @@ export class PacienteCompletoComponent implements OnInit {
       // Financeiro
       financeiro: this.fb.group({
         valor: [0, [Validators.required, Validators.min(0.01)]],
-        formaPagamentoId: ['', Validators.required],
+        formaPagamentoId: [null],
         tipoPagamentoId: ['', Validators.required],
         centroCustoId: ['', Validators.required],
         observacao: [''],
@@ -578,9 +592,14 @@ export class PacienteCompletoComponent implements OnInit {
     if (!this.planoSelecionado || this.planoSelecionado.length === 0) return;
 
     const limiteDias = this.planoSelecionado[0].diasSemana || 0;
-    const diasSelecionados = this.diasRecorrenciaArray.controls.filter(
-      control => control.get('ativo')?.value
-    ).length;
+    let diasSelecionados = 0;
+
+    // Contar dias ativos
+    this.diasRecorrenciaArray.controls.forEach(control => {
+      if (control.get('ativo')?.value === true) {
+        diasSelecionados++;
+      }
+    });
 
     if (diasSelecionados > limiteDias) {
       this.toastr.warning(
@@ -588,10 +607,10 @@ export class PacienteCompletoComponent implements OnInit {
         'Aviso'
       );
 
-      // Desmarcar o último selecionado
+      // Desmarcar o último dia selecionado
       for (let i = this.diasRecorrenciaArray.controls.length - 1; i >= 0; i--) {
         const control = this.diasRecorrenciaArray.controls[i];
-        if (control.get('ativo')?.value) {
+        if (control.get('ativo')?.value === true) {
           control.get('ativo')?.setValue(false);
           break;
         }
@@ -643,6 +662,7 @@ export class PacienteCompletoComponent implements OnInit {
     }
   }
 
+  // Atualizar o método salvarPlano para enviar corretamente os dados de agendamento
   salvarPlano(): void {
     if (this.formPlano.invalid) {
       this.toastr.error('Existem campos inválidos no formulário', 'Erro');
@@ -650,7 +670,6 @@ export class PacienteCompletoComponent implements OnInit {
       return;
     }
 
-    debugger
     // Montar objeto para envio
     const planoVinculacao: PlanoVinculacaoDto = {
       planoModeloId: this.formPlano.get('planoId')?.value,
@@ -675,10 +694,8 @@ export class PacienteCompletoComponent implements OnInit {
 
     // Adicionar informações financeiras se necessário
     if (planoVinculacao.gerarFinanceiro) {
-
       const subFinancControls = this.getSubFinancControls();
       const subFinanceItems = subFinancControls.map(control => {
-        // Converter cada controle para um objeto
         return {
           id: null,
           financReceberId: null,
@@ -690,33 +707,31 @@ export class PacienteCompletoComponent implements OnInit {
           desconto: control.get('desconto')?.value || 0,
           juros: control.get('juros')?.value || 0,
           multa: control.get('multa')?.value || 0,
+          formaPagamentoId: null,
           tipoPagamentoId: control.get('tipoPagamentoId')?.value
         };
       });
 
       planoVinculacao.financeiro = {
         valor: this.formPlano.get('financeiro.valor')?.value,
-        formaPagamentoId: this.formPlano.get('financeiro.formaPagamentoId')?.value,
+        formaPagamentoId: null,
         tipoPagamentoId: this.formPlano.get('financeiro.tipoPagamentoId')?.value,
         centroCustoId: this.formPlano.get('financeiro.centroCustoId')?.value,
         observacao: this.formPlano.get('financeiro.observacao')?.value || '',
         subFinancReceber: subFinanceItems,
-
       };
     }
-
-
-
 
     // Adicionar informações de agendamento se necessário
     if (planoVinculacao.gerarAgendamento) {
       const diasAtivos: DiaSemanaDto[] = [];
 
+      // Filtrar apenas os dias ativos e formatar corretamente
       for (let i = 0; i < this.diasRecorrenciaArray.controls.length; i++) {
         const control = this.diasRecorrenciaArray.controls[i];
-        if (control.get('ativo')?.value) {
+        if (control.get('ativo')?.value === true) {
           diasAtivos.push({
-            diaSemana: this.diasDaSemana[i].valor,
+            diaSemana: i, // Usar o índice como valor do dia da semana
             ativo: true,
             horaInicio: control.get('horaInicio')?.value,
             horaFim: control.get('horaFim')?.value,
@@ -726,11 +741,19 @@ export class PacienteCompletoComponent implements OnInit {
         }
       }
 
+      // Criar objeto de agendamento no formato esperado pelo backend
       planoVinculacao.agendamento = {
+        titulo: `Atendimento - ${this.Paciente.nome}`,
+        horaInicio: '08:00',
+        horaFim: '09:00',
+        pacienteId: this.Paciente.id,
+        recorrencia: true,
+        dataFimRecorrencia: planoVinculacao.dataFim, // Usar dataFim do plano
         diasRecorrencia: diasAtivos,
-      };
+      } as AgendamentoDto;
     }
 
+    console.log(planoVinculacao);
     // Enviar para o backend
     this.planoService.vincularPlano(planoVinculacao).subscribe({
       next: (response) => {
@@ -789,19 +812,60 @@ export class PacienteCompletoComponent implements OnInit {
 
   // Helpers
   criarDiasRecorrencia(): FormGroup[] {
-    return this.diasDaSemana.map((dia) =>
-      this.fb.group(
-        {
-          diaSemana: [dia.valor],
-          ativo: [false],
-          horaInicio: ['', Validators.required],
-          horaFim: ['', Validators.required],
-          profissionalId: [''],
-          salaId: [''],
-        },
-        { validators: this.horaFimMaiorQueHoraInicio() }
-      )
+    return this.diasDaSemana.map((dia, index) =>
+      this.fb.group({
+        diaSemana: [dia.valor], // Usar o valor do dia (0 = Domingo, 1 = Segunda, etc.)
+        ativo: [false],
+        horaInicio: ['08:00', [Validators.required, this.timeValidator]],
+        horaFim: ['09:00', [Validators.required, this.timeValidator]],
+        profissionalId: [null],
+        salaId: [null]
+      }, { validators: this.validateTimeRange })
     );
+  }
+
+  private timeValidator(control: AbstractControl): { [key: string]: any } | null {
+    if (!control.value) {
+      return null;
+    }
+
+    const TIME_PATTERN = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])$/;
+    return TIME_PATTERN.test(control.value) ? null : { invalidTime: true };
+  }
+
+  private validateTimeRange(group: AbstractControl): { [key: string]: any } | null {
+    const formGroup = group as FormGroup;
+    const horaInicio = formGroup.get('horaInicio')?.value;
+    const horaFim = formGroup.get('horaFim')?.value;
+
+    if (!horaInicio || !horaFim) {
+      return null;
+    }
+
+    const parseTime = (time: string): number | null => {
+      const parts = time.split(':');
+      if (parts.length !== 2) {
+        return null;
+      }
+
+      const hours = parseInt(parts[0], 10);
+      const minutes = parseInt(parts[1], 10);
+
+      if (isNaN(hours) || isNaN(minutes)) {
+        return null;
+      }
+
+      return hours * 60 + minutes;
+    };
+
+    const inicio = parseTime(horaInicio);
+    const fim = parseTime(horaFim);
+
+    if (!inicio || !fim) {
+      return null;
+    }
+
+    return inicio >= fim ? { invalidTimeRange: true } : null;
   }
 
   horaFimMaiorQueHoraInicio(): ValidatorFn {
@@ -972,7 +1036,7 @@ export class PacienteCompletoComponent implements OnInit {
       financeiro: this.fb.group({
         valor: [0, [Validators.required, Validators.min(0.01)]],
         parcela: [1, [Validators.required, Validators.min(1)]],
-        formaPagamentoId: [''],
+        formaPagamentoId: [null],
         tipoPagamentoId: [''],
         centroCustoId: [''],
         observacao: ['']
@@ -1048,8 +1112,8 @@ export class PacienteCompletoComponent implements OnInit {
         desconto: [0],
         juros: [0],
         multa: [0],
-        formaPagamentoId: [''],
-        tipoPagamentoId: ['']
+        formaPagamentoId: [null],
+        tipoPagamentoId: [null]
       }));
     }
 

@@ -37,16 +37,16 @@
             <div class="card-body">
               <div class="row g-3">
                 <div class="col-md-8 d-flex gap-2">
-                  <button class="btn btn-sm btn-secondary">
+                  <button class="btn btn-sm btn-secondary" (click)="alterarAgendamento(1)">
                     <i class="bi bi-calendar-check"></i> Confirmar
                   </button>
-                  <button class="btn btn-sm btn-secondary">
+                  <button class="btn btn-sm btn-secondary" (click)="alterarAgendamento(2)">
                     <i class="bi bi-calendar-date"></i> Reagendar
                   </button>
-                  <button class="btn btn-sm btn-secondary">
-                    <i class="bi bi-calendar-x"></i> Cancelar
+                  <button class="btn btn-sm btn-secondary" (click)="alterarAgendamento(3)">
+                    <i class="bi bi-calendar-x"></i> Falta
                   </button>
-                  <button class="btn btn-sm btn-secondary">
+                  <button class="btn btn-sm btn-secondary" (click)="gerenciarPaciente(eventoEscolhido.pacienteId!)">
                     <i class="bi bi-person-vcard"></i> Paciente Completo
                   </button>
                 </div>

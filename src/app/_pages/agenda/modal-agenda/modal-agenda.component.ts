@@ -42,6 +42,7 @@ export class ModalAgendaComponent implements OnInit {
   @Input() selectedEvent: any = null;
   @Input() selectedDate: string = '';
   @Output() onSave = new EventEmitter<Agenda>();
+  @Output() onAlter = new EventEmitter<Agenda>();
 
   formulario!: FormGroup;
   errorMessage = '';
@@ -572,6 +573,22 @@ export class ModalAgendaComponent implements OnInit {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  async alterarAgendamento(statusNovo: number): Promise<void> {
+    try {
+      const agendaData = this.prepararDadosAgenda();
+      await firstValueFrom(this.agendaService.AlterarAgendamento(this.eventoEscolhido.id, statusNovo));
+      this.toastr.success('Agenda alterada com sucesso!', 'Sucesso');
+      this.onAlter.emit();
+      this.fecharModal();
+    } catch (error) {
+      this.handleError('Erro ao alterar agenda', error);
+    }
+  }
+
+  gerenciarPaciente(id: string): void {
+
   }
 
   initDiasRecorrencia(): void {

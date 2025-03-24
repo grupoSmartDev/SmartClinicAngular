@@ -30,9 +30,19 @@ export class AgendaService {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
 
+  AlterarAgendamento(id: number, statusNovo: number): Observable<ResponseModel<void>> {
+
+    let params = new HttpParams();
+
+    if (id) params = params.set('id', id.toString());
+    if (statusNovo) params = params.set('statusNovo', statusNovo.toString());
+
+    return this.http.get<ResponseModel<void>>(`${this.baseURL}AlterarAgendamento`, { params });
+  }
+
   ObterContadoresDashboard(profissionalId?: number, dataInicio?: Date, dataFim?: Date): Observable<ResponseModel<any>> {
     let params = new HttpParams();
-  
+
     if (profissionalId !== undefined && profissionalId !== null) {
       params = params.set('profissionalId', profissionalId.toString());
     }
@@ -42,7 +52,7 @@ export class AgendaService {
     if (dataFim) {
       params = params.set('dataFim', dataFim.toISOString());
     }
-  
+
     return this.http.get<ResponseModel<any>>(`${this.baseURL}ObterContadoresDashboard`, { params });
-  }  
+  }
 }

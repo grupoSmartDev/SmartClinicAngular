@@ -1,86 +1,40 @@
 <!-- Modal Paciente -->
-<div
-  #modalPacienteDetalhado
-  class="modal fade"
-  id="modalPacienteDetalhado"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
-  tabindex="-1"
-  aria-labelledby="statusModalLabel"
-  aria-modal="true"
-  role="dialog"
->
+<div #modalPacienteDetalhado class="modal fade" id="modalPacienteDetalhado" data-bs-backdrop="static"
+  data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-modal="true" role="dialog">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">
           Gerenciamento do Paciente
         </h1>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          (click)="fecharModal()"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="fecharModal()"
+          aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="container my-4">
           <!-- Nav Tabs -->
           <ul class="nav nav-tabs" id="patientTabs" role="tablist">
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="info-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#info"
-                type="button"
-                role="tab"
-                aria-controls="info"
-                aria-selected="true"
-              >
+              <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button"
+                role="tab" aria-controls="info" aria-selected="true">
                 Informações do Paciente
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="finance-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#finance"
-                type="button"
-                role="tab"
-                aria-controls="finance"
-                aria-selected="false"
-              >
+              <button class="nav-link" id="finance-tab" data-bs-toggle="tab" data-bs-target="#finance" type="button"
+                role="tab" aria-controls="finance" aria-selected="false">
                 Financeiro
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="appointments-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#appointments"
-                type="button"
-                role="tab"
-                aria-controls="appointments"
-                aria-selected="false"
-              >
+              <button class="nav-link" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments"
+                type="button" role="tab" aria-controls="appointments" aria-selected="false">
                 Atendimentos
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="plans-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#plans"
-                type="button"
-                role="tab"
-                aria-controls="plans"
-                aria-selected="false"
-              >
+              <button class="nav-link" id="plans-tab" data-bs-toggle="tab" data-bs-target="#plans" type="button"
+                role="tab" aria-controls="plans" aria-selected="false">
                 Planos
               </button>
             </li>
@@ -89,12 +43,7 @@
           <!-- Tab Content -->
           <div class="tab-content mt-3" id="patientTabsContent">
             <!-- Informações do Paciente -->
-            <div
-              class="tab-pane fade show active"
-              id="info"
-              role="tabpanel"
-              aria-labelledby="info-tab"
-            >
+            <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
               <form>
                 <div class="row justify-content-space-between">
                   <div class="col-md-4">
@@ -125,9 +74,9 @@
                           <div class="col-6">
                             <p class="descricao-grande">
                               {{
-                                Paciente.agendamentos
-                                  ? Paciente.agendamentos.length
-                                  : 0
+                              Paciente.agendamentos
+                              ? Paciente.agendamentos.length
+                              : 0
                               }}
                             </p>
                             <p class="descricao-medio">Agendamentos</p>
@@ -145,9 +94,9 @@
                           <div class="col-6">
                             <p class="descricao-grande">
                               {{
-                                Paciente.plano
-                                  ? Paciente.plano.descricao
-                                  : "Sem plano"
+                              Paciente.plano
+                              ? Paciente.plano.descricao
+                              : "Sem plano"
                               }}
                             </p>
                             <p class="descricao-medio">
@@ -160,9 +109,9 @@
                           <div class="col-6">
                             <p class="descricao-grande">
                               {{
-                                Paciente.convenio
-                                  ? Paciente.convenio.nome
-                                  : "Sem convenio"
+                              Paciente.convenio
+                              ? Paciente.convenio.nome
+                              : "Sem convenio"
                               }}
                             </p>
                             <p class="descricao-medio">
@@ -188,9 +137,9 @@
                         <p class="titulo-pequeno">Observação</p>
                         <p class="descricao-medio">
                           {{
-                            Paciente.breveDiagnostico
-                              ? Paciente.breveDiagnostico
-                              : "Sem observação"
+                          Paciente.breveDiagnostico
+                          ? Paciente.breveDiagnostico
+                          : "Sem observação"
                           }}
                         </p>
                       </div>
@@ -201,12 +150,7 @@
             </div>
 
             <!-- Histórico Financeiro -->
-            <div
-              class="tab-pane fade"
-              id="finance"
-              role="tabpanel"
-              aria-labelledby="finance-tab"
-            >
+            <div class="tab-pane fade" id="finance" role="tabpanel" aria-labelledby="finance-tab">
               <h5>Histórico Financeiro</h5>
               <!-- Aqui vai o conteúdo da aba de financeiro -->
               <div class="table-responsive">
@@ -238,12 +182,7 @@
             </div>
 
             <!-- Atendimentos -->
-            <div
-              class="tab-pane fade"
-              id="appointments"
-              role="tabpanel"
-              aria-labelledby="appointments-tab"
-            >
+            <div class="tab-pane fade" id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
               <h5>Histórico de Atendimentos</h5>
               <button class="btn btn-success mb-2" (click)="openDialog('')">
                 <i class="bi bi-plus"></i> Evolução
@@ -263,10 +202,7 @@
                       <td>{{ items.dataEvolucao | datePtBr }}</td>
                       <td>{{ items.observacao }}</td>
                       <td>
-                        <button
-                          class="btn btn-sm btn-primary"
-                          (click)="openDialog(items)"
-                        >
+                        <button class="btn btn-sm btn-primary" (click)="openDialog(items)">
                           Ver Evolução
                         </button>
                       </td>
@@ -278,33 +214,18 @@
             </div>
 
             <!-- Planos -->
-            <div
-              class="tab-pane fade"
-              id="plans"
-              role="tabpanel"
-              aria-labelledby="plans-tab"
-            >
+            <div class="tab-pane fade" id="plans" role="tabpanel" aria-labelledby="plans-tab">
               <h5>Planos do Paciente</h5>
               @if (Paciente.plano?.id == null) {
-              <button
-                class="btn btn-success mb-2"
-                (click)="openModalRenovarPlano('')"
-              >
+              <button class="btn btn-success mb-2" (click)="openModalRenovarPlano('')">
                 <i class="bi bi-plus"></i> Adicionar plano
               </button>
               } @else if (Paciente.plano?.id ) {
-              <button
-                class="btn btn-success mb-2"
-                (click)="openModalRenovarPlano(Paciente.plano)"
-              >
+              <button class="btn btn-success mb-2" (click)="openModalRenovarPlano(Paciente.plano)">
                 <i class="bi bi-arrow-repeat"></i> Renovar plano
               </button>
               } @else {
-              <button
-                disabled
-                class="btn btn-success mb-2"
-                (click)="openModalRenovarPlano(Paciente.plano)"
-              >
+              <button disabled class="btn btn-success mb-2" (click)="openModalRenovarPlano(Paciente.plano)">
                 <i class="bi bi-arrow-repeat"></i> Renovar plano
               </button>
               }
@@ -342,56 +263,31 @@
         </div>
 
         <!-- Modal para Novo Atendimento -->
-        <div
-          class="modal fade"
-          id="addAppointmentModal"
-          tabindex="-12"
-          aria-labelledby="addAppointmentModalLabel"
-          aria-hidden="true"
-        >
+        <div class="modal fade" id="addAppointmentModal" tabindex="-12" aria-labelledby="addAppointmentModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="addAppointmentModalLabel">
                   Nova Evolução
                 </h5>
-                <button
-                  type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"
-                  (click)="fecharModal()"
-                  aria-label="Close"
-                ></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="fecharModal()"
+                  aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <form>
                   <div class="mb-3">
                     <label for="appointmentDate" class="form-label">Data</label>
-                    <input
-                      type="date"
-                      class="form-control"
-                      id="appointmentDate"
-                    />
+                    <input type="date" class="form-control" id="appointmentDate" />
                   </div>
                   <div class="mb-3">
-                    <label for="appointmentDescription" class="form-label"
-                      >Descrição</label
-                    >
-                    <textarea
-                      class="form-control"
-                      id="appointmentDescription"
-                      rows="3"
-                    ></textarea>
+                    <label for="appointmentDescription" class="form-label">Descrição</label>
+                    <textarea class="form-control" id="appointmentDescription" rows="3"></textarea>
                   </div>
                 </form>
               </div>
               <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                  (click)="fecharModal()"
-                >
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="fecharModal()">
                   Cancelar
                 </button>
                 <button type="button" class="btn btn-primary">Salvar</button>
@@ -404,12 +300,7 @@
         <button type="button" (click)="onSubmit()" class="btn btn-success">
           <i class="bi bi-check"></i> Confirmar
         </button>
-        <button
-          type="button"
-          class="btn btn-danger"
-          data-bs-dismiss="modal"
-          (click)="fecharModal()"
-        >
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="fecharModal()">
           <i class="bi bi-x"></i> Cancelar
         </button>
       </div>
@@ -423,37 +314,20 @@
           <h5 class="modal-title" id="addProgressModalLabel">
             Evolução - {{ Paciente.nome }}
           </h5>
-          <button
-            type="button"
-            class="btn-close"
-            (click)="closeDialog()"
-          ></button>
+          <button type="button" class="btn-close" (click)="closeDialog()"></button>
         </div>
         <div class="modal-body">
           <div class="mb-3">
             <div class="row mb-2 align-items-end">
               <div class="col-2">
                 <label for="progressDescription" class="form-label">Cód</label>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  readonly
-                  formControlName="id"
-                />
+                <input type="text" class="form-control form-control-sm" readonly formControlName="id" />
               </div>
               <input type="hidden" name="" id="" formControlName="pacienteId" />
 
               <div class="col-md-4 col-12">
-                <label for="progressDescription" class="form-label"
-                  >Profissional</label
-                >
-                <select
-                  name=""
-                  id=""
-                  class="form-select form-select-sm"
-                  id=""
-                  formControlName="profissionalId"
-                >
+                <label for="progressDescription" class="form-label">Profissional</label>
+                <select name="" id="" class="form-select form-select-sm" id="" formControlName="profissionalId">
                   <option value="">Selecione...</option>
                   @for (item of listaProfissional; track item.id) {
                   <option value="{{ item.id }}">{{ item.nome }}</option>
@@ -462,159 +336,88 @@
               </div>
               <div class="col-md-2 col-12">
                 <label for="progressDescription" class="form-label">Data</label>
-                <input
-                  type="date"
-                  class="form-control form-control-sm"
-                  formControlName="dataEvolucao"
-                />
+                <input type="date" class="form-control form-control-sm" formControlName="dataEvolucao" />
               </div>
               <div class="col-md-2 col-12">
-                <button
-                  type="button"
-                  class="btn btn-primary btn-sm"
-                  (click)="adicionarExercicio()"
-                >
+                <button type="button" class="btn btn-primary btn-sm" (click)="adicionarExercicio()">
                   <i class="bi bi-plus d-none d-block-md"></i> Exercicios
                 </button>
               </div>
               <div class="col-md-2 col-12">
-                <button
-                  type="button"
-                  class="btn btn-primary btn-sm"
-                  (click)="adicionarAtividade()"
-                >
+                <button type="button" class="btn btn-primary btn-sm" (click)="adicionarAtividade()">
                   <i class="bi bi-plus d-none d-block-md"></i> Atividade
                 </button>
               </div>
 
               <!-- FormArray para os itens -->
               <div formArrayName="exercicios" class="mt-2">
-                <div
-                  *ngFor="let item of exercicios.controls; let i = index"
-                  [formGroupName]="i"
-                  class="border rounded p-3 mb-2"
-                >
+                <div *ngFor="let item of exercicios.controls; let i = index" [formGroupName]="i"
+                  class="border rounded p-3 mb-2">
                   <h3 class="titulo-pequeno">Exercício {{ i + 1 }}</h3>
                   <div class="row">
                     <div class="col-md-4">
                       <label for="descricao">Exercício</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        formControlName="descricao"
-                      />
+                      <input type="text" class="form-control form-control-sm" formControlName="descricao" />
                     </div>
                     <div class="col-md-4">
                       <label for="titulo">Observação</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        formControlName="obs"
-                      />
+                      <input type="text" class="form-control form-control-sm" formControlName="obs" />
                     </div>
                     <div class="col-md-4">
                       <label for="tempo">Tempo</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        onlyNumbers
-                        formControlName="tempo"
-                      />
+                      <input type="text" class="form-control form-control-sm" onlyNumbers formControlName="tempo" />
                     </div>
                     <div class="col-md-4">
                       <label for="tempo">Repetições</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        onlyNumbers
-                        formControlName="repeticoes"
-                      />
+                      <input type="text" class="form-control form-control-sm" onlyNumbers
+                        formControlName="repeticoes" />
                     </div>
                     <div class="col-md-4">
                       <label for="tempo">Séries</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        onlyNumbers
-                        formControlName="series"
-                      />
+                      <input type="text" class="form-control form-control-sm" onlyNumbers formControlName="series" />
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    class="btn btn-danger btn-sm mt-2"
-                    (click)="removerExercicio(i)"
-                  >
+                  <button type="button" class="btn btn-danger btn-sm mt-2" (click)="removerExercicio(i)">
                     Remover
                   </button>
                 </div>
               </div>
 
               <div formArrayName="atividades" class="mt-2">
-                <div
-                  *ngFor="let item of atividades.controls; let i = index"
-                  [formGroupName]="i"
-                  class="border rounded p-3 mb-2"
-                >
+                <div *ngFor="let item of atividades.controls; let i = index" [formGroupName]="i"
+                  class="border rounded p-3 mb-2">
                   <h3 class="titulo-pequeno">Atividade {{ i + 1 }}</h3>
                   <div class="row">
                     <div class="col-md-4">
                       <label for="titulo">Atividade</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        formControlName="titulo"
-                      />
+                      <input type="text" class="form-control form-control-sm" formControlName="titulo" />
                     </div>
                     <div class="col-md-4">
                       <label for="descricao">Descrição</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        formControlName="descricao"
-                      />
+                      <input type="text" class="form-control form-control-sm" formControlName="descricao" />
                     </div>
                     <div class="col-md-4">
                       <label for="tempo">Tempo</label>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        onlyNumbers
-                        formControlName="tempo"
-                      />
+                      <input type="text" class="form-control form-control-sm" onlyNumbers formControlName="tempo" />
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    class="btn btn-danger btn-sm mt-2"
-                    (click)="removerAtividade(i)"
-                  >
+                  <button type="button" class="btn btn-danger btn-sm mt-2" (click)="removerAtividade(i)">
                     Remover
                   </button>
                 </div>
               </div>
               <div class="col-12">
-                <label for="progressDescription" class="form-label"
-                  >Descrição</label
-                >
-                <textarea
-                  cols="30"
-                  rows="10"
-                  class="form-control form-control-sm"
-                  formControlName="observacao"
-                ></textarea>
+                <label for="progressDescription" class="form-label">Descrição</label>
+                <textarea cols="30" rows="10" class="form-control form-control-sm"
+                  formControlName="observacao"></textarea>
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer justify-content-end">
-          <button
-            type="button"
-            (click)="salvarEvolucao()"
-            class="btn btn-success"
-          >
+          <button type="button" (click)="salvarEvolucao()" class="btn btn-success">
             <i class="bi bi-check"></i> Confirmar
           </button>
           <button type="button" class="btn btn-danger" (click)="closeDialog()">
@@ -747,46 +550,31 @@
             {{ isRenovacao ? "Renovar" : "Adicionar" }} Plano -
             {{ Paciente.nome }}
           </h5>
-          <button
-            type="button"
-            class="btn-close"
-            (click)="closeDialogPlano()"
-          ></button>
+          <button type="button" class="btn-close" (click)="closeDialogPlano()"></button>
         </div>
         <div class="modal-body">
           <!-- Bloco de Plano e Assinatura -->
           <div class="row align-items-end">
             <div class="col-md-3">
               <label for="planoId" class="form-label">Plano</label>
-              <select
-                class="form-select form-select-sm"
-                formControlName="planoId"
-                id="planoId"
-                (change)="onPlanoSelecionado()"
-              >
+              <select class="form-select form-select-sm" formControlName="planoId" id="planoId"
+                (change)="onPlanoSelecionado()">
                 <option value="">Selecione...</option>
                 @for (item of listaPlanos; track item.id) {
                 <option value="{{ item.id }}">{{ item.descricao }}</option>
                 }
               </select>
-              <div
-                class="invalid-feedback"
-                *ngIf="
+              <div class="invalid-feedback" *ngIf="
                   formPlano.get('planoId')?.invalid &&
                   formPlano.get('planoId')?.touched
-                "
-              >
+                ">
                 Selecione um plano
               </div>
             </div>
             <div class="col-md-3">
               <label for="tipoMes" class="form-label">Tipo de assinatura</label>
-              <select
-                class="form-select form-select-sm"
-                formControlName="tipoMes"
-                id="tipoMes"
-                (change)="calcularDataFim()"
-              >
+              <select class="form-select form-select-sm" formControlName="tipoMes" id="tipoMes"
+                (change)="calcularDataFim()">
                 <option value="">Selecione...</option>
                 <option value="m">Mensal</option>
                 <option value="b">Bimestral</option>
@@ -795,53 +583,33 @@
                 <option value="s">Semestral</option>
                 <option value="a">Anual</option>
               </select>
-              <div
-                class="invalid-feedback"
-                *ngIf="
+              <div class="invalid-feedback" *ngIf="
                   formPlano.get('tipoMes')?.invalid &&
                   formPlano.get('tipoMes')?.touched
-                "
-              >
+                ">
                 Selecione o tipo de assinatura
               </div>
             </div>
 
             <div class="col-md-3">
               <label for="">Valor</label>
-              <input
-                type="text"
-                formControlName="valor"
-                class="form-control form-control-sm"
-                readonly
-              />
+              <input type="text" formControlName="valor" class="form-control form-control-sm" readonly />
             </div>
 
             <div class="col-md-3">
               <label for="dataInicio" class="form-label">Data inicio</label>
-              <input
-                type="date"
-                class="form-control form-control-sm"
-                formControlName="dataInicio"
-                id="dataInicio"
-                (change)="calcularDataFim()"
-              />
-              <div
-                class="invalid-feedback"
-                *ngIf="
+              <input type="date" class="form-control form-control-sm" formControlName="dataInicio" id="dataInicio"
+                (change)="calcularDataFim()" />
+              <div class="invalid-feedback" *ngIf="
                   formPlano.get('dataInicio')?.invalid &&
                   formPlano.get('dataInicio')?.touched
-                "
-              >
+                ">
                 Data de início é obrigatória
               </div>
             </div>
 
             <div class="col-md-3" *ngIf="isRenovacao">
-              <button
-                type="button"
-                class="btn btn-success btn-sm"
-                [disabled]="!podeRenovar"
-              >
+              <button type="button" class="btn btn-success btn-sm" [disabled]="!podeRenovar">
                 <i class="bi bi-arrow-repeat"></i> Renovar Plano
               </button>
             </div>
@@ -852,49 +620,27 @@
             <div class="row mb-2 align-items-end">
               <div class="col-2">
                 <label for="id" class="form-label">Cód</label>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  readonly
-                  formControlName="id"
-                  id="id"
-                />
+                <input type="text" class="form-control form-control-sm" readonly formControlName="id" id="id" />
               </div>
 
               <div class="col-4">
                 <label for="descricao" class="form-label">Descrição</label>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  formControlName="descricao"
-                  id="descricao"
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                <input type="text" class="form-control form-control-sm" formControlName="descricao" id="descricao" />
+                <div class="invalid-feedback" *ngIf="
                     formPlano.get('descricao')?.invalid &&
                     formPlano.get('descricao')?.touched
-                  "
-                >
+                  ">
                   Descrição é obrigatória
                 </div>
               </div>
 
               <div class="col-md-3">
                 <label for="dataFim" class="form-label">Vencimento</label>
-                <input
-                  type="date"
-                  class="form-control form-control-sm"
-                  formControlName="dataFim"
-                  id="dataFim"
-                />
-                <div
-                  class="invalid-feedback"
-                  *ngIf="
+                <input type="date" class="form-control form-control-sm" formControlName="dataFim" id="dataFim" />
+                <div class="invalid-feedback" *ngIf="
                     formPlano.get('dataFim')?.invalid &&
                     formPlano.get('dataFim')?.touched
-                  "
-                >
+                  ">
                   Data de vencimento é obrigatória
                 </div>
               </div>
@@ -905,13 +651,8 @@
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="gerarFinanceiro"
-                  formControlName="gerarFinanceiro"
-                  (change)="toggleFinanceiroFields()"
-                />
+                <input class="form-check-input" type="checkbox" id="gerarFinanceiro" formControlName="gerarFinanceiro"
+                  (change)="toggleFinanceiroFields()" />
                 <label class="form-check-label" for="gerarFinanceiro">
                   Gerar Financeiro
                 </label>
@@ -919,13 +660,8 @@
             </div>
             <div class="col-md-6">
               <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="gerarAgendamento"
-                  formControlName="gerarAgendamento"
-                  (change)="toggleAgendamentoFields()"
-                />
+                <input class="form-check-input" type="checkbox" id="gerarAgendamento" formControlName="gerarAgendamento"
+                  (change)="toggleAgendamentoFields()" />
                 <label class="form-check-label" for="gerarAgendamento">
                   Gerar Agendamento
                 </label>
@@ -938,101 +674,60 @@
           <!-- Estrutura completa corrigida para a seção de Financeiro -->
           <!-- Seção completa de financeiro corrigida para evitar problemas de tipagem -->
 
-          <div
-            class="card shadow-sm mb-4"
-            *ngIf="formPlano.get('gerarFinanceiro')?.value"
-            [@fadeInOut]
-          >
+          <div class="card shadow-sm mb-4" *ngIf="formPlano.get('gerarFinanceiro')?.value" [@fadeInOut]>
             <div class="card-header bg-light py-3">
               <h6 class="mb-0 fw-semibold">Informações de Pagamento</h6>
             </div>
             <div class="card-body">
               <!-- Usando ngIf para garantir que financeiroGroup não é null -->
-              <ng-container
-                *ngIf="formPlano.get('financeiro') as financeiroGroup"
-              >
+              <ng-container *ngIf="formPlano.get('financeiro') as financeiroGroup">
                 <!-- Campos de Valor e Parcelas -->
                 <div class="row g-3 justify-content-end">
                   <div class="col-md-2">
-                    <label
-                      for="valorTotal"
-                      class="form-label small fw-semibold"
-                    >
+                    <label for="valorTotal" class="form-label small fw-semibold">
                       Valor Total <span class="text-danger">*</span>
                     </label>
                     <div class="input-group input-group-sm">
                       <span class="input-group-text">R$</span>
-                      <input
-                        type="number"
-                        id="valorTotal"
-                        class="form-control"
-                        [formControl]="$any(financeiroGroup.get('valor'))"
-                        (change)="gerarParcelas()"
-                        placeholder="0,00"
-                        step="0.01"
-                        min="0.01"
-                        [class.is-invalid]="
+                      <input type="number" id="valorTotal" class="form-control"
+                        [formControl]="$any(financeiroGroup.get('valor'))" (change)="gerarParcelas()" placeholder="0,00"
+                        step="0.01" min="0.01" [class.is-invalid]="
                           financeiroGroup.get('valor')?.invalid &&
                           financeiroGroup.get('valor')?.touched
-                        "
-                      />
+                        " />
                     </div>
-                    <div
-                      class="invalid-feedback"
-                      *ngIf="financeiroGroup.get('valor')?.errors?.['required']"
-                    >
+                    <div class="invalid-feedback" *ngIf="financeiroGroup.get('valor')?.errors?.['required']">
                       Valor é obrigatório
                     </div>
-                    <div
-                      class="invalid-feedback"
-                      *ngIf="financeiroGroup.get('valor')?.errors?.['min']"
-                    >
+                    <div class="invalid-feedback" *ngIf="financeiroGroup.get('valor')?.errors?.['min']">
                       Valor deve ser maior que zero
                     </div>
                   </div>
 
                   <div class="col-md-2">
-                    <label for="parcelas" class="form-label small fw-semibold"
-                      >Parcelas</label
-                    >
-                    <input
-                      type="number"
-                      id="parcelas"
-                      class="form-control form-control-sm"
-                      [formControl]="$any(financeiroGroup.get('parcela'))"
-                      (change)="gerarParcelas()"
-                      min="1"
+                    <label for="parcelas" class="form-label small fw-semibold">Parcelas</label>
+                    <input type="number" id="parcelas" class="form-control form-control-sm"
+                      [formControl]="$any(financeiroGroup.get('parcela'))" (change)="gerarParcelas()" min="1"
                       [class.is-invalid]="
                         financeiroGroup.get('parcela')?.invalid &&
                         financeiroGroup.get('parcela')?.touched
-                      "
-                    />
+                      " />
                     <div class="invalid-feedback">
                       Número de parcelas deve ser maior que zero
                     </div>
                   </div>
 
                   <div class="col-md-3">
-                    <label
-                      for="centroCusto"
-                      class="form-label small fw-semibold"
-                    >
+                    <label for="centroCusto" class="form-label small fw-semibold">
                       Centro de Custo <span class="text-danger">*</span>
                     </label>
-                    <select
-                      id="centroCusto"
-                      class="form-select form-select-sm"
-                      [formControl]="$any(financeiroGroup.get('centroCustoId'))"
-                      [class.is-invalid]="
+                    <select id="centroCusto" class="form-select form-select-sm"
+                      [formControl]="$any(financeiroGroup.get('centroCustoId'))" [class.is-invalid]="
                         financeiroGroup.get('centroCustoId')?.invalid &&
                         financeiroGroup.get('centroCustoId')?.touched
-                      "
-                    >
+                      ">
                       <option value="" disabled>Selecione</option>
-                      <option
-                        *ngFor="let item of listaCentroDeCusto"
-                        [value]="item.id"
-                      >
+                      <option *ngFor="let item of listaCentroDeCusto" [value]="item.id">
                         {{ item.descricao }}
                       </option>
                     </select>
@@ -1043,10 +738,7 @@
                 </div>
 
                 <!-- Tabela de Parcelas -->
-                <div
-                  class="table-responsive mt-4"
-                  *ngIf="getSubFinancControls().length > 0"
-                >
+                <div class="table-responsive mt-4" *ngIf="getSubFinancControls().length > 0">
                   <h6 class="fw-semibold mb-3">Parcelas Geradas</h6>
                   <table class="table table-sm table-hover">
                     <thead class="table-light">
@@ -1060,24 +752,18 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <ng-container
-                        *ngFor="
+                      <ng-container *ngFor="
                           let parcela of getSubFinancControls();
                           let i = index
-                        "
-                      >
+                        ">
                         <tr [formGroup]="$any(parcela)">
                           <td class="align-middle">{{ i + 1 }}</td>
                           <td>
-                            <input
-                              type="date"
-                              class="form-control form-control-sm"
-                              formControlName="dataVencimento"
+                            <input type="date" class="form-control form-control-sm" formControlName="dataVencimento"
                               [class.is-invalid]="
                                 parcela.get('dataVencimento')?.invalid &&
                                 parcela.get('dataVencimento')?.touched
-                              "
-                            />
+                              " />
                             <div class="invalid-feedback">
                               Data de vencimento é obrigatória
                             </div>
@@ -1085,58 +771,36 @@
                           <td>
                             <div class="input-group input-group-sm">
                               <span class="input-group-text">R$</span>
-                              <input
-                                type="number"
-                                class="form-control"
-                                formControlName="valor"
-                                readonly
-                              />
+                              <input type="number" class="form-control" formControlName="valor" readonly />
                             </div>
                           </td>
                           <td>
-                            <select
-                              class="form-select form-select-sm"
-                              formControlName="formaPagamentoId"
+                            <select class="form-select form-select-sm" formControlName="formaPagamentoId"
                               [class.is-invalid]="
                                 parcela.get('formaPagamentoId')?.invalid &&
                                 parcela.get('formaPagamentoId')?.touched
-                              "
-                            >
+                              ">
                               <option value="" disabled>Selecione</option>
-                              <option
-                                *ngFor="let item of listaFormaPagamento"
-                                [value]="item.id"
-                              >
+                              <option *ngFor="let item of listaFormaPagamento" [value]="item.id">
                                 {{ item.descricao }}
                               </option>
                             </select>
                           </td>
                           <td>
-                            <select
-                              class="form-select form-select-sm"
-                              formControlName="tipoPagamentoId"
+                            <select class="form-select form-select-sm" formControlName="tipoPagamentoId"
                               [class.is-invalid]="
                                 parcela.get('tipoPagamentoId')?.invalid &&
                                 parcela.get('tipoPagamentoId')?.touched
-                              "
-                            >
+                              ">
                               <option value="" disabled>Selecione</option>
-                              <option
-                                *ngFor="let item of listaTipoPagamento"
-                                [value]="item.id"
-                              >
+                              <option *ngFor="let item of listaTipoPagamento" [value]="item.id">
                                 {{ item.descricao }}
                               </option>
                             </select>
                           </td>
                           <td>
-                            <input
-                              type="text"
-                              class="form-control form-control-sm"
-                              formControlName="observacao"
-                              placeholder="Obs."
-                              maxlength="200"
-                            />
+                            <input type="text" class="form-control form-control-sm" formControlName="observacao"
+                              placeholder="Obs." maxlength="200" />
                           </td>
                         </tr>
                       </ng-container>
@@ -1147,21 +811,39 @@
             </div>
           </div>
 
-          <div
-            class="card shadow-sm mb-4"
-            *ngIf="formPlano.get('gerarAgendamento')?.value"
-            [@fadeInOut]
-            formGroupName="agendamento"
-          >
+          <!-- O HTML da parte de agendamento já está bem estruturado, mas vamos fazer pequenos ajustes para alinhá-lo completamente com a modalAgenda -->
+
+          <div class="card shadow-sm mb-4" *ngIf="formPlano.get('gerarAgendamento')?.value" [@fadeInOut]
+            formGroupName="agendamento">
             <div class="card-header bg-light py-3">
               <h6 class="mb-0 fw-semibold">Configuração de Agendamentos</h6>
             </div>
             <div class="card-body">
+              <!-- Informação sobre limite de dias -->
               <div class="alert alert-info small mb-3">
                 <i class="bi bi-info-circle-fill me-2"></i>
                 Você pode selecionar até
                 {{ planoSelecionado?.diasSemana || 0 }} dia(s) da semana para
                 agendamento.
+              </div>
+
+              <!-- Data Final da Recorrência - Adicionado para seguir o mesmo padrão da modalAgenda -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label for="dataFimRecorrencia" class="form-label small fw-semibold">
+                    Data Final da Recorrência <span class="text-danger">*</span>
+                  </label>
+                  <input type="date" id="dataFimRecorrencia" class="form-control form-control-sm"
+                    [value]="formPlano.get('dataFim')?.value" readonly />
+                  <small class="text-muted">A data final do plano será usada como data final da recorrência</small>
+                </div>
+
+                <div class="col-md-6 d-flex align-items-end">
+                  <button type="button" class="btn btn-outline-primary btn-sm" (click)="copiarHorarioPrincipal()">
+                    <i class="bi bi-clipboard"></i> Copiar horário principal
+                    para dias selecionados
+                  </button>
+                </div>
               </div>
 
               <!-- Tabela de Configuração dos Dias da Semana -->
@@ -1178,78 +860,47 @@
                     </tr>
                   </thead>
                   <tbody formArrayName="diasRecorrencia">
-                    <tr
-                      *ngFor="
-                        let dia of diasRecorrenciaArray.controls;
-                        let i = index
-                      "
-                      [formGroupName]="i"
-                    >
+                    <tr *ngFor="
+            let dia of diasRecorrenciaArray.controls;
+            let i = index
+          " [formGroupName]="i">
+                      <input type="hidden" formControlName="diaSemana" />
                       <td class="align-middle">{{ diasDaSemana[i].nome }}</td>
                       <td class="text-center">
-                        <div
-                          class="form-check form-switch d-flex justify-content-center"
-                        >
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            formControlName="ativo"
-                            (change)="verificarLimiteDiasSemana()"
-                          />
+                        <div class="form-check form-switch d-flex justify-content-center">
+                          <input class="form-check-input" type="checkbox" formControlName="ativo"
+                            (change)="verificarLimiteDiasSemana()" />
                         </div>
                       </td>
                       <td>
-                        <input
-                          type="time"
-                          class="form-control form-control-sm"
-                          formControlName="horaInicio"
+                        <input type="time" class="form-control form-control-sm" formControlName="horaInicio"
                           [class.is-invalid]="
-                            dia.get('horaInicio')?.invalid &&
-                            dia.get('horaInicio')?.touched
-                          "
-                        />
+                dia.get('horaInicio')?.invalid &&
+                dia.get('horaInicio')?.touched
+              " />
                       </td>
                       <td>
-                        <input
-                          type="time"
-                          class="form-control form-control-sm"
-                          formControlName="horaFim"
+                        <input type="time" class="form-control form-control-sm" formControlName="horaFim"
                           [class.is-invalid]="
-                            dia.get('horaFim')?.invalid &&
-                            dia.get('horaFim')?.touched
-                          "
-                        />
-                        <div
-                          class="invalid-feedback"
-                          *ngIf="dia.errors?.['invalidTimeRange']"
-                        >
+                dia.get('horaFim')?.invalid &&
+                dia.get('horaFim')?.touched
+              " />
+                        <div class="invalid-feedback" *ngIf="dia.errors?.['invalidTimeRange']">
                           Horário final deve ser maior que o inicial
                         </div>
                       </td>
                       <td>
-                        <select
-                          class="form-select form-select-sm"
-                          formControlName="profissionalId"
-                        >
-                          <option value="" disabled>Selecione</option>
-                          <option
-                            *ngFor="let prof of listaProfissional"
-                            [value]="prof.id"
-                          >
+                        <select class="form-select form-select-sm" formControlName="profissionalId">
+                          <option value="" disabled selected>Selecione</option>
+                          <option *ngFor="let prof of listaProfissional" [value]="prof.id">
                             {{ prof.nome }}
                           </option>
                         </select>
                       </td>
                       <td>
-                        <select
-                          class="form-select form-select-sm"
-                          formControlName="salaId"
-                        >
-                          <option value="" disabled>Selecione</option>
-                          <option
-                            *ngFor="let sala of listaSala"
-                            [value]="sala.id"
-                          >
+                        <select class="form-select form-select-sm" formControlName="salaId">
+                          <option value="" disabled selected>Selecione</option>
+                          <option *ngFor="let sala of listaSala" [value]="sala.id">
                             {{ sala.nome }}
                           </option>
                         </select>
@@ -1259,39 +910,19 @@
                 </table>
               </div>
 
-              <div class="mt-3">
-                <button
-                  type="button"
-                  class="btn btn-outline-primary btn-sm"
-                  (click)="copiarHorarioPrincipal()"
-                >
-                  <i class="bi bi-copy"></i> Copiar horário principal para dias
-                  selecionados
-                </button>
-              </div>
-
               <div class="alert alert-info small mt-3">
                 <i class="bi bi-info-circle-fill me-2"></i>
                 Configure os horários específicos para cada dia da semana.
-                Marque apenas os dias que deseja incluir na recorrência.
+                Marque apenas os dias que deseja incluir no agendamento.
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer justify-content-end">
-          <button
-            type="button"
-            (click)="salvarPlano()"
-            [disabled]="formPlano.invalid"
-            class="btn btn-success"
-          >
+          <button type="button" (click)="salvarPlano()" [disabled]="formPlano.invalid" class="btn btn-success">
             <i class="bi bi-check"></i> Confirmar
           </button>
-          <button
-            type="button"
-            class="btn btn-danger"
-            (click)="closeDialogPlano()"
-          >
+          <button type="button" class="btn btn-danger" (click)="closeDialogPlano()">
             <i class="bi bi-x"></i> Cancelar
           </button>
         </div>

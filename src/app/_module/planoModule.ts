@@ -1,7 +1,9 @@
-export interface Plano{
+import { Agenda } from "./agendaModule";
+
+export interface Plano {
 
     id: number;
-    idOriginal? : number;
+    idOriginal?: number;
     descricao: string;
     tempoMinutos: number;
     diasSemana: number;
@@ -12,12 +14,13 @@ export interface Plano{
     valorSemestral?: number;
     valorAnual?: number;
     valorMensal?: number;
-    dataInicio ?: Date;
-    dataFim? : Date;
-    ativo : boolean;
+    dataInicio?: Date;
+    dataFim?: Date;
+    ativo: boolean;
     pacienteId?: number; //id do paciente
     financeiroId?: number;
     tipoMes: TipoMes;
+    agenda?: Agenda[];
 }
 
 export enum TipoMes {
@@ -27,5 +30,4 @@ export enum TipoMes {
     Quadrimestral = 'q',
     Semestral = 's',
     Anual = 'a'
-  }
-  
+}
