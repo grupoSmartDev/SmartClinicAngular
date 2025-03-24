@@ -36,6 +36,10 @@ export class ModalFinanceiroReceber implements OnInit {
   listaFormaPagamento!: FormaPagamento[];
   listaTipoPagamento!: TipoPagamento[];
 
+  searchTerm: string = '';
+  filteredPatients: Paciente[] = [];
+  patients!: Paciente[];
+
   myControl = new FormControl();
   options: string[] = ['Cliente 1', 'Cliente 2', 'Cliente 3'];
   filteredOptions: string[] = [];
@@ -342,6 +346,27 @@ export class ModalFinanceiroReceber implements OnInit {
 
   abrirOffcanvas() {
     this.bsOffcanvas.show();
+  }
+
+  selectPatient(patient: Paciente): void {
+    this.formulario.patchValue({
+      pacienteId: patient.id,
+      'financReceber.pacienteId': patient.id
+    });
+    this.searchTerm = patient.nome || '';
+    this.filteredPatients = [];
+  }
+
+  onSearch(): void {
+    if (this.searchTerm.length >= 3) {
+      this.filteredPatients = this.listaPacientes.filter(patient =>
+        patient.nome?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        patient.cpf?.includes(this.searchTerm) ||
+        patient.celular?.includes(this.searchTerm)
+      );
+    } else {
+      this.filteredPatients = [];
+    }
   }
 
 }
