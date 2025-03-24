@@ -29,7 +29,7 @@ export class ModalCentroDeCustoComponent {
       id: [null],
       tipo: [null, Validators.required],
       descricao: [null, Validators.required],
-      subCentrosCusto : this.fb.array<SubCentroDeCusto>([])
+      subCentrosCusto: this.fb.array<SubCentroDeCusto>([])
     });
   }
 
@@ -38,10 +38,10 @@ export class ModalCentroDeCustoComponent {
   }
 
   adicionarSubCentroDeCusto() {
-    debugger
+
     const novoItem = this.fb.group({
       id: [null],
-      nome : ['', Validators.required],
+      nome: ['', Validators.required],
     });
 
     this.subCentrosCusto.push(novoItem);
@@ -51,7 +51,7 @@ export class ModalCentroDeCustoComponent {
     this.subCentrosCusto.removeAt(index);
   }
   onSubmit() {
-    
+
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched(); // Marca todos os campos como tocados para exibir os erros.
       this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');
@@ -86,7 +86,7 @@ export class ModalCentroDeCustoComponent {
 
     if (this.centroDeCusto.subCentrosCusto && this.centroDeCusto.subCentrosCusto.length > 0) {
       this.centroDeCusto.subCentrosCusto.forEach(subCentro => {
-        
+
         this.subCentrosCusto.push(
           this.fb.group({
             id: [subCentro.id],

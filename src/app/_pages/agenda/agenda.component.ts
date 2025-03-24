@@ -123,7 +123,7 @@ export class AgendaComponent implements OnInit, AfterViewInit {
   }
 
   handleDateClick(arg: DateClickArg): void {
-    debugger
+
     if (!this.bootstrapModal) {
       this.toastr.error('Erro ao abrir o modal de agendamento', 'Erro');
       return;

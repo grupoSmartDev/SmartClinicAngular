@@ -211,7 +211,7 @@ export class ModalAgendaComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadInitialData();
-    debugger
+
     console.log(this.selectedEvent, this.selectedDate);
     if (!this.selectedEvent && this.selectedDate) {
       this.formulario.patchValue({
@@ -259,7 +259,7 @@ export class ModalAgendaComponent implements OnInit {
 
   // Novo método para inicializar os dados do modal
   initializeModalData(): void {
-    debugger
+
     console.log('Modal: Inicializando dados com:', this.selectedDate, this.selectedEvent);
 
     // Resetar o formulário antes de qualquer preenchimento
@@ -529,7 +529,7 @@ export class ModalAgendaComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
-    debugger
+
     console.log('Formulário submetido:', this.formulario.value);
 
     // Validar apenas os campos relevantes com base no status de avulso
@@ -687,7 +687,7 @@ export class ModalAgendaComponent implements OnInit {
   }
 
   private prepararDadosAgenda(): Agenda {
-    debugger
+
     const formData = this.formulario.value;
 
     // Garantir que avulso seja um booleano

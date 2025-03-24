@@ -359,7 +359,7 @@ export class CalendarioComponent {
 
   // Manipulador de clique em um dia - compatível com interface existente
   handleDateClick(dia: Dia, hora?: number): void {
-    debugger
+
     if (!this.bootstrapModal) {
       this.toastr.error('Erro ao abrir o modal de agendamento', 'Erro');
       return;
@@ -385,7 +385,7 @@ export class CalendarioComponent {
 
   // Manipulador de clique em um evento - compatível com interface existente
   handleEventClick(agendamento: Agendamento): void {
-    debugger
+
     if (!this.bootstrapModal) {
       this.toastr.error('Erro ao abrir o modal de agendamento', 'Erro');
       return;

@@ -31,7 +31,7 @@ export class ModalFinanceiroReceber implements OnInit {
 
   formulario!: FormGroup;
 
-  listaPacientes : Paciente[] = [];
+  listaPacientes: Paciente[] = [];
   listaCentroDeCusto!: CentroDeCusto[];
   listaFormaPagamento!: FormaPagamento[];
   listaTipoPagamento!: TipoPagamento[];
@@ -49,7 +49,7 @@ export class ModalFinanceiroReceber implements OnInit {
     private formaPagamentoService: FormaPagamentoService,
     private pacienteService: PacienteService,
     private tipoPagamentoService: TipoPagamentoService,
-    private datePipe : DatePtBrPipe
+    private datePipe: DatePtBrPipe
   ) {
     this.formulario = this.fb.group({
       id: [],
@@ -99,7 +99,7 @@ export class ModalFinanceiroReceber implements OnInit {
     }
   }
 
- 
+
   selectOption(option: string) {
     const paciente = this.listaPacientes.find(p => `${p.nome} - ${p.cpf}` === option);
     if (paciente) {
@@ -126,37 +126,37 @@ export class ModalFinanceiroReceber implements OnInit {
       this.formulario.patchValue({ dataEmissao });
     }
 
-        // Load subFinancReceber if it exists in the data
-        if (this.data.subFinancReceber && this.data.subFinancReceber.length > 0) {
-          this.data.subFinancReceber.forEach(subFinanc => {
-            let dataVencimento : any = subFinanc.dataVencimento;
-            if(dataVencimento){
-              dataVencimento =  this.datePipe.formatToHtmlDate(dataVencimento);
-            }
-
-            let dataPagamento : any = subFinanc.dataPagamento;
-            if(dataPagamento){
-              dataPagamento =  this.datePipe.formatToHtmlDate(dataPagamento);
-            }
-
-            this.subFinancReceber.push(
-              this.fb.group({
-                id: [subFinanc.id],
-                financReceberId: [subFinanc.financReceberId],
-                parcela: [subFinanc.parcela],
-                valor: [subFinanc.valor, [Validators.required, Validators.min(0)]],
-                dataVencimento: [dataVencimento],
-                dataPagamento: [dataPagamento],
-                observacao: [subFinanc.observacao],
-                desconto: [subFinanc.desconto],
-                juros: [subFinanc.juros],
-                multa: [subFinanc.multa],
-                formaPagamentoId: [subFinanc.formaPagamentoId],
-                tipoPagamentoId: [subFinanc.tipoPagamentoId],
-              })
-            );
-          });
+    // Load subFinancReceber if it exists in the data
+    if (this.data.subFinancReceber && this.data.subFinancReceber.length > 0) {
+      this.data.subFinancReceber.forEach(subFinanc => {
+        let dataVencimento: any = subFinanc.dataVencimento;
+        if (dataVencimento) {
+          dataVencimento = this.datePipe.formatToHtmlDate(dataVencimento);
         }
+
+        let dataPagamento: any = subFinanc.dataPagamento;
+        if (dataPagamento) {
+          dataPagamento = this.datePipe.formatToHtmlDate(dataPagamento);
+        }
+
+        this.subFinancReceber.push(
+          this.fb.group({
+            id: [subFinanc.id],
+            financReceberId: [subFinanc.financReceberId],
+            parcela: [subFinanc.parcela],
+            valor: [subFinanc.valor, [Validators.required, Validators.min(0)]],
+            dataVencimento: [dataVencimento],
+            dataPagamento: [dataPagamento],
+            observacao: [subFinanc.observacao],
+            desconto: [subFinanc.desconto],
+            juros: [subFinanc.juros],
+            multa: [subFinanc.multa],
+            formaPagamentoId: [subFinanc.formaPagamentoId],
+            tipoPagamentoId: [subFinanc.tipoPagamentoId],
+          })
+        );
+      });
+    }
 
     console.log(this.formulario.value);
   }
@@ -174,7 +174,7 @@ export class ModalFinanceiroReceber implements OnInit {
       this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
       return;
     }
-    debugger
+
     const dataToSave = this.formulario.value as FinancReceber;
 
     const saveOperation = dataToSave.id
