@@ -35,6 +35,7 @@ import { ListarPlanoContasComponent } from './_pages/planoContas/listar-plano-co
 import { AuthGuard } from './auth.guard';
 import { ListarReceberSinteticoComponent } from './_pages/financReceber/listar-receber-sintetico/listar-receber-sintetico.component';
 import { ListarPagarSinteticoComponent } from './_pages/financPagar/listar-pagar-sintetico/listar-pagar-sintetico.component';
+import { ListarDespesaComponent } from './_pages/despesaFixa/listar-despesa/listar-despesa.component';
 
 
 const routes: Routes = [
@@ -65,29 +66,30 @@ const routes: Routes = [
 
       { path: 'paciente/:id', component: PacienteCompletoComponent }, // Atualizado para aceitar o ID do paciente
       { path: 'usuario/listar', component: ListarUsuarioComponent }, // Atualizado para aceitar o ID do paciente
-      { path: 'teste', component: TesteRelacionamentoComponent}, 
+      { path: 'teste', component: TesteRelacionamentoComponent },
 
-      { path: 'testeComponents', component: TesteNovosComponentsComponent}, 
+      { path: 'testeComponents', component: TesteNovosComponentsComponent },
 
-      { path: 'exercicio/listar', component: ListarExerciciosComponent}, 
+      { path: 'exercicio/listar', component: ListarExerciciosComponent },
 
-      { path: 'atividade/listar', component: ListaAtividadeComponent}, 
+      { path: 'atividade/listar', component: ListaAtividadeComponent },
 
-      { path: 'plano/listar', component: ListarPlanosComponent}, 
+      { path: 'plano/listar', component: ListarPlanosComponent },
 
-      { path: 'procedimento/listar', component: ListaProcedimentoComponent}, 
+      { path: 'procedimento/listar', component: ListaProcedimentoComponent },
 
-      { path: 'categoria/listar', component: ListarCategoriaComponent}, 
+      { path: 'categoria/listar', component: ListarCategoriaComponent },
 
-      { path: 'FinancReceber/listarAnalitico', component: ListarFinancReceberComponent}, 
-      { path: 'FinancReceber/listarSintetico', component: ListarReceberSinteticoComponent}, 
+      { path: 'FinancReceber/listarAnalitico', component: ListarFinancReceberComponent },
+      { path: 'FinancReceber/listarSintetico', component: ListarReceberSinteticoComponent },
 
-      { path: 'FinancPagar/listarAnalitico', component: ListarFinancPagarComponent}, 
-      { path: 'FinancPagar/listarSintetico', component: ListarPagarSinteticoComponent},
+      { path: 'FinancPagar/listarAnalitico', component: ListarFinancPagarComponent },
+      { path: 'FinancPagar/listarSintetico', component: ListarPagarSinteticoComponent },
 
-      { path: 'profissao/listar', component: ListarProfissaoComponent}, 
-      { path: 'planoContas/listar', component: ListarPlanoContasComponent}, 
-      { path: 'planoContaSub/listar', component: ListarPlanoContasSubComponent}, 
+      { path: 'profissao/listar', component: ListarProfissaoComponent },
+      { path: 'planoContas/listar', component: ListarPlanoContasComponent },
+      { path: 'planoContaSub/listar', component: ListarPlanoContasSubComponent },
+      { path: 'DespesasFixa/ListarDespesa', component: ListarDespesaComponent },
     ]
   },
 

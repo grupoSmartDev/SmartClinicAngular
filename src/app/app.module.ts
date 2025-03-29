@@ -128,6 +128,8 @@ import { SextaDobraComponent } from './_lp/components/sexta-dobra/sexta-dobra.co
 import { FacDobraComponent } from './_lp/components/fac-dobra/fac-dobra.component';
 import { PriceComponent } from './_lp/components/price/price.component';
 import { CalendarioComponent } from './_components/calendario/calendario.component';
+import { ListarDespesaComponent } from './_pages/despesaFixa/listar-despesa/listar-despesa.component';
+import { ModalDespesaComponent } from './_pages/despesaFixa/modal-despesa/modal-despesa.component';
 
 
 
@@ -242,6 +244,8 @@ import { CalendarioComponent } from './_components/calendario/calendario.compone
     FacDobraComponent,
     PriceComponent,
     CalendarioComponent,
+    ListarDespesaComponent,
+    ModalDespesaComponent,
   ],
   imports: [
     BrowserModule,
