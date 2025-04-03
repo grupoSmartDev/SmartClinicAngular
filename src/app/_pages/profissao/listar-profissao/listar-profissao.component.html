@@ -6,22 +6,34 @@
 ></app-label-nome>
 
 <div class="card mb-3">
-  <div class="card-header bg-light d-flex justify-content-between align-items-center" 
-       (click)="toggleFiltros()" 
-       style="cursor: pointer;">
+  <div
+    class="card-header bg-light d-flex justify-content-between align-items-center"
+    (click)="toggleFiltros()"
+    style="cursor: pointer"
+  >
     <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros de Pesquisa</h6>
     <button class="btn btn-sm btn-link text-dark p-0">
-      <i class="bi" [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      <i
+        class="bi"
+        [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"
+      ></i>
     </button>
   </div>
-  <div class="card-body py-3" [ngClass]="{'d-none': !mostrarFiltros}">
-
+  <div class="card-body py-3" [ngClass]="{ 'd-none': !mostrarFiltros }">
     <div class="row mt-3">
       <div class="col-md-12 text-end">
-        <button type="button" class="btn btn-sm btn-primary me-2" (click)="filtrar()">
+        <button
+          type="button"
+          class="btn btn-sm btn-primary me-2"
+          (click)="filtrar()"
+        >
           <i class="bi bi-search me-1"></i> Pesquisar
         </button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limparFiltros()">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="limparFiltros()"
+        >
           <i class="bi bi-x-circle me-1"></i> Limpar Filtros
         </button>
       </div>
@@ -43,21 +55,6 @@
 </div>
 
 <div class="row mb-2">
-  <div class="col-12 d-flex justify-content-between align-items-center mb-2">
-    <!-- Botão de exportação com dropdown -->
-    <div class="dropdown">
-      <button class="btn btn-sm btn-success dropdown-toggle" type="button" id="exportarDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-file-earmark-arrow-down me-1"></i> Exportar
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="exportarDropdown">
-        <li><a class="dropdown-item" href="javascript:void(0);" (click)="exportarPDF()"><i class="bi bi-file-earmark-pdf me-1"></i> Exportar PDF</a></li>
-        <li><a class="dropdown-item" href="javascript:void(0);" (click)="exportarExcel()"><i class="bi bi-file-earmark-excel me-1"></i> Exportar CSV (Excel)</a></li>
-      </ul>
-    </div>
-    
-    <!-- Outros botões de ação podem ser adicionados aqui se necessário -->
-  </div>
-  
   <div class="col-12">
     @if (lista.length > 0) {
     <div class="table-responsive">
