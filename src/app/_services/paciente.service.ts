@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Paciente } from '../_module/pacienteModule';
+import { Paciente, PacienteCadastroRapidoDto } from '../_module/pacienteModule';
 import { ResponseModel } from '../_module/ResponseModule';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -12,18 +12,18 @@ export class PacienteService {
 
   constructor(private http: HttpClient) { }
 
-  baseURL: string =  environment.apiUrl + 'api/Paciente/';
+  baseURL: string = environment.apiUrl + 'api/Paciente/';
 
   Listar(
     page?: number,
     pageSize?: number,
-    nomeFiltro? : string,
-    idFiltro? : string,
-    cpfFiltro? : string,
-    celularFiltro? : string,
+    nomeFiltro?: string,
+    idFiltro?: string,
+    cpfFiltro?: string,
+    celularFiltro?: string,
     paginar?: boolean
   ): Observable<ResponseModel<Paciente[]>> {
-    
+
     let params = new HttpParams()
 
     if (page) params = params.set('page', page.toString());
@@ -33,12 +33,12 @@ export class PacienteService {
     if (cpfFiltro) params = params.set('cpfFiltro', cpfFiltro);
     if (celularFiltro) params = params.set('celularFiltro', celularFiltro);
     if (paginar) params = params.set('paginar', paginar);
-    
+
     return this.http.get<ResponseModel<Paciente[]>>(`${this.baseURL}Listar`, { params });
   }
 
   Criar(paciente: Paciente): Observable<ResponseModel<Paciente>> {
-    
+
     return this.http.post<ResponseModel<Paciente>>(`${this.baseURL}Criar`, paciente);
   }
 
@@ -50,7 +50,7 @@ export class PacienteService {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
 
-  listarHistoricoPagamento(pacienteId:string){
+  listarHistoricoPagamento(pacienteId: string) {
     return this.http.get<ResponseModel<any>>(`${this.baseURL}ListarHistorico/${pacienteId}`);
   }
 
@@ -60,5 +60,10 @@ export class PacienteService {
 
   pesquisarPorNome(nome: string): Observable<ResponseModel<Paciente[]>> {
     return this.http.get<ResponseModel<Paciente[]>>(`${this.baseURL}pesquisar?nome=${nome}`);
+  }
+
+  CadastroRapido(paciente: PacienteCadastroRapidoDto): Observable<ResponseModel<PacienteCadastroRapidoDto>> {
+
+    return this.http.post<ResponseModel<PacienteCadastroRapidoDto>>(`${this.baseURL}CadastroRapido`, paciente);
   }
 }

@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl, NgForm } from '@angular/forms';
 import * as bootstrap from 'bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin, Observable, of, catchError, firstValueFrom } from 'rxjs';
@@ -23,14 +23,16 @@ import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service'
 import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
 import { SalasService } from '../../../_services/salas.service';
 import { map } from 'rxjs/operators';
-import { Paciente } from '../../../_module/pacienteModule';
+import { Paciente, PacienteCadastroRapidoDto } from '../../../_module/pacienteModule';
 import { PacienteService } from '../../../_services/paciente.service';
+import { ResponseModel } from '../../../_module/ResponseModule';
 
 interface Patient {
   id?: number;
   name: string;
   cpf: string;
   phone: string;
+  dataNascimento: string;
 }
 
 @Component({
@@ -43,13 +45,14 @@ export class ModalAgendaComponent implements OnInit {
   @Input() selectedDate: string = '';
   @Output() onSave = new EventEmitter<Agenda>();
   @Output() onAlter = new EventEmitter<Agenda>();
+  @ViewChild('patientForm') patientForm!: NgForm;
 
   formulario!: FormGroup;
   errorMessage = '';
   camposFinancPagar = false;
   searchTerm: string = '';
   filteredPatients: Paciente[] = [];
-  newPatient: Patient = { name: '', phone: '', cpf: '' };
+  pacienteCadastroRapido: PacienteCadastroRapidoDto = {} as PacienteCadastroRapidoDto;
   isLoading = false;
 
   listaStatus: Status[] = [];
@@ -894,8 +897,65 @@ export class ModalAgendaComponent implements OnInit {
 
     this.toastr.error(`${message}. ${errorDetail}`, 'Erro');
   }
+  savePatient() {
+    // Verificar se o formulário é válido
+    if (this.patientForm && this.patientForm.valid) {
+      // Ativar indicador de carregamento
+      this.isLoading = true;
 
-  savePatient() { }
+      // Obter dados do objeto pacienteCadastroRapido que está vinculado ao formulário
+      const dataToSave: PacienteCadastroRapidoDto = this.pacienteCadastroRapido;
+
+      // Chamar o serviço para cadastrar o paciente
+      this.pacienteService.CadastroRapido(dataToSave).subscribe({
+        next: (response: ResponseModel<PacienteCadastroRapidoDto>) => {
+          // Exibir mensagem de sucesso
+          this.toastr.success('Paciente cadastrado com sucesso', 'Sucesso');
+
+          this.pacienteService.Listar().subscribe({
+            next: (result) => {
+              this.patients = result.dados;
+            }
+          })
+
+          // Fechar o offcanvas usando a API do Bootstrap
+          const offcanvas = document.getElementById('offcanvasPatient');
+          if (offcanvas) {
+            const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvas);
+            if (bsOffcanvas) {
+              bsOffcanvas.hide();
+            }
+          }
+
+          // Limpar o objeto de cadastro rápido
+          this.pacienteCadastroRapido = {} as PacienteCadastroRapidoDto;
+        },
+        error: (err) => {
+          // Desativar o indicador de carregamento
+          this.isLoading = false;
+
+          // Exibir mensagem de erro
+          console.error('Erro ao criar Paciente:', err);
+          this.toastr.error('Tente novamente ou fale com o suporte', 'Erro ao criar Paciente');
+        },
+        complete: () => {
+          // Desativar o indicador de carregamento
+          this.isLoading = false;
+        }
+      });
+    } else {
+      // Marcar todos os campos como touched para exibir mensagens de validação
+      if (this.patientForm) {
+        Object.keys(this.patientForm.controls).forEach(key => {
+          const control = this.patientForm.controls[key];
+          control.markAsTouched();
+        });
+      }
+
+      // Exibir mensagem de erro
+      this.toastr.warning('Preencha todos os campos obrigatórios', 'Atenção');
+    }
+  }
 
   toggleDiaSemana(index: number): void {
     const diaControl = this.diasRecorrenciaArray.at(index) as FormGroup;
