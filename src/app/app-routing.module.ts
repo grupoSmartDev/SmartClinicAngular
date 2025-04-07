@@ -60,7 +60,7 @@ const routes: Routes = [
       { path: 'SubcentroDeCusto/listar', component: ListarSubCentroDeCustoComponent },
       { path: 'profissional/listar', component: ListarProfissionalComponent },
 
-      { path: 'pacientes/listar', component: ListarPacienteComponent },
+      { path: 'pacientes/listar/:id', component: ListarPacienteComponent }, // Nova rota com parâmetro ID
 
       { path: 'log/listar', component: ListarLogComponent },
 

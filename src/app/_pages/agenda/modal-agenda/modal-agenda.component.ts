@@ -26,6 +26,8 @@ import { map } from 'rxjs/operators';
 import { Paciente, PacienteCadastroRapidoDto } from '../../../_module/pacienteModule';
 import { PacienteService } from '../../../_services/paciente.service';
 import { ResponseModel } from '../../../_module/ResponseModule';
+import { Router } from '@angular/router';
+import { TabService } from '../../../_services/tabs.service';
 
 interface Patient {
   id?: number;
@@ -92,7 +94,9 @@ export class ModalAgendaComponent implements OnInit {
     private tipoPagamentoService: TipoPagamentoService,
     private formaPagamentoService: FormaPagamentoService,
     private salaService: SalasService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router,
+    private tabService: TabService, // Adicione esta linha
   ) {
     this.initializeForm();
   }
@@ -637,8 +641,21 @@ export class ModalAgendaComponent implements OnInit {
     }
   }
 
-  gerenciarPaciente(id: string): void {
+  gerenciarPaciente(pacienteId: string): void {
+    if (!pacienteId) {
+      this.toastr.error('ID do paciente não encontrado', 'Erro');
+      return;
+    }
 
+    // Fechar os modais antes de navegar
+    this.closeDialog(); // Fecha o dialog de reagendamento
+    this.fecharModal(); // Fecha o modal principal
+
+    // Abrir nova aba para o paciente usando TabService
+    const path = `/pacientes/listar/${pacienteId}`;
+    const title = `Paciente`;
+
+    this.tabService.openTab({ path, title });
   }
 
   initDiasRecorrencia(): void {
