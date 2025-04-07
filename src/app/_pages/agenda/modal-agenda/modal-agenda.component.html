@@ -39,19 +39,19 @@
                 <div class="col-md-8 d-flex gap-2">
                   <button
                     class="btn btn-sm btn-secondary"
-                    (click)="alterarAgendamento(1)"
+                    (click)="alterarAgendamento(2)"
                   >
                     <i class="bi bi-calendar-check"></i> Confirmar
                   </button>
                   <button
                     class="btn btn-sm btn-secondary"
-                    (click)="alterarAgendamento(2)"
+                    (click)="openDialog()"
                   >
                     <i class="bi bi-calendar-date"></i> Reagendar
                   </button>
                   <button
                     class="btn btn-sm btn-secondary"
-                    (click)="alterarAgendamento(3)"
+                    (click)="alterarAgendamento(8)"
                   >
                     <i class="bi bi-calendar-x"></i> Falta
                   </button>
@@ -806,6 +806,116 @@
       </div>
     </div>
   </div>
+
+  <dialog
+    id="dialog_reagendamento"
+    class="modal-dialog"
+    style="border: none; border-radius: 1rem"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addProgressModalLabel">
+          <i class="bi bi-calendar-check me-2"></i>Reagendamento
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeDialog()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form
+          [formGroup]="formReagendamento"
+          (ngSubmit)="confirmarReagendamento()"
+        >
+          <div class="row mb-2 align-items-end">
+            <div class="col-md-6">
+              <label
+                for="dataReagendamento"
+                class="form-label small fw-semibold"
+              >
+                Data <span class="text-danger">*</span>
+              </label>
+              <input
+                type="date"
+                id="dataReagendamento"
+                class="form-control form-control-sm"
+                formControlName="dataReagendamento"
+                required
+                [class.is-invalid]="
+                  formReagendamento.get('dataReagendamento')?.invalid &&
+                  formReagendamento.get('dataReagendamento')?.touched
+                "
+              />
+              <div class="invalid-feedback">Data é obrigatória</div>
+            </div>
+            <div class="col-md-3">
+              <label
+                for="horaInicioReagendamento"
+                class="form-label small fw-semibold"
+              >
+                Hora início<span class="text-danger">*</span>
+              </label>
+              <input
+                type="time"
+                id="horaInicioReagendamento"
+                class="form-control form-control-sm"
+                formControlName="horaInicioReagendamento"
+                required
+                [class.is-invalid]="
+                  formReagendamento.get('horaInicioReagendamento')?.invalid &&
+                  formReagendamento.get('horaInicioReagendamento')?.touched
+                "
+              />
+              <div class="invalid-feedback">Hora de início é obrigatória</div>
+            </div>
+
+            <div class="col-md-3">
+              <label
+                for="horaFimReagendamento"
+                class="form-label small fw-semibold"
+              >
+                Hora fim<span class="text-danger">*</span>
+              </label>
+              <input
+                type="time"
+                id="horaFimReagendamento"
+                class="form-control form-control-sm"
+                formControlName="horaFimReagendamento"
+                required
+                [class.is-invalid]="
+                  formReagendamento.get('horaFimReagendamento')?.invalid &&
+                  formReagendamento.get('horaFimReagendamento')?.touched
+                "
+              />
+              <div class="invalid-feedback">Hora de término é obrigatória</div>
+            </div>
+          </div>
+
+          <div class="modal-footer justify-content-end">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="formReagendamento.invalid || isLoading"
+            >
+              <i
+                class="bi"
+                [ngClass]="isLoading ? 'bi-hourglass-split' : 'bi-check2'"
+              ></i>
+              {{ isLoading ? "Processando..." : "Confirmar" }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              (click)="closeDialog()"
+            >
+              <i class="bi bi-x"></i> Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </dialog>
 </div>
 
 <!-- Offcanvas de Cadastro Rápido -->

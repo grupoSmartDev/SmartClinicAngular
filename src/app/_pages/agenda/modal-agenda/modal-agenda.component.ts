@@ -48,6 +48,7 @@ export class ModalAgendaComponent implements OnInit {
   @ViewChild('patientForm') patientForm!: NgForm;
 
   formulario!: FormGroup;
+  formReagendamento!: FormGroup;
   errorMessage = '';
   camposFinancPagar = false;
   searchTerm: string = '';
@@ -94,6 +95,50 @@ export class ModalAgendaComponent implements OnInit {
     private toastr: ToastrService
   ) {
     this.initializeForm();
+  }
+
+  private initReagendamentoForm(): void {
+    this.formReagendamento = this.fb.group({
+      dataReagendamento: [new Date().toISOString().split('T')[0], Validators.required],
+      horaInicioReagendamento: [this.formulario.get('horaInicio')?.value || '08:00', [Validators.required, this.timeValidator]],
+      horaFimReagendamento: [this.formulario.get('horaFim')?.value || '09:00', [Validators.required, this.timeValidator]]
+    }, { validators: this.validateReagendamentoTimeRange });
+  }
+
+  // Validador para o intervalo de tempo no reagendamento
+  private validateReagendamentoTimeRange(group: AbstractControl): { [key: string]: any } | null {
+    const formGroup = group as FormGroup;
+    const horaInicio = formGroup.get('horaInicioReagendamento')?.value;
+    const horaFim = formGroup.get('horaFimReagendamento')?.value;
+
+    if (!horaInicio || !horaFim) {
+      return null;
+    }
+
+    const parseTime = (time: string): number | null => {
+      const parts = time.split(':');
+      if (parts.length !== 2) {
+        return null;
+      }
+
+      const hours = parseInt(parts[0], 10);
+      const minutes = parseInt(parts[1], 10);
+
+      if (isNaN(hours) || isNaN(minutes)) {
+        return null;
+      }
+
+      return hours * 60 + minutes;
+    };
+
+    const inicio = parseTime(horaInicio);
+    const fim = parseTime(horaFim);
+
+    if (!inicio || !fim) {
+      return null;
+    }
+
+    return inicio >= fim ? { invalidTimeRange: true } : null;
   }
 
   private initializeForm(): void {
@@ -214,6 +259,8 @@ export class ModalAgendaComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadInitialData();
+
+    this.initReagendamentoForm();
 
     console.log(this.selectedEvent, this.selectedDate);
     if (!this.selectedEvent && this.selectedDate) {
@@ -581,7 +628,7 @@ export class ModalAgendaComponent implements OnInit {
   async alterarAgendamento(statusNovo: number): Promise<void> {
     try {
       const agendaData = this.prepararDadosAgenda();
-      await firstValueFrom(this.agendaService.AlterarAgendamento(this.eventoEscolhido.id, statusNovo));
+      await firstValueFrom(this.agendaService.AtualizarStatus(this.eventoEscolhido.id, statusNovo));
       this.toastr.success('Agenda alterada com sucesso!', 'Sucesso');
       this.onAlter.emit();
       this.fecharModal();
@@ -988,5 +1035,71 @@ export class ModalAgendaComponent implements OnInit {
         control.get('salaId')?.setValue(salaId);
       }
     });
+  }
+  openDialog(): void {
+    const dialog = document.getElementById('dialog_reagendamento') as HTMLDialogElement;
+    if (dialog) {
+      // Reset e preenchimento do formulário com dados atuais
+      this.formReagendamento.reset({
+        dataReagendamento: new Date().toISOString().split('T')[0],
+        horaInicioReagendamento: this.formulario.get('horaInicio')?.value,
+        horaFimReagendamento: this.formulario.get('horaFim')?.value
+      });
+
+      dialog.showModal();
+    }
+  }
+
+  // Método para fechar o dialog
+  closeDialog(): void {
+    const dialog = document.getElementById('dialog_reagendamento') as HTMLDialogElement;
+    if (dialog) {
+      dialog.close();
+    }
+  }
+
+  // Método para confirmar o reagendamento
+  async confirmarReagendamento(): Promise<void> {
+    if (this.formReagendamento.invalid) {
+      this.markFormGroupTouched(this.formReagendamento);
+      this.toastr.error('Por favor, preencha os campos obrigatórios corretamente', 'Erro');
+      return;
+    }
+
+    this.isLoading = true;
+    try {
+      // Obter dados do formulário de reagendamento
+      const novaData = this.formReagendamento.get('dataReagendamento')?.value;
+      const novaHoraInicio = this.formReagendamento.get('horaInicioReagendamento')?.value;
+      const novaHoraFim = this.formReagendamento.get('horaFimReagendamento')?.value;
+
+      // Verificar disponibilidade (opcional - implementar se necessário)
+      // Você pode adicionar uma chamada para verificar a disponibilidade do profissional/sala
+
+      // Atualizar agenda com novos dados
+      const agendaAtualizada: Agenda = {
+        ...this.formulario.value,
+        id: this.selectedEvent.id,
+        data: novaData,
+        horaInicio: novaHoraInicio,
+        horaFim: novaHoraFim,
+        statusId: 3 // Status para "Reagendado" - ajuste conforme seu sistema
+      };
+
+      // Salvar reagendamento
+      await firstValueFrom(this.agendaService.Reagendar(agendaAtualizada.id, parseInt(agendaAtualizada.statusId!), agendaAtualizada.data, agendaAtualizada.horaInicio, agendaAtualizada.horaFim));
+
+      // Registrar histórico do reagendamento se necessário
+      // Implementação opcional
+
+      this.toastr.success('Consulta reagendada com sucesso!', 'Sucesso');
+      this.closeDialog();
+      this.onAlter.emit(); // Emitir evento para atualizar a agenda
+      this.fecharModal(); // Fechar o modal principal
+    } catch (error) {
+      this.handleError('Erro ao reagendar consulta', error);
+    } finally {
+      this.isLoading = false;
+    }
   }
 }

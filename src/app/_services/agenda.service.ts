@@ -30,14 +30,32 @@ export class AgendaService {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
 
-  AlterarAgendamento(id: number, statusNovo: number): Observable<ResponseModel<void>> {
+  AtualizarStatus(id: number, statusNovo: number): Observable<ResponseModel<Agenda>> {
+    let params = new HttpParams();
+    params = params.set('id', id.toString());
+    params = params.set('statusNovo', statusNovo.toString());
+
+    return this.http.put<ResponseModel<Agenda>>(`${this.baseURL}AtualizarStatus`, null, { params });
+  }
+
+  Reagendar(id: number, statusNovo: number, novaData: Date, novaHoraInicio: string,
+    novaHoraFim: string): Observable<ResponseModel<Agenda>> {
+    // const body = {
+    //   id: id,
+    //   statusNovo : statusNovo,
+    //   data: novaData,
+    //   horaInicio: novaHoraInicio,
+    //   horaFim: novaHoraFim
+    // };
 
     let params = new HttpParams();
+    params = params.set('id', id.toString());
+    params = params.set('statusNovo', statusNovo.toString());
+    params = params.set('dataNova', novaData.toString());
+    params = params.set('horaInicioNovo', novaHoraInicio.toString());
+    params = params.set('horaFimNovo', novaHoraFim.toString());
 
-    if (id) params = params.set('id', id.toString());
-    if (statusNovo) params = params.set('statusNovo', statusNovo.toString());
-
-    return this.http.get<ResponseModel<void>>(`${this.baseURL}AlterarAgendamento`, { params });
+    return this.http.put<ResponseModel<Agenda>>(`${this.baseURL}Reagendar`, null, { params });
   }
 
   ObterContadoresDashboard(profissionalId?: number, dataInicio?: Date, dataFim?: Date): Observable<ResponseModel<any>> {
