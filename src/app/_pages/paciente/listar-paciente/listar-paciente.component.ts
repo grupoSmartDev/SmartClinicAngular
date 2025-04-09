@@ -5,7 +5,7 @@ import { ModalPacienteComponent } from '../modal-paciente/modal-paciente.compone
 import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
 import { Paciente } from '../../../_module/pacienteModule';
 import * as bootstrap from 'bootstrap';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PacienteCompletoComponent } from '../paciente-completo/paciente-completo.component';
 import { TipoMes } from '../../../_module/planoModule';
 import { StatusPagamento } from '../../../_module/financReceberModule';
@@ -18,17 +18,17 @@ import { FichaAvaliacaoComponent } from '../ficha-avaliacao/ficha-avaliacao.comp
   styleUrl: './listar-paciente.component.css'
 })
 export class ListarPacienteComponent {
-  constructor(private pacienteService:PacienteService, private toast: ToastrService, private router: Router,private spinner: NgxSpinnerService) { }
+  constructor(private pacienteService: PacienteService, private toast: ToastrService, private router: Router, private spinner: NgxSpinnerService, private route: ActivatedRoute) { }
 
   @ViewChild(ModalPacienteComponent) modalPacienteComponent!: ModalPacienteComponent;
   @ViewChild(PacienteCompletoComponent) modalPacienteCompletoComponent!: PacienteCompletoComponent;
   @ViewChild(FichaAvaliacaoComponent) modalFichaAvaliacaoComponent!: FichaAvaliacaoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
-  
+
   lista: Paciente[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
-  dataParaExcluir!:Paciente;
+  dataParaExcluir!: Paciente;
   mostrarFiltros: boolean = true; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
@@ -38,23 +38,57 @@ export class ListarPacienteComponent {
   nomeFiltro: string = '';
   idFiltro: string = '';
   cpfFiltro: string = '';
-  celularFiltro : string = '';
-  paginar : boolean = true;
+  celularFiltro: string = '';
+  paginar: boolean = true;
+
+  pacienteId: string = ''; // Para armazenar o ID do paciente da rota
 
   ngOnInit(): void {
-   // this.spinner.show();
-    this.loadData();
-  } 
+    // Verificar se há um parâmetro ID na rota
+    this.route.params.subscribe(params => {
+      if (params['id']) {
+        this.pacienteId = params['id'];
+        this.idFiltro = this.pacienteId;
+        // Se houver ID na rota, abrir o modal detalhado diretamente
+        this.loadPacienteEspefico();
+      } else {
+        this.loadData(); // Carrega lista normal de pacientes se não tiver ID
+      }
+    });
+  }
 
+  loadPacienteEspefico(): void {
+    //this.spinner.show();
 
-  loadData() : void {
+    this.pacienteService.Listar(this.currentPage, this.pageSize, this.nomeFiltro, this.idFiltro,
+      this.cpfFiltro, this.celularFiltro, this.paginar).subscribe({
+        next: (response) => {
+          if (response && response.dados) {
+            // Abrir o modal detalhado do paciente
+            setTimeout(() => {
+              this.openModalDetalhado(response.dados[0]);
+            }, 1000); // Pequeno atraso para garantir que componentes estejam inicializados
+          }
+          // Ainda carrega a lista com o filtro aplicado
+          this.loadData();
+        },
+        error: (err) => {
+          console.error('Erro ao buscar paciente específico:', err);
+          this.toast.error('Erro ao buscar dados do paciente', 'Erro');
+          this.loadData(); // Carrega a lista normal em caso de erro
+          //this.spinner.hide();
+        }
+      });
+  }
+
+  loadData(): void {
     this.pacienteService.Listar(
-      this.currentPage,this.pageSize,this.nomeFiltro,this.idFiltro,
+      this.currentPage, this.pageSize, this.nomeFiltro, this.idFiltro,
       this.cpfFiltro, this.celularFiltro, this.paginar
     ).subscribe({
       next: (data) => {
-        
-       // this.spinner.show();
+
+        // this.spinner.show();
         if (data.dados) {
           this.lista = data.dados;
           this.totalItems = data.totalCount ?? 0;
@@ -66,7 +100,7 @@ export class ListarPacienteComponent {
         this.errorMessage = 'Erro ao carregar os Paciente. Tente novamente mais tarde.';
       },
       complete: () => {
-       // this.spinner.hide();
+        // this.spinner.hide();
       }
     })
 
@@ -265,7 +299,7 @@ export class ListarPacienteComponent {
     //       }
     //     ]
     //   }
-      
+
     //   ];
   }
 
@@ -282,11 +316,10 @@ export class ListarPacienteComponent {
   }
 
   openModalDetalhado(paciente: any) {
-
-    if(paciente){
-        this.modalPacienteCompletoComponent.Paciente = paciente;
-        console.table(paciente)
-      }
+    if (paciente) {
+      this.modalPacienteCompletoComponent.Paciente = paciente;
+      console.table(paciente)
+    }
 
     const modalElement = document.getElementById('modalPacienteDetalhado');
     if (modalElement) {
@@ -296,21 +329,21 @@ export class ListarPacienteComponent {
   }
 
 
-openfichaAvaliacao(paciente: any) {
-  if (paciente.id) {
-    this.modalFichaAvaliacaoComponent.getFac(paciente.id);
-    this.modalFichaAvaliacaoComponent.paciente = paciente;
+  openfichaAvaliacao(paciente: any) {
+    if (paciente.id) {
+      this.modalFichaAvaliacaoComponent.getFac(paciente.id);
+      this.modalFichaAvaliacaoComponent.paciente = paciente;
 
-    const modalElement = document.getElementById('modalFichaAvaliacao');
-    if (modalElement) {
-      const modal = new bootstrap.Modal(modalElement);
-      modal.show();
+      const modalElement = document.getElementById('modalFichaAvaliacao');
+      if (modalElement) {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+      }
     }
   }
-}
 
 
-  Exluir(paciente : Paciente) {
+  Exluir(paciente: Paciente) {
     let id = paciente.id;
     this.pacienteService.Deletar(id.toString()).subscribe({
       next: (response) => {
@@ -338,7 +371,7 @@ openfichaAvaliacao(paciente: any) {
     this.loadData(); // Chama o método para buscar os cc novamente
   }
 
-  promptDelete(dataParaExcluir : any) {
+  promptDelete(dataParaExcluir: any) {
     this.dataParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
@@ -364,12 +397,12 @@ openfichaAvaliacao(paciente: any) {
   toggleFiltros() {
     this.mostrarFiltros = !this.mostrarFiltros;
   }
-  
+
   limparFiltros() {
     this.nomeFiltro = '';
     this.idFiltro = '';
     this.cpfFiltro = '';
-    this.celularFiltro  = '';
+    this.celularFiltro = '';
     // Opcional: realizar uma busca após limpar
     this.onSearch();
   }

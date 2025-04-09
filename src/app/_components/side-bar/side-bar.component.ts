@@ -19,10 +19,10 @@ interface SideNavToggle {
     fadeInOut,
     trigger('rotate', [
       transition(':enter', [
-        animate('1000ms', 
+        animate('1000ms',
           keyframes([
-            style({transform: 'rotate(0deg)', offset: '0'}),
-            style({transform: 'rotate(2turn)', offset: '1'})
+            style({ transform: 'rotate(0deg)', offset: '0' }),
+            style({ transform: 'rotate(2turn)', offset: '1' })
           ])
         )
       ])
@@ -43,36 +43,36 @@ export class SidenavComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.screenWidth = window.innerWidth;
-    if(this.screenWidth <= 768 ) {
+    if (this.screenWidth <= 768) {
       this.collapsed = false;
-      this.onToggleSideNav.emit({collapsed: this.collapsed, screenWidth: this.screenWidth});
+      this.onToggleSideNav.emit({ collapsed: this.collapsed, screenWidth: this.screenWidth });
     }
   }
 
-  constructor(public router: Router,private tabService: TabService, private authService: AuthService) {}
+  constructor(public router: Router, private tabService: TabService, private authService: AuthService) { }
 
-    // Alterna a expansão da sidebar
-  
-    toggleSidebar(): void {
-      this.isExpanded = !this.isExpanded;
-    }
-  
-    toggleSubmenu(menu: string): void {
-      this.isMenuOpen[menu] = !this.isMenuOpen[menu];
-    }
+  // Alterna a expansão da sidebar
+
+  toggleSidebar(): void {
+    this.isExpanded = !this.isExpanded;
+  }
+
+  toggleSubmenu(menu: string): void {
+    this.isMenuOpen[menu] = !this.isMenuOpen[menu];
+  }
 
   ngOnInit(): void {
-      this.screenWidth = window.innerWidth;
+    this.screenWidth = window.innerWidth;
   }
 
   toggleCollapse(): void {
     this.collapsed = !this.collapsed;
-    this.onToggleSideNav.emit({collapsed: this.collapsed, screenWidth: this.screenWidth});
+    this.onToggleSideNav.emit({ collapsed: this.collapsed, screenWidth: this.screenWidth });
   }
 
   closeSidenav(): void {
     this.collapsed = false;
-    this.onToggleSideNav.emit({collapsed: this.collapsed, screenWidth: this.screenWidth});
+    this.onToggleSideNav.emit({ collapsed: this.collapsed, screenWidth: this.screenWidth });
   }
 
   handleClick(item: INavbarData): void {
@@ -86,7 +86,7 @@ export class SidenavComponent implements OnInit {
 
   shrinkItems(item: INavbarData): void {
     if (!this.multiple) {
-      for(let modelItem of this.navData) {
+      for (let modelItem of this.navData) {
         if (item !== modelItem && modelItem.expanded) {
           modelItem.expanded = false;
         }
@@ -94,13 +94,13 @@ export class SidenavComponent implements OnInit {
     }
   }
 
-  
+
   // Método para abrir uma nova aba
   openTab(path: string, title: string) {
     this.tabService.openTab({ path, title });
   }
 
-  logout(){
+  logout() {
     try {
       this.authService.logout();
       this.router.navigate(['/login']);
