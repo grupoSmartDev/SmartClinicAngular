@@ -1,0 +1,347 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card mt-4">
+        <div class="card-header text-center border-0 bg-white pt-4">
+          <div class="progress-indicator mb-4">
+            <div class="d-flex justify-content-center">
+              <div class="step active"></div>
+              <div class="line"></div>
+              <div class="step"></div>
+              <div class="line"></div>
+              <div class="step"></div>
+            </div>
+          </div>
+          <h2 class="mb-2">
+            Comece seu <span class="text-success">teste grátis!</span>
+          </h2>
+          <p class="text-muted">
+            Você está a um passo de ter o ClinicSmart como aliado do crescimento
+            do seu negócio.
+          </p>
+        </div>
+
+        <div class="card-body p-4">
+          <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+            <!-- Option Selection -->
+            <div class="mb-4">
+              <div class="option-toggle">
+                <div class="btn-group w-100" role="group">
+                  <button
+                    type="button"
+                    class="btn rounded-start py-2"
+                    [ngClass]="{
+                      'btn-success': selectedOption === 'trial',
+                      'btn-outline-secondary': selectedOption !== 'trial'
+                    }"
+                    (click)="onSelectOption('trial')"
+                  >
+                    Teste Grátis (7 dias)
+                  </button>
+                  <button
+                    type="button"
+                    class="btn rounded-end py-2"
+                    [ngClass]="{
+                      'btn-success': selectedOption === 'plan',
+                      'btn-outline-secondary': selectedOption !== 'plan'
+                    }"
+                    (click)="onSelectOption('plan')"
+                  >
+                    Assinar Plano
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- User information -->
+            <div class="mb-3">
+              <label for="usuario" class="form-label"
+                >Crie seu usuário de acesso</label
+              >
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="Nome"
+                id="usuario"
+                placeholder="Não use espaços e caracteres especiais"
+              />
+              <div
+                *ngIf="
+                  signupForm.get('Nome')!.invalid &&
+                  signupForm.get('Nome')!.touched
+                "
+                class="text-danger small mt-1"
+              >
+                Nome de usuário é obrigatório
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">E-mail</label>
+              <input
+                type="email"
+                class="form-control form-control-sm"
+                formControlName="Email"
+                id="email"
+                placeholder="Insira seu e-mail profissional"
+              />
+              <div
+                *ngIf="
+                  signupForm.get('Email')!.invalid &&
+                  signupForm.get('Email')!.touched
+                "
+                class="text-danger small mt-1"
+              >
+                E-mail válido é obrigatório
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="senha" class="form-label">Senha</label>
+              <div class="input-group">
+                <input
+                  type="password"
+                  class="form-control form-control-sm"
+                  id="senha"
+                  placeholder="Crie uma senha forte"
+                />
+                <span class="input-group-text">
+                  <i class="bi bi-eye"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="nome" class="form-label">Nome</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="Nome"
+                  id="nome"
+                />
+                <div
+                  *ngIf="
+                    signupForm.get('Nome')!.invalid &&
+                    signupForm.get('Nome')!.touched
+                  "
+                  class="text-danger small mt-1"
+                >
+                  Nome é obrigatório
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="sobrenome" class="form-label">Sobrenome</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="Sobrenome"
+                  id="sobrenome"
+                />
+                <div
+                  *ngIf="
+                    signupForm.get('Sobrenome')!.invalid &&
+                    signupForm.get('Sobrenome')!.touched
+                  "
+                  class="text-danger small mt-1"
+                >
+                  Sobrenome é obrigatório
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="cpf" class="form-label">CPF do Titular</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="TitularCPF"
+                  id="cpf"
+                />
+                <div
+                  *ngIf="
+                    signupForm.get('TitularCPF')!.invalid &&
+                    signupForm.get('TitularCPF')!.touched
+                  "
+                  class="text-danger small mt-1"
+                >
+                  CPF é obrigatório
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="cnpj" class="form-label"
+                  >CNPJ da Empresa Matriz</label
+                >
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="CNPJEmpresaMatriz"
+                  id="cnpj"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="celular" class="form-label">Celular</label>
+                <input
+                  type="tel"
+                  class="form-control form-control-sm"
+                  formControlName="Celular"
+                  id="celular"
+                />
+                <div
+                  *ngIf="
+                    signupForm.get('Celular')!.invalid &&
+                    signupForm.get('Celular')!.touched
+                  "
+                  class="text-danger small mt-1"
+                >
+                  Celular é obrigatório
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="telefone" class="form-label">Telefone Fixo</label>
+                <input
+                  type="tel"
+                  class="form-control form-control-sm"
+                  formControlName="TelefoneFixo"
+                  id="telefone"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="especialidade" class="form-label"
+                  >Especialidade</label
+                >
+                <select
+                  class="form-select"
+                  formControlName="Especialidade"
+                  id="especialidade"
+                >
+                  <option value="" selected disabled>Selecione</option>
+                  <option value="medico">Médico</option>
+                  <option value="dentista">Dentista</option>
+                  <option value="fisioterapeuta">Fisioterapeuta</option>
+                  <option value="nutricionista">Nutricionista</option>
+                  <option value="outro">Outro</option>
+                </select>
+                <div
+                  *ngIf="
+                    signupForm.get('Especialidade')!.invalid &&
+                    signupForm.get('Especialidade')!.touched
+                  "
+                  class="text-danger small mt-1"
+                >
+                  Especialidade é obrigatória
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="dataNascimento" class="form-label"
+                  >Data de Nascimento</label
+                >
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  formControlName="DataNascimentoTitular"
+                  id="dataNascimento"
+                />
+              </div>
+            </div>
+
+            <!-- Plan Selection -->
+            <div class="mb-3">
+              <label for="plano" class="form-label">Plano Escolhido</label>
+              <select
+                class="form-select"
+                formControlName="PlanoEscolhido"
+                id="plano"
+              >
+                <option value="" selected disabled>Selecione</option>
+                <option value="basico">Básico</option>
+                <option value="intermediario">Intermediário</option>
+                <option value="avancado">Avançado</option>
+                <option value="premium">Premium</option>
+              </select>
+              <div
+                *ngIf="
+                  signupForm.get('PlanoEscolhido')!.invalid &&
+                  signupForm.get('PlanoEscolhido')!.touched
+                "
+                class="text-danger small mt-1"
+              >
+                Plano é obrigatório
+              </div>
+            </div>
+
+            <!-- Payment method (only shown when plan is selected) -->
+            <div class="mb-3" *ngIf="selectedOption === 'plan'">
+              <label for="pagamento" class="form-label"
+                >Forma de Pagamento</label
+              >
+              <select
+                class="form-select"
+                formControlName="TipoPagamentoId"
+                id="pagamento"
+              >
+                <option value="" selected disabled>Selecione</option>
+                <option value="1">Cartão de Crédito</option>
+                <option value="2">Boleto</option>
+                <option value="3">PIX</option>
+              </select>
+              <div
+                *ngIf="
+                  signupForm.get('TipoPagamentoId')!.invalid &&
+                  signupForm.get('TipoPagamentoId')!.touched &&
+                  selectedOption === 'plan'
+                "
+                class="text-danger small mt-1"
+              >
+                Forma de pagamento é obrigatória
+              </div>
+            </div>
+
+            <!-- Additional Options -->
+            <div class="mb-3">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  formControlName="CelularComWhatsApp"
+                  id="whatsapp"
+                />
+                <label class="form-check-label" for="whatsapp">
+                  Celular com WhatsApp
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  formControlName="ReceberNotificacoes"
+                  id="notificacoes"
+                />
+                <label class="form-check-label" for="notificacoes">
+                  Receber notificações
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success btn-lg">
+                Avançar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

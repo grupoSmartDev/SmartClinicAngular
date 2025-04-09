@@ -36,19 +36,24 @@ import { AuthGuard } from './auth.guard';
 import { ListarReceberSinteticoComponent } from './_pages/financReceber/listar-receber-sintetico/listar-receber-sintetico.component';
 import { ListarPagarSinteticoComponent } from './_pages/financPagar/listar-pagar-sintetico/listar-pagar-sintetico.component';
 import { ListarDespesaComponent } from './_pages/despesaFixa/listar-despesa/listar-despesa.component';
-
+import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-cadastro.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent }, // Rota para a página de login
   { path: 'lp', component: LandinPageComponent },
+  { path: 'cadastro', component: PaginaCadastroComponent },
 
   {
-    path: '', component: MainLayoutComponent, // Usa o MainLayoutComponent como pai
+    path: '',
+    component: MainLayoutComponent, // Usa o MainLayoutComponent como pai
     children: [
       { path: '', component: DashboardComponent }, // Página inicial
       { path: 'status/listar', component: ListarComponent },
       { path: 'tipoPagamento/listar', component: ListarTipoPagamentoComponent },
-      { path: 'formaPagamento/listar', component: ListarFormaPagamentoComponent },
+      {
+        path: 'formaPagamento/listar',
+        component: ListarFormaPagamentoComponent,
+      },
       { path: 'fornecedor/listar', component: ListarFornecedorComponent },
       { path: 'sala/listar', component: ListarSalasComponent },
       { path: 'convenio/listar', component: ListarConvenioComponent },
@@ -57,7 +62,10 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'banco/listar', component: ListarBancoComponent },
       { path: 'centroDeCusto/listar', component: ListarCentroDeCustoComponent },
-      { path: 'SubcentroDeCusto/listar', component: ListarSubCentroDeCustoComponent },
+      {
+        path: 'SubcentroDeCusto/listar',
+        component: ListarSubCentroDeCustoComponent,
+      },
       { path: 'profissional/listar', component: ListarProfissionalComponent },
 
       { path: 'pacientes/listar', component: ListarPacienteComponent },
@@ -80,25 +88,39 @@ const routes: Routes = [
 
       { path: 'categoria/listar', component: ListarCategoriaComponent },
 
-      { path: 'FinancReceber/listarAnalitico', component: ListarFinancReceberComponent },
-      { path: 'FinancReceber/listarSintetico', component: ListarReceberSinteticoComponent },
+      {
+        path: 'FinancReceber/listarAnalitico',
+        component: ListarFinancReceberComponent,
+      },
+      {
+        path: 'FinancReceber/listarSintetico',
+        component: ListarReceberSinteticoComponent,
+      },
 
-      { path: 'FinancPagar/listarAnalitico', component: ListarFinancPagarComponent },
-      { path: 'FinancPagar/listarSintetico', component: ListarPagarSinteticoComponent },
+      {
+        path: 'FinancPagar/listarAnalitico',
+        component: ListarFinancPagarComponent,
+      },
+      {
+        path: 'FinancPagar/listarSintetico',
+        component: ListarPagarSinteticoComponent,
+      },
 
       { path: 'profissao/listar', component: ListarProfissaoComponent },
       { path: 'planoContas/listar', component: ListarPlanoContasComponent },
-      { path: 'planoContaSub/listar', component: ListarPlanoContasSubComponent },
+      {
+        path: 'planoContaSub/listar',
+        component: ListarPlanoContasSubComponent,
+      },
       { path: 'DespesasFixa/ListarDespesa', component: ListarDespesaComponent },
-    ]
+    ],
   },
 
-  { path: '**', redirectTo: 'login' } // Redireciona para login caso a rota não seja encontrada
+  { path: '**', redirectTo: 'login' }, // Redireciona para login caso a rota não seja encontrada
 ];
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

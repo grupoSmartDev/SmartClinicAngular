@@ -1,0 +1,96 @@
+.card {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.card-header {
+  border-bottom: none;
+}
+
+.text-success {
+  color: #2bb673 !important;
+}
+
+.btn-success {
+  background-color: #2bb673;
+  border-color: #2bb673;
+}
+
+.btn-success:hover,
+.btn-success:focus {
+  background-color: #25a064;
+  border-color: #25a064;
+}
+
+.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #d8d8d8;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border-color: #d8d8d8;
+}
+
+.form-control,
+.form-select {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #d8d8d8;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #2bb673;
+  box-shadow: 0 0 0 0.25rem rgba(43, 182, 115, 0.25);
+}
+
+/* Progress indicator */
+.progress-indicator .step {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  position: relative;
+  z-index: 1;
+}
+
+.progress-indicator .step.active {
+  background-color: #2bb673;
+}
+
+.progress-indicator .line {
+  height: 2px;
+  width: 80px;
+  background-color: #e0e0e0;
+  margin-top: 11px;
+}
+
+/* Option toggle styles */
+.option-toggle .btn-group .btn {
+  border: 1px solid #d8d8d8;
+  padding: 10px 20px;
+}
+
+.option-toggle .btn-group .btn.btn-success {
+  border-color: #2bb673;
+}
+
+/* Form validation styling */
+.text-danger {
+  font-size: 0.8rem;
+}
+
+/* Input with icon */
+.input-group-text {
+  background-color: transparent;
+  border-left: none;
+  cursor: pointer;
+}
+
+input::placeholder {
+  color: #c0c0c0;
+  font-size: 0.9rem;
+}

@@ -130,6 +130,7 @@ import { PriceComponent } from './_lp/components/price/price.component';
 import { CalendarioComponent } from './_components/calendario/calendario.component';
 import { ListarDespesaComponent } from './_pages/despesaFixa/listar-despesa/listar-despesa.component';
 import { ModalDespesaComponent } from './_pages/despesaFixa/modal-despesa/modal-despesa.component';
+import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-cadastro.component';
 
 
 
@@ -246,6 +247,7 @@ import { ModalDespesaComponent } from './_pages/despesaFixa/modal-despesa/modal-
     CalendarioComponent,
     ListarDespesaComponent,
     ModalDespesaComponent,
+    PaginaCadastroComponent,
   ],
   imports: [
     BrowserModule,
