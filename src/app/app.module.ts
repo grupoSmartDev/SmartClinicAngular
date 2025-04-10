@@ -44,7 +44,7 @@ import { ClienteChartsComponent } from './_components/cliente-charts/cliente-cha
 import { AgendamentoChartsComponent } from './_components/agendamento-charts/agendamento-charts.component';
 import { GeneroChartsComponent } from './_components/genero-charts/genero-charts.component'; // Plugin para 
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { MainLayoutComponent } from './main-layout/main-layout.component'; 
+import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { LoginComponent } from './_pages/login/login.component';
 import { MenuMobileComponent } from './_components/menu-mobile/menu-mobile.component';
 import { LandinPageComponent } from './landin-page/landin-page.component';
@@ -140,7 +140,7 @@ import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-
   declarations: [
     AppComponent,
     FooterComponent,
-    HeaderComponent,    
+    HeaderComponent,
     SidenavComponent,
     SublevelMenuComponent,
     BodyComponent,
@@ -259,7 +259,7 @@ import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-
     NgxMaskDirective,
     FullCalendarModule,
     NgxChartsModule,
-    FormsModule,    
+    FormsModule,
     CommonModule,
     PaginationModule.forRoot(),
     CalendarModule,
@@ -267,16 +267,16 @@ import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-
       config: {
         tokenGetter: () => localStorage.getItem('token'),
         allowedDomains: ['localhost:44308'], // domínio onde sua API está rodando
-        disallowedRoutes: ['localhost:44308/Auth/login'] // rota de login que não precisa do token
+        disallowedRoutes: ['localhost:44308/Auth/login', 'localhost:44308/CadastroCliente/Criar', 'localhost:4200/CadastroCliente/Criar', 'http://localhost:4200/cadastro'] // rota de login que não precisa do token
       }
     }),
     NgxSpinnerModule.forRoot({ type: 'square-jelly-box' })
-    
+
   ],
-  providers: [ provideNgxMask(), {
+  providers: [provideNgxMask(), {
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
-    multi: true
+    multi: true,
   }],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

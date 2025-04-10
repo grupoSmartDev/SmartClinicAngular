@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CadastroUsuarioService } from '../../_services/cadastro-usuario.service';
 
 @Component({
   selector: 'app-pagina-cadastro',
@@ -12,7 +13,7 @@ export class PaginaCadastroComponent {
   selectedOption: string = 'trial'; // Default to trial option
   step: number = 1; // For multi-step form if needed
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private cadastroService: CadastroUsuarioService, private route: Router) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -37,7 +38,7 @@ export class PaginaCadastroComponent {
       PeriodoTeste: [true], // Default to trial period
       CelularComWhatsApp: [false],
       ReceberNotificacoes: [true],
-      TipoPagamentoId: [''],
+      TipoPagamentoId: [0],
       QtdeLicencaEmpresaPermitida: [1],
       QtdeLicencaUsuarioPermitida: [1],
       QtdeLicencaEmpresaUtilizada: [0],
@@ -84,6 +85,20 @@ export class PaginaCadastroComponent {
       return;
     }
 
+    this.cadastroService.criarCadastro(this.signupForm.value).subscribe({
+      next: (response) => {
+        if (response.status) {
+          alert('Cadastro criado com sucesso!');
+
+          console.log('Cadastro criado com sucesso:', response.mensagem);
+          this.route.navigate(['/login']);
+          // Handle successful response here
+        } else {
+          console.error('Erro ao criar cadastro:', response.mensagem);
+          // Handle error response here
+        }
+      }
+    })
     // Form is valid, proceed with submission
     console.log('Form submitted:', this.signupForm.value);
     // Add your API call or other submission logic here

@@ -335,9 +335,18 @@
 
             <!-- Submit Button -->
             <div class="d-grid">
-              <button type="submit" class="btn btn-success btn-lg">
+              <button
+                type="button"
+                class="btn btn-success btn-lg"
+                (click)="onSubmit()"
+              >
                 Avançar
               </button>
+            </div>
+            <div class="d-grid mt-2">
+              <a routerLink="/lp" type="button" class="btn btn-primary btn-lg">
+                Voltar
+              </a>
             </div>
           </form>
         </div>
