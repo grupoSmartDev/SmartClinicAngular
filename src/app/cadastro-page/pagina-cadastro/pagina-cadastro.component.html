@@ -119,6 +119,7 @@
                   class="form-control form-control-sm"
                   formControlName="Nome"
                   id="nome"
+                  placeholder="Digite seu nome"
                 />
                 <div
                   *ngIf="
@@ -137,6 +138,7 @@
                   class="form-control form-control-sm"
                   formControlName="Sobrenome"
                   id="sobrenome"
+                  placeholder="Digite seu Sobrenome"
                 />
                 <div
                   *ngIf="
@@ -158,6 +160,8 @@
                   class="form-control form-control-sm"
                   formControlName="TitularCPF"
                   id="cpf"
+                  [mask]="'000.000.000-00'"
+                  placeholder="Digite seu CPF"
                 />
                 <div
                   *ngIf="
@@ -178,6 +182,8 @@
                   class="form-control form-control-sm"
                   formControlName="CNPJEmpresaMatriz"
                   id="cnpj"
+                  [mask]="'00.000.000/0000-00'"
+                  placeholder="Digite seu CNPJ"
                 />
               </div>
             </div>
@@ -190,6 +196,8 @@
                   class="form-control form-control-sm"
                   formControlName="Celular"
                   id="celular"
+                  mask="(00) 0 0000-0000"
+                  placeholder="Digite seu Celular"
                 />
                 <div
                   *ngIf="
@@ -208,6 +216,8 @@
                   class="form-control form-control-sm"
                   formControlName="TelefoneFixo"
                   id="telefone"
+                  mask="(00) 0000-0000"
+                  placeholder="Digite seu Telefone"
                 />
               </div>
             </div>
