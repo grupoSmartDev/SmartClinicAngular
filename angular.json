@@ -128,5 +128,8 @@
   },
   "cli": {
     "analytics": "c40b9ec3-c825-4511-a49d-b997463d6911"
-  }
+  },
+  "allowedCommonJsDependencies": [
+    "clone-deep"
+  ]
 }
