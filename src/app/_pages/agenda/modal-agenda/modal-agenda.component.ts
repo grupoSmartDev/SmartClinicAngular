@@ -181,6 +181,7 @@ export class ModalAgendaComponent implements OnInit {
         pacienteId: [''],
         fornecedorId: [''],
         centroCustoId: [''],
+        tipoPagamentoId: [''],
         bancoId: [''],
         subFinancReceber: this.fb.array([])
       }),
@@ -244,10 +245,12 @@ export class ModalAgendaComponent implements OnInit {
       this.camposFinancPagar = true;
       financReceberGroup.get('valor')?.setValidators([Validators.required, Validators.min(0.01)]);
       financReceberGroup.get('centroCustoId')?.setValidators([Validators.required]);
+      financReceberGroup.get('tipoPagamentoId')?.setValidators([Validators.required]);
     } else {
       this.camposFinancPagar = false;
       financReceberGroup.get('valor')?.clearValidators();
       financReceberGroup.get('centroCustoId')?.clearValidators();
+      financReceberGroup.get('tipoPagamentoId')?.clearValidators();
 
       // Limpa o array de subFinancReceber
       const subFinancArray = financReceberGroup.get('subFinancReceber') as FormArray;
@@ -259,6 +262,7 @@ export class ModalAgendaComponent implements OnInit {
     // Atualiza os estados de validação
     financReceberGroup.get('valor')?.updateValueAndValidity();
     financReceberGroup.get('centroCustoId')?.updateValueAndValidity();
+    financReceberGroup.get('tipoPagamentoId')?.updateValueAndValidity();
   }
 
   ngOnInit(): void {

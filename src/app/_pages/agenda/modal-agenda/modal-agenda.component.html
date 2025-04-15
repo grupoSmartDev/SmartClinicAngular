@@ -395,7 +395,7 @@
                   </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                   <label for="centroCusto" class="form-label small fw-semibold">
                     Centro de Custo <span class="text-danger">*</span>
                   </label>
@@ -420,6 +420,36 @@
                     Selecione um centro de custo
                   </div>
                 </div>
+
+                <div class="col-md-3">
+                  <label
+                    for="tipoPagamento"
+                    class="form-label small fw-semibold"
+                  >
+                    Centro de Custo <span class="text-danger">*</span>
+                  </label>
+                  <select
+                    id="tipoPagamento"
+                    class="form-select form-select-sm"
+                    formControlName="tipoPagamentoId"
+                    [class.is-invalid]="
+                      formulario.get('financReceber.tipoPagamentoId')
+                        ?.invalid &&
+                      formulario.get('financReceber.tipoPagamentoId')?.touched
+                    "
+                  >
+                    <option value="" disabled>Selecione</option>
+                    <option
+                      *ngFor="let item of listaTipoPagamento"
+                      [value]="item.id"
+                    >
+                      {{ item.descricao }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Selecione um tipo de pagamento
+                  </div>
+                </div>
               </div>
 
               <!-- Tabela de Parcelas -->
@@ -435,7 +465,7 @@
                       <th scope="col">Vencimento</th>
                       <th scope="col">Valor</th>
                       <th scope="col">Forma</th>
-                      <th scope="col">Tipo</th>
+                      <!-- <th scope="col">Tipo</th> -->
                       <th scope="col">Observação</th>
                     </tr>
                   </thead>
@@ -491,7 +521,7 @@
                           </option>
                         </select>
                       </td>
-                      <td>
+                      <!-- <td>
                         <select
                           class="form-select form-select-sm"
                           formControlName="tipoPagamentoId"
@@ -508,7 +538,7 @@
                             {{ item.descricao }}
                           </option>
                         </select>
-                      </td>
+                      </td> -->
                       <td>
                         <input
                           type="text"
