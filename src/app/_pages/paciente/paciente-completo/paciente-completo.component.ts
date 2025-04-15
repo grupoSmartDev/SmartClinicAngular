@@ -596,7 +596,8 @@ export class PacienteCompletoComponent implements OnInit {
         desconto: [0],
         juros: [0],
         multa: [0],
-        tipoPagamentoId: ['']
+        tipoPagamentoId: [''],
+        formaPagamentoId: ['']
       }));
     }
   }

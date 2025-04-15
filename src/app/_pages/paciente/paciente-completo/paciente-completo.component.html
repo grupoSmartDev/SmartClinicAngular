@@ -1051,6 +1051,35 @@
                       Selecione um centro de custo
                     </div>
                   </div>
+
+                  <div class="col-md-3">
+                    <label
+                      for="tipoPamento"
+                      class="form-label small fw-semibold"
+                    >
+                      Centro de Custo <span class="text-danger">*</span>
+                    </label>
+                    <select
+                      id="tipoPamento"
+                      class="form-select form-select-sm"
+                      [formControl]="$any(financeiroGroup.get('tipoPamentoId'))"
+                      [class.is-invalid]="
+                        financeiroGroup.get('tipoPamentoId')?.invalid &&
+                        financeiroGroup.get('tipoPamentoId')?.touched
+                      "
+                    >
+                      <option value="" disabled>Selecione</option>
+                      <option
+                        *ngFor="let item of listaTipoPagamento"
+                        [value]="item.id"
+                      >
+                        {{ item.descricao }}
+                      </option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Selecione um centro de custo
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Tabela de Parcelas -->
@@ -1066,7 +1095,7 @@
                         <th scope="col">Vencimento</th>
                         <th scope="col">Valor</th>
                         <th scope="col">Forma</th>
-                        <th scope="col">Tipo</th>
+                        <!-- <th scope="col">Tipo</th> -->
                         <th scope="col">Observação</th>
                       </tr>
                     </thead>
@@ -1104,8 +1133,26 @@
                               />
                             </div>
                           </td>
-
                           <td>
+                            <select
+                              class="form-select form-select-sm"
+                              formControlName="formaPagamentoId"
+                              [class.is-invalid]="
+                                parcela.get('formaPagamentoId')?.invalid &&
+                                parcela.get('formaPagamentoId')?.touched
+                              "
+                            >
+                              <option value="" disabled>Selecione</option>
+                              <option
+                                *ngFor="let item of listaFormaPagamento"
+                                [value]="item.id"
+                              >
+                                {{ item.descricao }}
+                              </option>
+                            </select>
+                          </td>
+
+                          <!-- <td>
                             <select
                               class="form-select form-select-sm"
                               formControlName="tipoPagamentoId"
@@ -1122,7 +1169,7 @@
                                 {{ item.descricao }}
                               </option>
                             </select>
-                          </td>
+                          </td> -->
                           <td>
                             <input
                               type="text"
@@ -1626,7 +1673,7 @@
                       <th>Parcela</th>
                       <th>Valor</th>
                       <th>Vencimento</th>
-                      <th>Tipo Pagamento</th>
+                      <th>Forma Pagamento</th>
                     </tr>
                   </thead>
                   <tbody formArrayName="subFinancReceber">
@@ -1645,11 +1692,11 @@
                       <td>
                         <select
                           class="form-select form-select-sm"
-                          formControlName="tipoPagamentoId"
+                          formControlName="formaPagamentoId"
                         >
                           <option value="" disabled>Selecione</option>
                           <option
-                            *ngFor="let tipo of listaTipoPagamento"
+                            *ngFor="let tipo of listaFormaPagamento"
                             [value]="tipo.id"
                           >
                             {{ tipo.descricao }}
