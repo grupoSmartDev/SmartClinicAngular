@@ -73,6 +73,7 @@ export class ModalFinanceiroReceber implements OnInit {
       pacienteId: [null],
       fornecedorId: [null],
       centroCustoId: [null],
+      tipoPagamentoId: [null],
       bancoId: [null],
       subFinancReceber: this.fb.array([]),
     });

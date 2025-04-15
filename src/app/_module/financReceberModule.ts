@@ -31,6 +31,8 @@ export interface FinancReceber {
     subFinancReceber: SubFinancReceber[];
     usuarioResponsavelId: string;
     dataUltimaAtualizacao: Date;
+    tipoPagamentoId: string;
+    tipoPagamento: TipoPagamento;
 }
 
 export enum StatusPagamento {

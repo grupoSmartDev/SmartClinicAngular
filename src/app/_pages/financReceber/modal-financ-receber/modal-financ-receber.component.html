@@ -135,7 +135,7 @@
                 </ul>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="centroCusto" class="form-label"
                 >Centro de Custo</label
               >
@@ -163,6 +163,37 @@
                 class="invalid-feedback"
               >
                 O campo centro de custo é obrigatório.
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label for="tipoPagamento" class="form-label"
+                >Tipo de pagamento</label
+              >
+              <select
+                name=""
+                id=""
+                class="form-select form-select-sm"
+                formControlName="tipoPagamentoId"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('tipoPagamentoId')?.invalid &&
+                    formulario.get('tipoPagamentoId')?.touched
+                }"
+              >
+                <option value="0">Selecione uma opção</option>
+                @for (item of listaTipoPagamento; track $index) {
+                <option value="{{ item.id }}">{{ item.descricao }}</option>
+                }
+              </select>
+              <div
+                *ngIf="
+                  formulario.get('tipoPagamentoId')?.invalid &&
+                  formulario.get('tipoPagamentoId')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo tipo de pagamento é obrigatório.
               </div>
             </div>
           </div>
@@ -262,8 +293,8 @@
                   <th>Data de Vencimento</th>
                   <th>Data de Pagamento</th>
                   <th>Valor</th>
-                  <!-- <th>Forma de Pagamento</th> -->
-                  <th>Tipo de Pagamento</th>
+                  <th>Forma de Pagamento</th>
+                  <!-- <th>Tipo de Pagamento</th> -->
                   <th>Observação</th>
                 </tr>
               </thead>
@@ -298,20 +329,35 @@
                       readonly
                     />
                   </td>
-                  <!-- <td>
-                        <select name="" id="" class="form-select form-select-sm"
-                        formControlName="formaPagamentoId"
-                        [ngClass]="{'is-invalid' : formulario.get('formaPagamentoId')?.invalid && formulario.get('formaPagamentoId')?.touched}"
-                        >
-                          @for (item of listaFormaPagamento; track item.id) {
-                            <option value="{{item.id}}">{{item.descricao}}</option>
-                          }
-                        </select>
-                        <div *ngIf="formulario.get('formaPagamentoId')?.invalid && formulario.get('formaPagamentoId')?.touched" class="invalid-feedback">
-                          O campo forma de pagamento é obrigatório.
-                        </div>
-                      </td> -->
                   <td>
+                    <select
+                      name=""
+                      id=""
+                      class="form-select form-select-sm"
+                      formControlName="formaPagamentoId"
+                      [ngClass]="{
+                        'is-invalid':
+                          formulario.get('formaPagamentoId')?.invalid &&
+                          formulario.get('formaPagamentoId')?.touched
+                      }"
+                    >
+                      @for (item of listaFormaPagamento; track item.id) {
+                      <option value="{{ item.id }}">
+                        {{ item.descricao }}
+                      </option>
+                      }
+                    </select>
+                    <div
+                      *ngIf="
+                        formulario.get('formaPagamentoId')?.invalid &&
+                        formulario.get('formaPagamentoId')?.touched
+                      "
+                      class="invalid-feedback"
+                    >
+                      O campo forma de pagamento é obrigatório.
+                    </div>
+                  </td>
+                  <!-- <td>
                     <select
                       name=""
                       id=""
@@ -338,7 +384,7 @@
                     >
                       O campo tipo de pagamento é obrigatório.
                     </div>
-                  </td>
+                  </td> -->
                   <td>
                     <input
                       type="text"
