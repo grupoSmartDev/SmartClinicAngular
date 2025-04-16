@@ -45,16 +45,17 @@ export class ListarPacienteComponent {
 
   ngOnInit(): void {
     // Verificar se há um parâmetro ID na rota
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.pacienteId = params['id'];
-        this.idFiltro = this.pacienteId;
-        // Se houver ID na rota, abrir o modal detalhado diretamente
-        this.loadPacienteEspefico();
-      } else {
-        this.loadData(); // Carrega lista normal de pacientes se não tiver ID
-      }
-    });
+    // this.route.params.subscribe(params => {
+    //   if (params['id']) {
+    //     this.pacienteId = params['id'];
+    //     this.idFiltro = this.pacienteId;
+    //     // Se houver ID na rota, abrir o modal detalhado diretamente
+    //     this.loadPacienteEspefico();
+    //   } else {
+    //     this.loadData(); // Carrega lista normal de pacientes se não tiver ID
+    //   }
+    // });
+    this.loadData();
   }
 
   loadPacienteEspefico(): void {

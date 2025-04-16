@@ -19,14 +19,14 @@
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="modal" (click)="fecharModal()" 
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
           (click)="fecharModal()"
           aria-label="Close"
         ></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="formulario">
-
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Informações Pessoais</h5>
@@ -41,7 +41,7 @@
                     formControlName="nome"
                   />
                 </div>
-  
+
                 <div class="col-md-3">
                   <label for="cpf" class="form-label">CPF</label>
                   <input
@@ -51,7 +51,7 @@
                     mask="000.000.000-00"
                   />
                 </div>
-  
+
                 <div class="col-md-3">
                   <label for="rg" class="form-label">RG</label>
                   <input
@@ -60,7 +60,7 @@
                     formControlName="rg"
                   />
                 </div>
-  
+
                 <div class="col-md-3">
                   <label for="sexo" class="form-label">Sexo</label>
                   <select
@@ -72,7 +72,7 @@
                     <option value="O">Outro</option>
                   </select>
                 </div>
-  
+
                 <div class="col-md-3">
                   <label for="dataNascimento" class="form-label"
                     >Data de Nascimento</label
@@ -83,9 +83,11 @@
                     formControlName="dataNascimento"
                   />
                 </div>
-  
+
                 <div class="col-md-3">
-                  <label for="estadoCivil" class="form-label">Estado Civil</label>
+                  <label for="estadoCivil" class="form-label"
+                    >Estado Civil</label
+                  >
                   <select
                     class="form-select form-select-sm"
                     formControlName="estadoCivil"
@@ -96,7 +98,7 @@
                     <option value="V">Viúvo</option>
                   </select>
                 </div>
-  
+
                 <div class="col-md-3">
                   <label for="profissao" class="form-label">Profissão</label>
                   <input
@@ -108,9 +110,6 @@
               </div>
             </div>
           </div>
-
-
-
 
           <!-- Informações Pessoais -->
           <!-- <div class="mb-3">
@@ -191,7 +190,6 @@
             </div>
           </div> -->
 
-          
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Informações de Contato</h5>
@@ -207,7 +205,7 @@
                     mask="(00) 00000-0000"
                   />
                 </div>
-  
+
                 <div class="col-md-4">
                   <label for="telefone" class="form-label">Telefone</label>
                   <input
@@ -217,7 +215,7 @@
                     mask="(00) 0000-0000"
                   />
                 </div>
-  
+
                 <div class="col-md-4">
                   <label for="email" class="form-label">E-mail</label>
                   <input
@@ -229,7 +227,6 @@
               </div>
             </div>
           </div>
-
 
           <!-- Contato -->
           <!-- <div class="mb-3">
@@ -266,8 +263,6 @@
             </div>
           </div> -->
 
-
-
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Endereço</h5>
@@ -293,7 +288,7 @@
                     </button>
                   </div>
                 </div>
-  
+
                 <div class="col-md-3">
                   <label for="bairro" class="form-label">Bairro</label>
                   <input
@@ -302,7 +297,7 @@
                     formControlName="bairro"
                   />
                 </div>
-  
+
                 <div class="col-md-3">
                   <label for="cidade" class="form-label">Cidade</label>
                   <input
@@ -311,14 +306,13 @@
                     formControlName="cidade"
                   />
                 </div>
-  
+
                 <div class="col-md-1 col-6">
                   <label for="uf" class="form-label">UF</label>
                   <input
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="uf"
-                
                     mask="AA"
                   />
                 </div>
@@ -338,9 +332,11 @@
                     formControlName="numero"
                   />
                 </div>
-  
+
                 <div class="col-md-3">
-                  <label for="complemento" class="form-label">Complemento</label>
+                  <label for="complemento" class="form-label"
+                    >Complemento</label
+                  >
                   <input
                     type="text"
                     class="form-control form-control-sm"
@@ -355,11 +351,9 @@
                     formControlName="logradouro"
                   />
                 </div>
-      
               </div>
             </div>
           </div>
-
 
           <!-- Endereço -->
           <!-- <div class="mb-3">
@@ -448,8 +442,6 @@
             </div>
           </div> -->
 
-
-          
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Convênio</h5>
@@ -462,7 +454,7 @@
                     class="form-select form-select-sm"
                     formControlName="convenioId"
                   >
-                    <option value="">Selecione...</option>
+                    <option value="0">Selecione...</option>
                     @for (item of convenios; track $index) {
                     <option value="{{ item.id }}">{{ item.nome }}</option>
                     }
@@ -475,7 +467,7 @@
                     class="form-select form-select-sm"
                     id=""
                   >
-                    <option value=0>Selecione...</option>
+                    <option value="0">Selecione...</option>
                     @for (item of planos; track $index) {
                     <option value="{{ item.id }}">{{ item.descricao }}</option>
                     }
@@ -493,7 +485,7 @@
                     <option value="">Selecione...</option>
                     @for (item of profissionais; track $index) {
                     <option value="{{ item.id }}">{{ item.nome }}</option>
-                    } 
+                    }
                   </select>
                 </div>
               </div>
@@ -548,7 +540,6 @@
             </div>
           </div> -->
 
-          
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Preferencias e como conheceu</h5>
@@ -568,7 +559,7 @@
                     <option value="W">WhatsApp</option>
                   </select>
                 </div>
-  
+
                 <div class="col-md-4">
                   <label for="permitirLembretes" class="form-label"
                     >Permitir Lembretes</label
@@ -595,8 +586,6 @@
             </div>
           </div>
 
-
-          
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Informações Básicas</h5>
@@ -615,7 +604,9 @@
                   </textarea>
                 </div>
                 <div class="col-md-6">
-                  <label for="medicamento" class="form-label">Medicamento</label>
+                  <label for="medicamento" class="form-label"
+                    >Medicamento</label
+                  >
                   <textarea
                     type="text"
                     class="form-control form-control-sm"
@@ -689,7 +680,6 @@
             </div>
           </div> -->
 
-
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Outros</h5>
@@ -697,7 +687,9 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-md-6">
-                  <label for="responsavel" class="form-label">Responsável</label>
+                  <label for="responsavel" class="form-label"
+                    >Responsável</label
+                  >
                   <select
                     class="form-select form-select-sm"
                     formControlName="responsavel"
@@ -709,8 +701,6 @@
               </div>
             </div>
           </div>
-
-
 
           <!-- <div class="mb-3">
             <h5 class="border-bottom pb-2">Outros</h5>
@@ -736,9 +726,9 @@
         <button
           type="button"
           class="btn btn-danger"
-          data-bs-dismiss="modal" (click)="fecharModal()" 
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
           id="btnCancelar"
-          
         >
           <i class="bi bi-x"></i> Cancelar
         </button>

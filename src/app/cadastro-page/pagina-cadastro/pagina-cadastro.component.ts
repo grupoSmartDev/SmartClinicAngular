@@ -88,7 +88,7 @@ export class PaginaCadastroComponent {
     this.cadastroService.criarCadastro(this.signupForm.value).subscribe({
       next: (response) => {
         if (response.status) {
-          alert('Cadastro criado com sucesso!');
+          alert('Cadastro criado com sucesso! Chave de acesso é seu CPF e senha é Admin@123');
 
           console.log('Cadastro criado com sucesso:', response.mensagem);
           this.route.navigate(['/login']);

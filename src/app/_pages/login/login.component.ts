@@ -13,6 +13,7 @@ export class LoginComponent {
   loading = false;
   submitted = false;
   error = '';
+  showPassword = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -60,5 +61,9 @@ export class LoginComponent {
         this.loading = false;
       }
     });
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 }

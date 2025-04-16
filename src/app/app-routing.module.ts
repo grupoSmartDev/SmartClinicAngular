@@ -68,7 +68,7 @@ const routes: Routes = [
       },
       { path: 'profissional/listar', component: ListarProfissionalComponent },
 
-      { path: 'pacientes/listar/:id', component: ListarPacienteComponent }, // Nova rota com parâmetro ID
+      { path: 'pacientes/listar', component: ListarPacienteComponent }, // Nova rota com parâmetro ID
 
       { path: 'log/listar', component: ListarLogComponent },
 
@@ -123,4 +123,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
