@@ -1,12 +1,11 @@
-li a:hover{
-    border-bottom: 2px solid #27c7a3;
+li a:hover {
+  border-bottom: 2px solid #27c7a3;
 }
 
-li{
-    margin-right: 0.5rem;
+li {
+  margin-right: 0.5rem;
 }
 
-a{
-    font-weight: bold;
+a {
+  font-weight: bold;
 }
-

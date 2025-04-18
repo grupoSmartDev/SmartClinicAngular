@@ -22,17 +22,19 @@
   background-color: #f9f9f9;
 } */
 
+/* Adicione isto ao seu CSS */
 
 :root {
   --primary: #2c9d62;
   --primary-dark: #096042;
-  --primary-light: #40BD7E;
+  --primary-light: #40bd7e;
   --background-light: #edfdf3;
   --background-lighter: #f8fcfa;
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   color: #333;
   line-height: 1.6;
 }
@@ -48,8 +50,9 @@ body {
 .btn-success {
   background-color: var(--primary);
   border-color: var(--primary);
-  
-  &:hover, &:focus {
+
+  &:hover,
+  &:focus {
     background-color: var(--primary-dark);
     border-color: var(--primary-dark);
   }
