@@ -94,6 +94,7 @@ export class PaginaCadastroComponent {
           this.route.navigate(['/login']);
           // Handle successful response here
         } else {
+          alert('Erro ao criar cadastro:' + response.mensagem);
           console.error('Erro ao criar cadastro:', response.mensagem);
           // Handle error response here
         }
