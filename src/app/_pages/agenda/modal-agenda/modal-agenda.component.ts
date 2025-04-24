@@ -580,6 +580,8 @@ export class ModalAgendaComponent implements OnInit {
   fecharModal(): void {
     const modalElement = document.getElementById('modalAgenda');
     if (modalElement) {
+      const inputClientePesquisa = document.getElementById('patientName') as HTMLInputElement;
+      inputClientePesquisa.value = '';
       this.formulario.reset();
       const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
       bootstrapModal?.hide();
