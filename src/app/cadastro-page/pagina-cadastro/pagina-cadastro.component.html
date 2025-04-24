@@ -349,8 +349,13 @@
                 type="button"
                 class="btn btn-success btn-lg"
                 (click)="onSubmit()"
+                [disabled]="loading"
               >
-                Avançar
+                <span
+                  *ngIf="loading"
+                  class="spinner-border spinner-border-sm me-2"
+                ></span>
+                {{ loading ? "Carregando..." : "Cadastrar" }}
               </button>
             </div>
             <div class="d-grid mt-2">

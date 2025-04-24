@@ -12,6 +12,7 @@ export class PaginaCadastroComponent {
   signupForm!: FormGroup;
   selectedOption: string = 'trial'; // Default to trial option
   step: number = 1; // For multi-step form if needed
+  loading = false;
 
   constructor(private fb: FormBuilder, private cadastroService: CadastroUsuarioService, private route: Router) { }
 
@@ -76,32 +77,44 @@ export class PaginaCadastroComponent {
     }
   }
 
+
   onSubmit(): void {
+    // Set loading to true at the start of submission
+    this.loading = true;
+
+    // Check form validity
     if (this.signupForm.invalid) {
       // Mark all fields as touched to show validation errors
       Object.keys(this.signupForm.controls).forEach((key) => {
         this.signupForm.get(key)!.markAsTouched();
       });
+
+      // Immediately set loading to false
+      this.loading = false;
       return;
     }
 
+    // Proceed with form submission
     this.cadastroService.criarCadastro(this.signupForm.value).subscribe({
       next: (response) => {
         if (response.status) {
           alert('Cadastro criado com sucesso! Chave de acesso é seu CPF e senha é Admin@123');
-
           console.log('Cadastro criado com sucesso:', response.mensagem);
           this.route.navigate(['/login']);
-          // Handle successful response here
         } else {
           alert('Erro ao criar cadastro:' + response.mensagem);
           console.error('Erro ao criar cadastro:', response.mensagem);
-          // Handle error response here
         }
+      },
+      error: (error) => {
+        // Handle any HTTP errors
+        console.error('Erro na requisição:', error);
+        alert('Erro na requisição. Tente novamente.');
+      },
+      complete: () => {
+        // Always set loading to false when the observable completes
+        this.loading = false;
       }
-    })
-    // Form is valid, proceed with submission
-    console.log('Form submitted:', this.signupForm.value);
-    // Add your API call or other submission logic here
+    });
   }
 }
