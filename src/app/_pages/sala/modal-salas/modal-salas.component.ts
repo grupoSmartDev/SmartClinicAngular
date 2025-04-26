@@ -23,8 +23,7 @@ export class ModalSalasComponent {
         local: [null],
         status: [null, Validators.required],
         horarioFincionamento : [null],
-        observacao: [null, Validators.required],
-
+        observacao: [null],
       })
    }
 

@@ -8,6 +8,7 @@
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
+  max-width: -webkit-fill-available !important;
 }
 
 /* Cabeçalho do Calendário */

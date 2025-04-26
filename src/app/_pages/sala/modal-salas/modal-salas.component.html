@@ -23,9 +23,7 @@
               </div>
               <div class="col-md-4">
                   <label for="local" class="form-label">Local</label>
-                  <input type="text" required class="form-control form-control-sm" formControlName="local" 
-                  />
-
+                  <input type="text" class="form-control form-control-sm" formControlName="local"/>
               </div>
               <div class="col-md-2">
                   <label for="capacidade" class="form-label">Capacidade</label>
@@ -59,15 +57,11 @@
             </div>
             <div class="col-md-4">
               <label for="horarioFincionamento" class="form-label">Horario de Funcionamento</label>
-              <input type="text" required class="form-control form-control-sm" formControlName="horarioFincionamento" />
+              <input type="text" class="form-control form-control-sm" formControlName="horarioFincionamento" />
           </div>
             <div class="col-md-12">
                 <label for="observacao" class="form-label">Observação</label>
-                <textarea name="observacao"class='form-control form-control-sm' formControlName="observacao" cols="30" rows="10"
-                [ngClass]="{'is-invalid': formulario.get('observacao')?.invalid && formulario.get('observacao')?.touched}"></textarea>
-                <div *ngIf="formulario.get('observacao')?.invalid && formulario.get('observacao')?.touched" class="invalid-feedback">
-                  O campo observação é obrigatório.
-                </div>
+                <textarea name="observacao"class='form-control form-control-sm' formControlName="observacao" cols="30" rows="10"></textarea>
             </div>
           </div>
           </form>
