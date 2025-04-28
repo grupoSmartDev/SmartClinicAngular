@@ -47,16 +47,6 @@ export class ListarConvenioComponent implements OnInit {
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
   cacheList: Convenio[] = [];
 
-  colunasConvenios = [
-    { header: 'Cód.', field: 'id' },
-    { header: 'Nome', field: 'nome' },
-    { header: 'Registro Avs', field: 'registroAvs' },
-    { header: 'Periodo Carencia', field: 'periodoCarencia' },
-    { header: 'Telefone', field: 'telefone' },
-    { header: 'E-mail', field: 'email' },
-    { header: 'Ativo', field: 'ativo' },
-  ];
-
   ngOnInit(): void {
     this.loadData();
   }
