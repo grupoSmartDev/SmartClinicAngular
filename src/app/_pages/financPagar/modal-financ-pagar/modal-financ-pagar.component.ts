@@ -17,7 +17,7 @@ import { Paciente } from '../../../_module/pacienteModule';
   selector: 'app-modal-financ-pagar',
   templateUrl: './modal-financ-pagar.component.html',
   styleUrl: './modal-financ-pagar.component.css',
-  providers : [DatePtBrPipe]
+  providers: [DatePtBrPipe]
 })
 export class ModalFinancPagarComponent {
   @ViewChild('modalComponent') modalComponent?: ElementRef;
@@ -26,10 +26,10 @@ export class ModalFinancPagarComponent {
 
   formulario!: FormGroup;
 
-  listaPacientes : Paciente[] = []
-  listaCentroDeCusto! : CentroDeCusto[];
-  listaFormaPagamento! : FormaPagamento[];
-  listaTipoPagamento! : TipoPagamento[];
+  listaPacientes: Paciente[] = []
+  listaCentroDeCusto!: CentroDeCusto[];
+  listaFormaPagamento!: FormaPagamento[];
+  listaTipoPagamento!: TipoPagamento[];
 
   myControl = new FormControl();
   options: string[] = ['Cliente 1', 'Cliente 2', 'Cliente 3'];
@@ -40,31 +40,32 @@ export class ModalFinancPagarComponent {
     private financPagarService: FinancPagarService,
     private toast: ToastrService,
     private fb: FormBuilder,
-    private centroCustoService : CentroDeCustoService,
-    private formaPagamentoService : FormaPagamentoService,
-    private pacienteService : PacienteService,
-    private tipoPagamentoService : TipoPagamentoService,
-    private datePipe : DatePtBrPipe
+    private centroCustoService: CentroDeCustoService,
+    private formaPagamentoService: FormaPagamentoService,
+    private pacienteService: PacienteService,
+    private tipoPagamentoService: TipoPagamentoService,
+    private datePipe: DatePtBrPipe
   ) {
     this.formulario = this.fb.group({
       id: [],
-      idOrigem : [null],
-      nrDocto : [null],
+      idOrigem: [null],
+      nrDocto: [null],
       dataEmissao: ['', Validators.required],
-      valorOriginal : [null],
-      valorPago : [null],
+      valorOriginal: [null],
+      valorPago: [null],
       parcela: [1, [Validators.required, Validators.min(1)]],
       valor: [0, [Validators.required, Validators.min(1)]],
-      status : [null],
-      notaFiscal : [null],
+      status: [null],
+      notaFiscal: [null],
       descricao: ['', Validators.required],
-      classificacao : [null],
+      classificacao: [null],
       observacao: [''],
       pacienteId: [null],
-      fornecedorId : [null],
+      fornecedorId: [null],
       centroCustoId: [null],
-      bancoId : [null],
-      subFinancPagar : this.fb.array([]),
+      bancoId: [null],
+      tipoPagamentoId: [null],
+      subFinancPagar: this.fb.array([]),
     });
 
     this.filteredOptions = this.options;
@@ -94,28 +95,28 @@ export class ModalFinancPagarComponent {
 
   carregarDados(financPagar: any) {
 
-    while(this.subFinancPagar.length !== 0){
+    while (this.subFinancPagar.length !== 0) {
       this.subFinancPagar.removeAt(0);
     }
 
     this.formulario.patchValue(this.data);
     let dataEmissao = this.formulario.get("dataEmissao")?.value;
 
-    if(dataEmissao){
+    if (dataEmissao) {
       dataEmissao = this.datePipe.formatToHtmlDate(dataEmissao);
-      this.formulario.patchValue({dataEmissao})
+      this.formulario.patchValue({ dataEmissao })
     }
 
     if (this.data.subFinancPagar && this.data.subFinancPagar.length > 0) {
       this.data.subFinancPagar.forEach(subFinanc => {
-        let dataVencimento : any = subFinanc.dataVencimento;
-        if(dataVencimento){
-          dataVencimento =  this.datePipe.formatToHtmlDate(dataVencimento);
+        let dataVencimento: any = subFinanc.dataVencimento;
+        if (dataVencimento) {
+          dataVencimento = this.datePipe.formatToHtmlDate(dataVencimento);
         }
 
-        let dataPagamento : any = subFinanc.dataPagamento;
-        if(dataPagamento){
-          dataPagamento =  this.datePipe.formatToHtmlDate(dataPagamento);
+        let dataPagamento: any = subFinanc.dataPagamento;
+        if (dataPagamento) {
+          dataPagamento = this.datePipe.formatToHtmlDate(dataPagamento);
         }
 
         this.subFinancPagar.push(
@@ -142,8 +143,8 @@ export class ModalFinancPagarComponent {
     this.formulario.reset();
   }
 
-  onSubmi(){
-    if(this.formulario.invalid){
+  onSubmi() {
+    if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha todos os campos obrigatórios', 'Erro');
       return;
@@ -155,17 +156,17 @@ export class ModalFinancPagarComponent {
       ? this.financPagarService.Atualizar(dataToSave)
       : this.financPagarService.Criar(dataToSave);
 
-      saveOperation.subscribe({
-        next: () => {
-          const action = dataToSave.id ? 'atualizado' : 'criado';
-          this.toast.success(`Contas a pagar ${action} com sucesso!`, 'Parabéns');
-          this.dadosAtualizado.emit();
-          this.fecharModal();
-        },
-        error: () => {
-          this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
-        },
-      });
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Contas a pagar ${action} com sucesso!`, 'Parabéns');
+        this.dadosAtualizado.emit();
+        this.fecharModal();
+      },
+      error: () => {
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
   }
 
   onSubmit() {
@@ -228,9 +229,9 @@ export class ModalFinancPagarComponent {
           observacao: [''],
           desconto: [0],
           juros: [0],
-          multa : [0],
-          formaPagamentoId : [null],
-          tipoPagamentoId : [null],
+          multa: [0],
+          formaPagamentoId: [null],
+          tipoPagamentoId: [null],
         })
       );
     }
@@ -243,7 +244,7 @@ export class ModalFinancPagarComponent {
   }
 
   testeEnvios(): void {
-    
+
     if (this.formulario.valid) {
       console.log('Formulário enviado:', this.formulario.value);
       alert('Formulário enviado com sucesso!');
@@ -266,7 +267,7 @@ export class ModalFinancPagarComponent {
     }, 200);
   }
 
-  buscarCC() : void{
+  buscarCC(): void {
     this.centroCustoService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
@@ -280,7 +281,7 @@ export class ModalFinancPagarComponent {
     })
   }
 
-  buscarFP() : void{
+  buscarFP(): void {
     this.formaPagamentoService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
@@ -293,7 +294,7 @@ export class ModalFinancPagarComponent {
       }
     })
   }
-  buscarTP() : void{
+  buscarTP(): void {
     this.tipoPagamentoService.ListarTipoPagamento().subscribe({
       next: (data) => {
         if (data.dados) {

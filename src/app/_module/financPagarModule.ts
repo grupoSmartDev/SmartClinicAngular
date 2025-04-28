@@ -3,9 +3,10 @@ import { CentroDeCusto } from "./centroDeCustoModule";
 import { Fornecedor } from "./fornecedorModule";
 import { Paciente } from "./pacienteModule";
 import { SubFinancPagar } from "./subFinancPagarModule";
+import { TipoPagamento } from "./tipoPagamentoModule";
 
-export interface FinancPagar{
-    
+export interface FinancPagar {
+
     id: string;
     idOrigem: string; //ok
     nrDocto: string; //ok
@@ -13,7 +14,7 @@ export interface FinancPagar{
     valorOriginal: number;
     valorPago: number;
     parcela: number;
-    valor : number;
+    valor: number;
     status: StatusPagamento; // Enumeração
     notaFiscal: string; //ok
     descricao: string; //ok
@@ -21,7 +22,7 @@ export interface FinancPagar{
     observacao: string; //ok
     pacienteId: string; //ok
     paciente: Paciente; //ok
-    fornecedorId: string; 
+    fornecedorId: string;
     fornecedor?: Fornecedor;
     centroCustoId: string; //ok
     centroCusto: CentroDeCusto; //ok
@@ -29,7 +30,9 @@ export interface FinancPagar{
     banco?: Banco;
     subFinancPagar: SubFinancPagar[];
     usuarioResponsavelId: string;
-    dataUltimaAtualizacao: Date; 
+    dataUltimaAtualizacao: Date;
+    tipoPagamentoId: string;
+    tipoPagamento: TipoPagamento;
 }
 
 export enum StatusPagamento {

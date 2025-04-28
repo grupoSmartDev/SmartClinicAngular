@@ -1,48 +1,86 @@
-  <!-- Modal -->
-  <div #modalEditarCriar class="modal fade" id="modalEditarCriar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Contas a pagar</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="fecharModal()"  aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="formulario" (ngSubmit)="testeEnvios()">
-            <!-- Informações Gerais -->
-            <div class="row">
-              <div class="col-md-9">
-                <label for="descricao" class="form-label">Descrição</label>
-                <input
-                  id="descricao"
-                  type="text"
-                  class="form-control form-control-sm"
-                  formControlName="descricao"
-                  placeholder="Digite a descrição do financeiro"
-                  [ngClass]="{'is-invalid' : formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched}"
-                />
-                <div *ngIf="formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched" class="invalid-feedback">
-                  O campo descrição é obrigatório.
-                </div>
-              </div>
-              <div class="col-md-3 justify-self-end">
-                <label for="dataEmissao" class="form-label">Data de Emissão</label>
-                <input
-                  id="dataEmissao"
-                  type="date"
-                  class="form-control form-control-sm"
-                  formControlName="dataEmissao"
-                  [ngClass]="{'is-invalid' : formulario.get('dataEmissao')?.invalid && formulario.get('dataEmissao')?.touched}"
-                />
-                <div *ngIf="formulario.get('dataEmissao')?.invalid && formulario.get('dataEmissao')?.touched" class="invalid-feedback">
-                  O campo data emissão é obrigatório.
-                </div>
+<!-- Modal -->
+<div
+  #modalEditarCriar
+  class="modal fade"
+  id="modalEditarCriar"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="statusModalLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Contas a pagar</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formulario" (ngSubmit)="testeEnvios()">
+          <!-- Informações Gerais -->
+          <div class="row">
+            <div class="col-md-9">
+              <label for="descricao" class="form-label">Descrição</label>
+              <input
+                id="descricao"
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="descricao"
+                placeholder="Digite a descrição do financeiro"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('descricao')?.invalid &&
+                    formulario.get('descricao')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('descricao')?.invalid &&
+                  formulario.get('descricao')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo descrição é obrigatório.
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-4">
-                <div>
-                  <label for="paciente" class="form-label">Paciente</label>
-                  <!-- <input
+            <div class="col-md-3 justify-self-end">
+              <label for="dataEmissao" class="form-label"
+                >Data de Emissão</label
+              >
+              <input
+                id="dataEmissao"
+                type="date"
+                class="form-control form-control-sm"
+                formControlName="dataEmissao"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('dataEmissao')?.invalid &&
+                    formulario.get('dataEmissao')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('dataEmissao')?.invalid &&
+                  formulario.get('dataEmissao')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo data emissão é obrigatório.
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div>
+                <label for="paciente" class="form-label">Paciente</label>
+                <!-- <input
                     id="paciente"
                     type="text"
                     [formControl]="myControl"
@@ -62,159 +100,255 @@
                       {{ option }}
                     </li>
                   </ul> -->
-                  <select name="" class="form-select form-select-sm" id="" formControlName="pacienteId">
-                    <option value="">Selecione um paciente</option>
-                    @for (item of listaPacientes; track $index) {
-                      <option value="{{ item.id }}">{{ item.nome }} - {{ item.cpf }}</option>
-                    }
-                  </select>
-                </div>  
-                <inpute type="hidden" formControlName="pacienteId" />
+                <select
+                  name=""
+                  class="form-select form-select-sm"
+                  id=""
+                  formControlName="pacienteId"
+                >
+                  <option value="">Selecione um paciente</option>
+                  @for (item of listaPacientes; track $index) {
+                  <option value="{{ item.id }}">
+                    {{ item.nome }} - {{ item.cpf }}
+                  </option>
+                  }
+                </select>
               </div>
-                <div class="col-md-4">
-                  <label for="" class="form-label">CPF</label>
-                  <input
-                  id="cpf"
-                  type="text"
-                  class="form-control form-control-sm"
-                  placeholder="3 números para pesquisa"
-                  mask="000.000.000-00"
-                />                  
-                </div>
-              <div class="col-md-4">
-                <label for="centroCusto" class="form-label">Centro de Custo</label>
-               <select name="" id="" class="form-select form-select-sm"
+              <inpute type="hidden" formControlName="pacienteId" />
+            </div>
+            <!-- <div class="col-md-4">
+              <label for="" class="form-label">CPF</label>
+              <input
+                id="cpf"
+                type="text"
+                class="form-control form-control-sm"
+                placeholder="3 números para pesquisa"
+                mask="000.000.000-00"
+              />
+            </div> -->
+            <div class="col-md-4">
+              <label for="centroCusto" class="form-label"
+                >Centro de Custo</label
+              >
+              <select
+                name=""
+                id=""
+                class="form-select form-select-sm"
                 formControlName="centroCustoId"
-                [ngClass]="{'is-invalid' : formulario.get('centroCustoId')?.invalid && formulario.get('centroCustoId')?.touched}"
-                >
-                <option value="0">Selecione uma opção</option>
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('centroCustoId')?.invalid &&
+                    formulario.get('centroCustoId')?.touched
+                }"
+              >
+                <option value="null">Selecione uma opção</option>
                 @for (item of listaCentroDeCusto; track $index) {
-                  <option value="{{item.id}}">{{item.descricao}}</option>
+                <option value="{{ item.id }}">{{ item.descricao }}</option>
                 }
-               </select>
-               <div *ngIf="formulario.get('centroCustoId')?.invalid && formulario.get('centroCustoId')?.touched" class="invalid-feedback">
+              </select>
+              <div
+                *ngIf="
+                  formulario.get('centroCustoId')?.invalid &&
+                  formulario.get('centroCustoId')?.touched
+                "
+                class="invalid-feedback"
+              >
                 O campo centro de custo é obrigatório.
-              </div>
-              </div>
-            </div> 
-            <div class="row">
-            
-            </div>        
-            <!-- Informações Financeiras -->
-            <div class="row">
-              <div class="col-md-3">
-                <label for="" class="form-label">N° Documento</label>
-                <input type="text" class="form-control form-control-sm"
-                formControlName="nrDocto"
-                readonly
-                >
-              </div>
-              <div class="col-md-3">
-                <label for="" class="form-label">Nota Fiscal</label>
-                <input type="text" class="form-control form-control-sm"
-                formControlName="notaFiscal"
-                readonly
-                >
-              </div>
-              <div class="col-md-3">
-                <label for="valor" class="form-label">Valor Total</label>
-                <input
-                  id="valor"
-                  type="number"
-                  class="form-control form-control-sm"
-                  formControlName="valor"
-                  (change)="onValorTotalChange()"
-                  placeholder="Informe o valor total"
-                  [ngClass]="{'is-invalid' : formulario.get('valor')?.invalid && formulario.get('valor')?.touched}"
-                />
-                <div *ngIf="formulario.get('valor')?.invalid && formulario.get('valor')?.touched" class="invalid-feedback">
-                  O campo Valor é obrigatório.
-                </div>
-              </div>
-              <div class="col-md-3">
-                <label for="parcela" class="form-label">Parcelas</label>
-                <input
-                  id="parcelas"
-                  type="number"
-                  class="form-control form-control-sm"
-                  formControlName="parcela"
-                  (change)="gerarParcelas()"
-                  placeholder="Informe a quantidade de parcelas"
-                  [ngClass]="{'is-invalid' : formulario.get('parcela')?.invalid && formulario.get('parcela')?.touched}"
-                />
-                <div *ngIf="formulario.get('parcela')?.invalid && formulario.get('parcela')?.touched" class="invalid-feedback">
-                  O campo parcela é obrigatório.
-                </div>
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-md-12">
-                <label class="form-label">
-                  Observação
-                </label>
-                <textarea name=""
-                 class="form-control form-control-sm"
-                  formControlName="observacao"
-                  rows="3"
-                  placeholder="Adicione uma observação"></textarea>
+            <div class="col-md-4">
+              <label for="tipoPagamento" class="form-label"
+                >Tipo de Pagamento</label
+              >
+              <select
+                name=""
+                id=""
+                class="form-select form-select-sm"
+                formControlName="tipoPagamentoId"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('tipoPagamentoId')?.invalid &&
+                    formulario.get('tipoPagamentoId')?.touched
+                }"
+              >
+                <option value="null">Selecione uma opção</option>
+                @for (item of listaTipoPagamento; track $index) {
+                <option value="{{ item.id }}">{{ item.descricao }}</option>
+                }
+              </select>
+              <div
+                *ngIf="
+                  formulario.get('tipoPagamentoId')?.invalid &&
+                  formulario.get('tipoPagamentoId')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo centro de custo é obrigatório.
               </div>
             </div>
-        
-            <!-- Tabela de Parcelas -->
-            <div class="table-responsive" *ngIf="subFinancPagar.controls.length > 0">
-              <h5>Parcelas Geradas</h5>
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Data de Vencimento</th>
-                    <th>Data de Pagamento</th>
-                    <th>Valor</th>
-                    <!-- <th>Forma de Pagamento</th> -->
-                    <th>Tipo de Pagamento</th>
-                    <th>Observação</th>
-                  </tr>
-                </thead>
-                <tbody formArrayName="subFinancPagar">
-                  <tr *ngFor="let parcela of subFinancPagar.controls; let i = index" [formGroupName]="i">
-                    <td>{{ i + 1 }}</td>
-                    <td>
-                      <input
-                        type="date"
-                        class="form-control form-control-sm"
-                        formControlName="dataVencimento"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="date"
-                        class="form-control form-control-sm"
-                        formControlName="dataPagamento"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="number"
-                        class="form-control form-control-sm"
-                        formControlName="valor"
-                        readonly
-                      />
-                    </td>
-                    <!-- <td>
-                      <select name="" id="" class="form-select form-select-sm"
+          </div>
+          <div class="row"></div>
+          <!-- Informações Financeiras -->
+          <div class="row">
+            <div class="col-md-3">
+              <label for="" class="form-label">N° Documento</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="nrDocto"
+                readonly
+              />
+            </div>
+            <div class="col-md-3">
+              <label for="" class="form-label">Nota Fiscal</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="notaFiscal"
+                readonly
+              />
+            </div>
+            <div class="col-md-3">
+              <label for="valor" class="form-label">Valor Total</label>
+              <input
+                id="valor"
+                type="number"
+                class="form-control form-control-sm"
+                formControlName="valor"
+                (change)="onValorTotalChange()"
+                placeholder="Informe o valor total"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('valor')?.invalid &&
+                    formulario.get('valor')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('valor')?.invalid &&
+                  formulario.get('valor')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo Valor é obrigatório.
+              </div>
+            </div>
+            <div class="col-md-3">
+              <label for="parcela" class="form-label">Parcelas</label>
+              <input
+                id="parcelas"
+                type="number"
+                class="form-control form-control-sm"
+                formControlName="parcela"
+                (change)="gerarParcelas()"
+                placeholder="Informe a quantidade de parcelas"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('parcela')?.invalid &&
+                    formulario.get('parcela')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('parcela')?.invalid &&
+                  formulario.get('parcela')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo parcela é obrigatório.
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <label class="form-label"> Observação </label>
+              <textarea
+                name=""
+                class="form-control form-control-sm"
+                formControlName="observacao"
+                rows="3"
+                placeholder="Adicione uma observação"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Tabela de Parcelas -->
+          <div
+            class="table-responsive"
+            *ngIf="subFinancPagar.controls.length > 0"
+          >
+            <h5>Parcelas Geradas</h5>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Data de Vencimento</th>
+                  <th>Data de Pagamento</th>
+                  <th>Valor</th>
+                  <!-- <th>Forma de Pagamento</th> -->
+                  <th>Tipo de Pagamento</th>
+                  <th>Observação</th>
+                </tr>
+              </thead>
+              <tbody formArrayName="subFinancPagar">
+                <tr
+                  *ngFor="let parcela of subFinancPagar.controls; let i = index"
+                  [formGroupName]="i"
+                >
+                  <td>{{ i + 1 }}</td>
+                  <td>
+                    <input
+                      type="date"
+                      class="form-control form-control-sm"
+                      formControlName="dataVencimento"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="date"
+                      class="form-control form-control-sm"
+                      formControlName="dataPagamento"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      formControlName="valor"
+                      readonly
+                    />
+                  </td>
+                  <td>
+                    <select
+                      name=""
+                      id=""
+                      class="form-select form-select-sm"
                       formControlName="formaPagamentoId"
-                      [ngClass]="{'is-invalid' : formulario.get('formaPagamentoId')?.invalid && formulario.get('formaPagamentoId')?.touched}"
-                      >
-                        @for (item of listaFormaPagamento; track item.id) {
-                          <option value="{{item.id}}">{{item.descricao}}</option>
-                        }
-                      </select>
-                      <div *ngIf="formulario.get('formaPagamentoId')?.invalid && formulario.get('formaPagamentoId')?.touched" class="invalid-feedback">
-                        O campo forma de pagamento é obrigatório.
-                      </div>
-                    </td> -->
-                    <td>
+                      [ngClass]="{
+                        'is-invalid':
+                          formulario.get('formaPagamentoId')?.invalid &&
+                          formulario.get('formaPagamentoId')?.touched
+                      }"
+                    >
+                      @for (item of listaFormaPagamento; track item.id) {
+                      <option value="{{ item.id }}">
+                        {{ item.descricao }}
+                      </option>
+                      }
+                    </select>
+                    <div
+                      *ngIf="
+                        formulario.get('formaPagamentoId')?.invalid &&
+                        formulario.get('formaPagamentoId')?.touched
+                      "
+                      class="invalid-feedback"
+                    >
+                      O campo forma de pagamento é obrigatório.
+                    </div>
+                  </td>
+                  <!-- <td>
                       <select name="" id="" class="form-select form-select-sm"
                       formControlName="tipoPagamentoId"
                       [ngClass]="{'is-invalid' : formulario.get('tipoPagamentoId')?.invalid && formulario.get('tipoPagamentoId')?.touched}"
@@ -226,29 +360,41 @@
                       <div *ngIf="formulario.get('tipoPagamentoId')?.invalid && formulario.get('tipoPagamentoId')?.touched" class="invalid-feedback">
                         O campo tipo de pagamento é obrigatório.
                       </div>
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        formControlName="observacao"
-                        placeholder="Digite observação"
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </form>
-
-          
-        </div>
-        <div class="modal-footer">
-            <button type="button"  (click)="onSubmit()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>
-            <button type="button" class="btn btn-danger" id="btnCancelar" data-bs-dismiss="modal" (click)="fecharModal()"  aria-label="Close" ><i class="bi bi-x"></i>Cancelar</button>
-        </div>
+                    </td> -->
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="observacao"
+                      placeholder="Digite observação"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          (click)="onSubmit()"
+          class="btn btn-success"
+          id="btn_salvar_editar"
+        >
+          <i class="bi bi-check"></i> Confirmar
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="btnCancelar"
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
+          aria-label="Close"
+        >
+          <i class="bi bi-x"></i>Cancelar
+        </button>
       </div>
     </div>
   </div>
-
-  
+</div>
