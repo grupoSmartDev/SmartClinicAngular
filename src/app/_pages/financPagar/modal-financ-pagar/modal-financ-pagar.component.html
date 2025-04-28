@@ -77,56 +77,62 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-4">
-              <div>
-                <label for="paciente" class="form-label">Paciente</label>
-                <!-- <input
-                    id="paciente"
-                    type="text"
-                    [formControl]="myControl"
-                    (focus)="onInputFocus()"
-                    (blur)="onInputBlur()"
-                    (input)="filterOptions()"
-                    class="form-control form-control-sm"
-                    placeholder="Pesquise o paciente"
-                    autocomplete="off"
-                    [ngClass]="{'is-invalid' : formulario.get('paciente')?.invalid && formulario.get('paciente')?.touched}"
-                  />
-                  <div *ngIf="formulario.get('paciente')?.invalid && formulario.get('paciente')?.touched" class="invalid-feedback">
-                    O campo passiente é obrigatório.
-                  </div>
-                  <ul *ngIf="isDropdownOpen && filteredOptions.length > 0" class="dropdown-menu">
-                    <li *ngFor="let option of filteredOptions" (click)="selectOption(option)">
-                      {{ option }}
-                    </li>
-                  </ul> -->
-                <select
-                  name=""
-                  class="form-select form-select-sm"
-                  id=""
-                  formControlName="pacienteId"
+            <div class="col-md-6">
+              <label for="paciente" class="form-label small fw-semibold">
+                Paciente <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <input
+                  type="text"
+                  autocomplete="off"
+                  id="paciente"
+                  class="form-control form-control-sm"
+                  [(ngModel)]="searchTerm"
+                  [ngModelOptions]="{ standalone: true }"
+                  placeholder="Buscar paciente..."
+                  (input)="onSearch()"
+                  [class.is-invalid]="
+                    formulario.get('pacienteId')?.invalid &&
+                    formulario.get('pacienteId')?.touched
+                  "
+                  aria-describedby="btnNovoPaciente"
+                />
+                <button
+                  class="btn btn-outline-secondary btn-sm"
+                  type="button"
+                  id="btnNovoPaciente"
+                  data-bs-toggle="offcanvas"
+                  data-bs-target="#offcanvasPatient"
+                  aria-label="Adicionar novo paciente"
                 >
-                  <option value="">Selecione um paciente</option>
-                  @for (item of listaPacientes; track $index) {
-                  <option value="{{ item.id }}">
-                    {{ item.nome }} - {{ item.cpf }}
-                  </option>
-                  }
-                </select>
+                  <i class="bi bi-person-plus"></i>
+                </button>
               </div>
-              <inpute type="hidden" formControlName="pacienteId" />
+              <!-- Lista de Pacientes Sugeridos -->
+              <div class="position-relative">
+                <ul
+                  class="list-group list-group-flush shadow-sm mt-1 position-absolute w-100"
+                  style="z-index: 1000"
+                  *ngIf="filteredPatients.length > 0"
+                >
+                  <li
+                    class="list-group-item list-group-item-action py-2 small cursor-pointer"
+                    *ngFor="let patient of filteredPatients"
+                    (click)="selectPatient(patient)"
+                    role="button"
+                    [attr.aria-label]="'Selecionar paciente ' + patient.nome"
+                  >
+                    <div
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <span>{{ patient.nome }}</span>
+                      <small class="text-muted">{{ patient.cpf }}</small>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <!-- <div class="col-md-4">
-              <label for="" class="form-label">CPF</label>
-              <input
-                id="cpf"
-                type="text"
-                class="form-control form-control-sm"
-                placeholder="3 números para pesquisa"
-                mask="000.000.000-00"
-              />
-            </div> -->
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="centroCusto" class="form-label"
                 >Centro de Custo</label
               >
@@ -157,7 +163,7 @@
               </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="tipoPagamento" class="form-label"
                 >Tipo de Pagamento</label
               >
@@ -287,8 +293,8 @@
                   <th>Data de Vencimento</th>
                   <th>Data de Pagamento</th>
                   <th>Valor</th>
-                  <!-- <th>Forma de Pagamento</th> -->
-                  <th>Tipo de Pagamento</th>
+                  <th>Forma de Pagamento</th>
+                  <!-- <th>Tipo de Pagamento</th> -->
                   <th>Observação</th>
                 </tr>
               </thead>
