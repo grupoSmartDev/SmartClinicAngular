@@ -576,11 +576,24 @@
                   <label for="comoConheceu" class="form-label"
                     >Como Conheceu</label
                   >
-                  <input
+                  <select
+                    formControlName="comoConheceu"
+                    class="form-select form-select-sm"
+                  >
+                    <option selected value="">Selecione uma opção</option>
+                    <option value="1">Facebook</option>
+                    <option value="2">Instagram</option>
+                    <option value="3">Google</option>
+                    <option value="4">Indicação</option>
+                    <option value="5">Convênio</option>
+                    <option value="6">Placa</option>
+                    <option value="7">Parceiro</option>
+                  </select>
+                  <!-- <input
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="comoConheceu"
-                  />
+                  /> -->
                 </div>
               </div>
             </div>
