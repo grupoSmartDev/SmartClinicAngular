@@ -130,6 +130,7 @@ export class ListarConvenioComponent implements OnInit {
         console.log('Convênio excluído com sucesso:', response);
         this.lista = this.lista.filter((convenio) => convenio.id !== id);
         this.toast.success('Convênio excluído com sucesso!', 'Excluído');
+        this.invalidateCache();
       },
       error: (err) => {
         console.error('Erro ao excluir status:', err);
