@@ -5,15 +5,27 @@ import { ModalConvenioComponent } from '../modal-convenio/modal-convenio.compone
 import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
 import * as bootstrap from 'bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { TabService } from '../../../_services/tabs.service';
+
+interface CacheData {
+  cacheList: Convenio[];
+  totalItems: number;
+  timestamp: number;
+}
 
 @Component({
   selector: 'app-listar-convenio',
   templateUrl: './listar-convenio.component.html',
-  styleUrl: './listar-convenio.component.css'
+  styleUrl: './listar-convenio.component.css',
 })
 export class ListarConvenioComponent implements OnInit {
-  constructor(private convenioService: ConvenioService, private toast: ToastrService) { }
-  @ViewChild(ModalConvenioComponent) modalConvenioComponent!: ModalConvenioComponent;
+  constructor(
+    private convenioService: ConvenioService,
+    private toast: ToastrService,
+    private tabService: TabService
+  ) {}
+  @ViewChild(ModalConvenioComponent)
+  modalConvenioComponent!: ModalConvenioComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
   lista: Convenio[] = [];
@@ -32,6 +44,8 @@ export class ListarConvenioComponent implements OnInit {
   telefoneFiltro: string = '';
   paginar: boolean = true;
 
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
+  cacheList: Convenio[] = [];
 
   colunasConvenios = [
     { header: 'Cód.', field: 'id' },
@@ -47,22 +61,61 @@ export class ListarConvenioComponent implements OnInit {
     this.loadData();
   }
 
+  private getCacheKey(): string {
+    // Cria uma chave única para o cache baseada nos parâmetros atuais
+    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.cacheList}`;
+  }
+
+  private isCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.CACHE_DURATION;
+  }
+
+  // Método para invalidar o cache quando necessário
+  private invalidateCache(): void {
+    const cacheKey = this.getCacheKey();
+    this.tabService.setCacheData(cacheKey, null);
+  }
+
   loadData(): void {
-    this.convenioService.Listar(
-      this.currentPage,
-      this.pageSize, this.nomeFiltro, this.idFiltro,
-      this.registroAvsFiltro, this.telefoneFiltro, this.paginar = true).subscribe({
-        next: (data) => {
-          if (data.dados) {
-            this.lista = data.dados;
-            this.totalItems = data.totalCount ?? 0;
-          }
-        },
-        error: (err) => {
-          console.error('Erro ao buscar Convênio:', err);
-          this.errorMessage = 'Erro ao carregar as Convênio. Tente novamente mais tarde.';
-        }
-      })
+    const cacheKey = this.getCacheKey();
+    const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
+
+    if (cachedData && this.isCacheValid(cachedData.timestamp)) {
+      // Se temos dados em cache válidos, use-os
+      this.lista = cachedData.cacheList;
+      this.totalItems = cachedData.totalItems;
+    } else {
+      this.convenioService
+        .Listar(
+          this.currentPage,
+          this.pageSize,
+          this.nomeFiltro,
+          this.idFiltro,
+          this.registroAvsFiltro,
+          this.telefoneFiltro,
+          (this.paginar = true)
+        )
+        .subscribe({
+          next: (data) => {
+            if (data.dados) {
+              this.lista = data.dados;
+              this.totalItems = data.totalCount ?? 0;
+
+              // Armazena os dados no cache
+              this.tabService.setCacheData(cacheKey, {
+                cacheList: this.cacheList,
+                totalItems: this.totalItems,
+                timestamp: Date.now(),
+              });
+            }
+          },
+          error: (err) => {
+            console.error('Erro ao buscar Convênio:', err);
+            this.errorMessage =
+              'Erro ao carregar as Convênio. Tente novamente mais tarde.';
+          },
+        });
+    }
   }
 
   editarItem(item: any) {
@@ -75,13 +128,16 @@ export class ListarConvenioComponent implements OnInit {
     this.convenioService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Convênio excluído com sucesso:', response);
-        this.lista = this.lista.filter(convenio => convenio.id !== id);
+        this.lista = this.lista.filter((convenio) => convenio.id !== id);
         this.toast.success('Convênio excluído com sucesso!', 'Excluído');
       },
       error: (err) => {
         console.error('Erro ao excluir status:', err);
-        this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir uma Convênio');
-      }
+        this.toast.error(
+          'Tente novamente ou fale com o suporte',
+          'Erro ao excluir uma Convênio'
+        );
+      },
     });
   }
 
@@ -90,8 +146,10 @@ export class ListarConvenioComponent implements OnInit {
   }
 
   atualizarConvenio() {
+    this.invalidateCache();
     this.loadData();
   }
+
   openModal(convenio: any) {
     if (convenio.id) {
       this.modalConvenioComponent.convenio = convenio;
@@ -123,11 +181,10 @@ export class ListarConvenioComponent implements OnInit {
   }
 
   onSearch(): void {
+    this.invalidateCache();
     this.currentPage = 1;
     this.loadData();
   }
-
-
 
   toggleFiltros() {
     this.mostrarFiltros = !this.mostrarFiltros;
