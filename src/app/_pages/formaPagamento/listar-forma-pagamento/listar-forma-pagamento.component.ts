@@ -5,6 +5,13 @@ import { ModalFormaPagamentoComponent } from '../modal-forma-pagamento/modal-for
 import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
 import { FormaPagamento } from '../../../_module/formaPagamentoModule';
 import * as bootstrap from 'bootstrap';
+import { TabService } from '../../../_services/tabs.service';
+
+interface CacheData {
+  cacheList: FormaPagamento[];
+  totalItems: number;
+  timestamp: number;
+}
 
 @Component({
   selector: 'app-listar-forma-pagamento',
@@ -13,7 +20,9 @@ import * as bootstrap from 'bootstrap';
 })
 export class ListarFormaPagamentoComponent implements OnInit {
 
-  constructor(private formaPagamentoService: FormaPagamentoService, private toast: ToastrService) { }
+  constructor(private formaPagamentoService: FormaPagamentoService, private toast: ToastrService,
+    private tabService: TabService
+  ) { }
 
   @ViewChild(ModalFormaPagamentoComponent) modalFormaPagamentoComponent!: ModalFormaPagamentoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
@@ -31,25 +40,60 @@ export class ListarFormaPagamentoComponent implements OnInit {
   descricaoFiltro: string = '';
   subCentroDeCustoFiltro: string = '';
 
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
+
   ngOnInit(): void {
     this.loadData();
   }
 
+  private getCacheKey(): string {
+    // Cria uma chave única para o cache baseada nos parâmetros atuais
+    return `formaPagamento-list-${this.currentPage}-${this.pageSize}-${this.descricaoFiltro}-${this.idFiltro}`;
+  }
+
+  private isCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.CACHE_DURATION;
+  }
+
+  // Método para invalidar o cache quando necessário
+  private invalidateCache(): void {
+    const cacheKey = this.getCacheKey();
+    this.tabService.setCacheData(cacheKey, null);
+  }
+
   loadData(): void {
-    this.formaPagamentoService.Listar(
-      this.currentPage, this.pageSize, this.idFiltro, this.descricaoFiltro, this.parcelaFiltro, true
-    ).subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.lista = data.dados;
-          this.totalItems = data.totalCount ?? 0;
+
+    const cacheKey = this.getCacheKey();
+    const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
+
+    if (cachedData && this.isCacheValid(cachedData.timestamp)) {
+      // Se temos dados em cache válidos, use-os
+      this.lista = cachedData.cacheList;
+      this.totalItems = cachedData.totalItems;
+    } else {
+
+      this.formaPagamentoService.Listar(
+        this.currentPage, this.pageSize, this.idFiltro, this.descricaoFiltro, this.parcelaFiltro, true
+      ).subscribe({
+        next: (data) => {
+          if (data.dados) {
+            this.lista = data.dados;
+            this.totalItems = data.totalCount ?? 0;
+
+            // Armazena os dados no cache
+            this.tabService.setCacheData(cacheKey, {
+              cacheList: this.lista,
+              totalItems: this.totalItems,
+              timestamp: Date.now(),
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar forma de pagamento:', err);
+          this.errorMessage = 'Erro ao carregar as forma de pagamento. Tente novamente mais tarde.';
         }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar forma de pagamento:', err);
-        this.errorMessage = 'Erro ao carregar as forma de pagamento. Tente novamente mais tarde.';
-      }
-    })
+      })
+    }
   }
 
   openModal(formaPagamento: any) {
@@ -71,6 +115,8 @@ export class ListarFormaPagamentoComponent implements OnInit {
         console.log('Status excluído com sucesso:', response);
         this.lista = this.lista.filter(formaPagamento => formaPagamento.id !== id);
         this.toast.success('Forma de pagamento excluído com sucesso!', 'Excluído');
+
+        this.invalidateCache();
       },
       error: (err) => {
         console.error('Erro ao excluir status:', err);
@@ -84,7 +130,7 @@ export class ListarFormaPagamentoComponent implements OnInit {
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  promptDelete(dataParaExcluir : any) {
+  promptDelete(dataParaExcluir: any) {
     this.formaPagamentoParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
@@ -103,6 +149,7 @@ export class ListarFormaPagamentoComponent implements OnInit {
   }
 
   filtrar(): void {
+    this.invalidateCache();
     this.currentPage = 1;
     this.loadData();
   }

@@ -5,7 +5,13 @@ import { ToastrService } from 'ngx-toastr';
 import { ModalCentroDeCustoComponent } from '../modal-centro-de-custo/modal-centro-de-custo.component';
 import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
 import * as bootstrap from 'bootstrap';
+import { TabService } from '../../../_services/tabs.service';
 
+interface CacheData {
+  cacheList: CentroDeCusto[];
+  totalItems: number;
+  timestamp: number;
+}
 @Component({
   selector: 'app-listar-centro-de-custo',
   templateUrl: './listar-centro-de-custo.component.html',
@@ -13,7 +19,9 @@ import * as bootstrap from 'bootstrap';
 })
 export class ListarCentroDeCustoComponent {
 
-  constructor(private centroDeCustoService: CentroDeCustoService, private toast: ToastrService) { }
+  constructor(private centroDeCustoService: CentroDeCustoService, private toast: ToastrService,
+    private tabService: TabService
+  ) { }
   @ViewChild(ModalCentroDeCustoComponent) modalCentroDeCusto!: ModalCentroDeCustoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
   lista: CentroDeCusto[] = []
@@ -32,24 +40,58 @@ export class ListarCentroDeCustoComponent {
   descricaoFiltro: string = '';
   subCentroDeCustoFiltro: string = '';
 
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
+
   ngOnInit(): void {
     this.loadData();
   }
+  private getCacheKey(): string {
+    // Cria uma chave única para o cache baseada nos parâmetros atuais
+    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.descricaoFiltro}-${this.idFiltro}-${this.subCentroDeCustoFiltro}`;
+  }
 
+  private isCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.CACHE_DURATION;
+  }
+
+  // Método para invalidar o cache quando necessário
+  private invalidateCache(): void {
+    const cacheKey = this.getCacheKey();
+    this.tabService.setCacheData(cacheKey, null);
+  }
   loadData(): void {
-    this.centroDeCustoService.Listar(
-      this.currentPage,this.pageSize,this.tipoFiltro,this.idFiltro,this.descricaoFiltro,this.subCentroDeCustoFiltro,true
-    ).subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.lista = data.dados;
+    const cacheKey = this.getCacheKey();
+    const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
+
+    if (cachedData && this.isCacheValid(cachedData.timestamp)) {
+      // Se temos dados em cache válidos, use-os
+      this.lista = cachedData.cacheList;
+      this.totalItems = cachedData.totalItems;
+    }
+    else {
+
+      this.centroDeCustoService.Listar(
+        this.currentPage, this.pageSize, this.tipoFiltro, this.idFiltro, this.descricaoFiltro, this.subCentroDeCustoFiltro, true
+      ).subscribe({
+        next: (data) => {
+          if (data.dados) {
+            this.lista = data.dados;
+            this.totalItems = data.totalCount ?? 0;
+
+            // Armazena os dados no cache
+            this.tabService.setCacheData(cacheKey, {
+              cacheList: this.lista,
+              totalItems: this.totalItems,
+              timestamp: Date.now(),
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar Centro de custo:', err);
+          this.errorMessage = 'Erro ao carregar os Centro de custo. Tente novamente mais tarde.';
         }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar Centro de custo:', err);
-        this.errorMessage = 'Erro ao carregar os Centro de custo. Tente novamente mais tarde.';
-      }
-    })
+      })
+    }
   }
 
   openModal(centroDeCusto: any) {
@@ -71,6 +113,8 @@ export class ListarCentroDeCustoComponent {
         console.log('Centro De Custo excluído com sucesso:', response);
         this.lista = this.lista.filter(centroDeCusto => centroDeCusto.id !== id);
         this.toast.success('Centro De Custo  excluído com sucesso!', 'Excluído');
+
+        this.invalidateCache();
       },
       error: (err) => {
         console.error('Erro ao excluir Centro De Custo :', err);
@@ -83,7 +127,7 @@ export class ListarCentroDeCustoComponent {
     this.loadData(); // Chama o método para buscar os cc novamente
   }
 
-  promptDelete(dataParaExcluir : any) {
+  promptDelete(dataParaExcluir: any) {
     this.dataParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
@@ -96,7 +140,7 @@ export class ListarCentroDeCustoComponent {
     this.idParaExcluir = '';
   }
 
-  
+
   onPageChange(page: number): void {
     this.currentPage = page;
     this.loadData();
@@ -109,17 +153,17 @@ export class ListarCentroDeCustoComponent {
 
 
 
-toggleFiltros() {
-  this.mostrarFiltros = !this.mostrarFiltros;
-}
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
 
-limparFiltros() {
-  this.tipoFiltro = '';
-  this.idFiltro = '';
-  this.descricaoFiltro = '';
-  this.subCentroDeCustoFiltro = '';
-  // Opcional: realizar uma busca após limpar
-  this.onSearch();
-}
+  limparFiltros() {
+    this.tipoFiltro = '';
+    this.idFiltro = '';
+    this.descricaoFiltro = '';
+    this.subCentroDeCustoFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
+  }
 
 }
