@@ -11,18 +11,35 @@ import { TipoMes } from '../../../_module/planoModule';
 import { StatusPagamento } from '../../../_module/financReceberModule';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { FichaAvaliacaoComponent } from '../ficha-avaliacao/ficha-avaliacao.component';
+import { TabService } from '../../../_services/tabs.service';
+
+interface CacheData {
+  cacheList: Paciente[];
+  totalItems: number;
+  timestamp: number;
+}
 
 @Component({
   selector: 'app-listar-paciente',
   templateUrl: './listar-paciente.component.html',
-  styleUrl: './listar-paciente.component.css'
+  styleUrl: './listar-paciente.component.css',
 })
 export class ListarPacienteComponent {
-  constructor(private pacienteService: PacienteService, private toast: ToastrService, private router: Router, private spinner: NgxSpinnerService, private route: ActivatedRoute) { }
+  constructor(
+    private pacienteService: PacienteService,
+    private toast: ToastrService,
+    private router: Router,
+    private spinner: NgxSpinnerService,
+    private route: ActivatedRoute,
+    private tabService: TabService
+  ) {}
 
-  @ViewChild(ModalPacienteComponent) modalPacienteComponent!: ModalPacienteComponent;
-  @ViewChild(PacienteCompletoComponent) modalPacienteCompletoComponent!: PacienteCompletoComponent;
-  @ViewChild(FichaAvaliacaoComponent) modalFichaAvaliacaoComponent!: FichaAvaliacaoComponent;
+  @ViewChild(ModalPacienteComponent)
+  modalPacienteComponent!: ModalPacienteComponent;
+  @ViewChild(PacienteCompletoComponent)
+  modalPacienteCompletoComponent!: PacienteCompletoComponent;
+  @ViewChild(FichaAvaliacaoComponent)
+  modalFichaAvaliacaoComponent!: FichaAvaliacaoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
   lista: Paciente[] = [];
@@ -43,6 +60,8 @@ export class ListarPacienteComponent {
 
   pacienteId: string = ''; // Para armazenar o ID do paciente da rota
 
+  private readonly CACHE_DURATION = 5 * 60 * 1000;
+
   ngOnInit(): void {
     // Verificar se há um parâmetro ID na rota
     // this.route.params.subscribe(params => {
@@ -58,52 +77,99 @@ export class ListarPacienteComponent {
     this.loadData();
   }
 
+  private getCacheKey(): string {
+    // Cria uma chave única para o cache baseada nos parâmetros atuais
+    return `paciente-list-${this.currentPage}-${this.pageSize}-${this.nomeFiltro}-${this.idFiltro}-${this.paginar}`;
+  }
+
+  private isCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.CACHE_DURATION;
+  }
+
+  // Método para invalidar o cache quando necessário
+  private invalidateCache(): void {
+    const cacheKey = this.getCacheKey();
+    this.tabService.setCacheData(cacheKey, null);
+  }
+
   loadPacienteEspefico(): void {
     //this.spinner.show();
 
-    this.pacienteService.Listar(this.currentPage, this.pageSize, this.nomeFiltro, this.idFiltro,
-      this.cpfFiltro, this.celularFiltro, this.paginar).subscribe({
-        next: (response) => {
-          if (response && response.dados) {
-            // Abrir o modal detalhado do paciente
-            setTimeout(() => {
-              this.openModalDetalhado(response.dados[0]);
-            }, 1000); // Pequeno atraso para garantir que componentes estejam inicializados
-          }
-          // Ainda carrega a lista com o filtro aplicado
-          this.loadData();
-        },
-        error: (err) => {
-          console.error('Erro ao buscar paciente específico:', err);
-          this.toast.error('Erro ao buscar dados do paciente', 'Erro');
-          this.loadData(); // Carrega a lista normal em caso de erro
-          //this.spinner.hide();
-        }
-      });
+    const cacheKey = this.getCacheKey();
+    const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
+
+    if (cachedData && this.isCacheValid(cachedData.timestamp)) {
+      // Se temos dados em cache válidos, use-os
+      this.lista = cachedData.cacheList;
+      this.totalItems = cachedData.totalItems;
+    } else {
+      this.pacienteService
+        .Listar(
+          this.currentPage,
+          this.pageSize,
+          this.nomeFiltro,
+          this.idFiltro,
+          this.cpfFiltro,
+          this.celularFiltro,
+          this.paginar
+        )
+        .subscribe({
+          next: (response) => {
+            if (response && response.dados) {
+              // Abrir o modal detalhado do paciente
+              setTimeout(() => {
+                this.openModalDetalhado(response.dados[0]);
+              }, 1000); // Pequeno atraso para garantir que componentes estejam inicializados
+            }
+
+            // Armazena os dados no cache
+            this.tabService.setCacheData(cacheKey, {
+              cacheList: this.lista,
+              totalItems: this.totalItems,
+              timestamp: Date.now(),
+            });
+            // Ainda carrega a lista com o filtro aplicado
+            this.loadData();
+          },
+          error: (err) => {
+            console.error('Erro ao buscar paciente específico:', err);
+            this.toast.error('Erro ao buscar dados do paciente', 'Erro');
+            this.loadData(); // Carrega a lista normal em caso de erro
+            //this.spinner.hide();
+          },
+        });
+    }
   }
 
   loadData(): void {
-    this.pacienteService.Listar(
-      this.currentPage, this.pageSize, this.nomeFiltro, this.idFiltro,
-      this.cpfFiltro, this.celularFiltro, this.paginar
-    ).subscribe({
-      next: (data) => {
-
-        // this.spinner.show();
-        if (data.dados) {
-          this.lista = data.dados;
-          this.totalItems = data.totalCount ?? 0;
-          console.log(this.lista);
-        }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar Paciente:', err);
-        this.errorMessage = 'Erro ao carregar os Paciente. Tente novamente mais tarde.';
-      },
-      complete: () => {
-        // this.spinner.hide();
-      }
-    })
+    this.pacienteService
+      .Listar(
+        this.currentPage,
+        this.pageSize,
+        this.nomeFiltro,
+        this.idFiltro,
+        this.cpfFiltro,
+        this.celularFiltro,
+        this.paginar
+      )
+      .subscribe({
+        next: (data) => {
+          // this.spinner.show();
+          if (data.dados) {
+            this.lista = data.dados;
+            this.totalItems = data.totalCount ?? 0;
+            console.log(this.lista);
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar Paciente:', err);
+          this.errorMessage =
+            'Erro ao carregar os Paciente. Tente novamente mais tarde.';
+        },
+        complete: () => {
+          // this.spinner.hide();
+        },
+      });
 
     // this.lista = [
     //   {
@@ -319,7 +385,7 @@ export class ListarPacienteComponent {
   openModalDetalhado(paciente: any) {
     if (paciente) {
       this.modalPacienteCompletoComponent.Paciente = paciente;
-      console.table(paciente)
+      console.table(paciente);
     }
 
     const modalElement = document.getElementById('modalPacienteDetalhado');
@@ -328,7 +394,6 @@ export class ListarPacienteComponent {
       modal.show();
     }
   }
-
 
   openfichaAvaliacao(paciente: any) {
     if (paciente.id) {
@@ -343,19 +408,22 @@ export class ListarPacienteComponent {
     }
   }
 
-
   Exluir(paciente: Paciente) {
     let id = paciente.id;
     this.pacienteService.Deletar(id.toString()).subscribe({
       next: (response) => {
         console.log('Paciente excluído com sucesso:', response);
-        this.lista = this.lista.filter(paciente => paciente.id !== id);
+        this.lista = this.lista.filter((paciente) => paciente.id !== id);
         this.toast.success('Paciente  excluído com sucesso!', 'Excluído');
+        this.invalidateCache();
       },
       error: (err) => {
         console.error('Erro ao excluir Paciente :', err);
-        this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir um Paciente');
-      }
+        this.toast.error(
+          'Tente novamente ou fale com o suporte',
+          'Erro ao excluir um Paciente'
+        );
+      },
     });
   }
 
