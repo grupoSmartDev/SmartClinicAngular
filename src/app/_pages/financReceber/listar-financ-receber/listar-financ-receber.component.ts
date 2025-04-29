@@ -11,16 +11,22 @@ import { CentroDeCustoService } from '../../../_services/centro-de-custo.service
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 import { Paciente } from '../../../_module/pacienteModule';
+import { TabService } from '../../../_services/tabs.service';
+
+interface CacheData {
+  cacheList: FinancReceber[];
+  totalItems: number;
+  timestamp: number;
+}
 
 @Component({
   selector: 'app-listar-financ-receber',
   templateUrl: './listar-financ-receber.component.html',
-  styleUrl: './listar-financ-receber.component.css'
+  styleUrl: './listar-financ-receber.component.css',
 })
 export class ListarFinancReceberComponent {
   @ViewChild(ModalFinanceiroReceber) modalComponent!: ModalFinanceiroReceber;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
-
 
   expandedRows: Set<number> = new Set();
 
@@ -41,7 +47,7 @@ export class ListarFinancReceberComponent {
 
   pacienteIdFiltro?: string = '';
   ccFiltro?: string = '';
-  dataBaseFiltro: string = "E";
+  dataBaseFiltro: string = 'E';
   dataFiltroInicio: Date = new Date();
   dataFiltroFim: Date = new Date();
   parcelasVencidasFiltro?: boolean = false;
@@ -49,7 +55,14 @@ export class ListarFinancReceberComponent {
 
   parcelaSelecionada: SubFinancReceber = {} as SubFinancReceber;
 
-  constructor(private financReceberService: FinancReceberService, private toast: ToastrService, private ccService: CentroDeCustoService) { }
+  private readonly CACHE_DURATION = 5 * 60 * 1000;
+
+  constructor(
+    private financReceberService: FinancReceberService,
+    private toast: ToastrService,
+    private ccService: CentroDeCustoService,
+    private tabService: TabService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -58,29 +71,68 @@ export class ListarFinancReceberComponent {
     this.dataFiltroFim = this.formatarDataParaInput(new Date());
   }
 
-  loadData(): void {
-    this.financReceberService.ListarAnalitico(
-      this.currentPage, this.pageSize, this.descricaoFiltro, this.idFiltro, this.ccFiltro,
-      this.pacienteIdFiltro, this.dataBaseFiltro, this.dataFiltroInicio, this.dataFiltroFim,
-      this.paginar
-    ).subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.lista = data.dados;
-          this.totalItems = data.totalCount ?? 0;
-        }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar exercicio:', err);
-        this.errorMessage = 'Erro ao carregar as exercicios. Tente novamente mais tarde.';
-      }
-    });
+  private getCacheKey(): string {
+    // Cria uma chave única para o cache baseada nos parâmetros atuais
+    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.paginar}`;
   }
 
+  private isCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.CACHE_DURATION;
+  }
+
+  // Método para invalidar o cache quando necessário
+  private invalidateCache(): void {
+    const cacheKey = this.getCacheKey();
+    this.tabService.setCacheData(cacheKey, null);
+  }
+
+  loadData(): void {
+    const cacheKey = this.getCacheKey();
+    const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
+
+    if (cachedData && this.isCacheValid(cachedData.timestamp)) {
+      // Se temos dados em cache válidos, use-os
+      this.lista = cachedData.cacheList;
+      this.totalItems = cachedData.totalItems;
+    } else {
+      this.financReceberService
+        .ListarAnalitico(
+          this.currentPage,
+          this.pageSize,
+          this.descricaoFiltro,
+          this.idFiltro,
+          this.ccFiltro,
+          this.pacienteIdFiltro,
+          this.dataBaseFiltro,
+          this.dataFiltroInicio,
+          this.dataFiltroFim,
+          this.paginar
+        )
+        .subscribe({
+          next: (data) => {
+            if (data.dados) {
+              this.lista = data.dados;
+              this.totalItems = data.totalCount ?? 0;
+
+              // Armazena os dados no cache
+              this.tabService.setCacheData(cacheKey, {
+                cacheList: this.lista,
+                totalItems: this.totalItems,
+                timestamp: Date.now(),
+              });
+            }
+          },
+          error: (err) => {
+            console.error('Erro ao buscar exercicio:', err);
+            this.errorMessage =
+              'Erro ao carregar as exercicios. Tente novamente mais tarde.';
+          },
+        });
+    }
+  }
 
   loadCC(): void {
-    this.ccService.Listar(
-    ).subscribe({
+    this.ccService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
           this.ccLista = data.dados;
@@ -88,8 +140,9 @@ export class ListarFinancReceberComponent {
       },
       error: (err) => {
         console.error('Erro ao buscar contas a pagar:', err);
-        this.errorMessage = 'Erro ao carregar as contas a pagar. Tente novamente mais tarde.';
-      }
+        this.errorMessage =
+          'Erro ao carregar as contas a pagar. Tente novamente mais tarde.';
+      },
     });
   }
 
@@ -123,19 +176,28 @@ export class ListarFinancReceberComponent {
     let id = financReceber.id;
 
     if (!id) {
-      return
+      return;
     }
 
     this.financReceberService.Deletar(id.toString()).subscribe({
       next: (response) => {
         console.log('conta a receber excluído com sucesso:', response);
-        this.lista = this.lista.filter(financReceber => financReceber.id !== id);
-        this.toast.success('Contas a receber excluído com sucesso!', 'Excluído');
+        this.lista = this.lista.filter(
+          (financReceber) => financReceber.id !== id
+        );
+        this.toast.success(
+          'Contas a receber excluído com sucesso!',
+          'Excluído'
+        );
+        this.invalidateCache();
       },
       error: (err) => {
         console.error('Erro ao excluir contas a receber:', err);
-        this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir uma contas a receber');
-      }
+        this.toast.error(
+          'Tente novamente ou fale com o suporte',
+          'Erro ao excluir uma contas a receber'
+        );
+      },
     });
   }
 
@@ -162,12 +224,12 @@ export class ListarFinancReceberComponent {
   }
 
   onSearch(): void {
+    this.invalidateCache();
     this.currentPage = 1;
     this.loadData();
   }
 
   toggleRow(id: number): void {
-
     let idConvertido = id;
     if (this.expandedRows.has(idConvertido)) {
       this.expandedRows.delete(idConvertido);
@@ -177,16 +239,16 @@ export class ListarFinancReceberComponent {
   }
 
   isExpanded(id: number): boolean {
-
     let idConvertido = id;
     return this.expandedRows.has(idConvertido);
   }
   //QUANDO FOR REFATORAR, DEIXAR ISSO EM UM HELPER
   isOverdue(dataVencimento: string | Date): boolean {
     // Converte para Date se for string
-    const vencimentoDate = typeof dataVencimento === 'string'
-      ? new Date(dataVencimento)
-      : dataVencimento;
+    const vencimentoDate =
+      typeof dataVencimento === 'string'
+        ? new Date(dataVencimento)
+        : dataVencimento;
 
     // Remove o horário da comparação, focando apenas na data
     const hoje = new Date();
@@ -202,7 +264,7 @@ export class ListarFinancReceberComponent {
 
   limparFiltros() {
     this.idFiltro = undefined;
-    this.dataBaseFiltro = "V";
+    this.dataBaseFiltro = 'V';
     this.dataFiltroInicio = this.formatarDataParaInput(new Date());
     this.dataFiltroFim = this.formatarDataParaInput(new Date());
     this.parcelasVencidasFiltro = false;
@@ -217,6 +279,5 @@ export class ListarFinancReceberComponent {
     return `${ano}-${mes}-${dia}`;
   }
 
-  //tem que fazer lista de pacientes aqui para o filtro. 
-
+  //tem que fazer lista de pacientes aqui para o filtro.
 }

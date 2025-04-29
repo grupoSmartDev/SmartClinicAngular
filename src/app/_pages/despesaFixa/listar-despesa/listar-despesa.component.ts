@@ -5,15 +5,27 @@ import { DespesaFixaService } from '../../../_services/despesa-fixa.service';
 import { ModalDespesaComponent } from '../modal-despesa/modal-despesa.component';
 import { DespesaFixa } from '../../../_module/despesaFixaModule';
 import * as bootstrap from 'bootstrap';
+import { TabService } from '../../../_services/tabs.service';
+
+interface CacheData {
+  cacheList: DespesaFixa[];
+  totalItems: number;
+  timestamp: number;
+}
 
 @Component({
   selector: 'app-listar-despesa',
   templateUrl: './listar-despesa.component.html',
-  styleUrl: './listar-despesa.component.css'
+  styleUrl: './listar-despesa.component.css',
 })
 export class ListarDespesaComponent {
-  constructor(private despesaService: DespesaFixaService, private toast: ToastrService) { }
-  @ViewChild(ModalDespesaComponent) modalDespesaComponent!: ModalDespesaComponent;
+  constructor(
+    private despesaService: DespesaFixaService,
+    private toast: ToastrService,
+    private tabService: TabService
+  ) {}
+  @ViewChild(ModalDespesaComponent)
+  modalDespesaComponent!: ModalDespesaComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
   lista: DespesaFixa[] = [];
@@ -32,26 +44,67 @@ export class ListarDespesaComponent {
   telefoneFiltro: string = '';
   paginar: boolean = true;
 
+  private readonly CACHE_DURATION = 5 * 60 * 1000;
+
   ngOnInit(): void {
     this.loadData();
   }
 
+  private getCacheKey(): string {
+    // Cria uma chave única para o cache baseada nos parâmetros atuais
+    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.nomeFiltro}-${this.idFiltro}-${this.registroAvsFiltro}-${this.telefoneFiltro}-${this.paginar}`;
+  }
+
+  private isCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.CACHE_DURATION;
+  }
+
+  // Método para invalidar o cache quando necessário
+  private invalidateCache(): void {
+    const cacheKey = this.getCacheKey();
+    this.tabService.setCacheData(cacheKey, null);
+  }
+
   loadData(): void {
-    this.despesaService.Listar(
-      this.currentPage,
-      this.pageSize, this.nomeFiltro, this.idFiltro,
-      this.registroAvsFiltro, this.telefoneFiltro, this.paginar = true).subscribe({
-        next: (data) => {
-          if (data.dados) {
-            this.lista = data.dados;
-            this.totalItems = data.totalCount ?? 0;
-          }
-        },
-        error: (err) => {
-          console.error('Erro ao buscar despesas:', err);
-          this.errorMessage = 'Erro ao carregar as despesas. Tente novamente mais tarde.';
-        }
-      })
+    const cacheKey = this.getCacheKey();
+    const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
+
+    if (cachedData && this.isCacheValid(cachedData.timestamp)) {
+      // Se temos dados em cache válidos, use-os
+      this.lista = cachedData.cacheList;
+      this.totalItems = cachedData.totalItems;
+    } else {
+      this.despesaService
+        .Listar(
+          this.currentPage,
+          this.pageSize,
+          this.nomeFiltro,
+          this.idFiltro,
+          this.registroAvsFiltro,
+          this.telefoneFiltro,
+          (this.paginar = true)
+        )
+        .subscribe({
+          next: (data) => {
+            if (data.dados) {
+              this.lista = data.dados;
+              this.totalItems = data.totalCount ?? 0;
+
+              // Armazena os dados no cache
+              this.tabService.setCacheData(cacheKey, {
+                cacheList: this.lista,
+                totalItems: this.totalItems,
+                timestamp: Date.now(),
+              });
+            }
+          },
+          error: (err) => {
+            console.error('Erro ao buscar despesas:', err);
+            this.errorMessage =
+              'Erro ao carregar as despesas. Tente novamente mais tarde.';
+          },
+        });
+    }
   }
 
   openModal(despesa: any) {
@@ -72,13 +125,18 @@ export class ListarDespesaComponent {
     this.despesaService.Deletar(id.toString()).subscribe({
       next: (response) => {
         console.log('Despesa excluído com sucesso:', response);
-        this.lista = this.lista.filter(despesaFixa => despesaFixa.id !== id);
+        this.lista = this.lista.filter((despesaFixa) => despesaFixa.id !== id);
         this.toast.success('Despesa excluído com sucesso!', 'Excluído');
+
+        this.invalidateCache();
       },
       error: (err) => {
         console.error('Erro ao excluir status:', err);
-        this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir uma despesa');
-      }
+        this.toast.error(
+          'Tente novamente ou fale com o suporte',
+          'Erro ao excluir uma despesa'
+        );
+      },
     });
   }
 
@@ -95,6 +153,7 @@ export class ListarDespesaComponent {
     this.confirmDialog.openDialog();
   }
   limparFiltros() {
+    this.invalidateCache();
     this.idFiltro = '';
     this.nomeFiltro = '';
     this.registroAvsFiltro = '';
@@ -113,12 +172,9 @@ export class ListarDespesaComponent {
     this.loadData();
   }
 
-
-
   toggleFiltros() {
     this.mostrarFiltros = !this.mostrarFiltros;
   }
-
 
   atualizarDados() {
     this.loadData();
