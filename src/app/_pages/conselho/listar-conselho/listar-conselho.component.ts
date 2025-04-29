@@ -23,7 +23,7 @@ export class ListarConselhoComponent implements OnInit {
     private conselhoService: ConselhoService,
     private toast: ToastrService,
     private tabService: TabService
-  ) {}
+  ) { }
   lista: Conselho[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
@@ -38,7 +38,6 @@ export class ListarConselhoComponent implements OnInit {
   siglaFiltro: string = '';
 
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
-  cacheList: Conselho[] = [];
 
   @ViewChild(ModalConselhoComponent)
   modalConselhoComponent!: ModalConselhoComponent;
@@ -46,7 +45,7 @@ export class ListarConselhoComponent implements OnInit {
 
   private getCacheKey(): string {
     // Cria uma chave única para o cache baseada nos parâmetros atuais
-    return `conselho-list-${this.currentPage}-${this.pageSize}-${this.cacheList}`;
+    return `conselho-list-${this.currentPage}-${this.pageSize}-${this.nomeFiltro}-${this.siglaFiltro}`;
   }
 
   private isCacheValid(timestamp: number): boolean {
@@ -140,7 +139,7 @@ export class ListarConselhoComponent implements OnInit {
 
               // Armazena os dados no cache
               this.tabService.setCacheData(cacheKey, {
-                cacheList: this.cacheList,
+                cacheList: this.lista,
                 totalItems: this.totalItems,
                 timestamp: Date.now(),
               });

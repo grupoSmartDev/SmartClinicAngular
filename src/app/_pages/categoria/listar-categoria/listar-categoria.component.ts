@@ -5,6 +5,13 @@ import { ModalCategoriaComponent } from '../modal-categoria/modal-categoria.comp
 import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
 import { Categoria } from '../../../_module/categoriaModule';
 import * as bootstrap from 'bootstrap';
+import { TabService } from '../../../_services/tabs.service';
+
+interface CacheData {
+  cacheList: Categoria[];
+  totalItems: number;
+  timestamp: number;
+}
 
 @Component({
   selector: 'app-listar-categoria',
@@ -14,7 +21,8 @@ import * as bootstrap from 'bootstrap';
 export class ListarCategoriaComponent {
   constructor(
     private categoriaService: CategoriaService,
-    private toast: ToastrService) { }
+    private toast: ToastrService,
+    private tabService: TabService) { }
 
   @ViewChild(ModalCategoriaComponent) modal!: ModalCategoriaComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
@@ -32,8 +40,27 @@ export class ListarCategoriaComponent {
   idFiltro: string = '';
   paginar: boolean = true;
 
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
+
+
+
   ngOnInit(): void {
     this.loadData();
+  }
+
+  private getCacheKey(): string {
+    // Cria uma chave única para o cache baseada nos parâmetros atuais
+    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.descricaoFiltro}-${this.idFiltro}-${this.paginar}`;
+  }
+
+  private isCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.CACHE_DURATION;
+  }
+
+  // Método para invalidar o cache quando necessário
+  private invalidateCache(): void {
+    const cacheKey = this.getCacheKey();
+    this.tabService.setCacheData(cacheKey, null);
   }
 
   atualizarLista(): void {
@@ -41,18 +68,37 @@ export class ListarCategoriaComponent {
   }
 
   loadData(): void {
-    this.categoriaService.Listar(this.currentPage, this.pageSize, this.descricaoFiltro, this.idFiltro, this.paginar).subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.lista = data.dados;
-          this.totalItems = data.totalCount ?? 0;
+
+    const cacheKey = this.getCacheKey();
+    const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
+
+    if (cachedData && this.isCacheValid(cachedData.timestamp)) {
+      // Se temos dados em cache válidos, use-os
+      this.lista = cachedData.cacheList;
+      this.totalItems = cachedData.totalItems;
+    }
+    else {
+
+      this.categoriaService.Listar(this.currentPage, this.pageSize, this.descricaoFiltro, this.idFiltro, this.paginar).subscribe({
+        next: (data) => {
+          if (data.dados) {
+            this.lista = data.dados;
+            this.totalItems = data.totalCount ?? 0;
+
+            // Armazena os dados no cache
+            this.tabService.setCacheData(cacheKey, {
+              cacheList: this.lista,
+              totalItems: this.totalItems,
+              timestamp: Date.now(),
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar categoria:', err);
+          this.errorMessage = 'Erro ao carregar os categoria. Tente novamente mais tarde.';
         }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar categoria:', err);
-        this.errorMessage = 'Erro ao carregar os categoria. Tente novamente mais tarde.';
-      }
-    });
+      });
+    }
   }
 
 
@@ -89,6 +135,8 @@ export class ListarCategoriaComponent {
       next: (response) => {
         this.lista = this.lista.filter(categoria => categoria.id !== id);
         this.toast.success('categoria excluido com sucesso!', 'Excluído');
+
+        this.invalidateCache();
       },
       error: () => {
         this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir um categoria');
@@ -113,6 +161,7 @@ export class ListarCategoriaComponent {
   }
 
   limparFiltros() {
+    this.invalidateCache();
     this.descricaoFiltro = '';
     this.idFiltro = '';
     // Opcional: realizar uma busca após limpar

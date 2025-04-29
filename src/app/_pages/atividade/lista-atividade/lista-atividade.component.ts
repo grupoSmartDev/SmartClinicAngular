@@ -38,13 +38,13 @@ export class ListaAtividadeComponent {
   paginar: boolean = true;
 
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
-  cacheList: Atividade[] = [];
+
 
   constructor(
     private atividadeService: AtividadeService,
     private toast: ToastrService,
     private tabService: TabService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -52,7 +52,7 @@ export class ListaAtividadeComponent {
 
   private getCacheKey(): string {
     // Cria uma chave única para o cache baseada nos parâmetros atuais
-    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.cacheList}`;
+    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.atividadeFiltro}-${this.codigoFiltro}-${this.descricaoFiltro}-${this.paginar}`;
   }
 
   private isCacheValid(timestamp: number): boolean {
@@ -91,7 +91,7 @@ export class ListaAtividadeComponent {
 
               // Armazena os dados no cache
               this.tabService.setCacheData(cacheKey, {
-                cacheList: this.cacheList,
+                cacheList: this.lista,
                 totalItems: this.totalItems,
                 timestamp: Date.now(),
               });

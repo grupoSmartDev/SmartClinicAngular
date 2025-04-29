@@ -40,7 +40,7 @@ export class ListarProfissaoComponent {
 
   private getCacheKey(): string {
     // Cria uma chave única para o cache baseada nos parâmetros atuais
-    return `profissao-list-${this.currentPage}-${this.pageSize}-${this.descricaoFiltro}`;
+    return `profissao-list-${this.currentPage}-${this.pageSize}-${this.descricaoFiltro}-${this.profissaoFiltro}-${this.id}`;
   }
 
   private isCacheValid(timestamp: number): boolean {

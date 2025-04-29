@@ -39,17 +39,17 @@ export class ListarSalasComponent {
   paginar: boolean = true;
 
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
-  cacheList: Sala[] = [];
+
 
   constructor(
     private salaService: SalasService,
     private toast: ToastrService,
     private tabService: TabService
-  ) {}
+  ) { }
 
   private getCacheKey(): string {
     // Cria uma chave única para o cache baseada nos parâmetros atuais
-    return `sala-list-${this.currentPage}-${this.pageSize}-${this.cacheList}`;
+    return `sala-list-${this.currentPage}-${this.pageSize}-${this.nomeFiltro}-${this.idFiltro}-${this.localFiltro}-${this.capacidadeFiltro}-${this.paginar}`;
   }
 
   private isCacheValid(timestamp: number): boolean {
@@ -92,7 +92,7 @@ export class ListarSalasComponent {
               this.totalItems = data.totalCount ?? 0;
 
               this.tabService.setCacheData(cacheKey, {
-                cacheList: this.cacheList,
+                cacheList: this.lista,
                 totalItems: this.totalItems,
                 timestamp: Date.now(),
               });

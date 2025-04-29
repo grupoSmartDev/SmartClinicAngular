@@ -5,7 +5,13 @@ import { Banco } from '../../../_module/bancoModule';
 import * as bootstrap from 'bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { BancoService } from '../../../_services/banco.service';
+import { TabService } from '../../../_services/tabs.service';
 
+interface CacheData {
+  cacheList: Banco[];
+  totalItems: number;
+  timestamp: number;
+}
 @Component({
   selector: 'app-listar-banco',
   templateUrl: './listar-banco.component.html',
@@ -13,44 +19,79 @@ import { BancoService } from '../../../_services/banco.service';
 })
 export class ListarBancoComponent {
 
-  constructor(private BancoService: BancoService , private toast: ToastrService) { }
+  constructor(private BancoService: BancoService, private toast: ToastrService, private tabService: TabService) { }
 
-  @ViewChild(ModalBancoComponent) modalBancoComponent! : ModalBancoComponent;
-  @ViewChild('confirmDialog') confirmDialog! : ConfirmDialogComponent;
-  lista : Banco[] = [];
-  errorMessage : string = '';
-  idParaExcluir! : string;
-  bancoParaExcluir ! : Banco;
+  @ViewChild(ModalBancoComponent) modalBancoComponent!: ModalBancoComponent;
+  @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
+  lista: Banco[] = [];
+  errorMessage: string = '';
+  idParaExcluir!: string;
+  bancoParaExcluir !: Banco;
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;
   currentPage: number = 1;
   // filtros
-  nomeBancoFiltro? : string = '';
-  nomeTitularFiltro? : string = '';
-  idFiltro? : string = '';
-  documentoTitularFiltro? : string = '';
-  paginar : boolean = true;
+  nomeBancoFiltro?: string = '';
+  nomeTitularFiltro?: string = '';
+  idFiltro?: string = '';
+  documentoTitularFiltro?: string = '';
+  paginar: boolean = true;
+
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
 
   ngOnInit(): void {
     this.loadData();
-  } 
+  }
 
-  loadData() : void {
-    this.BancoService.Listar(this.currentPage, this.pageSize,
-       this.nomeBancoFiltro, this.nomeTitularFiltro, 
-       this.idFiltro, this.documentoTitularFiltro, this.paginar).subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.lista = data.dados;
-          this.totalItems = data.totalCount ?? 0;
-        }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar Bancos:', err);
-        this.errorMessage = 'Erro ao carregar as Bancos. Tente novamente mais tarde.';
-      }
-    })
+  private getCacheKey(): string {
+    // Cria uma chave única para o cache baseada nos parâmetros atuais
+    return `banco-list-${this.currentPage}-${this.pageSize}-${this.nomeBancoFiltro}-${this.nomeTitularFiltro}-${this.idFiltro}-${this.documentoTitularFiltro}-${this.paginar}`;
+  }
+
+  private isCacheValid(timestamp: number): boolean {
+    return Date.now() - timestamp < this.CACHE_DURATION;
+  }
+
+  // Método para invalidar o cache quando necessário
+  private invalidateCache(): void {
+    const cacheKey = this.getCacheKey();
+    this.tabService.setCacheData(cacheKey, null);
+  }
+
+  loadData(): void {
+    const cacheKey = this.getCacheKey();
+    const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
+
+    if (cachedData && this.isCacheValid(cachedData.timestamp)) {
+      // Se temos dados em cache válidos, use-os
+      this.lista = cachedData.cacheList;
+      this.totalItems = cachedData.totalItems;
+    }
+    else {
+
+      this.BancoService.Listar(this.currentPage, this.pageSize,
+        this.nomeBancoFiltro, this.nomeTitularFiltro,
+        this.idFiltro, this.documentoTitularFiltro, this.paginar).subscribe({
+          next: (data) => {
+            if (data.dados) {
+              this.lista = data.dados;
+              this.totalItems = data.totalCount ?? 0;
+
+              // Armazena os dados no cache
+              this.tabService.setCacheData(cacheKey, {
+                cacheList: this.lista,
+                totalItems: this.totalItems,
+                timestamp: Date.now(),
+              });
+            }
+          },
+          error: (err) => {
+            console.error('Erro ao buscar Bancos:', err);
+            this.errorMessage = 'Erro ao carregar as Bancos. Tente novamente mais tarde.';
+          }
+        })
+    }
   }
 
 
@@ -66,13 +107,15 @@ export class ListarBancoComponent {
     }
   }
 
-  Excluir(banco : Banco) {
+  Excluir(banco: Banco) {
     let id = banco.id;
     this.BancoService.Deletar(id).subscribe({
       next: (response) => {
         console.log('Banco excluído com sucesso:', response);
         this.lista = this.lista.filter(banco => banco.id !== id);
         this.toast.success('Banco excluído com sucesso!', 'Excluído');
+
+        this.invalidateCache();
       },
       error: (err) => {
         console.error('Erro ao excluir Banco:', err);
@@ -80,7 +123,7 @@ export class ListarBancoComponent {
       }
     });
   }
-  
+
   atualizarLista(): void {
     this.loadData(); // Chama o método para buscar os status novamente
   }
@@ -110,16 +153,17 @@ export class ListarBancoComponent {
 
   mostrarFiltros: boolean = true; // Começa expandido por padrão
 
-toggleFiltros() {
-  this.mostrarFiltros = !this.mostrarFiltros;
-}
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
 
-limparFiltros() {
-  this.nomeBancoFiltro = '';
-  this.nomeTitularFiltro = '';
-  this.idFiltro = '';
-  this.documentoTitularFiltro = '';
-  // Opcional: realizar uma busca após limpar
-  this.onSearch();
-}
+  limparFiltros() {
+    this.invalidateCache();
+    this.nomeBancoFiltro = '';
+    this.nomeTitularFiltro = '';
+    this.idFiltro = '';
+    this.documentoTitularFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
+  }
 }

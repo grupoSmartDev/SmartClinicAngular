@@ -23,7 +23,7 @@ export class ListarConvenioComponent implements OnInit {
     private convenioService: ConvenioService,
     private toast: ToastrService,
     private tabService: TabService
-  ) {}
+  ) { }
   @ViewChild(ModalConvenioComponent)
   modalConvenioComponent!: ModalConvenioComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
@@ -45,7 +45,7 @@ export class ListarConvenioComponent implements OnInit {
   paginar: boolean = true;
 
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
-  cacheList: Convenio[] = [];
+
 
   ngOnInit(): void {
     this.loadData();
@@ -53,7 +53,7 @@ export class ListarConvenioComponent implements OnInit {
 
   private getCacheKey(): string {
     // Cria uma chave única para o cache baseada nos parâmetros atuais
-    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.cacheList}`;
+    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.nomeFiltro}-${this.idFiltro}-${this.registroAvsFiltro}-${this.telefoneFiltro}-${this.paginar}`;
   }
 
   private isCacheValid(timestamp: number): boolean {
@@ -93,7 +93,7 @@ export class ListarConvenioComponent implements OnInit {
 
               // Armazena os dados no cache
               this.tabService.setCacheData(cacheKey, {
-                cacheList: this.cacheList,
+                cacheList: this.lista,
                 totalItems: this.totalItems,
                 timestamp: Date.now(),
               });

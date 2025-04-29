@@ -38,13 +38,13 @@ export class ListarExerciciosComponent {
   paginar: boolean = true;
 
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
-  cacheList: Exercicio[] = [];
+
 
   constructor(
     private exercicioService: ExercicioService,
     private toast: ToastrService,
     private tabService: TabService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -52,7 +52,7 @@ export class ListarExerciciosComponent {
 
   private getCacheKey(): string {
     // Cria uma chave única para o cache baseada nos parâmetros atuais
-    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.cacheList}`;
+    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.descricaoFiltro}-${this.idFiltro}-${this.exercicioFiltro}-${this.paginar}`;
   }
 
   private isCacheValid(timestamp: number): boolean {
@@ -91,7 +91,7 @@ export class ListarExerciciosComponent {
 
               // Armazena os dados no cache
               this.tabService.setCacheData(cacheKey, {
-                cacheList: this.cacheList,
+                cacheList: this.lista,
                 totalItems: this.totalItems,
                 timestamp: Date.now(),
               });
