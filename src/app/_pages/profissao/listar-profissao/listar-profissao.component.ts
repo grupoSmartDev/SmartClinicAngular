@@ -103,9 +103,16 @@ export class ListarProfissaoComponent {
     let id = profissao.id;
     this.profissaoService.Deletar(id.toString()).subscribe({
       next: (response) => {
-        console.log('Profissão excluído com sucesso:', response);
-        this.lista = this.lista.filter(profissao => profissao.id !== id);
-        this.toast.success('Profissão excluído com sucesso!', 'Excluído');
+        const mensagem = response.mensagem;
+        const status = response.status;
+
+        if (status) {
+          this.lista = this.lista.filter(profissao => profissao.id !== id);
+          this.toast.success(`${mensagem}`, 'Excluído');
+        }
+        else {
+          this.toast.error(`${mensagem}`, 'Erro');
+        }
         this.invalidateCache();
       },
       error: (err) => {

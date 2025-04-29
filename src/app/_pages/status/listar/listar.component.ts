@@ -22,7 +22,7 @@ interface CacheData {
 export class ListarComponent implements OnInit {
   @ViewChild(ModalStatusComponent) modalPacienteComponent!: ModalStatusComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
-  
+
   statusList: Status[] = [];
   errorMessage: string = '';
   idParaExcluir: string = '';
@@ -70,7 +70,7 @@ export class ListarComponent implements OnInit {
             if (response.status) {
               this.statusList = response.dados;
               this.totalItems = response.totalCount;
-              
+
               // Armazena os dados no cache
               this.tabService.setCacheData(cacheKey, {
                 statusList: this.statusList,
@@ -91,9 +91,17 @@ export class ListarComponent implements OnInit {
 
     this.statusService.Deletar(parseInt(id)).subscribe({
       next: (response) => {
-        this.statusList = this.statusList.filter(status => status.id !== id);
-        this.toast.success('Status excluído com sucesso!', 'Excluído');
-        
+        const resposta = response.mensagem;
+        const status = response.status;
+
+        if (status) {
+          this.statusList = this.statusList.filter(status => status.id !== id);
+          this.toast.success(resposta, 'Excluído');
+        } else {
+          this.toast.error(resposta, 'Erro');
+        }
+
+
         // Invalida o cache após exclusão
         this.invalidateCache();
       },
@@ -140,7 +148,7 @@ export class ListarComponent implements OnInit {
     }
   }
 
-  promptDelete(dataParaExcluir : any) {
+  promptDelete(dataParaExcluir: any) {
     this.idParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
@@ -155,14 +163,14 @@ export class ListarComponent implements OnInit {
 
   mostrarFiltros: boolean = true; // Começa expandido por padrão
 
-toggleFiltros() {
-  this.mostrarFiltros = !this.mostrarFiltros;
-}
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
 
-limparFiltros() {
-  this.statusFiltro = '';
-  this.corFiltro = '';
-  // Opcional: realizar uma busca após limpar
-  this.onSearch();
-}
+  limparFiltros() {
+    this.statusFiltro = '';
+    this.corFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
+  }
 }

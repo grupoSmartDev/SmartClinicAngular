@@ -6,6 +6,9 @@ import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/conf
 import { Profissional } from '../../../_module/profissionalModule';
 import * as bootstrap from 'bootstrap';
 import { ModalProfissionalComponent } from '../modal-profissional/modal-profissional.component';
+import { Profissao } from '../../../_module/profissaoModule';
+import { TabService } from '../../../_services/tabs.service';
+import { ProfissaoService } from '../../../_services/profissao.service';
 
 @Component({
   selector: 'app-listar-profissional',
@@ -13,42 +16,44 @@ import { ModalProfissionalComponent } from '../modal-profissional/modal-profissi
   styleUrl: './listar-profissional.component.css'
 })
 export class ListarProfissionalComponent {
-  constructor(private profissionalService: ProfissionalService , private toast: ToastrService) { }
-  @ViewChild(ModalProfissionalComponent) modalProfissional! : ModalProfissionalComponent;
-  @ViewChild('confirmDialog') confirmDialog! : ConfirmDialogComponent;
-  lista : Profissional[] = []
-  errorMessage : string = '';
-  idParaExcluir! : string;
-  dataParaExcluir! : Profissional
+  constructor(private profissionalService: ProfissionalService, private toast: ToastrService, private tabService: TabService, private profissaoService: ProfissaoService) { }
+  @ViewChild(ModalProfissionalComponent) modalProfissional!: ModalProfissionalComponent;
+  @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
+  lista: Profissional[] = [];
+  listaProfissao: Profissao[] = [];
+  errorMessage: string = '';
+  idParaExcluir!: string;
+  dataParaExcluir!: Profissional
   mostrarFiltros: boolean = true; // Começa expandido por padrão
-    //paginacao
-    totalItems: number = 0;
-    pageSize: number = 10;
-    currentPage: number = 1;
-    // filtros
-    nomeFiltro: string = '';
-    idFiltro: string = '';
-    cpfFiltro: string = '';
-    profissaoFiltro: string = '';
+  //paginacao
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  // filtros
+  nomeFiltro: string = '';
+  idFiltro: string = '';
+  cpfFiltro: string = '';
+  profissaoIdFiltro: string = '';
 
   ngOnInit(): void {
+    this.getProfissao();
     this.loadData();
-  } 
+  }
 
-  loadData() : void {
-    this.profissionalService.Listar(this.currentPage, this.pageSize, this.nomeFiltro, 
-      this.idFiltro, this.cpfFiltro, this.profissaoFiltro).subscribe({
-      next: (data) => {
-        if (data.dados) {
-          this.lista = data.dados;
-          this.totalItems = data.totalCount;
+  loadData(): void {
+    this.profissionalService.Listar(this.currentPage, this.pageSize, this.nomeFiltro,
+      this.idFiltro, this.cpfFiltro, this.profissaoIdFiltro).subscribe({
+        next: (data) => {
+          if (data.dados) {
+            this.lista = data.dados;
+            this.totalItems = data.totalCount;
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar Centro de custo:', err);
+          this.errorMessage = 'Erro ao carregar os Centro de custo. Tente novamente mais tarde.';
         }
-      },
-      error: (err) => {
-        console.error('Erro ao buscar Centro de custo:', err);
-        this.errorMessage = 'Erro ao carregar os Centro de custo. Tente novamente mais tarde.';
-      }
-    })
+      })
   }
 
   openModal(profissional: any) {
@@ -63,7 +68,7 @@ export class ListarProfissionalComponent {
     }
   }
 
-  Excluir(profissional : Profissional) {
+  Excluir(profissional: Profissional) {
     let id = profissional.id;
     this.profissionalService.Deletar(id).subscribe({
       next: (response) => {
@@ -78,11 +83,24 @@ export class ListarProfissionalComponent {
     });
   }
 
+  getProfissao(): void {
+    this.profissaoService.Listar().subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.listaProfissao = data.dados;
+        }
+      },
+      error(err) {
+        console.error('Erro ao buscar Profissional:', err)
+      },
+    })
+  }
+
   atualizarLista(): void {
     this.loadData(); // Chama o método para buscar os cc novamente
   }
 
-  promptDelete(dataParaExcluir : any) {
+  promptDelete(dataParaExcluir: any) {
     this.dataParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
@@ -108,12 +126,12 @@ export class ListarProfissionalComponent {
   toggleFiltros() {
     this.mostrarFiltros = !this.mostrarFiltros;
   }
-  
+
   limparFiltros() {
     this.nomeFiltro = '';
     this.idFiltro = '';
     this.cpfFiltro = '';
-    this.profissaoFiltro = '';
+    this.profissaoIdFiltro = '';
     // Opcional: realizar uma busca após limpar
     this.filtrar();
   }

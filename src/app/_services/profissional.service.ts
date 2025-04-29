@@ -18,20 +18,20 @@ export class ProfissionalService {
     page?: number,
     pageSize?: number,
     nomeFiltro?: string,
-    idFiltro? : string,
-    cpfFiltro? : string,
-    profissaoFiltro? : string,
+    idFiltro?: string,
+    cpfFiltro?: string,
+    profissaoIdFiltro?: string,
     paginar: boolean = false
   ): Observable<ResponseModel<Profissional[]>> {
     let params = new HttpParams()
-      
-      
 
-    if(page){
+
+
+    if (page) {
       params = params.set('page', page.toString());
     }
 
-    if(pageSize){
+    if (pageSize) {
       params = params.set('pageSize', pageSize.toString());
     }
 
@@ -47,15 +47,15 @@ export class ProfissionalService {
       params = params.set('cpfFiltro', cpfFiltro);
     }
 
-    if (profissaoFiltro) {
-      params = params.set('profissaoFiltro', profissaoFiltro);
+    if (profissaoIdFiltro) {
+      params = params.set('profissaoIdFiltro', profissaoIdFiltro);
     }
-    
+
     return this.http.get<ResponseModel<Profissional[]>>(`${this.baseURL}Listar`, { params });
   }
 
   Criar(profissonal: Profissional): Observable<ResponseModel<Profissional>> {
-    
+
     return this.http.post<ResponseModel<Profissional>>(`${this.baseURL}Criar`, profissonal);
   }
 
