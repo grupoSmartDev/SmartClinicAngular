@@ -14,23 +14,23 @@ export class ModalSalasComponent {
   constructor(
     private salaService: SalasService,
     private toast: ToastrService,
-    private fb : FormBuilder) {
-      this.formulario = this.fb.group({
-        id: [null],
-        nome: [null, Validators.required],
-        capacidade: [null, Validators.required],
-        tipo: [null, Validators.required],
-        local: [null],
-        status: [null, Validators.required],
-        horarioFincionamento : [null],
-        observacao: [null],
-      })
-   }
+    private fb: FormBuilder) {
+    this.formulario = this.fb.group({
+      id: [null],
+      nome: [null, Validators.required],
+      capacidade: [null, Validators.required],
+      tipo: [null, Validators.required],
+      local: [null],
+      status: [false],
+      horarioFincionamento: [null],
+      observacao: [null],
+    })
+  }
 
   @ViewChild('modalSala') modalSala?: ElementRef;
   @Input() sala = {} as Sala;
   @Output() dataAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
-  formulario : FormGroup;
+  formulario: FormGroup;
 
   carregarSala(sala: any) {
     this.formulario.patchValue(this.sala);
@@ -42,18 +42,18 @@ export class ModalSalasComponent {
     btnCancelar.click();
   }
 
-  onSubmit(){
-    if(this.formulario.invalid){
+  onSubmit() {
+    if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
       return;
     }
 
-    const dataToSave : Sala = this.formulario.value as Sala;
+    const dataToSave: Sala = this.formulario.value as Sala;
 
     const saveOperation = dataToSave.id
-    ? this.salaService.Atualizar(dataToSave)
-    : this.salaService.Criar(dataToSave);
+      ? this.salaService.Atualizar(dataToSave)
+      : this.salaService.Criar(dataToSave);
 
     saveOperation.subscribe({
       next: () => {
@@ -68,6 +68,4 @@ export class ModalSalasComponent {
     })
 
   }
-
-
 }
