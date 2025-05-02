@@ -4,7 +4,7 @@ export interface Sala{
     capacidade: number;
     tipo: string;
     local: string;
-    status: string;
+    status: boolean;
     observacao: string;
     horarioFincionamento : string;
 }
