@@ -18,10 +18,10 @@ interface SideNavToggle {
     fadeInOut,
     trigger('rotate', [
       transition(':enter', [
-        animate('1000ms', 
+        animate('1000ms',
           keyframes([
-            style({transform: 'rotate(0deg)', offset: '0'}),
-            style({transform: 'rotate(2turn)', offset: '1'})
+            style({ transform: 'rotate(0deg)', offset: '0' }),
+            style({ transform: 'rotate(2turn)', offset: '1' })
           ])
         )
       ])
@@ -37,9 +37,9 @@ export class MenuMobileComponent implements OnInit {
   multiple: boolean = false;
   isExpanded = true;
   isMenuOpen: { [key: string]: boolean } = {};
-  
 
-  constructor(private tabService: TabService, public router: Router, private authService: AuthService) {}
+
+  constructor(private tabService: TabService, public router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
     // Inicialização dos estados dos submenus
@@ -53,34 +53,34 @@ export class MenuMobileComponent implements OnInit {
   //   this.isMenuOpen[menu] = !this.isMenuOpen[menu];
   // }
 
-toggleCollapse(): void {
-  this.collapsed = !this.collapsed;
-  this.onToggleSideNav.emit({collapsed: this.collapsed, screenWidth: this.screenWidth});
-}
+  toggleCollapse(): void {
+    this.collapsed = !this.collapsed;
+    this.onToggleSideNav.emit({ collapsed: this.collapsed, screenWidth: this.screenWidth });
+  }
 
-closeSidenav(): void {
-  this.collapsed = false;
-  this.onToggleSideNav.emit({collapsed: this.collapsed, screenWidth: this.screenWidth});
-}
+  closeSidenav(): void {
+    this.collapsed = false;
+    this.onToggleSideNav.emit({ collapsed: this.collapsed, screenWidth: this.screenWidth });
+  }
 
-handleClick(item: INavbarData): void {
-  this.shrinkItems(item);
-  item.expanded = !item.expanded
-}
+  handleClick(item: INavbarData): void {
+    this.shrinkItems(item);
+    item.expanded = !item.expanded
+  }
 
-getActiveClass(data: INavbarData): string {
-  return this.router.url.includes(data.routeLink) ? 'active' : '';
-}
+  getActiveClass(data: INavbarData): string {
+    return this.router.url.includes(data.routeLink) ? 'active' : '';
+  }
 
-shrinkItems(item: INavbarData): void {
-  if (!this.multiple) {
-    for(let modelItem of this.navData) {
-      if (item !== modelItem && modelItem.expanded) {
-        modelItem.expanded = false;
+  shrinkItems(item: INavbarData): void {
+    if (!this.multiple) {
+      for (let modelItem of this.navData) {
+        if (item !== modelItem && modelItem.expanded) {
+          modelItem.expanded = false;
+        }
       }
     }
   }
-}
 
   // Alterna o submenu
   // toggleSubmenu(menu: string): void {
@@ -92,10 +92,13 @@ shrinkItems(item: INavbarData): void {
   }
   // Abre a aba utilizando o TabService
   openTab(path: string, title: string) {
+
     this.tabService.openTab({ path, title });
+    const button = document.querySelector('#offcanvasMenuButton') as HTMLElement;
+    button.click();
   }
 
-  logout(){
+  logout() {
     try {
       this.authService.logout();
       this.router.navigate(['/login']);

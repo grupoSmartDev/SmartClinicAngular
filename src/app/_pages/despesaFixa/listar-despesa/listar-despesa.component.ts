@@ -23,7 +23,7 @@ export class ListarDespesaComponent {
     private despesaService: DespesaFixaService,
     private toast: ToastrService,
     private tabService: TabService
-  ) {}
+  ) { }
   @ViewChild(ModalDespesaComponent)
   modalDespesaComponent!: ModalDespesaComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
@@ -32,7 +32,7 @@ export class ListarDespesaComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dataParaExcluir!: DespesaFixa;
-  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;

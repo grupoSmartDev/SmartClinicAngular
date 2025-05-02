@@ -29,7 +29,7 @@ export class ListarTipoPagamentoComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   tipoPagamentoParaExcluir!: TipoPagamento;
-  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
 
   //paginacao
   totalItems: number = 0;

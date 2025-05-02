@@ -32,7 +32,7 @@ export class ListarPacienteComponent {
     private spinner: NgxSpinnerService,
     private route: ActivatedRoute,
     private tabService: TabService
-  ) {}
+  ) { }
 
   @ViewChild(ModalPacienteComponent)
   modalPacienteComponent!: ModalPacienteComponent;
@@ -46,7 +46,7 @@ export class ListarPacienteComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dataParaExcluir!: Paciente;
-  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;

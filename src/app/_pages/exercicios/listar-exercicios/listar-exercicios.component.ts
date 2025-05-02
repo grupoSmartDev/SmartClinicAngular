@@ -26,7 +26,7 @@ export class ListarExerciciosComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: Exercicio;
-  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;

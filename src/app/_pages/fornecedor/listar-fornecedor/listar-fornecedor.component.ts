@@ -21,8 +21,8 @@ export class ListarFornecedorComponent {
   lista: Fornecedor[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
-  fornecedorParaExcluir!:Fornecedor;
-  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  fornecedorParaExcluir!: Fornecedor;
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;
@@ -32,8 +32,8 @@ export class ListarFornecedorComponent {
   idFiltro: string = '';
   cpfFiltro: string = '';
   cnpjFiltro: string = '';
-  celularFiltro : string = '';
-  paginar : boolean = true;
+  celularFiltro: string = '';
+  paginar: boolean = true;
 
   ngOnInit(): void {
     this.loadData();
@@ -41,19 +41,19 @@ export class ListarFornecedorComponent {
 
   loadData(): void {
     this.fornecedorService.Listar
-    (
-      this.currentPage,this.pageSize,this.nomeFiltro,this.idFiltro,
-      this.cpfFiltro,this.cnpjFiltro, this.celularFiltro, this.paginar
-    ).subscribe({
-      next: (data) => {
-        this.lista = data.dados;
-        this.totalItems = data.totalCount ?? 0;
-      },
-      error: (err) => {
-        (this.errorMessage = err),
-          this.errorMessage = 'Erro ao buscar fornecedores. Tente novamente mais tarde.'
-      }
-    });
+      (
+        this.currentPage, this.pageSize, this.nomeFiltro, this.idFiltro,
+        this.cpfFiltro, this.cnpjFiltro, this.celularFiltro, this.paginar
+      ).subscribe({
+        next: (data) => {
+          this.lista = data.dados;
+          this.totalItems = data.totalCount ?? 0;
+        },
+        error: (err) => {
+          (this.errorMessage = err),
+            this.errorMessage = 'Erro ao buscar fornecedores. Tente novamente mais tarde.'
+        }
+      });
   }
 
   Excluir(fornecedor: Fornecedor) {
@@ -72,7 +72,7 @@ export class ListarFornecedorComponent {
     this.loadData(); // Chama o método para buscar os fornecedor novamente
   }
 
-  promptDelete(dataParaExcluir : any) {
+  promptDelete(dataParaExcluir: any) {
     this.fornecedorParaExcluir = dataParaExcluir;
     this.confirmDialog.openDialog();
   }
@@ -86,7 +86,7 @@ export class ListarFornecedorComponent {
   }
 
   openModal(fornecedor: any) {
-    
+
     if (fornecedor.id) {
       this.modalFornecedorComponent.fornecedor = fornecedor;
       this.modalFornecedorComponent.carregarFornecedor(fornecedor);
@@ -110,17 +110,17 @@ export class ListarFornecedorComponent {
 
 
 
-toggleFiltros() {
-  this.mostrarFiltros = !this.mostrarFiltros;
-}
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
 
-limparFiltros() {
-  this.nomeFiltro = '';
-  this.idFiltro = '';
-  this.cpfFiltro = '';
-  this.cnpjFiltro = '';
-  this.celularFiltro = '';
-  // Opcional: realizar uma busca após limpar
-  this.onSearch();
-}
+  limparFiltros() {
+    this.nomeFiltro = '';
+    this.idFiltro = '';
+    this.cpfFiltro = '';
+    this.cnpjFiltro = '';
+    this.celularFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
+  }
 }

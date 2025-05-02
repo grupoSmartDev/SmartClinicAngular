@@ -24,7 +24,7 @@ export class ListarProfissaoComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dataParaExcluir!: Profissao;
-  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
 
   //paginacao
   totalItems: number = 0;

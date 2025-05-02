@@ -28,7 +28,7 @@ export class ListarConselhoComponent implements OnInit {
   errorMessage: string = '';
   idParaExcluir!: string;
   conselhoParaExcluir!: Conselho;
-  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;

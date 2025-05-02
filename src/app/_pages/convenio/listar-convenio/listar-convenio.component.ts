@@ -32,7 +32,7 @@ export class ListarConvenioComponent implements OnInit {
   errorMessage: string = '';
   idParaExcluir!: string;
   convenioParaExcluir!: Convenio;
-  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;

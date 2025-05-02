@@ -35,7 +35,7 @@ export class ListarFinancPagarComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: FinancPagar;
-  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
   //paginacao
   totalItems: number = 0;
   pageSize: number = 10;
@@ -59,7 +59,7 @@ export class ListarFinancPagarComponent {
     private toast: ToastrService,
     private ccService: CentroDeCustoService,
     private tabService: TabService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadData();

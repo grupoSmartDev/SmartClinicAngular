@@ -148,7 +148,7 @@ export class ListarPlanoContasComponent {
     this.loadData();
   }
 
-  mostrarFiltros: boolean = true; // Começa expandido por padrão
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
 
   toggleFiltros() {
     this.mostrarFiltros = !this.mostrarFiltros;
