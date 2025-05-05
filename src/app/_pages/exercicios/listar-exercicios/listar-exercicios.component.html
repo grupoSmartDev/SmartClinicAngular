@@ -4,22 +4,34 @@
 ></app-label-nome>
 
 <div class="card mb-3">
-  <div class="card-header bg-light d-flex justify-content-between align-items-center" 
-       (click)="toggleFiltros()" 
-       style="cursor: pointer;">
+  <div
+    class="card-header bg-light d-flex justify-content-between align-items-center"
+    (click)="toggleFiltros()"
+    style="cursor: pointer"
+  >
     <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros de Pesquisa</h6>
     <button class="btn btn-sm btn-link text-dark p-0">
-      <i class="bi" [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      <i
+        class="bi"
+        [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"
+      ></i>
     </button>
   </div>
-  <div class="card-body py-3" [ngClass]="{'d-none': !mostrarFiltros}">
-
+  <div class="card-body py-3" [ngClass]="{ 'd-none': !mostrarFiltros }">
     <div class="row mt-3">
       <div class="col-md-12 text-end">
-        <button type="button" class="btn btn-sm btn-primary me-2" (click)="onSearch()">
+        <button
+          type="button"
+          class="btn btn-sm btn-primary me-2"
+          (click)="onSearch()"
+        >
           <i class="bi bi-search me-1"></i> Pesquisar
         </button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limparFiltros()">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="limparFiltros()"
+        >
           <i class="bi bi-x-circle me-1"></i> Limpar Filtros
         </button>
       </div>
@@ -36,22 +48,13 @@
           [(ngModel)]="idFiltro"
         />
       </div>
-    
+
       <div class="col-md-3">
         <label for="" class="form-label small fw-bold">Exercício</label>
         <input
           type="text"
           class="form-control form-control-sm"
           placeholder="Filtrar por nome"
-          [(ngModel)]="exercicioFiltro"
-        />
-      </div>
-      <div class="col-md-3">
-        <label for="" class="form-label small fw-bold">Descrição</label>
-        <input
-          type="text"
-          class="form-control form-control-sm"
-          placeholder="Filtrar por descrição"
           [(ngModel)]="descricaoFiltro"
         />
       </div>
@@ -68,7 +71,7 @@
           <tr>
             <th>Cód.</th>
             <th>Exercício</th>
-            <th>Descrição</th>
+
             <th class="text-end"></th>
           </tr>
         </thead>
@@ -81,9 +84,7 @@
             <td>
               {{ item.descricao }}
             </td>
-            <td>
-              {{ item.descricao }}
-            </td>
+
             <td class="text-end">
               <a
                 href="javascript:void(0);"
@@ -133,7 +134,9 @@
 </div>
 
 <!-- listar.component.html -->
-<app-modal-exercicio (dadosAtualizados)="atualizarLista()"></app-modal-exercicio>
+<app-modal-exercicio
+  (dadosAtualizados)="atualizarLista()"
+></app-modal-exercicio>
 
 <app-confirm-dialog
   #confirmDialog

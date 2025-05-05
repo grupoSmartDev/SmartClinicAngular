@@ -28,6 +28,7 @@ import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 import { Agenda } from '../../../_module/agendaModule';
+import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
 
 // DTOs
 interface FinanceiroDto {
@@ -158,6 +159,7 @@ export class PacienteCompletoComponent implements OnInit {
     private planoService: PlanoService,
     private tipoPagamentoService: TipoPagamentoService,
     private centroCustoService: CentroDeCustoService,
+    private formaPagamentoService: FormaPagamentoService,
     private datePipe: DatePtBrPipe
   ) { }
 
@@ -926,9 +928,8 @@ export class PacienteCompletoComponent implements OnInit {
         if (data.dados) {
           this.listaPlanos = data.dados.filter(
             (x) =>
-              x.pacienteId == null ||
-              x.pacienteId == undefined ||
-              x.pacienteId == 0
+              x.dataInicio == null ||
+              x.dataInicio == undefined
           );
         }
       },
@@ -967,7 +968,7 @@ export class PacienteCompletoComponent implements OnInit {
   getFormaPagamento(): void {
     // Implemente o serviço para buscar formas de pagamento
     // Exemplo:
-    /*
+
     this.formaPagamentoService.Listar().subscribe({
       next: (response) => {
         if (response.dados) {
@@ -978,7 +979,7 @@ export class PacienteCompletoComponent implements OnInit {
         console.error('Erro ao buscar Formas de Pagamento:', e);
       },
     });
-    */
+
     // Simulação de dados
 
   }
@@ -1040,7 +1041,7 @@ export class PacienteCompletoComponent implements OnInit {
       valor: [0, Validators.required],
       dataInicio: [new Date().toISOString().split('T')[0], Validators.required],
       dataFim: ['', Validators.required],
-      gerarFinanceiro: [true],
+      gerarFinanceiro: [false],
       gerarAgendamento: [false],
       // Financeiro definido sem subFormArray inicialmente
       financeiro: this.fb.group({

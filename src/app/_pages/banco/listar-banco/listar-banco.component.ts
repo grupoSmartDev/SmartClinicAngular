@@ -125,6 +125,7 @@ export class ListarBancoComponent {
   }
 
   atualizarLista(): void {
+    this.invalidateCache();
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
@@ -142,11 +143,13 @@ export class ListarBancoComponent {
   }
 
   onPageChange(page: number): void {
+    this.invalidateCache();
     this.currentPage = page; // Bootstrap usa paginação iniciando em 1
     this.loadData();
   }
 
   onSearch(): void {
+    this.invalidateCache();
     this.currentPage = 1;
     this.loadData();
   }

@@ -16,24 +16,24 @@ export class ModalProcedimentoComponent {
   @Input() data = {} as Procedimento;
   @Output() dadosAtualizados = new EventEmitter<void>();
 
-  formulario! : FormGroup;
+  formulario!: FormGroup;
 
-  listaCategorias : Categoria[] = [];
-  
+  listaCategorias: Categoria[] = [];
+
   constructor(private toast: ToastrService,
     private procedimentoService: ProcedimentoService,
-    private fb : FormBuilder,
+    private fb: FormBuilder,
     private categoriaService: CategoriaService
   ) { }
 
 
-  ngOnInit(){
+  ngOnInit() {
     this.criarFormulario();
     this.carregarCategoria()
   }
-   
-  onSubmit(){
-    if(this.formulario.invalid){
+
+  onSubmit() {
+    if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha todos os campos obrigatórios', 'Erro');
       return;
@@ -42,13 +42,13 @@ export class ModalProcedimentoComponent {
     const dataToSave = this.formulario.value as Procedimento;
 
     const saveOperation = dataToSave.id
-    ? this.procedimentoService.Atualizar(dataToSave)
-    : this.procedimentoService.Criar(dataToSave);
+      ? this.procedimentoService.Atualizar(dataToSave)
+      : this.procedimentoService.Criar(dataToSave);
 
     saveOperation.subscribe({
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
-        this.toast.success(`Centro de custo ${action} com sucesso!`, 'Parabéns');
+        this.toast.success(`Procedimento ${action} com sucesso!`, 'Parabéns');
         this.dadosAtualizados.emit();
         this.fecharModal();
       },
@@ -60,15 +60,15 @@ export class ModalProcedimentoComponent {
   }
 
 
-  criarFormulario(){
+  criarFormulario() {
     this.formulario = this.fb.group({
-      id : [null],
-      descricao : [null, Validators.required],
+      id: [null],
+      descricao: [null, Validators.required],
       nome: [null, Validators.required],
-      preco : [null, Validators.required],
-      duracao : [''],
-      ativo : [true],
-      categoriaID : [null],
+      preco: [null, Validators.required],
+      duracao: [''],
+      ativo: [true],
+      categoriaID: [null],
     })
   }
 
@@ -80,8 +80,8 @@ export class ModalProcedimentoComponent {
     this.formulario.reset();
   }
 
-  carregarCategoria(){
-    this.categoriaService.Listar(undefined,undefined,undefined,undefined,false).subscribe({
+  carregarCategoria() {
+    this.categoriaService.Listar(undefined, undefined, undefined, undefined, false).subscribe({
       next: (response: ResponseModel<Categoria[]>) => {
         this.listaCategorias = response.dados;
       },

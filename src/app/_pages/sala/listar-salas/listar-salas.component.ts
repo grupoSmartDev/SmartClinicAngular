@@ -140,6 +140,7 @@ export class ListarSalasComponent {
   }
 
   atualizarLista(): void {
+    this.invalidateCache();
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
@@ -157,6 +158,7 @@ export class ListarSalasComponent {
   }
 
   onPageChange(page: number): void {
+    this.invalidateCache();
     this.currentPage = page; // Bootstrap usa paginação iniciando em 1
     this.loadData();
   }

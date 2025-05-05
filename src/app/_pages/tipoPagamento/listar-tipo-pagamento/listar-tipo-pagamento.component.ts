@@ -61,6 +61,7 @@ export class ListarTipoPagamentoComponent {
   }
 
   atualizarLista(): void {
+    this.invalidateCache();
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
@@ -75,7 +76,7 @@ export class ListarTipoPagamentoComponent {
       this.totalItems = cachedData.totalItems;
     } else {
 
-      this.tipoPagamentoService.ListarTipoPagamento().subscribe({
+      this.tipoPagamentoService.ListarTipoPagamento(this.currentPage, this.pageSize, this.idFiltro, this.descricaoFiltro).subscribe({
         next: (data) => {
           if (data.dados) {
             this.lista = data.dados;
@@ -142,11 +143,13 @@ export class ListarTipoPagamentoComponent {
   }
 
   onPageChange(page: number): void {
+    this.invalidateCache();
     this.currentPage = page;
     this.loadData();
   }
 
   onSearch(): void {
+    this.invalidateCache();
     this.currentPage = 1;
     this.loadData();
   }
@@ -157,6 +160,7 @@ export class ListarTipoPagamentoComponent {
   }
 
   limparFiltros() {
+    this.invalidateCache();
     this.idFiltro = '';
     this.descricaoFiltro = '';
     // Opcional: realizar uma busca após limpar

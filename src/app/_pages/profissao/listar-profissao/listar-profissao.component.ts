@@ -141,6 +141,7 @@ export class ListarProfissaoComponent {
   }
 
   onPageChange(page: number): void {
+    this.invalidateCache();
     this.currentPage = page;
     this.loadData();
   }
@@ -158,6 +159,7 @@ export class ListarProfissaoComponent {
   }
 
   limparFiltros() {
+    this.invalidateCache();
     this.descricaoFiltro = '';
     this.profissaoFiltro = '';
     this.id = '';

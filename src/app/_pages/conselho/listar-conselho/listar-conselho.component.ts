@@ -88,6 +88,7 @@ export class ListarConselhoComponent implements OnInit {
   }
 
   atualizarConselho() {
+    this.invalidateCache();
     this.loadData();
   }
 
@@ -130,7 +131,7 @@ export class ListarConselhoComponent implements OnInit {
       this.totalItems = cachedData.totalItems;
     } else {
       this.conselhoService
-        .Listar(this.currentPage, this.pageSize, this.nomeFiltro)
+        .Listar(this.currentPage, this.pageSize, this.nomeFiltro, this.siglaFiltro)
         .subscribe({
           next: (data) => {
             if (data.dados) {
@@ -155,11 +156,13 @@ export class ListarConselhoComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
+    this.invalidateCache();
     this.currentPage = page;
     this.loadData();
   }
 
   onSearch(): void {
+    this.invalidateCache();
     this.currentPage = 1;
     this.loadData();
   }

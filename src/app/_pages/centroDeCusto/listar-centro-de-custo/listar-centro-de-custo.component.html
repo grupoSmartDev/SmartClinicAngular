@@ -5,22 +5,34 @@
 </app-label-nome>
 
 <div class="card mb-3">
-  <div class="card-header bg-light d-flex justify-content-between align-items-center" 
-       (click)="toggleFiltros()" 
-       style="cursor: pointer;">
+  <div
+    class="card-header bg-light d-flex justify-content-between align-items-center"
+    (click)="toggleFiltros()"
+    style="cursor: pointer"
+  >
     <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros de Pesquisa</h6>
     <button class="btn btn-sm btn-link text-dark p-0">
-      <i class="bi" [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      <i
+        class="bi"
+        [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"
+      ></i>
     </button>
   </div>
-  <div class="card-body py-3" [ngClass]="{'d-none': !mostrarFiltros}">
-
+  <div class="card-body py-3" [ngClass]="{ 'd-none': !mostrarFiltros }">
     <div class="row mt-3">
       <div class="col-md-12 text-end">
-        <button type="button" class="btn btn-sm btn-primary me-2" (click)="onSearch()">
+        <button
+          type="button"
+          class="btn btn-sm btn-primary me-2"
+          (click)="onSearch()"
+        >
           <i class="bi bi-search me-1"></i> Pesquisar
         </button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limparFiltros()">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="limparFiltros()"
+        >
           <i class="bi bi-x-circle me-1"></i> Limpar Filtros
         </button>
       </div>
@@ -30,30 +42,37 @@
     <div class="row mb-2">
       <div class="col-md-2">
         <label for="" class="form-label small fw-bold">Cód.</label>
-        <input type="text"
-         [(ngModel)]="idFiltro" 
-         placeholder="Filtrar por Cód"
-         class="form-control form-control-sm" />
+        <input
+          type="text"
+          [(ngModel)]="idFiltro"
+          placeholder="Filtrar por Cód"
+          class="form-control form-control-sm"
+        />
       </div>
       <div class="col-md-2">
         <label for="" class="form-label small fw-bold">Tipo</label>
-        <input type="text" [(ngModel)]="tipoFiltro" placeholder="Filtrar por nome" class="form-control form-control-sm" />
+        <select [(ngModel)]="tipoFiltro" class="form-select form-select-sm">
+          <option value="">Selecione um tipo...</option>
+          <option value="R">Receita</option>
+          <option value="D">Despesa</option>
+        </select>
       </div>
       <div class="col-md-2">
         <label for="" class="form-label small fw-bold">Descrição</label>
-        <input type="text"
-         [(ngModel)]="descricaoFiltro" 
-         placeholder="Filtrar por descrição"
-         class="form-control form-control-sm" />
+        <input
+          type="text"
+          [(ngModel)]="descricaoFiltro"
+          placeholder="Filtrar por descrição"
+          class="form-control form-control-sm"
+        />
       </div>
-      <div class="col-md-2">
+      <!-- <div class="col-md-2">
         <label for="" class="form-label small fw-bold">Sub Centro de custo</label>
         <input type="text"
          [(ngModel)]="subCentroDeCustoFiltro" 
          placeholder="Filtrar por sub centro de custo"
          class="form-control form-control-sm" />
-      </div>
-
+      </div> -->
     </div>
   </div>
 </div>
@@ -81,7 +100,7 @@
               {{ item.tipo == "R" ? "Receita" : "Despesa" }}
             </td>
             <td>
-              {{ item.descricao }} 
+              {{ item.descricao }}
             </td>
             <td class="text-end">
               <a
@@ -122,12 +141,12 @@
       [itemsPerPage]="pageSize"
       (pageChanged)="onPageChange($event.page)"
       previousText="&lsaquo;"
-      nextText="&rsaquo;" 
-      firstText="&laquo;" 
-      lastText="&raquo;">
-  </pagination>
+      nextText="&rsaquo;"
+      firstText="&laquo;"
+      lastText="&raquo;"
+    >
+    </pagination>
   </div>
-
 </div>
 
 <app-modal-centro-de-custo (dataAtualizado)="atualizarLista()">

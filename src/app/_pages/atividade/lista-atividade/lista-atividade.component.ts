@@ -139,6 +139,7 @@ export class ListaAtividadeComponent {
   }
 
   atualizarLista(): void {
+    this.invalidateCache();
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
@@ -156,11 +157,13 @@ export class ListaAtividadeComponent {
   }
 
   onPageChange(page: number): void {
+    this.invalidateCache();
     this.currentPage = page; // Bootstrap usa paginação iniciando em 1
     this.loadData();
   }
 
   onSearch(): void {
+    this.invalidateCache();
     this.currentPage = 1;
     this.loadData();
   }
@@ -170,6 +173,7 @@ export class ListaAtividadeComponent {
   }
 
   limparFiltros() {
+    this.invalidateCache();
     this.atividadeFiltro = '';
     this.codigoFiltro = '';
     this.descricaoFiltro = '';

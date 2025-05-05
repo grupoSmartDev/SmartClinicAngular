@@ -124,6 +124,7 @@ export class ListarCentroDeCustoComponent {
   }
 
   atualizarLista(): void {
+    this.invalidateCache();
     this.loadData(); // Chama o método para buscar os cc novamente
   }
 
@@ -142,11 +143,13 @@ export class ListarCentroDeCustoComponent {
 
 
   onPageChange(page: number): void {
+    this.invalidateCache();
     this.currentPage = page;
     this.loadData();
   }
 
   onSearch(): void {
+    this.invalidateCache();
     this.currentPage = 1;
     this.loadData();
   }
@@ -158,6 +161,7 @@ export class ListarCentroDeCustoComponent {
   }
 
   limparFiltros() {
+    this.invalidateCache();
     this.tipoFiltro = '';
     this.idFiltro = '';
     this.descricaoFiltro = '';

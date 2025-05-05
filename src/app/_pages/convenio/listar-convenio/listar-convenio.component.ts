@@ -167,6 +167,7 @@ export class ListarConvenioComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
+    this.invalidateCache();
     this.currentPage = page; // Bootstrap usa paginação iniciando em 1
     this.loadData();
   }
@@ -182,6 +183,7 @@ export class ListarConvenioComponent implements OnInit {
   }
 
   limparFiltros() {
+    this.invalidateCache();
     this.idFiltro = '';
     this.nomeFiltro = '';
     this.registroAvsFiltro = '';

@@ -1057,15 +1057,17 @@
                       for="tipoPamento"
                       class="form-label small fw-semibold"
                     >
-                      Centro de Custo <span class="text-danger">*</span>
+                      Tipo de pagamento<span class="text-danger">*</span>
                     </label>
                     <select
-                      id="tipoPamento"
+                      id="tipoPagamentoId"
                       class="form-select form-select-sm"
-                      [formControl]="$any(financeiroGroup.get('tipoPamentoId'))"
+                      [formControl]="
+                        $any(financeiroGroup.get('tipoPagamentoId'))
+                      "
                       [class.is-invalid]="
-                        financeiroGroup.get('tipoPamentoId')?.invalid &&
-                        financeiroGroup.get('tipoPamentoId')?.touched
+                        financeiroGroup.get('tipoPagamentoId')?.invalid &&
+                        financeiroGroup.get('tipoPagamentoId')?.touched
                       "
                     >
                       <option value="" disabled>Selecione</option>

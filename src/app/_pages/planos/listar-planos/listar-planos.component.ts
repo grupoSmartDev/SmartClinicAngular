@@ -20,7 +20,7 @@ interface CacheData {
   styleUrl: './listar-planos.component.css'
 })
 export class ListarPlanosComponent {
-  @ViewChild(ModalPlanoContasComponent) modalComponent!: ModalPlanoContasComponent;
+  @ViewChild(ModalPlanosComponent) modalComponent!: ModalPlanosComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
   lista: Plano[] = [];
   errorMessage: string = '';
@@ -74,7 +74,7 @@ export class ListarPlanosComponent {
       this.planoService.Listar(this.currentPage, this.pageSize, this.descricaoFiltro, this.idFiltro, this.paginar).subscribe({
         next: (data) => {
           if (data.dados) {
-            this.lista = data.dados;
+            this.lista = data.dados.filter(x => x.dataInicio == null || x.dataInicio == undefined);
             this.totalItems = data.totalCount ?? 0;
 
             // Armazena os dados no cache
@@ -94,6 +94,7 @@ export class ListarPlanosComponent {
   }
 
   openModal(plano: any) {
+    debugger
     if (plano.id) {
       this.modalComponent.data = plano;
       this.modalComponent.carregarDados(plano);
