@@ -6,15 +6,15 @@ export interface Fornecedor {
     tipo: string;
     estadoCivil: string;
     sexo: string;
-    ie: string;
-    im: string;
+    ie?: string;
+    im?: string;
     cpf: string;
     cnpj: string;
     pais: string;
     uf: string;
     cidade: string;
     bairro: string;
-    complemento: string;
+    complemento?: string;
     logradouro: string;
     nrLogradouro: string;
     cep: string;
