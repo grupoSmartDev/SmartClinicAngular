@@ -17,13 +17,13 @@ export class SalasService {
   Listar(
     page?: number,
     pageSize?: number,
-    nomeFiltro? : string,
-    idFiltro? : string,
-    localFiltro? : string,
-    capacidadeFiltroFiltro? : string,
+    nomeFiltro?: string,
+    idFiltro?: string,
+    localFiltro?: string,
+    capacidadeFiltro?: string,
     paginar?: boolean
   ): Observable<ResponseModel<Sala[]>> {
-    
+
     let params = new HttpParams()
 
     if (page) params = params.set('page', page.toString());
@@ -31,9 +31,9 @@ export class SalasService {
     if (nomeFiltro) params = params.set('nomeFiltro', nomeFiltro);
     if (idFiltro) params = params.set('idFiltro', idFiltro);
     if (localFiltro) params = params.set('localFiltro', localFiltro);
-    if (capacidadeFiltroFiltro) params = params.set('capacidadeFiltroFiltro', capacidadeFiltroFiltro);
+    if (capacidadeFiltro) params = params.set('capacidadeFiltro', capacidadeFiltro);
     if (paginar) params = params.set('paginar', paginar);
-    
+
     return this.http.get<ResponseModel<Sala[]>>(`${this.baseURL}Listar`, { params });
   }
 
@@ -46,7 +46,7 @@ export class SalasService {
   }
 
   Deletar(id: number): Observable<ResponseModel<void>> {
-    
+
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
 }

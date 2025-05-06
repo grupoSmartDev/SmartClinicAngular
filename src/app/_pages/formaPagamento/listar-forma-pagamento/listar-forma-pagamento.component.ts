@@ -40,6 +40,8 @@ export class ListarFormaPagamentoComponent implements OnInit {
   descricaoFiltro: string = '';
   subCentroDeCustoFiltro: string = '';
 
+  mostrarFiltros: boolean = false; // Começa expandido por padrão
+
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
 
   ngOnInit(): void {
@@ -146,6 +148,25 @@ export class ListarFormaPagamentoComponent implements OnInit {
   onPageChange(page: number): void {
     this.currentPage = page;
     this.loadData();
+  }
+
+  onSearch(): void {
+    this.invalidateCache();
+    this.currentPage = 1;
+    this.loadData();
+  }
+
+
+  toggleFiltros() {
+    this.mostrarFiltros = !this.mostrarFiltros;
+  }
+
+  limparFiltros() {
+    this.invalidateCache();
+    this.idFiltro = '';
+    this.descricaoFiltro = '';
+    // Opcional: realizar uma busca após limpar
+    this.onSearch();
   }
 
   filtrar(): void {
