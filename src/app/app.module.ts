@@ -131,6 +131,8 @@ import { CalendarioComponent } from './_components/calendario/calendario.compone
 import { ListarDespesaComponent } from './_pages/despesaFixa/listar-despesa/listar-despesa.component';
 import { ModalDespesaComponent } from './_pages/despesaFixa/modal-despesa/modal-despesa.component';
 import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-cadastro.component';
+import { ConfiguracoesComponent } from './_pages/configuracoes/configuracoes.component';
+import { AlterarSenhaComponent } from './_pages/configuracoes/alterar-senha/alterar-senha.component';
 
 
 
@@ -248,6 +250,8 @@ import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-
     ListarDespesaComponent,
     ModalDespesaComponent,
     PaginaCadastroComponent,
+    ConfiguracoesComponent,
+    AlterarSenhaComponent,
   ],
   imports: [
     BrowserModule,

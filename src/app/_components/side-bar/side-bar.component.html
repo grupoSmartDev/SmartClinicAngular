@@ -326,12 +326,49 @@
         <span>Log</span>
       </a>
     </li>
-  </ul>
 
+    <li class="sidebar-item">
+      <a
+        href="#"
+        class="sidebar-link collapsed has-dropdown"
+        (click)="toggleSubmenu('configuracoes')"
+        data-bs-toggle="collapse"
+      >
+        <i class="bi bi-cash"></i>
+        <span>Configurações</span>
+      </a>
+      <ul
+        [ngClass]="{
+          'sidebar-dropdown': true,
+          collapse: !isMenuOpen['configuracoes'],
+          show: isMenuOpen['configuracoes']
+        }"
+        id="configuracoes"
+      >
+        <li class="sidebar-item">
+          <a
+            class="sidebar-link"
+            (click)="openTab('/Configuracoes/alterarSenha', 'Alterar senha')"
+          >
+            <i class="bi bi-person-lines-fill"></i>
+            <span>Alterar senha</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="sidebar-item">
+      <a class="sidebar-link" (click)="logout()">
+        <i class="lni lni-exit"></i>
+        <span>Logout</span>
+      </a>
+    </li>
+  </ul>
+  <!-- 
   <div class="sidebar-footer">
     <a class="sidebar-link" (click)="logout()">
       <i class="lni lni-exit"></i>
       <span>Logout</span>
     </a>
-  </div>
+  </div> -->
 </aside>
