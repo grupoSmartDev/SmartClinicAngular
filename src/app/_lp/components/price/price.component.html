@@ -1,126 +1,171 @@
 <!-- pricing.component.html -->
-<section class="pricing-section py-5" style="background-color: #f8fcfa;">
-    <div class="container">
-      <div class="text-center mb-5">
-        <h6 class="text-success fw-bold">PLANOS FLEXÍVEIS</h6>
-        <h2 class="display-5 fw-bold mb-3">Escolha o plano ideal para a sua clínica</h2>
-        <p class="lead text-muted mx-auto" style="max-width: 700px;">
-          Nossa solução se adapta ao tamanho da sua clínica. Comece com o plano que melhor atende suas necessidades e evolua conforme seu crescimento.
-        </p>
-        
-        <!-- Toggle para alternar entre mensal e semestral -->
-        <div class="pricing-toggle d-inline-flex align-items-center bg-white rounded-pill p-2 shadow-sm mt-4">
-          <button [class.active]="isMonthly" (click)="isMonthly = true" class="btn rounded-pill px-4" 
-                  [ngClass]="isMonthly ? 'btn-success' : 'btn-light'">
-            Mensal
-          </button>
-          <button [class.active]="!isMonthly" (click)="isMonthly = false" class="btn rounded-pill px-4"
-                  [ngClass]="!isMonthly ? 'btn-success' : 'btn-light'">
-            Semestral
-          </button>
-        </div>
-        <div *ngIf="!isMonthly" class="mt-2 text-success">
-          <small><i class="bi bi-piggy-bank-fill"></i> Economize até R$ {{getSavings(plans[1])}} no plano semestral</small>
-        </div>
+<section
+  class="pricing-section py-5"
+  style="background-color: #f8fcfa"
+  id="Assinaturas"
+>
+  <div class="container">
+    <div class="text-center mb-5">
+      <h6 class="text-success fw-bold">PLANOS FLEXÍVEIS</h6>
+      <h2 class="display-5 fw-bold mb-3">
+        Escolha o plano ideal para a sua clínica
+      </h2>
+      <p class="lead text-muted mx-auto" style="max-width: 700px">
+        Nossa solução se adapta ao tamanho da sua clínica. Comece com o plano
+        que melhor atende suas necessidades e evolua conforme seu crescimento.
+      </p>
+
+      <!-- Toggle para alternar entre mensal e semestral -->
+      <div
+        class="pricing-toggle d-inline-flex align-items-center bg-white rounded-pill p-2 shadow-sm mt-4"
+      >
+        <button
+          [class.active]="isMonthly"
+          (click)="isMonthly = true"
+          class="btn rounded-pill px-4"
+          [ngClass]="isMonthly ? 'btn-success' : 'btn-light'"
+        >
+          Mensal
+        </button>
+        <button
+          [class.active]="!isMonthly"
+          (click)="isMonthly = false"
+          class="btn rounded-pill px-4"
+          [ngClass]="!isMonthly ? 'btn-success' : 'btn-light'"
+        >
+          Semestral
+        </button>
       </div>
-      
-      <div class="row py-4">
-        <ng-container *ngFor="let plan of plans; let i = index">
-          <div class="col-md-4 mb-4">
-            <div class="card pricing-card h-100 border-0 shadow-sm" 
-                 [ngClass]="{'pricing-card-popular': plan.popular}"
-                 [style.transform]="plan.popular ? 'scale(1.05)' : 'scale(1)'">
-              
-              <!-- Popular badge -->
-              <div *ngIf="plan.popular" class="position-absolute top-0 start-50 translate-middle">
-                <div class="badge bg-success text-white px-4 py-2 rounded-pill shadow">
-                  Mais escolhido
-                </div>
+      <div *ngIf="!isMonthly" class="mt-2 text-success">
+        <small
+          ><i class="bi bi-piggy-bank-fill"></i> Economize até R$
+          {{ getSavings(plans[1]) }} no plano semestral</small
+        >
+      </div>
+    </div>
+
+    <div class="row py-4">
+      <ng-container *ngFor="let plan of plans; let i = index">
+        <div class="col-md-4 mb-4">
+          <div
+            class="card pricing-card h-100 border-0 shadow-sm"
+            [ngClass]="{ 'pricing-card-popular': plan.popular }"
+            [style.transform]="plan.popular ? 'scale(1.05)' : 'scale(1)'"
+          >
+            <!-- Popular badge -->
+            <div
+              *ngIf="plan.popular"
+              class="position-absolute top-0 start-50 translate-middle"
+            >
+              <div
+                class="badge bg-success text-white px-4 py-2 rounded-pill shadow"
+              >
+                Mais escolhido
               </div>
-              
-              <div class="card-header text-center border-0 pt-5" [ngClass]="{'pt-4': plan.popular}">
-                <div class="pricing-icon mb-3">
-                  <span class="icon-wrapper rounded-circle d-inline-flex align-items-center justify-content-center" 
-                        [ngClass]="plan.popular ? 'bg-success text-white' : 'bg-light text-success'"
-                        style="width: 70px; height: 70px;">
-                    <i [class]="'bi ' + plan.icon + ' fs-3'"></i>
-                  </span>
-                </div>
-                <h3 class="pricing-title fw-bold mb-1">{{plan.title}}</h3>
-                <p class="text-muted mb-0">{{plan.subtitle}}</p>
+            </div>
+
+            <div
+              class="card-header text-center border-0 pt-5"
+              [ngClass]="{ 'pt-4': plan.popular }"
+            >
+              <div class="pricing-icon mb-3">
+                <span
+                  class="icon-wrapper rounded-circle d-inline-flex align-items-center justify-content-center"
+                  [ngClass]="
+                    plan.popular
+                      ? 'bg-success text-white'
+                      : 'bg-light text-success'
+                  "
+                  style="width: 70px; height: 70px"
+                >
+                  <i [class]="'bi ' + plan.icon + ' fs-3'"></i>
+                </span>
               </div>
-              
-              <div class="card-body text-center">
-                <div class="pricing-value py-4">
-                  <span class="text-muted">R$</span>
-                  <span class="price display-5 fw-bold">{{isMonthly ? plan.priceMonthly : plan.priceSemiannual}}</span>
-                  <span class="period text-muted">/mês</span>
-                </div>
-                
-                <hr>
-                
-                <ul class="pricing-features list-unstyled text-start px-4">
-                  <li class="py-2" *ngFor="let feature of plan.features">
-                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                    {{feature}}
-                  </li>
-                </ul>
+              <h3 class="pricing-title fw-bold mb-1">{{ plan.title }}</h3>
+              <p class="text-muted mb-0">{{ plan.subtitle }}</p>
+            </div>
+
+            <div class="card-body text-center">
+              <div class="pricing-value py-4">
+                <span class="text-muted">R$</span>
+                <span class="price display-5 fw-bold">{{
+                  isMonthly ? plan.priceMonthly : plan.priceSemiannual
+                }}</span>
+                <span class="period text-muted">/mês</span>
               </div>
-              
-              <div class="card-footer border-0 bg-transparent px-4 pb-5">
-                <button class="btn btn-lg w-100 rounded-pill" 
-                        [ngClass]="plan.popular ? 'btn-success' : 'btn-outline-success'">
-                  {{plan.cta}}
-                </button>
-                
-                <!-- Garantia e teste grátis -->
-                <div class="text-center mt-3">
-                  <small class="text-muted d-flex align-items-center justify-content-center">
-                    <i class="bi bi-shield-check me-1"></i> 7 dias de teste grátis
-                  </small>
-                  <small class="text-muted d-block mt-1">
-                    <i class="bi bi-arrow-repeat"></i> Cancele quando quiser
-                  </small>
-                </div>
+
+              <hr />
+
+              <ul class="pricing-features list-unstyled text-start px-4">
+                <li class="py-2" *ngFor="let feature of plan.features">
+                  <i class="bi bi-check-circle-fill text-success me-2"></i>
+                  {{ feature }}
+                </li>
+              </ul>
+            </div>
+
+            <div class="card-footer border-0 bg-transparent px-4 pb-5">
+              <button
+                class="btn btn-lg w-100 rounded-pill"
+                [ngClass]="plan.popular ? 'btn-success' : 'btn-outline-success'"
+              >
+                {{ plan.cta }}
+              </button>
+
+              <!-- Garantia e teste grátis -->
+              <div class="text-center mt-3">
+                <small
+                  class="text-muted d-flex align-items-center justify-content-center"
+                >
+                  <i class="bi bi-shield-check me-1"></i> 7 dias de teste grátis
+                </small>
+                <small class="text-muted d-block mt-1">
+                  <i class="bi bi-arrow-repeat"></i> Cancele quando quiser
+                </small>
               </div>
             </div>
           </div>
-        </ng-container>
-      </div>
-      
-      <!-- Informações sobre economia e garantia -->
-      <div class="text-center mt-4">
-        <div class="economy-info p-4 bg-white rounded-4 shadow-sm d-inline-block mx-auto">
-          <div class="row align-items-center">
-            <div class="col-md-4 mb-3 mb-md-0 text-md-start">
-              <div class="d-flex align-items-center">
-                <i class="bi bi-wallet2 fs-1 text-success me-3"></i>
-                <div>
-                  <h5 class="mb-0 fw-bold">Economize mais</h5>
-                  <p class="mb-0 text-muted">Planos semestrais com desconto</p>
-                </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Informações sobre economia e garantia -->
+    <div class="text-center mt-4">
+      <div
+        class="economy-info p-4 bg-white rounded-4 shadow-sm d-inline-block mx-auto"
+      >
+        <div class="row align-items-center">
+          <div class="col-md-4 mb-3 mb-md-0 text-md-start">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-wallet2 fs-1 text-success me-3"></i>
+              <div>
+                <h5 class="mb-0 fw-bold">Economize mais</h5>
+                <p class="mb-0 text-muted">Planos semestrais com desconto</p>
               </div>
             </div>
-            <div class="col-md-4 mb-3 mb-md-0 border-start border-end">
-              <div class="d-flex align-items-center justify-content-center">
-                <i class="bi bi-calendar-check fs-1 text-success me-3"></i>
-                <div>
-                  <h5 class="mb-0 fw-bold">Teste grátis</h5>
-                  <p class="mb-0 text-muted">7 dias para experimentar</p>
-                </div>
+          </div>
+          <div class="col-md-4 mb-3 mb-md-0 border-start border-end">
+            <div
+              class="d-flex align-items-center justify-content-sm-center justify-content-md-center"
+            >
+              <i class="bi bi-calendar-check fs-1 text-success me-3"></i>
+              <div>
+                <h5 class="mb-0 fw-bold">Teste grátis</h5>
+                <p class="mb-0 text-muted">7 dias para experimentar</p>
               </div>
             </div>
-            <div class="col-md-4 text-md-end">
-              <div class="d-flex align-items-center justify-content-md-end">
-                <i class="bi bi-shield-check fs-1 text-success me-3"></i>
-                <div>
-                  <h5 class="mb-0 fw-bold">Sem fidelidade</h5>
-                  <p class="mb-0 text-muted">Cancele quando quiser</p>
-                </div>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <div class="d-flex align-items-center justify-content-md-end">
+              <i class="bi bi-shield-check fs-1 text-success me-3"></i>
+              <div>
+                <h5 class="mb-0 fw-bold">Sem fidelidade</h5>
+                <p class="mb-0 text-muted">Cancele quando quiser</p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>

@@ -8,6 +8,12 @@ import { Component } from '@angular/core';
 export class QuintaDobraComponent {
   testimonials = [
     {
+      name: 'Gabrielle',
+      role: 'Cliente ClinicSmart',
+      photo: 'assets/images/testimonial-1.jpg',
+      quote: 'Como estou começando agora, um sistema que me ajuda a organizar agenda, lembrar de pagamentos faz muita diferença. É como uma outra pessoa trabalhando comigo. '
+    },
+    {
       name: 'Renan',
       role: 'Cliente ClinicSmart',
       photo: 'assets/images/testimonial-1.jpg',
@@ -28,12 +34,12 @@ export class QuintaDobraComponent {
   ];
   currentPage = 0;
   itemsPerPage = 3;
-  
+
   get paginatedTestimonials() {
     const start = this.currentPage * this.itemsPerPage;
     return this.testimonials.slice(start, start + this.itemsPerPage);
   }
-  
+
   next() {
     if ((this.currentPage + 1) * this.itemsPerPage < this.testimonials.length) {
       this.currentPage++;
@@ -41,7 +47,7 @@ export class QuintaDobraComponent {
       this.currentPage = 0;
     }
   }
-  
+
   prev() {
     if (this.currentPage > 0) {
       this.currentPage--;

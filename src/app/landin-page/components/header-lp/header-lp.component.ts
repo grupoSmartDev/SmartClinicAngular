@@ -1,3 +1,4 @@
+import { ViewportScroller } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
@@ -5,4 +6,11 @@ import { Component } from '@angular/core';
   templateUrl: './header-lp.component.html',
   styleUrl: './header-lp.component.css',
 })
-export class HeaderLPComponent {}
+export class HeaderLPComponent {
+  constructor(private viewportScroller: ViewportScroller) { }
+  listaItensMenu = ['Início', 'Assinaturas'];
+
+  scrollTo(section: string) {
+    this.viewportScroller.scrollToAnchor(section);
+  }
+}
