@@ -132,7 +132,7 @@ import { ListarDespesaComponent } from './_pages/despesaFixa/listar-despesa/list
 import { ModalDespesaComponent } from './_pages/despesaFixa/modal-despesa/modal-despesa.component';
 import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-cadastro.component';
 import { ConfiguracoesComponent } from './_pages/configuracoes/configuracoes.component';
-import { AlterarSenhaComponent } from './_pages/configuracoes/alterar-senha/alterar-senha.component';
+import { AlterarDadosUsuarioComponent } from './_pages/configuracoes/alterar-dados-usuario/alterar-dados-usuario.component';
 
 
 
@@ -251,7 +251,7 @@ import { AlterarSenhaComponent } from './_pages/configuracoes/alterar-senha/alte
     ModalDespesaComponent,
     PaginaCadastroComponent,
     ConfiguracoesComponent,
-    AlterarSenhaComponent,
+    AlterarDadosUsuarioComponent,
   ],
   imports: [
     BrowserModule,

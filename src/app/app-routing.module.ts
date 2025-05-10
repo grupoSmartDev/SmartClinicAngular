@@ -38,7 +38,7 @@ import { ListarPagarSinteticoComponent } from './_pages/financPagar/listar-pagar
 import { ListarDespesaComponent } from './_pages/despesaFixa/listar-despesa/listar-despesa.component';
 import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-cadastro.component';
 import { ConfiguracoesComponent } from './_pages/configuracoes/configuracoes.component';
-import { AlterarSenhaComponent } from './_pages/configuracoes/alterar-senha/alterar-senha.component';
+import { AlterarDadosUsuarioComponent } from './_pages/configuracoes/alterar-dados-usuario/alterar-dados-usuario.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent }, // Rota para a página de login
@@ -115,7 +115,7 @@ const routes: Routes = [
         component: ListarPlanoContasSubComponent,
       },
       { path: 'DespesasFixa/ListarDespesa', component: ListarDespesaComponent },
-      { path: 'Configuracoes/alterarSenha', component: AlterarSenhaComponent },
+      { path: 'Configuracoes/alterarDadosUsuario', component: AlterarDadosUsuarioComponent },
     ],
   },
 
