@@ -1,3 +1,3 @@
 export interface AlterarDadosUsuario {
-    id? : string
+    //id? : string
 }

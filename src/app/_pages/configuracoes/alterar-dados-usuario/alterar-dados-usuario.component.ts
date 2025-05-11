@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from '../../../_services/config.service';
 import { AuthService } from '../../../_services/auth.service';
@@ -24,12 +24,14 @@ export class AlterarDadosUsuarioComponent {
       firstName: [null, Validators.required],
       lastName: [null, Validators.required],
       email: [null, [Validators.required, Validators.email]],
-      senhaAtual: [null],
-      novaSenha: [null],
-      confirmarSenha: [null],
+      password: [null],
+      newPassword: [null],
+      confirmNewPassword: [null],
     });
+    
   }
-
+  @Output() DadosAtualizados = new EventEmitter<void>();
+  
   alterarDadosUsuario(): void {
     const form = this.formDadosUsuario.value;
 
@@ -37,28 +39,29 @@ export class AlterarDadosUsuarioComponent {
       this.toast.error('Verifique os dados preenchidos.');
       return;
     }
-
-    if (form.novaSenha || form.confirmarSenha) {
-      if (form.novaSenha !== form.confirmarSenha || !form.senhaAtual) {
-        this.toast.error(
-          'Para alterar a senha, preencha corretamente os campos.'
-        );
-        return;
-      }
-    }
-  
+    
+    const id = this.authService.currentUserValue?.id;
+    
     const payload = {
       id: this.authService.currentUserValue?.id,
       firstName: form.firstName,
       lastName: form.lastName,
       email: form.email,
-      senhaAtual: form.senhaAtual,
-      novaSenha: form.novaSenha,
-      profilePicture: form.profilePicture,
+      password: form.password,
+      newPassword: form.newPassword,
+      confirmNewPassword: form.confirmNewPassword
     };
-debugger
-    this.alterarSenhaService.alterarDadosUsuario(payload).subscribe({
-      next: () => this.toast.success('Dados atualizados com sucesso!'),
+    
+    this.alterarSenhaService.alterarDadosUsuario(id, payload).subscribe({
+      next: (res: any) => {
+        if (res.success === false) {
+          this.toast.error(res.error || 'Erro na operação');
+        } else {
+          this.toast.success('Dados atualizados com sucesso!');
+        }
+
+        this.DadosAtualizados.emit();
+      },
       error: (err) =>
         this.toast.error('Erro: ' + (err.error || 'Erro desconhecido')),
     });
@@ -75,7 +78,6 @@ debugger
           lastName: res.lastName,
           email: res.email,
         });
-        // você pode armazenar profilePictureBase64 em uma variável separada
       },
       error: () => this.toast.error('Erro ao carregar dados do usuário.'),
     });

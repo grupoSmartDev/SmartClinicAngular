@@ -11,15 +11,14 @@ import { AlterarDadosUsuario } from '../_module/alterarDadosUsuarioModule';
 })
 export class ConfigService {
   constructor(private http: HttpClient) {}
-//private readonly API_URL = environment.apiUrl + 'Auth/login';
-  baseURL: string = environment.apiUrl + 'Auth';
 
-  alterarDadosUsuario(alterarDadosUsuario: AlterarDadosUsuario) {
-    return this.http.post<ResponseModel<AlterarDadosUsuario>>(`${this.baseURL}/AlterarDadosUsuario`, alterarDadosUsuario);
+  baseURL: string = environment.apiUrl + 'Auth/';
+
+  alterarDadosUsuario(id : string | undefined, alterarDadosUsuario: AlterarDadosUsuario) {
+    return this.http.put(`${this.baseURL}Editar/${id}`, alterarDadosUsuario);
   }
 
   obterDadosUsuario(id: string) {
-    debugger
-    return this.http.get<ResponseModel<AlterarDadosUsuario>>(`${this.baseURL}/GetById/${id}`);
+    return this.http.get<ResponseModel<AlterarDadosUsuario>>(`${this.baseURL}GetById/${id}`);
   }
 }

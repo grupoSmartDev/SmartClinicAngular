@@ -1,53 +1,34 @@
-<!-- <form [formGroup]="formDadosUsuario" (ngSubmit)="alterarDadosUsuario()" class="form-horizontal">
-
-  <div class="form-group mb-3">
-    <label for="senhaAtual">Senha Atual</label>
-    <input id="senhaAtual" type="password" class="form-control" formControlName="senhaAtual" />
-  </div>
-
-  <div class="form-group mb-3">
-    <label for="novaSenha">Nova Senha</label>
-    <input id="novaSenha" type="password" class="form-control" formControlName="novaSenha" />
-  </div>
-
-  <div class="form-group mb-4">
-    <label for="confirmarSenha">Confirmar Nova Senha</label>
-    <input id="confirmarSenha" type="password" class="form-control" formControlName="confirmarSenha" />
-  </div>
-
-  <button type="submit" class="btn btn-success" [disabled]="formDadosUsuario.invalid">Salvar</button>
-</form> -->
 <form [formGroup]="formDadosUsuario" (ngSubmit)="alterarDadosUsuario()">
   <div class="row">
-    <div class="col-md-6 mb-3">
+    <div class="col-md-4 mb-3">
       <label>Nome</label>
       <input type="text" class="form-control" formControlName="firstName" />
     </div>
-    <div class="col-md-6 mb-3">
+    <div class="col-md-4 mb-3">
       <label>Sobrenome</label>
       <input type="text" class="form-control" formControlName="lastName" />
     </div>
-    <div class="col-md-6 mb-3">
+    <div class="col-md-4 mb-3">
       <label>Email</label>
       <input type="email" class="form-control" formControlName="email" />
     </div>
   </div>
 
   <hr />
-  <h5>Alterar Senha (opcional)</h5>
+  <h5>Alterar Senha</h5>
 
   <div class="row">
     <div class="col-md-4 mb-3">
       <label>Senha Atual</label>
-      <input type="password" class="form-control" formControlName="senhaAtual" />
+      <input type="password" class="form-control" formControlName="password" />
     </div>
     <div class="col-md-4 mb-3">
       <label>Nova Senha</label>
-      <input type="password" class="form-control" formControlName="novaSenha" />
+      <input type="password" class="form-control" formControlName="newPassword" />
     </div>
     <div class="col-md-4 mb-3">
       <label>Confirmar Nova Senha</label>
-      <input type="password" class="form-control" formControlName="confirmarSenha" />
+      <input type="password" class="form-control" formControlName="confirmNewPassword" />
     </div>
   </div>
 
