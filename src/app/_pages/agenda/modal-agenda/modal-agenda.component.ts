@@ -968,6 +968,7 @@ export class ModalAgendaComponent implements OnInit {
     this.toastr.error(`${message}. ${errorDetail}`, 'Erro');
   }
   savePatient() {
+    debugger
     // Verificar se o formulário é válido
     if (this.patientForm && this.patientForm.valid) {
       // Ativar indicador de carregamento

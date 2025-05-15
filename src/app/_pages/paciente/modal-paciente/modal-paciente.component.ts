@@ -28,7 +28,7 @@ export class ModalPacienteComponent {
     private cepService: BuscarCepService,
     private profissionalService: ProfissionalService,
     private convenioService: ConvenioService,
-    private planoService : PlanoService,
+    private planoService: PlanoService,
     private datePipe: DatePtBrPipe
 
   ) { }
@@ -72,25 +72,17 @@ export class ModalPacienteComponent {
     pais: new FormControl(),
 
     profissao: new FormControl(),
-    profissionalId: new FormControl(),
+    profissionalId: new FormControl(null),
     medicamento: new FormControl(),
     breveDiagnostico: new FormControl(),
 
-    preferenciaDeContato: new FormControl(),
-    permitirLembretes: new FormControl(),
+    preferenciaDeContato: new FormControl('W'),
+    permitirLembretes: new FormControl(true),
 
-    convenioId: new FormControl(),
-    comoConheceu: new FormControl(),
-    planoId: new FormControl(),
+    convenioId: new FormControl(null),
+    comoConheceu: new FormControl(''),
+    planoId: new FormControl(null),
 
-    // Campos de cobrança adicionais
-    // formaPagamentoId: new FormControl(),
-    // dataVencimento: new FormControl(),
-    // valorAberto: new FormControl(),
-    // dataUltimoPagamento: new FormControl(),
-
-    // Campo de data do último atendimento
-    // dataUltimoAtendimento: new FormControl(),
   });
 
 
@@ -118,10 +110,18 @@ export class ModalPacienteComponent {
       if (dataToSave.id) {
         this.pacienteService.Atualizar(dataToSave).subscribe({
           next: (response: ResponseModel<Paciente>) => {
-            this.toast.success('Paciente atualizado com Sucesso', 'Parabéns');
-            this.dataAtualizado.emit(); // Emita o evento após a atualização
-            btnCancelar.click();
-            this.fecharModal();
+            if (response.status) {
+              let mensagem = response.mensagem;
+              this.toast.success(mensagem, 'Parabéns');
+              this.dataAtualizado.emit(); // Emita o evento após a atualização
+              btnCancelar.click();
+              this.fecharModal();
+            }
+            else {
+              let mensagem = response.mensagem;
+              this.toast.error(mensagem, 'Erro ao atualizar Paciente');
+            }
+
           },
           error: (err) => {
             this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar Paciente');
@@ -130,10 +130,17 @@ export class ModalPacienteComponent {
       } else {
         this.pacienteService.Criar(dataToSave).subscribe({
           next: (response: ResponseModel<Paciente>) => {
-            this.toast.success('Paciente Criado com sucesso', 'Parabéns');
-            this.dataAtualizado.emit(); // Emita o evento após a criação
-            btnCancelar.click();
-            this.fecharModal();
+            if (response.status) {
+              let mensagem = response.mensagem;
+              this.toast.success(mensagem, 'Parabéns');
+              this.dataAtualizado.emit(); // Emita o evento após a atualização
+              btnCancelar.click();
+              this.fecharModal();
+            }
+            else {
+              let mensagem = response.mensagem;
+              this.toast.error(mensagem, 'Erro ao atualizar Paciente');
+            }
           },
           error: (err) => {
             console.error('Erro ao criar Paciente:', err);
@@ -175,12 +182,12 @@ export class ModalPacienteComponent {
     this.formulario.patchValue(this.paciente);
 
     let data = this.formulario.get('dataNascimento')?.value;
-    if (data){
+    if (data) {
       data = this.datePipe.formatToHtmlDate(data);
       this.formulario.get('dataNascimento')?.setValue(data);
     }
 
-    
+
   }
 
   fecharModal() {
@@ -198,7 +205,7 @@ export class ModalPacienteComponent {
   }
 
   carregarProfissional(): void {
-    this.profissionalService.Listar(undefined,undefined,undefined,undefined,undefined,undefined,false).subscribe({
+    this.profissionalService.Listar(undefined, undefined, undefined, undefined, undefined, undefined, false).subscribe({
       next: (data) => {
         if (data.dados) {
           this.profissionais = data.dados;
@@ -207,10 +214,10 @@ export class ModalPacienteComponent {
     })
   }
 
-  getPlanos(){
+  getPlanos() {
     this.planoService.Listar().subscribe({
-      next : (data) =>{
-        if (data.dados){
+      next: (data) => {
+        if (data.dados) {
           this.planos = data.dados;
         }
       }

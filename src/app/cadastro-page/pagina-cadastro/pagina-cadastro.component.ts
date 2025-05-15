@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CadastroUsuarioService } from '../../_services/cadastro-usuario.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-pagina-cadastro',
@@ -14,7 +15,7 @@ export class PaginaCadastroComponent {
   step: number = 1; // For multi-step form if needed
   loading = false;
 
-  constructor(private fb: FormBuilder, private cadastroService: CadastroUsuarioService, private route: Router) { }
+  constructor(private fb: FormBuilder, private cadastroService: CadastroUsuarioService, private route: Router, private toast: ToastrService) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -98,7 +99,7 @@ export class PaginaCadastroComponent {
     this.cadastroService.criarCadastro(this.signupForm.value).subscribe({
       next: (response) => {
         if (response.status) {
-          alert('Cadastro criado com sucesso! Chave de acesso é seu CPF e senha é Admin@123');
+          this.toast.success('Sua Conta foi criada com sucesso, para mais informações acesse seu E-mail', 'Sucesso');
           console.log('Cadastro criado com sucesso:', response.mensagem);
           this.route.navigate(['/login']);
         } else {
