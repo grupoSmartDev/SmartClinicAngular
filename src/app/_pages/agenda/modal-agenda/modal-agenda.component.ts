@@ -55,8 +55,9 @@ export class ModalAgendaComponent implements OnInit {
   camposFinancPagar = false;
   searchTerm: string = '';
   filteredPatients: Paciente[] = [];
-  pacienteCadastroRapido: PacienteCadastroRapidoDto = {} as PacienteCadastroRapidoDto;
   isLoading = false;
+  pacienteCadastroRapido: PacienteCadastroRapidoDto = {} as PacienteCadastroRapidoDto;
+  pacienteCadastroRapidoNovo: Paciente = {} as Paciente;
 
   listaStatus: Status[] = [];
   listaCentroDeCusto: CentroDeCusto[] = [];
@@ -976,18 +977,25 @@ export class ModalAgendaComponent implements OnInit {
 
       // Obter dados do objeto pacienteCadastroRapido que está vinculado ao formulário
       const dataToSave: PacienteCadastroRapidoDto = this.pacienteCadastroRapido;
+      const dataToSaves: Paciente = this.patientForm.value as Paciente;
 
       // Chamar o serviço para cadastrar o paciente
-      this.pacienteService.CadastroRapido(dataToSave).subscribe({
-        next: (response: ResponseModel<PacienteCadastroRapidoDto>) => {
-          // Exibir mensagem de sucesso
-          this.toastr.success('Paciente cadastrado com sucesso', 'Sucesso');
+      this.pacienteService.Criar(dataToSaves).subscribe({
+        next: (response: ResponseModel<Paciente>) => {
+          let status = response.status;
+          if (status) {
+            this.toastr.success(response.mensagem, 'Sucesso');
+            this.pacienteService.Listar().subscribe({
+              next: (result) => {
+                this.patients = result.dados;
+              }
+            })
+          }
+          else {
+            this.toastr.error(response.mensagem, 'Erro');
+          }
 
-          this.pacienteService.Listar().subscribe({
-            next: (result) => {
-              this.patients = result.dados;
-            }
-          })
+
 
           // Fechar o offcanvas usando a API do Bootstrap
           const offcanvas = document.getElementById('offcanvasPatient');
@@ -999,7 +1007,8 @@ export class ModalAgendaComponent implements OnInit {
           }
 
           // Limpar o objeto de cadastro rápido
-          this.pacienteCadastroRapido = {} as PacienteCadastroRapidoDto;
+          this.patientForm.reset();
+          this.pacienteCadastroRapidoNovo = {} as Paciente;
         },
         error: (err) => {
           // Desativar o indicador de carregamento

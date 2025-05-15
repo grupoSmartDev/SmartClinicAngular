@@ -983,17 +983,17 @@
           type="text"
           id="patientName"
           class="form-control form-control-sm"
-          [(ngModel)]="pacienteCadastroRapido.nome"
-          name="name"
+          [(ngModel)]="pacienteCadastroRapidoNovo.nome"
+          name="nome"
           required
           minlength="3"
           placeholder="Digite o nome completo"
-          #name="ngModel"
-          [class.is-invalid]="name.invalid && name.touched"
+          #nome="ngModel"
+          [class.is-invalid]="nome.invalid && nome.touched"
         />
         <div class="invalid-feedback">
-          <span *ngIf="name.errors?.['required']">Nome é obrigatório</span>
-          <span *ngIf="name.errors?.['minlength']"
+          <span *ngIf="nome.errors?.['required']">Nome é obrigatório</span>
+          <span *ngIf="nome.errors?.['minlength']"
             >Nome deve ter no mínimo 3 caracteres</span
           >
         </div>
@@ -1010,16 +1010,19 @@
             type="tel"
             id="patientPhone"
             class="form-control"
-            [(ngModel)]="pacienteCadastroRapido.celular"
-            name="phone"
+            [(ngModel)]="pacienteCadastroRapidoNovo.celular"
+            name="celular"
             required
             placeholder="(00) 00000-0000"
             mask="(00) 00000-0000"
-            #phone="ngModel"
-            [class.is-invalid]="phone.invalid && phone.touched"
+            #celular="ngModel"
+            [class.is-invalid]="celular.invalid && celular.touched"
           />
         </div>
-        <div class="invalid-feedback" *ngIf="phone.invalid && phone.touched">
+        <div
+          class="invalid-feedback"
+          *ngIf="celular.invalid && celular.touched"
+        >
           Celular é obrigatório
         </div>
       </div>
@@ -1037,7 +1040,7 @@
             type="text"
             id="patientCpf"
             class="form-control"
-            [(ngModel)]="pacienteCadastroRapido.cpf"
+            [(ngModel)]="pacienteCadastroRapidoNovo.cpf"
             name="cpf"
             required
             placeholder="000.000.000-00"
@@ -1053,8 +1056,9 @@
 
       <div class="mb-3">
         <label for="patientCpf" class="form-label small fw-semibold">
-          Email <span class="text-danger">*</span>
+          Email
         </label>
+        <!-- <span class="text-danger">*</span> -->
         <div class="input-group input-group-sm">
           <span class="input-group-text"
             ><i class="bi bi-person-vcard"></i
@@ -1063,23 +1067,22 @@
             type="text"
             id="email"
             class="form-control"
-            [(ngModel)]="pacienteCadastroRapido.email"
+            [(ngModel)]="pacienteCadastroRapidoNovo.email"
             name="email"
-            required
             #email="ngModel"
-            [class.is-invalid]="email.invalid && email.touched"
           />
         </div>
-        <div class="invalid-feedback" *ngIf="email.invalid && email.touched">
+        <!-- <div class="invalid-feedback" *ngIf="email.invalid && email.touched">
           Email é obrigatório
-        </div>
+        </div> -->
       </div>
 
       <!-- Data nascimento -->
       <div class="mb-3">
         <label for="dataNascimento" class="form-label small fw-semibold">
-          Data de Nascimento <span class="text-danger">*</span>
+          Data de Nascimento
         </label>
+        <!-- <span class="text-danger">*</span> -->
         <div class="input-group input-group-sm">
           <span class="input-group-text"
             ><i class="bi bi-person-vcard"></i
@@ -1088,16 +1091,14 @@
             type="date"
             id="dataNascimento"
             class="form-control"
-            [(ngModel)]="pacienteCadastroRapido.dataNascimento"
+            [(ngModel)]="pacienteCadastroRapidoNovo.dataNascimento"
             name="dataNascimento"
-            required
-            #cpf="ngModel"
-            [class.is-invalid]="cpf.invalid && cpf.touched"
+            #dataNascimento="ngModel"
           />
         </div>
-        <div class="invalid-feedback" *ngIf="cpf.invalid && cpf.touched">
+        <!-- <div class="invalid-feedback" *ngIf="cpf.invalid && cpf.touched">
           Data de Nascimento é obrigatório
-        </div>
+        </div> -->
       </div>
 
       <!-- Botões -->
