@@ -150,7 +150,7 @@
                     formulario.get('centroCustoId')?.touched
                 }"
               >
-                <option value="0">Selecione uma opção</option>
+                <option value="null">Selecione uma opção</option>
                 @for (item of listaCentroDeCusto; track $index) {
                 <option value="{{ item.id }}">{{ item.descricao }}</option>
                 }
@@ -181,7 +181,7 @@
                     formulario.get('tipoPagamentoId')?.touched
                 }"
               >
-                <option value="0">Selecione uma opção</option>
+                <option value="null">Selecione uma opção</option>
                 @for (item of listaTipoPagamento; track $index) {
                 <option value="{{ item.id }}">{{ item.descricao }}</option>
                 }

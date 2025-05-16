@@ -72,8 +72,8 @@ export class ModalFinanceiroReceber implements OnInit {
       cpf: [''],
       pacienteId: [null],
       fornecedorId: [null],
-      centroCustoId: [null],
-      tipoPagamentoId: [null],
+      centroCustoId: [null, Validators.required],
+      tipoPagamentoId: [null, Validators.required],
       bancoId: [null],
       subFinancReceber: this.fb.array([]),
     });
@@ -191,6 +191,8 @@ export class ModalFinanceiroReceber implements OnInit {
         const action = dataToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Contas a receber ${action} com sucesso!`, 'Parabéns');
         this.dadosAtualizado.emit();
+        let inputPacientePesquisado = document.getElementById('paciente') as HTMLInputElement;
+        inputPacientePesquisado.value = '';
         this.fecharModal();
       },
       error: () => {
