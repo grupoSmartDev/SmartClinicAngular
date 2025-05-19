@@ -2,6 +2,7 @@ export interface Profissional {
     id: string;
     email: string;
     nome: string;
+    sobrenome: string;
     cpf: string;
     celular: string;
     sexo: string;

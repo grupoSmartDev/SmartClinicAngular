@@ -41,7 +41,7 @@
                   />
                 </div>
 
-                <div class="col-md-5">
+                <div class="col-md-3">
                   <label for="nome" class="form-label">Nome</label>
                   <input
                     type="text"
@@ -64,26 +64,26 @@
                   </div>
                 </div>
 
-                <div class="col-md-5">
-                  <label for="email" class="form-label">E-mail</label>
+                <div class="col-md-4">
+                  <label for="sobrenome" class="form-label">Sobrenome</label>
                   <input
-                    type="email"
+                    type="text"
                     class="form-control form-control-sm"
-                    formControlName="email"
+                    formControlName="sobrenome"
                     [ngClass]="{
                       'is-invalid':
-                        formulario.get('email')?.invalid &&
-                        formulario.get('email')?.touched
+                        formulario.get('sobrenome')?.invalid &&
+                        formulario.get('sobrenome')?.touched
                     }"
                   />
                   <div
                     *ngIf="
-                      formulario.get('email')?.invalid &&
-                      formulario.get('email')?.touched
+                      formulario.get('sobrenome')?.invalid &&
+                      formulario.get('sobrenome')?.touched
                     "
                     class="invalid-feedback"
                   >
-                    O campo E-mail é obrigatório.
+                    O campo sobrenome é obrigatório.
                   </div>
                 </div>
 
@@ -109,6 +109,29 @@
                     class="invalid-feedback"
                   >
                     O campo CPF é obrigatório.
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label for="email" class="form-label">E-mail</label>
+                  <input
+                    type="email"
+                    class="form-control form-control-sm"
+                    formControlName="email"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('email')?.invalid &&
+                        formulario.get('email')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('email')?.invalid &&
+                      formulario.get('email')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo E-mail é obrigatório.
                   </div>
                 </div>
 
@@ -338,6 +361,20 @@
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-check form-switch mb-3">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="ehUsuario"
+                  formControlName="ehUsuario"
+                />
+                <label class="form-check-label mt-1" for="ehUsuario">
+                  Este profissional também será um usuário do sistema
+                </label>
               </div>
             </div>
           </div>
