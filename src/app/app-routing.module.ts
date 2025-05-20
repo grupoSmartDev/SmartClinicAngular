@@ -39,6 +39,7 @@ import { ListarDespesaComponent } from './_pages/despesaFixa/listar-despesa/list
 import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-cadastro.component';
 import { ConfiguracoesComponent } from './_pages/configuracoes/configuracoes.component';
 import { AlterarDadosUsuarioComponent } from './_pages/configuracoes/alterar-dados-usuario/alterar-dados-usuario.component';
+import { AgendaListarComponent } from './_pages/agenda/agenda-listar/agenda-listar.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent }, // Rota para a página de login
@@ -60,7 +61,7 @@ const routes: Routes = [
       { path: 'sala/listar', component: ListarSalasComponent },
       { path: 'convenio/listar', component: ListarConvenioComponent },
       { path: 'conselho/listar', component: ListarConselhoComponent },
-      { path: 'agenda/listar', component: AgendaComponent },
+      { path: 'agenda/listar', component: AgendaListarComponent },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'banco/listar', component: ListarBancoComponent },
       { path: 'centroDeCusto/listar', component: ListarCentroDeCustoComponent },

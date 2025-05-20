@@ -133,6 +133,7 @@ import { ModalDespesaComponent } from './_pages/despesaFixa/modal-despesa/modal-
 import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-cadastro.component';
 import { ConfiguracoesComponent } from './_pages/configuracoes/configuracoes.component';
 import { AlterarDadosUsuarioComponent } from './_pages/configuracoes/alterar-dados-usuario/alterar-dados-usuario.component';
+import { AgendaListarComponent } from './_pages/agenda/agenda-listar/agenda-listar.component';
 
 
 
@@ -252,6 +253,7 @@ import { AlterarDadosUsuarioComponent } from './_pages/configuracoes/alterar-dad
     PaginaCadastroComponent,
     ConfiguracoesComponent,
     AlterarDadosUsuarioComponent,
+    AgendaListarComponent,
   ],
   imports: [
     BrowserModule,
