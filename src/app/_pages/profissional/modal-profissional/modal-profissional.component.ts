@@ -30,6 +30,7 @@ export class ModalProfissionalComponent {
       id: [null],
       email: [null, [Validators.required, Validators.email]],
       nome: [null, Validators.required],
+      sobrenome: [null, Validators.required],
       cpf: [null, Validators.required],
       celular: [null, Validators.required],
       sexo: [null],
@@ -92,7 +93,7 @@ export class ModalProfissionalComponent {
         if (dataToSave.id && dataToSave.ehUsuario) {
           // this.criarUsuarioParaProfissional(dataToSave);
         }
-        this.toast.success(`Conselho ${action} com sucesso!`, 'Parabéns');
+        this.toast.success(`Profissional ${action} com sucesso!`, 'Parabéns');
         this.dataAtualizado.emit();
         this.fecharModal();
       },
@@ -180,6 +181,4 @@ export class ModalProfissionalComponent {
       },
     })
   }
-
-
 }
