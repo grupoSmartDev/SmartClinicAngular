@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DatePtBrPipe } from '../../../date-pt-br.pipe';
+import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
 import { Paciente } from '../../../_module/pacienteModule';
 import { Profissional } from '../../../_module/profissionalModule';
 import { ProfissionalService } from '../../../_services/profissional.service';
@@ -13,18 +13,18 @@ import * as bootstrap from 'bootstrap';
   selector: 'app-ficha-avaliacao',
   templateUrl: './ficha-avaliacao.component.html',
   styleUrl: './ficha-avaliacao.component.css',
-  providers : [DatePtBrPipe]
+  providers: [DatePtBrPipe]
 })
 export class FichaAvaliacaoComponent {
   fichaForm!: FormGroup;
   paciente!: Paciente;
-  listaProfissional : Profissional[] = [];
-  fichaAvaliacao! : FichaAvaliacao;
+  listaProfissional: Profissional[] = [];
+  fichaAvaliacao!: FichaAvaliacao;
 
-  constructor(private fb: FormBuilder, private dataInput : DatePtBrPipe,
-      private profissionalSerice : ProfissionalService, private toast: ToastrService,
-       private facService : FichaAvaliacaoService,
-       private datePipe: DatePtBrPipe) {}
+  constructor(private fb: FormBuilder, private dataInput: DatePtBrPipe,
+    private profissionalSerice: ProfissionalService, private toast: ToastrService,
+    private facService: FichaAvaliacaoService,
+    private datePipe: DatePtBrPipe) { }
 
   ngOnInit() {
 
@@ -42,14 +42,14 @@ export class FichaAvaliacaoComponent {
       dataAvaliacao: ['', Validators.required],
       profissionalId: ['', Validators.required],
       especialidade: ['', Validators.required],
-      
+
       // Informações do Cliente
       idade: ['', [Validators.required, Validators.min(0)]],
       altura: ['', [Validators.required, Validators.min(0)]],
       peso: ['', [Validators.required, Validators.min(0)]],
       sexo: ['', Validators.required],
       observacoesGerais: [''],
-      
+
       // Histórico Médico
       historicoDoencas: [false],
       doencasPreExistentes: [''],
@@ -70,20 +70,20 @@ export class FichaAvaliacaoComponent {
       frequenciaConsumoAlcool: ['', Validators.required],
       praticaAtividade: [false],
       tabagista: [false],
-      
+
       // Queixa e Objetivos
       queixaPrincipal: ['', Validators.required],
       objetivosDoTratamento: ['', Validators.required],
-      
+
       // Avaliações Específicas
       avaliacaoPostural: [''],
       amplitudeMovimento: [''],
-      
+
       // Assinaturas
       assinaturaProfissional: [''],
       assinaturaCliente: ['']
 
-      
+
     });
 
     //ajustando a data para o input
@@ -95,13 +95,13 @@ export class FichaAvaliacaoComponent {
     this.fichaForm.get('peso')?.valueChanges.subscribe(() => this.calcularIMC());
     this.fichaForm.get('altura')?.valueChanges.subscribe(() => this.calcularIMC());
 
-  
+
   }
 
   calcularIMC() {
     const peso = this.fichaForm.get('peso')?.value;
     const altura = this.fichaForm.get('altura')?.value;
-    
+
     if (peso && altura) {
       const alturaMetros = altura / 100; // Convertendo cm para metros
       const imc = peso / (alturaMetros * alturaMetros);
@@ -110,25 +110,25 @@ export class FichaAvaliacaoComponent {
   }
 
   onSubmit() {
-    
+
     if (this.fichaForm.valid) {
       console.log('Formulário enviado:', this.fichaForm.value);
 
       const dataToSave = this.fichaForm.value as FichaAvaliacao;
 
       const saveOperation = dataToSave.id
-      ? this.facService.Atualizar(dataToSave)
-      : this.facService.Criar(dataToSave);
-    saveOperation.subscribe({
-      next: () => {
-        const action = dataToSave.id ? 'atualizado' : 'criado';
-        this.toast.success(`Ficha de avaliação ${action} com sucesso!`, 'Parabéns');
-        this.fecharModal();
-      },
-      error: () => {
-        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
-      },
-    });
+        ? this.facService.Atualizar(dataToSave)
+        : this.facService.Criar(dataToSave);
+      saveOperation.subscribe({
+        next: () => {
+          const action = dataToSave.id ? 'atualizado' : 'criado';
+          this.toast.success(`Ficha de avaliação ${action} com sucesso!`, 'Parabéns');
+          this.fecharModal();
+        },
+        error: () => {
+          this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+        },
+      });
       // Aqui você pode implementar a lógica para salvar os dados
     } else {
       this.marcarCamposInvalidos();
@@ -144,24 +144,24 @@ export class FichaAvaliacaoComponent {
     });
   }
 
-// ficha-avaliacao.component.ts
-fecharModal() {
-  this.fichaForm.reset();
-  this.fichaAvaliacao = new FichaAvaliacao();
-  
-  const modalElement = document.getElementById('modalFichaAvaliacao');
-  if (modalElement) {
-    const modal = bootstrap.Modal.getInstance(modalElement);
-    if (modal) {
-      modal.hide();
+  // ficha-avaliacao.component.ts
+  fecharModal() {
+    this.fichaForm.reset();
+    this.fichaAvaliacao = new FichaAvaliacao();
+
+    const modalElement = document.getElementById('modalFichaAvaliacao');
+    if (modalElement) {
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+      }
     }
   }
-}
 
-  getProfissional(){
-    this.profissionalSerice.Listar(undefined,undefined,undefined,undefined,undefined,undefined,false).subscribe({
-      next : (data) => {
-        if(data.dados){
+  getProfissional() {
+    this.profissionalSerice.Listar(undefined, undefined, undefined, undefined, undefined, undefined, false).subscribe({
+      next: (data) => {
+        if (data.dados) {
           this.listaProfissional = data.dados;
         }
       },
@@ -172,36 +172,36 @@ fecharModal() {
   }
 
   // ficha-avaliacao.component.ts
-getFac(pacienteId: string) {
-  this.facService.BuscarId(pacienteId).subscribe({
-    next: (data) => {
-      if (data.dados) {
-        this.fichaAvaliacao = data.dados;
-        // Depois de receber os dados, atualiza o formulário
-        this.fichaForm.patchValue(this.fichaAvaliacao);
+  getFac(pacienteId: string) {
+    this.facService.BuscarId(pacienteId).subscribe({
+      next: (data) => {
+        if (data.dados) {
+          this.fichaAvaliacao = data.dados;
+          // Depois de receber os dados, atualiza o formulário
+          this.fichaForm.patchValue(this.fichaAvaliacao);
 
-        if(this.fichaAvaliacao.dataAvaliacao){
-          const dataFormatada = this.datePipe.formatToHtmlDate(this.fichaAvaliacao.dataAvaliacao);
-          this.fichaForm.get('dataAvaliacao')?.setValue(dataFormatada);  
+          if (this.fichaAvaliacao.dataAvaliacao) {
+            const dataFormatada = this.datePipe.formatToHtmlDate(this.fichaAvaliacao.dataAvaliacao);
+            this.fichaForm.get('dataAvaliacao')?.setValue(dataFormatada);
+          }
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao buscar Ficha de Avaliação:', err);
+        this.toast.error('Erro ao carregar a ficha de avaliação', 'Erro');
+      },
+      complete: () => {
+        // Se não houver ficha existente, inicializa com o ID do paciente
+        if (!this.fichaAvaliacao) {
+          this.fichaForm.patchValue({
+            pacienteId: pacienteId,
+            dataAvaliacao: new Date().toISOString().split('T')[0]
+          });
         }
       }
-    },
-    error: (err) => {
-      console.error('Erro ao buscar Ficha de Avaliação:', err);
-      this.toast.error('Erro ao carregar a ficha de avaliação', 'Erro');
-    },
-    complete: () => {
-      // Se não houver ficha existente, inicializa com o ID do paciente
-      if (!this.fichaAvaliacao) {
-        this.fichaForm.patchValue({
-          pacienteId: pacienteId,
-          dataAvaliacao: new Date().toISOString().split('T')[0]
-        });
-      }
-    }
-  });
-  this.fichaForm.patchValue({
-    pacienteId: pacienteId
-  })
-}
+    });
+    this.fichaForm.patchValue({
+      pacienteId: pacienteId
+    })
+  }
 }

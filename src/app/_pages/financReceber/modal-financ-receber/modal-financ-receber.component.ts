@@ -13,7 +13,7 @@ import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service'
 import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
 import * as bootstrap from 'bootstrap';
 import { Paciente } from '../../../_module/pacienteModule';
-import { DatePtBrPipe } from '../../../date-pt-br.pipe';
+import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
 
 @Component({
   selector: 'app-modal-financ-receber',

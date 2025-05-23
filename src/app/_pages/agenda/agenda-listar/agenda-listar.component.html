@@ -40,7 +40,7 @@
     </div>
 
     <!--COLOCAR ABAIXO OS FILTROS-->
-    <div class="row mb-2">
+    <div class="row mb-2 align-items-end">
       <div class="col-md-2">
         <label for="" class="form-label small fw-bold">Cód.</label>
         <input
@@ -52,13 +52,65 @@
       </div>
 
       <div class="col-md-2">
-        <label for="" class="form-label small fw-bold">Descrição</label>
-        <input
-          type="text"
-          [(ngModel)]="descricaoFiltro"
-          placeholder="Filtrar por descrição"
-          class="form-control form-control-sm"
-        />
+        <label for="" class="form-label small fw-bold">Paciente</label>
+        <!-- futuramente trocar para o mesmo que tem no financ, buscar pelo paciente -->
+        <select
+          class="form-select form-select-sm"
+          [(ngModel)]="pacienteIdFiltro"
+        >
+          <option value="">Selecione...</option>
+          @for (item of listaPaciente; track $index) {
+          <option value="{{ item.id }}">{{ item.nome }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <label for="" class="form-label small fw-bold">Profissional</label>
+        <select
+          class="form-select form-select-sm"
+          [(ngModel)]="profissionalIdFiltro"
+        >
+          <option value="">Selecione...</option>
+          @for (item of listaProfissional; track $index) {
+          <option value="{{ item.id }}">{{ item.nome }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <label for="" class="form-label small fw-bold">Status</label>
+        <select class="form-select form-select-sm" [(ngModel)]="statusIdFiltro">
+          <option value="">Selecione...</option>
+          @for (item of listaStatus; track $index) {
+          <option value="{{ item.id }}">{{ item.status }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text">De</span>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                [(ngModel)]="dataFiltroInicio"
+              />
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text">Até</span>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                [(ngModel)]="dataFiltroFim"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -132,6 +184,8 @@
     </pagination>
   </div>
 </div>
+
+<app-modal-agenda #modalAgenda></app-modal-agenda>
 
 <app-confirm-dialog
   #confirmDialog

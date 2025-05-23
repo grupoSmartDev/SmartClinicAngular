@@ -5,13 +5,9 @@ import { AgendaService } from '../../_services/agenda.service';
 import { ToastrService } from 'ngx-toastr';
 
 import * as bootstrap from 'bootstrap';
+import { CalendarEvent } from '../../_module/calendarModule';
 
-interface CalendarEvent {
-  id: string;
-  title: string;
-  start: string;
-  end?: string;
-}
+
 
 interface Dia {
   numero: number;

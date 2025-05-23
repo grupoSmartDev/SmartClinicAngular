@@ -102,13 +102,13 @@ import { ListarPlanoContasComponent } from './_pages/planoContas/listar-plano-co
 import { ModalPlanoContasComponent } from './_pages/planoContas/modal-plano-contas/modal-plano-contas.component';
 import { ListarPlanoContasSubComponent } from './_pages/planoContasSub/listar-plano-contas-sub/listar-plano-contas-sub.component';
 import { ModalPlanoContasSubComponent } from './_pages/planoContasSub/modal-plano-contas-sub/modal-plano-contas-sub.component';
-import { DatePtBrPipe } from './date-pt-br.pipe';
-import { CurrencyPtBrPipe } from './currency-pt-br.pipe';
+import { DatePtBrPipe } from './_shared/pipes/date-pt-br.pipe';
+import { CurrencyPtBrPipe } from './_shared/pipes/currency-pt-br.pipe';
 import { CalendarComponent } from './_components/_calendar/calendar/calendar.component';
 import { CalendarModule } from './calendar/calendar.module';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthInterceptor } from './auth.interceptor';
-import { OnlyNumbersDirective } from './only-number.directive';
+import { OnlyNumbersDirective } from './_shared/pipes/only-number.directive';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { FichaAvaliacaoComponent } from './_pages/paciente/ficha-avaliacao/ficha-avaliacao.component';
 import { MenuComponent } from './_components/menu/menu.component';
@@ -118,7 +118,7 @@ import { ListarReceberSinteticoComponent } from './_pages/financReceber/listar-r
 import { BaixaFinancReceberSubComponent } from './_components/baixa-financ-receber-sub/baixa-financ-receber-sub.component';
 import { ListarPagarSinteticoComponent } from './_pages/financPagar/listar-pagar-sintetico/listar-pagar-sintetico.component';
 import { BaixaFinancPagarSubComponent } from './_components/baixa-financ-pagar-sub/baixa-financ-pagar-sub.component';
-import { TelefonePipePipe } from './telefone-pipe.pipe';
+import { TelefonePipePipe } from './_shared/pipes/telefone-pipe.pipe';
 import { HeroComponent } from './_lp/components/hero/hero.component';
 import { SegundaDobraComponent } from './_lp/components/segunda-dobra/segunda-dobra.component';
 import { TerceiraDobraComponent } from './_lp/components/terceira-dobra/terceira-dobra.component';

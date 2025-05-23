@@ -12,6 +12,7 @@ import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 import { Paciente } from '../../../_module/pacienteModule';
 import { TabService } from '../../../_services/tabs.service';
+import { FormatarDataParaInputService } from '../../../_services/formatar-data-para-input.service';
 
 interface CacheData {
   cacheList: FinancReceber[];
@@ -61,14 +62,15 @@ export class ListarFinancReceberComponent {
     private financReceberService: FinancReceberService,
     private toast: ToastrService,
     private ccService: CentroDeCustoService,
-    private tabService: TabService
+    private tabService: TabService,
+    private formatarDataService: FormatarDataParaInputService
   ) { }
 
   ngOnInit(): void {
     this.loadData();
 
-    this.dataFiltroInicio = this.formatarDataParaInput(new Date());
-    this.dataFiltroFim = this.formatarDataParaInput(new Date());
+    this.dataFiltroInicio = this.formatarDataService.formatarDataParaInput(new Date());
+    this.dataFiltroFim = this.formatarDataService.formatarDataParaInput(new Date());
   }
 
   private getCacheKey(): string {
@@ -268,19 +270,14 @@ export class ListarFinancReceberComponent {
     this.invalidateCache();
     this.idFiltro = undefined;
     this.dataBaseFiltro = 'V';
-    this.dataFiltroInicio = this.formatarDataParaInput(new Date());
-    this.dataFiltroFim = this.formatarDataParaInput(new Date());
+    this.dataFiltroInicio = this.formatarDataService.formatarDataParaInput(new Date());
+    this.dataFiltroFim = this.formatarDataService.formatarDataParaInput(new Date());
     this.parcelasVencidasFiltro = false;
     // Opcional: realizar uma busca após limpar
     this.onSearch();
   }
 
-  formatarDataParaInput(data: Date): any {
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    return `${ano}-${mes}-${dia}`;
-  }
+
 
   //tem que fazer lista de pacientes aqui para o filtro.
 }

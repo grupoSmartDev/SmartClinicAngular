@@ -10,7 +10,7 @@ import { FormaPagamentoService } from '../../../_services/forma-pagamento.servic
 import { PacienteService } from '../../../_services/paciente.service';
 import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service';
 import { FinancPagarService } from '../../../_services/financ-pagar.service';
-import { DatePtBrPipe } from '../../../date-pt-br.pipe';
+import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
 import { Paciente } from '../../../_module/pacienteModule';
 
 @Component({

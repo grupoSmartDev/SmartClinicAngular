@@ -3,7 +3,34 @@ import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/conf
 import { Agenda } from '../../../_module/agendaModule';
 import { TabService } from '../../../_services/tabs.service';
 import { ToastrService } from 'ngx-toastr';
+import { Paciente } from '../../../_module/pacienteModule';
+import { Profissional } from '../../../_module/profissionalModule';
+import { Status } from '../../../_module/statusModule';
+import { FormatarDataParaInputService } from '../../../_services/formatar-data-para-input.service';
+import { PacienteService } from '../../../_services/paciente.service';
+import { ProfissionalService } from '../../../_services/profissional.service';
+import { StatusServerService } from '../../../_services/status-server.service';
+import { AgendaService } from '../../../_services/agenda.service';
+import { ModalAgendaComponent } from '../modal-agenda/modal-agenda.component';
+import * as bootstrap from 'bootstrap';
+import { CalendarEvent } from '../../../_module/calendarModule';
 
+interface CacheData {
+  cacheList: Agenda[];
+  totalItems: number;
+  timestamp: number;
+}
+
+interface Agendamento {
+  id: string;
+  titulo: string;
+  paciente: string;
+  data: Date;
+  dataFim?: Date;
+  duracao: number;
+  status: 'confirmado' | 'pendente';
+  agenda?: Agenda;
+}
 @Component({
   selector: 'app-agenda-listar',
   templateUrl: './agenda-listar.component.html',
@@ -13,15 +40,29 @@ export class AgendaListarComponent {
 
   constructor(
     private tabService: TabService,
-    private toast: ToastrService
+    private formatarDataService: FormatarDataParaInputService,
+    private toast: ToastrService,
+    private pacienteService: PacienteService,
+    private profissionalService: ProfissionalService,
+    private statusService: StatusServerService,
+    private agendaService: AgendaService
   ) { }
 
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
+  @ViewChild(ModalAgendaComponent) modalAgenda!: ModalAgendaComponent
+
   lista: Agenda[] = [];
+
+  listaPaciente: Paciente[] = [];
+  listaProfissional: Profissional[] = [];
+  listaStatus: Status[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
   agendaParaExcluir!: Agenda;
   mostrarFiltros: boolean = false; // Começa expandido por padrão
+
+  public selectedDate: string = '';
+  public selectedEvent: CalendarEvent | null = null;
 
   //paginacao
   totalItems: number = 0;
@@ -33,13 +74,48 @@ export class AgendaListarComponent {
   profissionalIdFiltro: string = '';
   statusIdFiltro: string = '';
   descricaoFiltro: string = '';
+  dataFiltroInicio: Date = new Date();
+  dataFiltroFim: Date = new Date();
 
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
 
-  openModal(agendaId: any) { }
+  openModal(agenda: Agenda | string) {
+    if (this.modalAgenda) {
+      if (typeof agenda !== 'string') {
+
+        let agendamento = this.mapApiToAgendamento(agenda);
+
+        this.selectedEvent = {
+          id: agendamento.id,
+          title: agendamento.titulo,
+          start: agendamento.data.toISOString(),
+          end: agendamento.dataFim?.toISOString()
+        };
+
+        this.modalAgenda.selectedDate = this.selectedDate;
+        this.modalAgenda.selectedEvent = this.selectedEvent;
+        this.modalAgenda.eventoEscolhido = agenda;
+      }
+      // Atualize diretamente as propriedades do componente filho
+      // Chame o método de inicialização de dados
+      this.modalAgenda.initializeModalData();
+    }
+    const modalElement = document.getElementById('modalAgenda');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
 
   ngOnInit(): void {
     this.loadData();
+
+    this.loadPacientes();
+    this.loadProfissionais();
+    this.loadStatus();
+
+    this.dataFiltroInicio = this.formatarDataService.formatarDataParaInput(new Date());
+    this.dataFiltroFim = this.formatarDataService.formatarDataParaInput(new Date());
   }
 
   private getCacheKey(): string {
@@ -57,7 +133,39 @@ export class AgendaListarComponent {
     this.tabService.setCacheData(cacheKey, null);
   }
 
-  loadData(): void { }
+  loadData(): void {
+    const cacheKey = this.getCacheKey();
+    const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
+
+    if (cachedData && this.isCacheValid(cachedData.timestamp)) {
+      // Se temos dados em cache válidos, use-os
+      this.lista = cachedData.cacheList;
+      this.totalItems = cachedData.totalItems;
+    } else {
+      this.agendaService.ListarGeral(this.currentPage, this.pageSize, this.idFiltro,
+        this.pacienteIdFiltro, this.profissionalIdFiltro, this.statusIdFiltro,
+        this.dataFiltroInicio, this.dataFiltroFim, true
+      ).subscribe({
+        next: (data) => {
+          if (data.dados) {
+            this.lista = data.dados;
+            this.totalItems = data.totalCount ?? 0;
+
+            // Armazena os dados no cache
+            this.tabService.setCacheData(cacheKey, {
+              cacheList: this.lista,
+              totalItems: this.totalItems,
+              timestamp: Date.now(),
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar agenda:', err);
+          this.errorMessage = 'Erro ao carregar as agenda. Tente novamente mais tarde.';
+        }
+      })
+    }
+  }
 
   atualizarLista(): void {
     this.invalidateCache();
@@ -103,4 +211,80 @@ export class AgendaListarComponent {
     // Opcional: realizar uma busca após limpar
     this.onSearch();
   }
+
+  loadPacientes() {
+    this.pacienteService.Listar().subscribe({
+      next: (result) => {
+        this.listaPaciente = result.dados;
+      }
+    })
+  }
+  loadProfissionais() {
+    this.profissionalService.Listar().subscribe({
+      next: (result) => {
+        this.listaProfissional = result.dados;
+      }
+    })
+  }
+  loadStatus() {
+    this.statusService.Listar().subscribe({
+      next: (result) => {
+        this.listaStatus = result.dados;
+      }
+    })
+  }
+
+  private criarDataComHora(dataString: string, horaString?: string): Date {
+    try {
+      // Criar uma nova data a partir da string de data
+      const data = new Date(dataString);
+
+      if (horaString) {
+        const [horas, minutos, segundos] = horaString.split(':').map(Number);
+        data.setHours(horas || 0, minutos || 0, segundos || 0);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Erro ao criar data com hora:', error, dataString, horaString);
+      return new Date(); // Retorna data atual em caso de erro
+    }
+  }
+
+  private mapApiToAgendamento(agenda: any): Agendamento {
+    try {
+      // Criar data de início
+      const dataInicio = this.criarDataComHora(agenda.data, agenda.horaInicio);
+
+      // Criar data de fim
+      const dataFim = this.criarDataComHora(agenda.data, agenda.horaFim);
+
+      // Calcular duração em minutos
+      const duracaoMinutos = dataFim ?
+        Math.round((dataFim.getTime() - dataInicio.getTime()) / (1000 * 60)) :
+        60; // Padrão de 60 minutos se não tiver fim
+
+      return {
+        id: agenda.id.toString(),
+        titulo: agenda.titulo || 'Sem título',
+        paciente: agenda.paciente?.nome || 'Sem nome',
+        data: dataInicio,
+        dataFim: dataFim,
+        duracao: duracaoMinutos,
+        status: agenda.statusId === 1 ? 'confirmado' : 'pendente' // Ajuste conforme os status da sua API
+      };
+    } catch (error) {
+      console.error('Erro ao mapear para agendamento:', error, agenda);
+      // Retornar um agendamento com dados mínimos para evitar quebra do calendário
+      return {
+        id: agenda.id?.toString() || '0',
+        titulo: agenda.titulo || 'Erro no agendamento',
+        paciente: 'Erro',
+        data: new Date(),
+        duracao: 60,
+        status: 'pendente'
+      };
+    }
+  }
+
 }

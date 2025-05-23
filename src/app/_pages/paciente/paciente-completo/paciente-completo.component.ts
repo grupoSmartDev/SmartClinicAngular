@@ -19,7 +19,7 @@ import { Evolucao } from '../../../_module/evolucaoModule';
 import { EvolucaoService } from '../../../_services/evolucao.service';
 import { Plano, TipoMes } from '../../../_module/planoModule';
 import { PlanoService } from '../../../_services/plano.service';
-import { DatePtBrPipe } from '../../../date-pt-br.pipe';
+import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
 import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service';
 import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';

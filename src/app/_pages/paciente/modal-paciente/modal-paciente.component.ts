@@ -12,7 +12,7 @@ import { ProfissionalService } from '../../../_services/profissional.service';
 import { ConvenioService } from '../../../_services/convenio.service';
 import { PlanoService } from '../../../_services/plano.service';
 import { Plano } from '../../../_module/planoModule';
-import { DatePtBrPipe } from '../../../date-pt-br.pipe';
+import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
 
 @Component({
   selector: 'app-modal-paciente',
