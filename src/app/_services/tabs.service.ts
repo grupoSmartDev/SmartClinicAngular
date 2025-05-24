@@ -42,7 +42,18 @@ export class TabService {
   }
 
   closeTab(index: number) {
-    if (index < 0 || index >= this.tabs.length) return;
+    if (index < 0 || index >= this.tabs.length) {
+      return; // Índice inválido
+    }
+
+    const tabToClose = this.tabs[index];
+
+    // **** ADICIONANDO A VERIFICAÇÃO AQUI ****
+    if (tabToClose.path === '/dashboard') {
+      console.warn("Não é permitido fechar a aba Dashboard.");
+      return; // Impede o fechamento da aba Dashboard
+    }
+    // ***************************************
 
     const wasActive = this.activeTab === index;
     this.tabs.splice(index, 1);
@@ -64,7 +75,7 @@ export class TabService {
     if (this.tabs.length > 0) {
       this.router.navigate([this.tabs[this.activeTab].path], { skipLocationChange: true });
     } else {
-      this.openDefaultTab();
+      this.openDefaultTab(); // Isso garante que o dashboard será reaberto se for a última aba e não for o dashboard.
     }
   }
 
