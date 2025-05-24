@@ -42,8 +42,32 @@ export class ListarCentroDeCustoComponent {
 
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
 
+  private inputListeners: Map<HTMLInputElement, (event: KeyboardEvent) => void> = new Map();
+
   ngOnInit(): void {
     this.loadData();
+
+
+    const allInputs = document.querySelectorAll('input');
+
+    allInputs.forEach(input => {
+      // Cria uma função de listener para cada input
+      const listener = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+          this.onSearch(); // Passa o input para a função filtrar
+        }
+      };
+      input.addEventListener('keydown', listener);
+      this.inputListeners.set(input, listener); // Armazena para remover depois
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Remove os listeners de todos os inputs
+    this.inputListeners.forEach((listener, input) => {
+      input.removeEventListener('keydown', listener);
+    });
+    this.inputListeners.clear();
   }
   private getCacheKey(): string {
     // Cria uma chave única para o cache baseada nos parâmetros atuais

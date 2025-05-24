@@ -35,9 +35,24 @@ export class ListarProfissionalComponent {
   cpfFiltro: string = '';
   profissaoIdFiltro: string = '';
 
+
+  private inputListeners: Map<HTMLInputElement, (event: KeyboardEvent) => void> = new Map();
   ngOnInit(): void {
     this.getProfissao();
     this.loadData();
+
+    const allInputs = document.querySelectorAll('input');
+
+    allInputs.forEach(input => {
+      // Cria uma função de listener para cada input
+      const listener = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+          this.filtrar(); // Passa o input para a função filtrar
+        }
+      };
+      input.addEventListener('keydown', listener);
+      this.inputListeners.set(input, listener); // Armazena para remover depois
+    });
   }
 
   loadData(): void {
@@ -134,5 +149,13 @@ export class ListarProfissionalComponent {
     this.profissaoIdFiltro = '';
     // Opcional: realizar uma busca após limpar
     this.filtrar();
+  }
+
+  ngOnDestroy(): void {
+    // Remove os listeners de todos os inputs
+    this.inputListeners.forEach((listener, input) => {
+      input.removeEventListener('keydown', listener);
+    });
+    this.inputListeners.clear();
   }
 }

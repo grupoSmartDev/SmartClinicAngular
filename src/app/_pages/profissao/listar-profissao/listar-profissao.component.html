@@ -48,6 +48,7 @@
           [(ngModel)]="descricaoFiltro"
           placeholder="Filtrar por nome"
           class="form-control form-control-sm"
+          (keydown.enter)="filtrar()"
         />
       </div>
     </div>

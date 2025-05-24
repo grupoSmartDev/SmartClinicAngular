@@ -78,7 +78,7 @@ export class AgendaListarComponent {
   dataFiltroFim: Date = new Date();
 
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos em milissegundos
-
+  private inputListeners: Map<HTMLInputElement, (event: KeyboardEvent) => void> = new Map();
   openModal(agenda: Agenda | string) {
     if (this.modalAgenda) {
       if (typeof agenda !== 'string') {
@@ -116,6 +116,27 @@ export class AgendaListarComponent {
 
     this.dataFiltroInicio = this.formatarDataService.formatarDataParaInput(new Date());
     this.dataFiltroFim = this.formatarDataService.formatarDataParaInput(new Date());
+
+    const allInputs = document.querySelectorAll('input');
+
+    allInputs.forEach(input => {
+      // Cria uma função de listener para cada input
+      const listener = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+          this.onSearch(); // Passa o input para a função filtrar
+        }
+      };
+      input.addEventListener('keydown', listener);
+      this.inputListeners.set(input, listener); // Armazena para remover depois
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Remove os listeners de todos os inputs
+    this.inputListeners.forEach((listener, input) => {
+      input.removeEventListener('keydown', listener);
+    });
+    this.inputListeners.clear();
   }
 
   private getCacheKey(): string {

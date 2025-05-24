@@ -55,6 +55,8 @@ export class ListarPagarSinteticoComponent {
 
   private readonly CACHE_DURATION = 5 * 60 * 1000;
 
+  private inputListeners: Map<HTMLInputElement, (event: KeyboardEvent) => void> = new Map();
+
   constructor(
     private financPagarService: FinancPagarService,
     private toast: ToastrService,
@@ -68,6 +70,28 @@ export class ListarPagarSinteticoComponent {
 
     this.dataFiltroInicio = this.formatarDataParaInput(new Date());
     this.dataFiltroFim = this.formatarDataParaInput(new Date());
+
+
+    const allInputs = document.querySelectorAll('input');
+
+    allInputs.forEach(input => {
+      // Cria uma função de listener para cada input
+      const listener = (event: KeyboardEvent) => {
+        if (event.key === 'Enter') {
+          this.onSearch(); // Passa o input para a função filtrar
+        }
+      };
+      input.addEventListener('keydown', listener);
+      this.inputListeners.set(input, listener); // Armazena para remover depois
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Remove os listeners de todos os inputs
+    this.inputListeners.forEach((listener, input) => {
+      input.removeEventListener('keydown', listener);
+    });
+    this.inputListeners.clear();
   }
 
   private getCacheKey(): string {
