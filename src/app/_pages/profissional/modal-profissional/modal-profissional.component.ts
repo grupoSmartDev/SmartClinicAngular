@@ -45,7 +45,7 @@ export class ModalProfissionalComponent {
       // Propriedades para pagamento
       tipoPagamento: [null],
       chavePix: [null],
-      bancoNome: [null],
+      bancoNome: [''],
       bancoAgencia: [null],
       bancoConta: [null],
       bancoTipoConta: [null],
