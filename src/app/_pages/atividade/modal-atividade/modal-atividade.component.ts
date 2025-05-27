@@ -14,20 +14,21 @@ export class ModalAtividadeComponent {
   constructor(
     private atividadeService: AtividadeService,
     private toast: ToastrService,
-    private fb : FormBuilder) { 
-      this.formulario = this.fb.group({
-        id : [null],
-        titulo : [null, Validators.required],
-        descricao : [null],
-        tempo : [null],
-      })
-    }
+    private fb: FormBuilder) {
+    this.formulario = this.fb.group({
+      id: [null],
+      titulo: [null, Validators.required],
+      descricao: [null],
+      tempo: [null],
+    })
+  }
 
   @ViewChild('modalSala') modalSala?: ElementRef;
   @Input() data = {} as Atividade;
   @Output() dadosAtualizados = new EventEmitter<void>(); // Adicione este EventEmitter
 
-  formulario! : FormGroup;
+  formulario!: FormGroup;
+  isLoading = false;
 
 
   carregarDados(atividade: any) {
@@ -40,18 +41,19 @@ export class ModalAtividadeComponent {
     btnCacelar.click();
   }
 
-  onSubmit(){
-    if(this.formulario.invalid){
+  onSubmit() {
+    if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha todos os campos obrigatórios', 'Erro');
       return;
     }
 
+    this.isLoading = true;
     const dataToSave = this.formulario.value as Atividade;
 
-    const saveOperation = dataToSave.id 
-    ? this.atividadeService.Atualizar(dataToSave)
-    : this.atividadeService.Criar(dataToSave);
+    const saveOperation = dataToSave.id
+      ? this.atividadeService.Atualizar(dataToSave)
+      : this.atividadeService.Criar(dataToSave);
 
     saveOperation.subscribe({
       next: () => {
@@ -59,15 +61,17 @@ export class ModalAtividadeComponent {
         this.toast.success(`Atividade ${action} com sucesso!`, 'Parabéns');
         this.dadosAtualizados.emit();
         this.fecharModal();
+        this.isLoading = false;
 
       },
       error: () => {
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+        this.isLoading = false;
       },
     });
   }
 
-  testeEnvio(){
-    console.log('dados formulario',this.formulario.value)
+  testeEnvio() {
+    console.log('dados formulario', this.formulario.value)
   }
 }

@@ -134,6 +134,7 @@ import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-
 import { ConfiguracoesComponent } from './_pages/configuracoes/configuracoes.component';
 import { AlterarDadosUsuarioComponent } from './_pages/configuracoes/alterar-dados-usuario/alterar-dados-usuario.component';
 import { AgendaListarComponent } from './_pages/agenda/agenda-listar/agenda-listar.component';
+import { ButtonActionComponent } from './_components/button-action/button-action.component';
 
 
 
@@ -254,6 +255,7 @@ import { AgendaListarComponent } from './_pages/agenda/agenda-listar/agenda-list
     ConfiguracoesComponent,
     AlterarDadosUsuarioComponent,
     AgendaListarComponent,
+    ButtonActionComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,44 +1,107 @@
-  <!-- Modal -->
-  <div #modalEditarCriar class="modal fade" id="modalEditarCriar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Atividade</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="fecharModal()"  aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="formulario">
-            <div class="row g-3">
-              <div class="col-md-2">
-                  <label for="Id" class="form-label">Cód.</label>
-                  <input type="text" class="form-control form-control-sm" id="Id" readonly formControlName="id" />
+<!-- Modal -->
+<div
+  #modalEditarCriar
+  class="modal fade"
+  id="modalEditarCriar"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="statusModalLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Atividade</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row g-3">
+            <div class="col-md-2">
+              <label for="Id" class="form-label">Cód.</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="Id"
+                readonly
+                formControlName="id"
+              />
+            </div>
+            <div class="col-md-8">
+              <label for="titulo" class="form-label">Atividade</label>
+              <input
+                type="text"
+                required
+                class="form-control form-control-sm required"
+                formControlName="titulo"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('titulo')?.invalid &&
+                    formulario.get('titulo')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('titulo')?.invalid &&
+                  formulario.get('titulo')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo atividade é obrigatório.
               </div>
-              <div class="col-md-8">
-                  <label for="titulo" class="form-label">Atividade</label>
-                  <input type="text" required class="form-control form-control-sm required" formControlName="titulo" 
-                  [ngClass]="{'is-invalid' : formulario.get('titulo')?.invalid && formulario.get('titulo')?.touched}"
-                  >
-                  <div *ngIf="formulario.get('titulo')?.invalid && formulario.get('titulo')?.touched" class="invalid-feedback">
-                    O campo atividade é obrigatório.
-                  </div>
-              </div>
-              <div class="col-md-2">
-                  <label for="capacidade" class="form-label">tempo (min)</label>
-                  <input type="text" class="form-control form-control-sm" formControlName="tempo" onlyNumbers>
-              </div>
-          <div class="col-md-12">
-            <label for="localizacao" class="form-label">Descrição</label>
-            <input type="text" required class="form-control form-control-sm" formControlName="descricao" />
-        </div>
+            </div>
+            <div class="col-md-2">
+              <label for="capacidade" class="form-label">tempo (min)</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="tempo"
+                onlyNumbers
+              />
+            </div>
+            <div class="col-md-12">
+              <label for="localizacao" class="form-label">Descrição</label>
+              <input
+                type="text"
+                required
+                class="form-control form-control-sm"
+                formControlName="descricao"
+              />
+            </div>
           </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-            <button type="button"  (click)="onSubmit()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>
-            <button type="button" class="btn btn-danger" id="btnCancelar" data-bs-dismiss="modal" (click)="fecharModal()"  aria-label="Close"><i class="bi bi-x"></i>Cancelar</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="text-center">
+          <app-button-action
+            text="Confirmar"
+            loadingText="Carregando..."
+            [loading]="isLoading"
+            variant="success"
+            id="btn_salvar_editar"
+            (clicked)="onSubmit()"
+            [type]="'button'"
+          ></app-button-action>
+          <button
+            type="button"
+            class="btn btn-danger"
+            id="btnCancelar"
+            data-bs-dismiss="modal"
+            (click)="fecharModal()"
+            aria-label="Close"
+          >
+            <i class="bi bi-x"></i>Cancelar
+          </button>
         </div>
       </div>
     </div>
   </div>
-
-  
+</div>
