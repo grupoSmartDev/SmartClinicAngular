@@ -1,150 +1,206 @@
-
 <!-- Modal -->
-<div #modalCriarEditar class="modal fade" id="modalCriarEditar" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Plano de contas</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="fecharModal()"  aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="formulario">
-            <div class="row g-3">
-              <div class="col-md-2">
-                <label for="id" class="form-label">Cód.</label>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  id="id"
-                  readonly
-                  formControlName="id"
-                />
-              </div>
-              <div class="col-md-3">
-                <label for="tipo" class="form-label">Tipo</label>
-                <!-- <input
+<div
+  #modalCriarEditar
+  class="modal fade"
+  id="modalCriarEditar"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="statusModalLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Plano de contas</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row g-3">
+            <div class="col-md-2">
+              <label for="id" class="form-label">Cód.</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="id"
+                readonly
+                formControlName="id"
+              />
+            </div>
+            <div class="col-md-3">
+              <label for="tipo" class="form-label">Tipo</label>
+              <!-- <input
                   type="text"
                   class="form-control form-control-sm"
                   id="tipo"
                   formControlName="tipo"
                   [ngClass]="{ 'is-invalid': formulario.get('tipo')?.invalid && formulario.get('tipo')?.touched }"
                 /> -->
-                <select name="tipo" id="" class="form-select form-select-sm" formControlName="tipo" [ngClass]="{ 'is-invalid': formulario.get('tipo')?.invalid && formulario.get('tipo')?.touched }">
-                  <option value="A">Ativo</option>
-                  <option value="P">Passivo</option>
-                  <option value="R">Receita</option>
-                  <option value="D">Despesa</option>
-                </select>
-                <div *ngIf="formulario.get('tipo')?.invalid && formulario.get('tipo')?.touched" class="invalid-feedback">
-                  O campo tipo é obrigatório.
-                </div>
+              <select
+                name="tipo"
+                id=""
+                class="form-select form-select-sm"
+                formControlName="tipo"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('tipo')?.invalid &&
+                    formulario.get('tipo')?.touched
+                }"
+              >
+                <option value="A">Ativo</option>
+                <option value="P">Passivo</option>
+                <option value="R">Receita</option>
+                <option value="D">Despesa</option>
+              </select>
+              <div
+                *ngIf="
+                  formulario.get('tipo')?.invalid &&
+                  formulario.get('tipo')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo tipo é obrigatório.
               </div>
-              <div class="col-md-3">
-                <label for="codigo" class="form-label">Código</label>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  id="codigo"
-                  formControlName="codigo"
-                  [ngClass]="{ 'is-invalid': formulario.get('codigo')?.invalid && formulario.get('codigo')?.touched }"
-                />
-                <div 
-                *ngIf="formulario.get('codigo')?.invalid
-                 && formulario.get('codigo')?.touched"
-                  class="invalid-feedback">
-                  O campo codigo é obrigatório.
-                </div>
-              </div>
-              <div class="col-md-4">
-                <label for="nome" class="form-label">Nome</label>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  id="nome"
-                  formControlName="nome"
-                  [ngClass]="{ 'is-invalid': formulario.get('nome')?.invalid && formulario.get('nome')?.touched }"
-                />
-                <div 
-                *ngIf="formulario.get('nome')?.invalid
-                 && formulario.get('nome')?.touched"
-                  class="invalid-feedback">
-                  O campo nome é obrigatório.
-                </div>
-              </div>
-              
             </div>
-            @if(data.id){
-              <div class="row justify-content-end mt-2">
-                  <div class="col-md-4 col-12 text-end">
-                      <button
-                      type="button"
-                      class="btn btn-primary btn-sm"
-                      (click)="adicionarSub()"
-                    >
-                      <i class="bi bi-plus"></i> Plano de contas Sub
-                    </button>
-                    </div>
+            <div class="col-md-3">
+              <label for="codigo" class="form-label">Código</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="codigo"
+                formControlName="codigo"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('codigo')?.invalid &&
+                    formulario.get('codigo')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('codigo')?.invalid &&
+                  formulario.get('codigo')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo codigo é obrigatório.
               </div>
-            }
+            </div>
+            <div class="col-md-4">
+              <label for="nome" class="form-label">Nome</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="nome"
+                formControlName="nome"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('nome')?.invalid &&
+                    formulario.get('nome')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('nome')?.invalid &&
+                  formulario.get('nome')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo nome é obrigatório.
+              </div>
+            </div>
+          </div>
+          @if(data.id){
+          <div class="row justify-content-end mt-2">
+            <div class="col-md-4 col-12 text-end">
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                (click)="adicionarSub()"
+              >
+                <i class="bi bi-plus"></i> Plano de contas Sub
+              </button>
+            </div>
+          </div>
+          }
 
-            <div class="row mt-2">
-                <div formArrayName="subPlanos" class="mt-2">
-                    <div
-                      *ngFor="let item of subPlanos.controls; let i = index"
-                      [formGroupName]="i"
-                      class="border rounded p-3 mb-2"
-                    >
-                    <div class="row align-items-end">
-                      <div class="col-md-2">
-                        <label for="descricao">Cód</label>
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          formControlName="id"
-                          readonly
-                         
-                        />
-                      </div>
-                      <div class="col-md-4">
-                        <label for="titulo">Nome</label>
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          formControlName="nome"
-                        />
-                      </div>
-                      <div class="col-md-4">
-                        <label for="titulo">Código</label>
-                        <input
-                          type="text"
-                          class="form-control form-control-sm"
-                          formControlName="codigo"
-                          placeholder="1.1"
-                          mask="0.0"
-                        />
-                      </div>
-                      <div class="col-md-2">
-                        <button
-                        type="button"
-                        class="btn btn-danger btn-sm mt-2"
-                        (click)="removerSub(i)"
-                      >
-                        Remover
-                      </button>
-                      </div>
-                    </div>
-                    </div>
+          <div class="row mt-2">
+            <div formArrayName="subPlanos" class="mt-2">
+              <div
+                *ngFor="let item of subPlanos.controls; let i = index"
+                [formGroupName]="i"
+                class="border rounded p-3 mb-2"
+              >
+                <div class="row align-items-end">
+                  <div class="col-md-2">
+                    <label for="descricao">Cód</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="id"
+                      readonly
+                    />
                   </div>
+                  <div class="col-md-4">
+                    <label for="titulo">Nome</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="nome"
+                    />
+                  </div>
+                  <div class="col-md-4">
+                    <label for="titulo">Código</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="codigo"
+                      placeholder="1.1"
+                      mask="0.0"
+                    />
+                  </div>
+                  <div class="col-md-2">
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-sm mt-2"
+                      (click)="removerSub(i)"
+                    >
+                      Remover
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-          </form>
-          
-        </div>
-        <div class="modal-footer">
-          <button type="button" (click)="onSubmit()" class="btn btn-success"><i class="bi bi-check"></i> Confirmar</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="fecharModal()"  id="btnCancelar"><i class="bi bi-x"></i> Cancelar</button>
-        </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <app-button-action
+          text="Confirmar"
+          loadingText="Carregando..."
+          [loading]="isLoading"
+          variant="success"
+          id="btn_salvar_editar"
+          (clicked)="onSubmit()"
+          [type]="'button'"
+        ></app-button-action>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
+          id="btnCancelar"
+        >
+          <i class="bi bi-x"></i> Cancelar
+        </button>
       </div>
     </div>
   </div>
-  
+</div>

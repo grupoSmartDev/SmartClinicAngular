@@ -15,47 +15,50 @@ export class ModalFormaPagamentoComponent {
   constructor(
     private toast: ToastrService,
     private formaPagamentoService: FormaPagamentoService,
-    private fb : FormBuilder
-  ) { 
+    private fb: FormBuilder
+  ) {
     this.formulario = this.fb.group({
-      id : [null],
-      parcelas : [null,Validators.required],
-      descricao :[null, Validators.required]
+      id: [null],
+      parcelas: [null, Validators.required],
+      descricao: [null, Validators.required]
     })
   }
 
   @ViewChild('modalFormaPagamento') modalFormaPagamento?: ElementRef;
   @Input() formaPagamento = {} as FormaPagamento;
   @Output() formaPagamentoAtualizado = new EventEmitter<void>();
-  formulario : FormGroup;
-
-  onSubmit(){
-    if(this.formulario.invalid){
+  formulario: FormGroup;
+  isLoading = false;
+  onSubmit() {
+    if (this.formulario.invalid) {
       this.formulario.markAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
       return;
     }
 
-    const formaPagamentoToSave : FormaPagamento = this.formulario.value as FormaPagamento;
+    this.isLoading = true;
+    const formaPagamentoToSave: FormaPagamento = this.formulario.value as FormaPagamento;
 
     const saveOperation = formaPagamentoToSave.id
-    ? this.formaPagamentoService.Atualizar(formaPagamentoToSave)
-    : this.formaPagamentoService.Criar(formaPagamentoToSave);
+      ? this.formaPagamentoService.Atualizar(formaPagamentoToSave)
+      : this.formaPagamentoService.Criar(formaPagamentoToSave);
 
     saveOperation.subscribe({
       next: () => {
         const action = formaPagamentoToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Forma de pagamento ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
         this.formaPagamentoAtualizado.emit();
         this.fecharModal();
       },
       error: () => {
+        this.isLoading = false;
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
       },
     })
   }
 
-  carregarFormaPagamento(formaPagamento : any) {
+  carregarFormaPagamento(formaPagamento: any) {
     this.formulario.patchValue(this.formaPagamento);
   }
 

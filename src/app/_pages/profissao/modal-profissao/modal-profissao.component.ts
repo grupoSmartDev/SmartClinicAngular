@@ -13,18 +13,19 @@ export class ModalProfissaoComponent {
   constructor(
     private profissaoService: ProfissaoService,
     private toast: ToastrService,
-    private fb : FormBuilder) {
-      this.formulario = this.fb.group({
-        id: [null],
-        descricao: [null, Validators.required],
+    private fb: FormBuilder) {
+    this.formulario = this.fb.group({
+      id: [null],
+      descricao: [null, Validators.required],
 
-      })
-   }
+    })
+  }
 
   @ViewChild('modalEditarCriar') modalEditarCriar?: ElementRef;
   @Input() data = {} as Profissao;
   @Output() dataAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
-  formulario : FormGroup;
+  formulario: FormGroup;
+  isLoading = false;
 
   carregarProfissao(profissao: any) {
     this.formulario.patchValue(this.data);
@@ -36,27 +37,30 @@ export class ModalProfissaoComponent {
     btnCancelar.click();
   }
 
-  onSubmit(){
-    if(this.formulario.invalid){
+  onSubmit() {
+    if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
       return;
     }
 
-    const dataToSave : Profissao = this.formulario.value as Profissao;
+    this.isLoading = true;
+    const dataToSave: Profissao = this.formulario.value as Profissao;
 
     const saveOperation = dataToSave.id
-    ? this.profissaoService.Atualizar(dataToSave)
-    : this.profissaoService.Criar(dataToSave);
+      ? this.profissaoService.Atualizar(dataToSave)
+      : this.profissaoService.Criar(dataToSave);
 
     saveOperation.subscribe({
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Profissão ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
         this.dataAtualizado.emit();
         this.fecharModal();
       },
       error: () => {
+        this.isLoading = false;
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
       },
     })

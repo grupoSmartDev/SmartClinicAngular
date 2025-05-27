@@ -28,6 +28,7 @@ export class ModalFinanceiroReceber implements OnInit {
   private bsOffcanvas: any;
   @Input() data = {} as FinancReceber;
   @Output() dadosAtualizado = new EventEmitter<void>();
+  isLoading = false;
 
   formulario!: FormGroup;
 
@@ -180,6 +181,7 @@ export class ModalFinanceiroReceber implements OnInit {
       return;
     }
 
+    this.isLoading = true;
     const dataToSave = this.formulario.value as FinancReceber;
 
     const saveOperation = dataToSave.id
@@ -191,11 +193,13 @@ export class ModalFinanceiroReceber implements OnInit {
         const action = dataToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Contas a receber ${action} com sucesso!`, 'Parabéns');
         this.dadosAtualizado.emit();
+        this.isLoading = false;
         let inputPacientePesquisado = document.getElementById('paciente') as HTMLInputElement;
         inputPacientePesquisado.value = '';
         this.fecharModal();
       },
       error: () => {
+        this.isLoading = false;
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
       },
     });

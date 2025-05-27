@@ -44,6 +44,7 @@ export class ModalPacienteComponent {
   profissionais: Profissional[] = [];
   //fazer lista de planos para rodar no select
   planos: Plano[] = [];
+  isLoading = false;
 
 
   fb = new FormBuilder();
@@ -98,6 +99,9 @@ export class ModalPacienteComponent {
     const btnCancelar = document.querySelector('#btnCancelar') as HTMLElement;
 
     if (this.formulario.valid) {
+
+
+      this.isLoading = true;
       const dataToSave: Paciente = this.formulario.value as Paciente;
 
       dataToSave.responsavel == "false" ? dataToSave.responsavel = false : dataToSave.responsavel = true;
@@ -114,16 +118,19 @@ export class ModalPacienteComponent {
               let mensagem = response.mensagem;
               this.toast.success(mensagem, 'Parabéns');
               this.dataAtualizado.emit(); // Emita o evento após a atualização
+              this.isLoading = false;
               btnCancelar.click();
               this.fecharModal();
             }
             else {
               let mensagem = response.mensagem;
+              this.isLoading = false;
               this.toast.error(mensagem, 'Erro ao atualizar Paciente');
             }
 
           },
           error: (err) => {
+            this.isLoading = false;
             this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar Paciente');
           }
         });
@@ -134,11 +141,13 @@ export class ModalPacienteComponent {
               let mensagem = response.mensagem;
               this.toast.success(mensagem, 'Parabéns');
               this.dataAtualizado.emit(); // Emita o evento após a atualização
+              this.isLoading = false;
               btnCancelar.click();
               this.fecharModal();
             }
             else {
               let mensagem = response.mensagem;
+              this.isLoading = false;
               this.toast.error(mensagem, 'Erro ao atualizar Paciente');
             }
           },
@@ -150,6 +159,7 @@ export class ModalPacienteComponent {
       }
     } else {
       console.error('Formulário inválido');
+      this.isLoading = false;
       this.markAllFieldsAsTouched();
       this.logInvalidFields();
     }

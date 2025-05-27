@@ -17,6 +17,8 @@ export class ModalPlanoContasComponent {
   listaPlanoContasSub: PlanoContaSub[] = [];
   formulario!: FormGroup;
 
+  isLoading = false;
+
   constructor(private toast: ToastrService,
     private planoContaService: PlanoContasService,
     private planoContaSubService: PlanoContasService,
@@ -46,7 +48,7 @@ export class ModalPlanoContasComponent {
       this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');
       return;
     }
-
+    this.isLoading = false;
     const dataToSave = this.formulario.value as PlanoContas;
 
 
@@ -58,11 +60,13 @@ export class ModalPlanoContasComponent {
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Plano ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
         this.dadosAtualizados.emit();
         this.fecharModal();
 
       },
       error: () => {
+        this.isLoading = false;
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
       },
     });

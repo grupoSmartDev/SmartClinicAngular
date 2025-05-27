@@ -19,8 +19,8 @@ export class ModalSubCentroDeCustoComponent {
     private toast: ToastrService,
     private router: Router,
     private centroDeCustoService: CentroDeCustoService,
-    private fb : FormBuilder
-  ) { 
+    private fb: FormBuilder
+  ) {
     this.formulario = fb.group({
       id: [null],
       nome: [null, Validators.required],
@@ -31,38 +31,41 @@ export class ModalSubCentroDeCustoComponent {
   @ViewChild('modalSubCentroDeCusto') modalSubCentroDeCusto?: ElementRef;
   @Input() subCentroDeCusto = {} as SubCentroDeCusto;
   @Output() dataAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
-  formulario : FormGroup;
+  formulario: FormGroup;
   listaCentroDeCusto: CentroDeCusto[] = [];
-
+  isLoading = false;
 
   ngOnInit() {
     this.carregarCC();
   }
 
-  onSubmit(){
-    if(this.formulario.invalid){
+  onSubmit() {
+    if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');
       return;
     }
 
-    const dataToSave : SubCentroDeCusto = this.formulario.value as SubCentroDeCusto;
+    this.isLoading = true;
+    const dataToSave: SubCentroDeCusto = this.formulario.value as SubCentroDeCusto;
 
     const saveOperation = dataToSave.id
       ? this.subCentroDeCustoService.Atualizar(dataToSave)
       : this.subCentroDeCustoService.Criar(dataToSave);
 
-      saveOperation.subscribe({
-        next: () => {
-          const action = dataToSave.id ? 'atualizado' : 'criado';
-          this.toast.success(`Sub Centro de custo ${action} com sucesso!`, 'Parabéns');
-          this.dataAtualizado.emit();
-          this.fecharModal();
-        },
-        error: () => {
-          this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
-        },
-      })
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Sub Centro de custo ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
+        this.dataAtualizado.emit();
+        this.fecharModal();
+      },
+      error: () => {
+        this.isLoading = false;
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    })
   }
 
 

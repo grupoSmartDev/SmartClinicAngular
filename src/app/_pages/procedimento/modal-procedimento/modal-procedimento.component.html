@@ -17,7 +17,8 @@
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="modal" (click)="fecharModal()" 
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
           aria-label="Close"
         ></button>
       </div>
@@ -42,9 +43,19 @@
                 placeholder="Digite a descrição"
                 name="nome"
                 formControlName="nome"
-                [ngClass]="{'is-invalid' : formulario.get('nome')?.invalid && formulario.get('nome')?.touched}"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('nome')?.invalid &&
+                    formulario.get('nome')?.touched
+                }"
               />
-              <div *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="invalid-feedback">
+              <div
+                *ngIf="
+                  formulario.get('nome')?.invalid &&
+                  formulario.get('nome')?.touched
+                "
+                class="invalid-feedback"
+              >
                 O campo nome é obrigatório.
               </div>
             </div>
@@ -58,17 +69,25 @@
                 placeholder="Digite o valor"
                 name="preco"
                 formControlName="preco"
-                [ngClass]="{'is-invalid' : formulario.get('preco')?.invalid && formulario.get('preco')?.touched}"
-                />
-                <div *ngIf="formulario.get('preco')?.invalid && formulario.get('preco')?.touched" class="invalid-feedback">
-                  O campo valor é obrigatório.
-                </div>
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('preco')?.invalid &&
+                    formulario.get('preco')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('preco')?.invalid &&
+                  formulario.get('preco')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo valor é obrigatório.
+              </div>
             </div>
 
             <div class="col-md-3">
-              <label for="duracao" class="form-label"
-                >Tempo (em minutos)</label
-              >
+              <label for="duracao" class="form-label">Tempo (em minutos)</label>
               <input
                 type="text"
                 onlyNumbers
@@ -80,51 +99,64 @@
             </div>
           </div>
           <div class="row align-items-baseline">
-        <!-- Valores dos Planos -->
-        <div class="col-md-6">
-          <label for="descricao" class="form-label">Descrição</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            id="descricao"
-            placeholder="Digite a descrição"
-            name="descricao"
-            formControlName="descricao"
-            [ngClass]="{'is-invalid' : formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched}"
-            />
-            <div *ngIf="formulario.get('descricao')?.invalid && formulario.get('descricao')?.touched" class="invalid-feedback">
-              O campo descrição é obrigatório.
+            <!-- Valores dos Planos -->
+            <div class="col-md-6">
+              <label for="descricao" class="form-label">Descrição</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="descricao"
+                placeholder="Digite a descrição"
+                name="descricao"
+                formControlName="descricao"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('descricao')?.invalid &&
+                    formulario.get('descricao')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('descricao')?.invalid &&
+                  formulario.get('descricao')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo descrição é obrigatório.
+              </div>
             </div>
-        </div>
-        <div class="col-md-3">
-          <label for="categoria" class="form-label">Categorias</label>
-          <select name="categoriaId" id="" class="form-select form-select-sm">
-            @for (item of listaCategorias; track item.id) {
-              <option value="{{item.id}}">{{item.nome}}</option>
-            }
-          </select>
-        </div>
+            <div class="col-md-3">
+              <label for="categoria" class="form-label">Categorias</label>
+              <select
+                name="categoriaId"
+                id=""
+                class="form-select form-select-sm"
+              >
+                @for (item of listaCategorias; track item.id) {
+                <option value="{{ item.id }}">{{ item.nome }}</option>
+                }
+              </select>
+            </div>
           </div>
-
-  
         </form>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          (click)="onSubmit()"
-          class="btn btn-success"
+        <app-button-action
+          text="Confirmar"
+          loadingText="Carregando..."
+          [loading]="isLoading"
+          variant="success"
           id="btn_salvar_editar"
-        >
-          <i class="bi bi-check"></i> Confirmar
-        </button>
+          (clicked)="onSubmit()"
+          [type]="'button'"
+        ></app-button-action>
         <button
           type="button"
           class="btn btn-danger"
           id="btnCancelar"
-          data-bs-dismiss="modal" (click)="fecharModal()" 
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
           aria-label="Close"
-          
         >
           <i class="bi bi-x"></i>Cancelar
         </button>

@@ -17,7 +17,8 @@
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="modal" (click)="fecharModal()" 
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
           aria-label="Close"
         ></button>
       </div>
@@ -41,9 +42,19 @@
                 required
                 class="form-control form-control-sm required"
                 formControlName="nome"
-                [ngClass]="{'is-invalid' : formulario.get('nome')?.invalid && formulario.get('nome')?.touched}"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('nome')?.invalid &&
+                    formulario.get('nome')?.touched
+                }"
               />
-              <div *ngIf="formulario.get('nome')?.invalid && formulario.get('nome')?.touched" class="invalid-feedback">
+              <div
+                *ngIf="
+                  formulario.get('nome')?.invalid &&
+                  formulario.get('nome')?.touched
+                "
+                class="invalid-feedback"
+              >
                 O campo nome é obrigatório.
               </div>
             </div>
@@ -54,32 +65,42 @@
                 required
                 class="form-control form-control-sm"
                 formControlName="sigla"
-                [ngClass]="{'is-invalid' : formulario.get('sigla')?.invalid && formulario.get('sigla')?.touched}"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('sigla')?.invalid &&
+                    formulario.get('sigla')?.touched
+                }"
               />
-              <div *ngIf="formulario.get('sigla')?.invalid && formulario.get('sigla')?.touched" class="invalid-feedback">
+              <div
+                *ngIf="
+                  formulario.get('sigla')?.invalid &&
+                  formulario.get('sigla')?.touched
+                "
+                class="invalid-feedback"
+              >
                 O campo sigla é obrigatório.
               </div>
             </div>
-            
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          (click)="onSubmit()"
-          class="btn btn-success"
+        <app-button-action
+          text="Confirmar"
+          loadingText="Carregando..."
+          [loading]="isLoading"
+          variant="success"
           id="btn_salvar_editar"
-        >
-          <i class="bi bi-check"></i> Confirmar
-        </button>
+          (clicked)="onSubmit()"
+          [type]="'button'"
+        ></app-button-action>
         <button
           type="button"
           class="btn btn-danger"
           id="btnCancelar"
-          data-bs-dismiss="modal" (click)="fecharModal()" 
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
           aria-label="Close"
-          
         >
           <i class="bi bi-x"></i>Cancelar
         </button>

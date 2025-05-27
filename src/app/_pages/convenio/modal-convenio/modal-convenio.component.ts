@@ -14,9 +14,11 @@ export class ModalConvenioComponent {
   @Input() convenio = {} as Convenio;
   @Output() dadosAtualizados = new EventEmitter<void>();
 
+  isLoading = false;
+
   constructor(private toast: ToastrService,
     private convenioService: ConvenioService,
-    private fb : FormBuilder
+    private fb: FormBuilder
   ) {
     this.formulario = this.fb.group({
       id: [null],
@@ -27,16 +29,17 @@ export class ModalConvenioComponent {
       email: [null, Validators.required],
       ativo: [false]
     })
-   }
+  }
 
-  formulario : FormGroup;
+  formulario: FormGroup;
 
-  onSubmit(){
-    if(this.formulario.invalid){
+  onSubmit() {
+    if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha todos os campos obrigatórios', 'Erro');
     }
 
+    this.isLoading = true;
     const dataToSave = this.formulario.value as Convenio;
 
     const saveOperation = this.convenio.id ? this.convenioService.Atualizar(dataToSave) : this.convenioService.Criar(dataToSave);
@@ -45,11 +48,13 @@ export class ModalConvenioComponent {
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Convenio ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
         this.dadosAtualizados.emit();
         this.fecharModal();
 
       },
       error: () => {
+        this.isLoading = false;
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
       },
     });

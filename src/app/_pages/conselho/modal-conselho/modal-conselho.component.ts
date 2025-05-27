@@ -15,6 +15,8 @@ export class ModalConselhoComponent {
   @Output() ConselhoAtualizado = new EventEmitter<void>();
   formulario: FormGroup;
 
+  isLoading = false;
+
   constructor(private toast: ToastrService,
     private conselhoService: ConselhoService,
     private fb: FormBuilder
@@ -34,20 +36,23 @@ export class ModalConselhoComponent {
       return;
     }
 
+    this.isLoading = true;
     const dataToSave = this.formulario.value as Conselho;
 
     const saveOperation = dataToSave.id
-    ? this.conselhoService.Atualizar(dataToSave)
-    : this.conselhoService.Criar(dataToSave);
+      ? this.conselhoService.Atualizar(dataToSave)
+      : this.conselhoService.Criar(dataToSave);
 
     saveOperation.subscribe({
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Conselho ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
         this.ConselhoAtualizado.emit();
         this.fecharModal();
       },
       error: () => {
+        this.isLoading = false;
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
       },
     });

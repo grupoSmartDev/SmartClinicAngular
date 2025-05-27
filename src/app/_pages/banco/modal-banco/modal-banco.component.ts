@@ -16,14 +16,14 @@ export class ModalBancoComponent {
   constructor(
     private bancoService: BancoService,
     private toast: ToastrService,
-    private router: Router, 
-  private fb : FormBuilder) {
+    private router: Router,
+    private fb: FormBuilder) {
     this.formulario = fb.group({
-      id : [null],
+      id: [null],
       nomeBanco: [null, Validators.required],
-      codigo : [null, Validators.required],
-      agencia : [null, Validators.required],
-      numeroConta : [null, Validators.required],
+      codigo: [null, Validators.required],
+      agencia: [null, Validators.required],
+      numeroConta: [null, Validators.required],
       tipoConta: [null, Validators.required],
       nomeTitular: [null, Validators.required],
       documentoTitular: [null, Validators.required],
@@ -36,43 +36,52 @@ export class ModalBancoComponent {
       numeroContrato: [null],
       codigoTransmissao: [null],
     })
-   }
+  }
 
   @ViewChild('modalBanco') modalBanco?: ElementRef;
   @Input() banco = {} as Banco;
   @Output() bancoAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
-  formulario : FormGroup;
+  formulario: FormGroup;
+  isLoading = false;
 
-   onSubmi(){
-    if(this.formulario.invalid){
+  onSubmi() {
+    if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
       return;
     }
 
-    const dataToSave : Banco = this.formulario.value as Banco;
 
-    const saveOperation = dataToSave.id 
-    ? this.bancoService.Atualizar(dataToSave) 
-    : this.bancoService.Criar(dataToSave);
+    this.isLoading = true;
+    const dataToSave: Banco = this.formulario.value as Banco;
+
+    const saveOperation = dataToSave.id
+      ? this.bancoService.Atualizar(dataToSave)
+      : this.bancoService.Criar(dataToSave);
 
     saveOperation.subscribe({
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Banco ${action} com sucesso!`, 'Parabéns');
         this.bancoAtualizado.emit();
+
+        this.isLoading = false;
         this.fecharModal();
       },
       error: () => {
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+
+        this.isLoading = false;
       },
     });
 
-   }
+  }
 
   onSubmit() {
     const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
     if (this.formulario.valid) {
+
+      this.isLoading = true;
       const bancoToSave: Banco = this.formulario.value as Banco;
       if (bancoToSave.id) {
         this.bancoService.Atualizar(bancoToSave).subscribe({
@@ -80,10 +89,14 @@ export class ModalBancoComponent {
             this.toast.success('Banco atualizado com Sucesso', 'Parabéns');
             this.bancoAtualizado.emit(); // Emita o evento após a atualização
             btnCacelar.click();
+
+            this.isLoading = false;
             this.fecharModal();
           },
           error: (err) => {
             this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um banco');
+
+            this.isLoading = false;
           }
         });
       } else {
@@ -92,10 +105,12 @@ export class ModalBancoComponent {
             this.toast.success('Banco Criado com sucesso', 'Parabéns');
             this.bancoAtualizado.emit(); // Emita o evento após a criação
             btnCacelar.click();
+            this.isLoading = false;
             this.fecharModal();
           },
           error: (err) => {
             console.error('Erro ao criar banco:', err);
+            this.isLoading = false;
             this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um banco');
           }
         });

@@ -1,294 +1,541 @@
-    <!-- Modal -->
-    <div #modalFichaAvaliacao class="modal fade" id="modalFichaAvaliacao" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="statusModalLabel" aria-modal="true" role="dialog">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Ficha de Avaliação</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" (click)="fecharModal()"  aria-label="Close"></button>
+<!-- Modal -->
+<div
+  #modalFichaAvaliacao
+  class="modal fade"
+  id="modalFichaAvaliacao"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="statusModalLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          Ficha de Avaliação
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="fichaForm" class="needs-validation">
+          <!-- Informações Básicas -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Informações Básicas</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-3 mb-3">
+                  <label for="pacienteId" class="form-label"
+                    >Cód. Cliente</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="pacienteId"
+                    formControlName="pacienteId"
+                    readonly
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      fichaForm.get('pacienteId')?.touched &&
+                      fichaForm.get('pacienteId')?.invalid
+                    "
+                  >
+                    ID do cliente é obrigatório
+                  </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                  <label for="dataAvaliacao" class="form-label"
+                    >Data da Avaliação</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control form-control-sm"
+                    id="dataAvaliacao"
+                    formControlName="dataAvaliacao"
+                  />
+                </div>
+
+                <div class="col-md-3 mb-3">
+                  <label for="profissional" class="form-label"
+                    >Profissional</label
+                  >
+                  <select
+                    name=""
+                    id=""
+                    class="form-select form-select-sm"
+                    formControlName="profissionalId"
+                  >
+                    <option value="">Selecione o profissional</option>
+                    @for (item of listaProfissional; track item.id) {
+                    <option value="{{ item.id }}">{{ item.nome }}</option>
+                    }
+                  </select>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                  <label for="especialidade" class="form-label"
+                    >Especialidade</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="especialidade"
+                    formControlName="especialidade"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="modal-body">
-            <form [formGroup]="fichaForm" class="needs-validation">
-              <!-- Informações Básicas -->
-              <div class="card mb-4">
-                <div class="card-header">
-                  <h5 class="mb-0">Informações Básicas</h5>
+
+          <!-- Informações do Cliente -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Informações do Cliente</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-2 mb-3">
+                  <label for="idade" class="form-label">Idade</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="idade"
+                    formControlName="idade"
+                  />
                 </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-3 mb-3">
-                      <label for="pacienteId" class="form-label">Cód. Cliente</label>
-                      <input type="number" class="form-control form-control-sm" id="pacienteId" formControlName="pacienteId" readonly>
-                      <div class="invalid-feedback" *ngIf="fichaForm.get('pacienteId')?.touched && fichaForm.get('pacienteId')?.invalid">
-                        ID do cliente é obrigatório
-                      </div>
-                    </div>
-                    
-                    <div class="col-md-3 mb-3">
-                      <label for="dataAvaliacao" class="form-label">Data da Avaliação</label>
-                      <input type="date" class="form-control form-control-sm" id="dataAvaliacao" formControlName="dataAvaliacao">
-                    </div>
-                    
-                    <div class="col-md-3 mb-3">
-                      <label for="profissional" class="form-label">Profissional</label>
-                      <select name="" id="" class="form-select form-select-sm" formControlName="profissionalId">
-                        <option value="">Selecione o profissional</option>
-                        @for (item of listaProfissional; track item.id) {
-                          <option value="{{ item.id }}">{{ item.nome }}</option>
-                        }
-                      </select>
-                    </div>
-                    
-                    <div class="col-md-3 mb-3">
-                      <label for="especialidade" class="form-label">Especialidade</label>
-                      <input type="text" class="form-control form-control-sm" id="especialidade" formControlName="especialidade">
-                    </div>
-                  </div>
+
+                <div class="col-md-2 mb-3">
+                  <label for="altura" class="form-label">Altura (cm)</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="altura"
+                    formControlName="altura"
+                  />
                 </div>
-              </div>
-          
-              <!-- Informações do Cliente -->
-              <div class="card mb-4">
-                <div class="card-header">
-                  <h5 class="mb-0">Informações do Cliente</h5>
+
+                <div class="col-md-2 mb-3">
+                  <label for="peso" class="form-label">Peso (kg)</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    id="peso"
+                    formControlName="peso"
+                  />
                 </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-2 mb-3">
-                      <label for="idade" class="form-label">Idade</label>
-                      <input type="number" class="form-control form-control-sm" id="idade" formControlName="idade">
-                    </div>
-                    
-                    <div class="col-md-2 mb-3">
-                      <label for="altura" class="form-label">Altura (cm)</label>
-                      <input type="number" class="form-control form-control-sm" id="altura" formControlName="altura">
-                    </div>
-                    
-                    <div class="col-md-2 mb-3">
-                      <label for="peso" class="form-label">Peso (kg)</label>
-                      <input type="number" class="form-control form-control-sm" id="peso" formControlName="peso">
-                    </div>
-                    
-                    <div class="col-md-3 mb-3">
-                      <label for="sexo" class="form-label">Sexo</label>
-                      <select class="form-select form-select-sm" id="sexo" formControlName="sexo">
-                        <option value="">Selecione</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Feminino">Feminino</option>
-                        <option value="Outro">Outro</option>
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <div class="row">
-                    <div class="col-12 mb-3">
-                      <label for="observacoesGerais" class="form-label">Observações Gerais</label>
-                      <textarea class="form-control form-control-sm" id="observacoesGerais" rows="3" formControlName="observacoesGerais"></textarea>
-                    </div>
-                  </div>
+
+                <div class="col-md-3 mb-3">
+                  <label for="sexo" class="form-label">Sexo</label>
+                  <select
+                    class="form-select form-select-sm"
+                    id="sexo"
+                    formControlName="sexo"
+                  >
+                    <option value="">Selecione</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                    <option value="Outro">Outro</option>
+                  </select>
                 </div>
               </div>
-          
-              <!-- Histórico Médico -->
-              <div class="card mb-4">
-                <div class="card-header">
-                  <h5 class="mb-0">Histórico Médico</h5>
-                </div>
-                <div class="card-body">
-                  <!-- História Pregressa e Atual -->
-                  <div class="row mb-3">
-                    <div class="col-md-6">
-                      <label for="historiaPregressa" class="form-label">História Pregressa</label>
-                      <textarea class="form-control form-control-sm" id="historiaPregressa" rows="3" formControlName="historiaPregressa"></textarea>
-                    </div>
-                    <div class="col-md-6">
-                      <label for="historiaAtual" class="form-label">História Atual</label>
-                      <textarea class="form-control form-control-sm" id="historiaAtual" rows="3" formControlName="historiaAtual"></textarea>
-                    </div>
-                  </div>
-          
-                  <!-- Tipo de Dor e Sinais Vitais -->
-                  <div class="row mb-3">
-                    <div class="col-md-6">
-                      <label for="tipoDor" class="form-label">Tipo de Dor</label>
-                      <textarea class="form-control form-control-sm" id="tipoDor" formControlName="tipoDor"></textarea>
-                    </div>
-                    <div class="col-md-6">
-                      <label for="sinaisVitais" class="form-label">Sinais Vitais</label>
-                      <textarea class="form-control form-control-sm" id="sinaisVitais" formControlName="sinaisVitais"></textarea>
-                    </div>
-                  </div>
-          
-                  <!-- Doenças Crônicas e Neurodegenerativas -->
-                  <div class="row mb-3">
-                    <div class="col-md-6">
-                      <label for="doencasCronicas" class="form-label">Doenças Crônicas</label>
-                      <textarea class="form-control form-control-sm" id="doencasCronicas" formControlName="doencasCronicas"></textarea>
-                    </div>
-                    <div class="col-md-6">
-                      <label for="doencaNeurodegenerativa" class="form-label">Doença Neurodegenerativa</label>
-                      <textarea class="form-control form-control-sm" id="doencaNeurodegenerativa" formControlName="doencaNeurodegenerativa"></textarea>
-                    </div>
-                  </div>
-          
-                  <!-- Tratamentos e Alergias a Medicamentos -->
-                  <div class="row mb-3">
-                    <div class="col-md-6">
-                      <label for="tratamentosRealizados" class="form-label">Tratamentos Realizados</label>
-                      <textarea class="form-control form-control-sm" id="tratamentosRealizados" formControlName="tratamentosRealizados"></textarea>
-                    </div>
-                    <div class="col-md-6">
-                      <label for="alergiaMedicamentos" class="form-label">Alergia a Medicamentos</label>
-                      <textarea class="form-control form-control-sm" id="alergiaMedicamentos" formControlName="alergiaMedicamentos"></textarea>
-                    </div>
-                  </div>
-          
-                  <!-- Hábitos -->
-                  <div class="row mb-3">
-                    <div class="col-md-4">
-                      <label for="frequenciaConsumoAlcool" class="form-label">Frequência de Consumo de Álcool</label>
-                      <select class="form-select form-select-sm" id="frequenciaConsumoAlcool" formControlName="frequenciaConsumoAlcool">
-                        <option value="">Selecione</option>
-                        <option value="Nunca">Nunca</option>
-                        <option value="Raramente">Raramente</option>
-                        <option value="Ocasionalmente">Ocasionalmente</option>
-                        <option value="Frequentemente">Frequentemente</option>
-                        <option value="Diariamente">Diariamente</option>
-                      </select>
-                    </div>
-                    <div class="col-md-4 d-flex align-items-center">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="praticaAtividade" formControlName="praticaAtividade">
-                        <label class="form-check-label" for="praticaAtividade">
-                          Pratica Atividade Física
-                        </label>
-                      </div>
-                    </div>
-                    <div class="col-md-4 d-flex align-items-center">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="tabagista" formControlName="tabagista">
-                        <label class="form-check-label" for="tabagista">
-                          Tabagista
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="historicoDoencas" formControlName="historicoDoencas">
-                        <label class="form-check-label" for="historicoDoencas">
-                          Possui histórico de doenças?
-                        </label>
-                      </div>
-                      <div class="mt-2" *ngIf="fichaForm.get('historicoDoencas')?.value">
-                        <label for="doencasPreExistentes" class="form-label">Detalhe as doenças pré-existentes:</label>
-                        <textarea class="form-control form-control-sm" id="doencasPreExistentes" formControlName="doencasPreExistentes"></textarea>
-                      </div>
-                    </div>
-          
-                    <div class="col-md-6 mb-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="medicacaoUsoContinuo" formControlName="medicacaoUsoContinuo">
-                        <label class="form-check-label" for="medicacaoUsoContinuo">
-                          Faz uso de medicação contínua?
-                        </label>
-                      </div>
-                      <div class="mt-2" *ngIf="fichaForm.get('medicacaoUsoContinuo')?.value">
-                        <label for="medicacao" class="form-label">Quais medicações:</label>
-                        <textarea class="form-control form-control-sm" id="medicacao" formControlName="medicacao"></textarea>
-                      </div>
-                    </div>
-                  </div>
-          
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="cirurgiasPrevias" formControlName="cirurgiasPrevias">
-                        <label class="form-check-label" for="cirurgiasPrevias">
-                          Possui cirurgias prévias?
-                        </label>
-                      </div>
-                      <div class="mt-2" *ngIf="fichaForm.get('cirurgiasPrevias')?.value">
-                        <label for="detalheCirurgias" class="form-label">Detalhe as cirurgias:</label>
-                        <textarea class="form-control form-control-sm" id="detalheCirurgias" formControlName="detalheCirurgias"></textarea>
-                      </div>
-                    </div>
-          
-                    <div class="col-md-6 mb-3">
-                      <label for="alergias" class="form-label">Alergias</label>
-                      <textarea class="form-control form-control-sm" id="alergias" formControlName="alergias"></textarea>
-                    </div>
-                  </div>
+
+              <div class="row">
+                <div class="col-12 mb-3">
+                  <label for="observacoesGerais" class="form-label"
+                    >Observações Gerais</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="observacoesGerais"
+                    rows="3"
+                    formControlName="observacoesGerais"
+                  ></textarea>
                 </div>
               </div>
-          
-              <!-- Queixa Principal e Objetivos -->
-              <div class="card mb-4">
-                <div class="card-header">
-                  <h5 class="mb-0">Queixa Principal e Objetivos</h5>
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <label for="queixaPrincipal" class="form-label">Queixa Principal</label>
-                      <textarea class="form-control form-control-sm" id="queixaPrincipal" rows="3" formControlName="queixaPrincipal"></textarea>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                      <label for="objetivosDoTratamento" class="form-label">Objetivos do Tratamento</label>
-                      <textarea class="form-control form-control-sm" id="objetivosDoTratamento" rows="3" formControlName="objetivosDoTratamento"></textarea>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          
-              <!-- Avaliações Específicas -->
-              <div class="card mb-4">
-                <div class="card-header">
-                  <h5 class="mb-0">Avaliações Específicas</h5>
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <label for="avaliacaoPostural" class="form-label">Avaliação Postural</label>
-                      <textarea class="form-control form-control-sm" id="avaliacaoPostural" rows="3" formControlName="avaliacaoPostural"></textarea>
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                      <label for="amplitudeMovimento" class="form-label">Amplitude de Movimento</label>
-                      <textarea class="form-control form-control-sm" id="amplitudeMovimento" rows="3" formControlName="amplitudeMovimento"></textarea>
-                    </div>
-                  </div>
-                </div>
-              </div>
-          
-              <!-- Assinaturas -->
-              <div class="card mb-4 d-none">
-                <div class="card-header">
-                  <h5 class="mb-0">Assinaturas</h5>
-                </div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-6 mb-3">
-                      <label for="assinaturaProfissional" class="form-label">Assinatura do Profissional</label>
-                      <input type="file" class="form-control form-control-sm" id="assinaturaProfissional" formControlName="assinaturaProfissional">
-                    </div>
-                    
-                    <div class="col-md-6 mb-3">
-                      <label for="assinaturaCliente" class="form-label">Assinatura do Cliente</label>
-                      <input type="file" class="form-control form-control-sm" id="assinaturaCliente" formControlName="assinaturaCliente">
-                    </div>
-                  </div>
-                </div>
-              </div>
-          
-              <div class="modal-footer">
-                  <button type="button"  (click)="onSubmit()" class="btn btn-success" id="btn_salvar_editar"><i class="bi bi-check"></i> Confirmar</button>
-                  <button type="button" class="btn btn-danger" id="btnCancelar" data-bs-dismiss="modal" (click)="fecharModal()"  aria-label="Close" ><i class="bi bi-x"></i>Cancelar</button>
-              </div>
-      
-            </form>
+            </div>
           </div>
-        </div>
+
+          <!-- Histórico Médico -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Histórico Médico</h5>
+            </div>
+            <div class="card-body">
+              <!-- História Pregressa e Atual -->
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="historiaPregressa" class="form-label"
+                    >História Pregressa</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="historiaPregressa"
+                    rows="3"
+                    formControlName="historiaPregressa"
+                  ></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label for="historiaAtual" class="form-label"
+                    >História Atual</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="historiaAtual"
+                    rows="3"
+                    formControlName="historiaAtual"
+                  ></textarea>
+                </div>
+              </div>
+
+              <!-- Tipo de Dor e Sinais Vitais -->
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="tipoDor" class="form-label">Tipo de Dor</label>
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="tipoDor"
+                    formControlName="tipoDor"
+                  ></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label for="sinaisVitais" class="form-label"
+                    >Sinais Vitais</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="sinaisVitais"
+                    formControlName="sinaisVitais"
+                  ></textarea>
+                </div>
+              </div>
+
+              <!-- Doenças Crônicas e Neurodegenerativas -->
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="doencasCronicas" class="form-label"
+                    >Doenças Crônicas</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="doencasCronicas"
+                    formControlName="doencasCronicas"
+                  ></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label for="doencaNeurodegenerativa" class="form-label"
+                    >Doença Neurodegenerativa</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="doencaNeurodegenerativa"
+                    formControlName="doencaNeurodegenerativa"
+                  ></textarea>
+                </div>
+              </div>
+
+              <!-- Tratamentos e Alergias a Medicamentos -->
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="tratamentosRealizados" class="form-label"
+                    >Tratamentos Realizados</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="tratamentosRealizados"
+                    formControlName="tratamentosRealizados"
+                  ></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label for="alergiaMedicamentos" class="form-label"
+                    >Alergia a Medicamentos</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="alergiaMedicamentos"
+                    formControlName="alergiaMedicamentos"
+                  ></textarea>
+                </div>
+              </div>
+
+              <!-- Hábitos -->
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="frequenciaConsumoAlcool" class="form-label"
+                    >Frequência de Consumo de Álcool</label
+                  >
+                  <select
+                    class="form-select form-select-sm"
+                    id="frequenciaConsumoAlcool"
+                    formControlName="frequenciaConsumoAlcool"
+                  >
+                    <option value="">Selecione</option>
+                    <option value="Nunca">Nunca</option>
+                    <option value="Raramente">Raramente</option>
+                    <option value="Ocasionalmente">Ocasionalmente</option>
+                    <option value="Frequentemente">Frequentemente</option>
+                    <option value="Diariamente">Diariamente</option>
+                  </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-center">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="praticaAtividade"
+                      formControlName="praticaAtividade"
+                    />
+                    <label class="form-check-label" for="praticaAtividade">
+                      Pratica Atividade Física
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-4 d-flex align-items-center">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="tabagista"
+                      formControlName="tabagista"
+                    />
+                    <label class="form-check-label" for="tabagista">
+                      Tabagista
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="historicoDoencas"
+                      formControlName="historicoDoencas"
+                    />
+                    <label class="form-check-label" for="historicoDoencas">
+                      Possui histórico de doenças?
+                    </label>
+                  </div>
+                  <div
+                    class="mt-2"
+                    *ngIf="fichaForm.get('historicoDoencas')?.value"
+                  >
+                    <label for="doencasPreExistentes" class="form-label"
+                      >Detalhe as doenças pré-existentes:</label
+                    >
+                    <textarea
+                      class="form-control form-control-sm"
+                      id="doencasPreExistentes"
+                      formControlName="doencasPreExistentes"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="medicacaoUsoContinuo"
+                      formControlName="medicacaoUsoContinuo"
+                    />
+                    <label class="form-check-label" for="medicacaoUsoContinuo">
+                      Faz uso de medicação contínua?
+                    </label>
+                  </div>
+                  <div
+                    class="mt-2"
+                    *ngIf="fichaForm.get('medicacaoUsoContinuo')?.value"
+                  >
+                    <label for="medicacao" class="form-label"
+                      >Quais medicações:</label
+                    >
+                    <textarea
+                      class="form-control form-control-sm"
+                      id="medicacao"
+                      formControlName="medicacao"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="cirurgiasPrevias"
+                      formControlName="cirurgiasPrevias"
+                    />
+                    <label class="form-check-label" for="cirurgiasPrevias">
+                      Possui cirurgias prévias?
+                    </label>
+                  </div>
+                  <div
+                    class="mt-2"
+                    *ngIf="fichaForm.get('cirurgiasPrevias')?.value"
+                  >
+                    <label for="detalheCirurgias" class="form-label"
+                      >Detalhe as cirurgias:</label
+                    >
+                    <textarea
+                      class="form-control form-control-sm"
+                      id="detalheCirurgias"
+                      formControlName="detalheCirurgias"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="alergias" class="form-label">Alergias</label>
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="alergias"
+                    formControlName="alergias"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Queixa Principal e Objetivos -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Queixa Principal e Objetivos</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="queixaPrincipal" class="form-label"
+                    >Queixa Principal</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="queixaPrincipal"
+                    rows="3"
+                    formControlName="queixaPrincipal"
+                  ></textarea>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="objetivosDoTratamento" class="form-label"
+                    >Objetivos do Tratamento</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="objetivosDoTratamento"
+                    rows="3"
+                    formControlName="objetivosDoTratamento"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Avaliações Específicas -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Avaliações Específicas</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="avaliacaoPostural" class="form-label"
+                    >Avaliação Postural</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="avaliacaoPostural"
+                    rows="3"
+                    formControlName="avaliacaoPostural"
+                  ></textarea>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="amplitudeMovimento" class="form-label"
+                    >Amplitude de Movimento</label
+                  >
+                  <textarea
+                    class="form-control form-control-sm"
+                    id="amplitudeMovimento"
+                    rows="3"
+                    formControlName="amplitudeMovimento"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Assinaturas -->
+          <div class="card mb-4 d-none">
+            <div class="card-header">
+              <h5 class="mb-0">Assinaturas</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="assinaturaProfissional" class="form-label"
+                    >Assinatura do Profissional</label
+                  >
+                  <input
+                    type="file"
+                    class="form-control form-control-sm"
+                    id="assinaturaProfissional"
+                    formControlName="assinaturaProfissional"
+                  />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                  <label for="assinaturaCliente" class="form-label"
+                    >Assinatura do Cliente</label
+                  >
+                  <input
+                    type="file"
+                    class="form-control form-control-sm"
+                    id="assinaturaCliente"
+                    formControlName="assinaturaCliente"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <app-button-action
+              text="Confirmar"
+              loadingText="Carregando..."
+              [loading]="isLoading"
+              variant="success"
+              id="btn_salvar_editar"
+              (clicked)="onSubmit()"
+              [type]="'button'"
+            ></app-button-action>
+            <button
+              type="button"
+              class="btn btn-danger"
+              id="btnCancelar"
+              data-bs-dismiss="modal"
+              (click)="fecharModal()"
+              aria-label="Close"
+            >
+              <i class="bi bi-x"></i>Cancelar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
+</div>
