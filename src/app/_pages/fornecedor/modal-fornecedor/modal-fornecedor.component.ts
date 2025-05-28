@@ -21,7 +21,7 @@ export class ModalFornecedorComponent {
   @ViewChild('modalFornecedor') modalFornecedor?: ElementRef;
   @Input() fornecedor = {} as Fornecedor;
   @Output() fornecedorAtualizado = new EventEmitter<void>();
-
+  isLoading = false;
 
   formulario = new FormGroup({
     id: new FormControl(),
@@ -52,23 +52,27 @@ export class ModalFornecedorComponent {
     email: new FormControl(),
     dataNascimento: new FormControl(), // Campo opcional
     observacao: new FormControl(),
-    nome : new FormControl()
+    nome: new FormControl()
   });
 
   onSubmit() {
-    
+
     const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
     if (this.formulario.valid) {
+
+      this.isLoading = true;
       const fornecedorToSave: Fornecedor = this.formulario.value as Fornecedor;
       if (fornecedorToSave.id) {
         this.fornecedorService.Atualizar(fornecedorToSave).subscribe({
           next: (response: ResponseModel<Fornecedor>) => {
             this.toast.success('Fornecedor atualizado com Sucesso', 'Parabéns');
             this.fornecedorAtualizado.emit(); // Emita o evento após a atualização
+            this.isLoading = false;
             btnCacelar.click();
             this.fecharModal();
           },
           error: (err) => {
+            this.isLoading = false;
             this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao atualizar um Fornecedor');
           }
         });
@@ -77,16 +81,19 @@ export class ModalFornecedorComponent {
           next: (response: ResponseModel<Fornecedor>) => {
             this.toast.success('Fornecedor Criado com sucesso', 'Parabéns');
             this.fornecedorAtualizado.emit(); // Emita o evento após a criação
+            this.isLoading = false;
             btnCacelar.click();
             this.fecharModal();
           },
           error: (err) => {
             console.error('Erro ao criar Fornecedor:', err);
+            this.isLoading = false;
             this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar um Fornecedor');
           }
         });
       }
     } else {
+      this.isLoading = false;
       console.error('Formulário inválido');
     }
   }
@@ -127,7 +134,7 @@ export class ModalFornecedorComponent {
 
   onTipoChange() {
     const tipo = this.formulario.get('tipo')?.value;
-  
+
     if (tipo === 'F') {
       this.formulario.get('cpf')?.setValidators([Validators.required]);
       this.formulario.get('cnpj')?.clearValidators();
@@ -135,9 +142,9 @@ export class ModalFornecedorComponent {
       this.formulario.get('cnpj')?.setValidators([Validators.required]);
       this.formulario.get('cpf')?.clearValidators();
     }
-  
+
     this.formulario.get('cpf')?.updateValueAndValidity();
     this.formulario.get('cnpj')?.updateValueAndValidity();
   }
-  
+
 }

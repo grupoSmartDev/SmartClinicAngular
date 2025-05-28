@@ -412,9 +412,15 @@
         </div>
       </div>
       <div class="modal-footer justify-content-end">
-        <button type="button" (click)="onSubmit()" class="btn btn-success">
-          <i class="bi bi-check"></i> Confirmar
-        </button>
+        <app-button-action
+          text="Confirmar"
+          loadingText="Carregando..."
+          [loading]="isLoading"
+          variant="success"
+          id="btn_salvar_editar"
+          (clicked)="onSubmit()"
+          [type]="'button'"
+        ></app-button-action>
         <button
           type="button"
           class="btn btn-danger"
@@ -621,13 +627,15 @@
           </div>
         </div>
         <div class="modal-footer justify-content-end">
-          <button
-            type="button"
-            (click)="salvarEvolucao()"
-            class="btn btn-success"
-          >
-            <i class="bi bi-check"></i> Confirmar
-          </button>
+          <app-button-action
+            text="Confirmar"
+            loadingText="Carregando..."
+            [loading]="isLoading"
+            variant="success"
+            id="btn_salvar_editar"
+            (clicked)="onSubmit()"
+            [type]="'button'"
+          ></app-button-action>
           <button type="button" class="btn btn-danger" (click)="closeDialog()">
             <i class="bi bi-x"></i> Cancelar
           </button>
@@ -1349,14 +1357,15 @@
           </div>
         </div>
         <div class="modal-footer justify-content-end">
-          <button
-            type="button"
-            (click)="salvarPlano()"
-            [disabled]="formPlano.invalid"
-            class="btn btn-success"
-          >
-            <i class="bi bi-check"></i> Confirmar
-          </button>
+          <app-button-action
+            text="Confirmar"
+            loadingText="Carregando..."
+            [loading]="isLoading"
+            variant="success"
+            id="btn_salvar_editar"
+            (clicked)="onSubmit()"
+            [type]="'button'"
+          ></app-button-action>
           <button
             type="button"
             class="btn btn-danger"

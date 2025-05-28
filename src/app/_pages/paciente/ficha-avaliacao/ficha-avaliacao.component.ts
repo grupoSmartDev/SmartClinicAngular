@@ -20,6 +20,7 @@ export class FichaAvaliacaoComponent {
   paciente!: Paciente;
   listaProfissional: Profissional[] = [];
   fichaAvaliacao!: FichaAvaliacao;
+  isLoading = false;
 
   constructor(private fb: FormBuilder, private dataInput: DatePtBrPipe,
     private profissionalSerice: ProfissionalService, private toast: ToastrService,
@@ -114,6 +115,8 @@ export class FichaAvaliacaoComponent {
     if (this.fichaForm.valid) {
       console.log('Formulário enviado:', this.fichaForm.value);
 
+
+      this.isLoading = true;
       const dataToSave = this.fichaForm.value as FichaAvaliacao;
 
       const saveOperation = dataToSave.id
@@ -123,14 +126,17 @@ export class FichaAvaliacaoComponent {
         next: () => {
           const action = dataToSave.id ? 'atualizado' : 'criado';
           this.toast.success(`Ficha de avaliação ${action} com sucesso!`, 'Parabéns');
+          this.isLoading = false;
           this.fecharModal();
         },
         error: () => {
+          this.isLoading = false;
           this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
         },
       });
       // Aqui você pode implementar a lógica para salvar os dados
     } else {
+      this.isLoading = false;
       this.marcarCamposInvalidos();
     }
   }

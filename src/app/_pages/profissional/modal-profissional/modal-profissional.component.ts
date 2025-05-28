@@ -45,7 +45,7 @@ export class ModalProfissionalComponent {
       // Propriedades para pagamento
       tipoPagamento: [null],
       chavePix: [null],
-      bancoNome: [null],
+      bancoNome: [''],
       bancoAgencia: [null],
       bancoConta: [null],
       bancoTipoConta: [null],
@@ -63,6 +63,7 @@ export class ModalProfissionalComponent {
   @Input() profissional = {} as Profissional;
   @Output() dataAtualizado = new EventEmitter<void>();
   exibirCamposUsuario = false;
+  isLoading = false;
 
   lista: Profissional[] = [];
   listaProfissao: Profissao[] = [];
@@ -83,6 +84,8 @@ export class ModalProfissionalComponent {
       this.toast.error('Preencha todos os campos obrigatórios', 'Formulário Inválido');
       return;
     }
+
+    this.isLoading = true;
     const dataToSave = this.formulario.value as Profissional;
 
     const saveOperation = dataToSave.id ? this.profissionalService.Atualizar(dataToSave) : this.profissionalService.Criar(dataToSave);
@@ -94,10 +97,12 @@ export class ModalProfissionalComponent {
           // this.criarUsuarioParaProfissional(dataToSave);
         }
         this.toast.success(`Profissional ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
         this.dataAtualizado.emit();
         this.fecharModal();
       },
       error: () => {
+        this.isLoading = false;
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
       },
     });

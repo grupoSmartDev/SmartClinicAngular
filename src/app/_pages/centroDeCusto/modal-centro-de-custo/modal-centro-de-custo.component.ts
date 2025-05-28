@@ -19,6 +19,7 @@ export class ModalCentroDeCustoComponent {
   @Output() dataAtualizado = new EventEmitter<void>();
 
   formulario: FormGroup;
+  isLoading = false;
 
   constructor(
     private centroDeCustoService: CentroDeCustoService,
@@ -58,6 +59,7 @@ export class ModalCentroDeCustoComponent {
       return;
     }
 
+    this.isLoading = true;
     const centroDeCustoToSave: CentroDeCusto = this.formulario.value as CentroDeCusto;
 
     const saveOperation = centroDeCustoToSave.id
@@ -68,11 +70,13 @@ export class ModalCentroDeCustoComponent {
       next: () => {
         const action = centroDeCustoToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Centro de custo ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
         this.dataAtualizado.emit();
         this.fecharModal();
       },
       error: () => {
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+        this.isLoading = false;
       },
     });
   }

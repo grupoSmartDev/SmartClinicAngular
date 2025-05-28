@@ -29,35 +29,39 @@ export class ModalStatusComponent {
   @Input() status = {} as Status;
   @Output() statusAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
   formulario: FormGroup;
+  isLoading = false;
 
-  onSubmit(){
+  onSubmit() {
 
     const btnFechar = document.getElementById('btnCancelar') as HTMLButtonElement;
 
-    if(this.formulario.invalid){
-        this.formulario.markAllAsTouched();
-        this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
-        return;
-      }
+    if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
+      this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
+      return;
+    }
 
-      const dataToSave: Status = this.formulario.value as Status;
+    this.isLoading = true;
+    const dataToSave: Status = this.formulario.value as Status;
 
-      const saveOperation = dataToSave.id
-        ? this.statusService.Atualizar(parseInt(dataToSave.id), dataToSave)
-        : this.statusService.Criar(dataToSave);
+    const saveOperation = dataToSave.id
+      ? this.statusService.Atualizar(parseInt(dataToSave.id), dataToSave)
+      : this.statusService.Criar(dataToSave);
 
-        saveOperation.subscribe({
-          next: () => {
-            const action = dataToSave.id ? 'atualizado' : 'criado';
-            this.toast.success(`Status ${action} com sucesso!`, 'Parabéns');
-            this.statusAtualizado.emit();
-            btnFechar.click();
-            this.fecharModal();
-          },
-          error: () => {
-            this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
-          },
-        });
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Status ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
+        this.statusAtualizado.emit();
+        btnFechar.click();
+        this.fecharModal();
+      },
+      error: () => {
+        this.isLoading = false;
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
 
   }
 

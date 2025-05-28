@@ -24,6 +24,7 @@ export class ModalFinancPagarComponent {
   @Input() data = {} as FinancPagar;
   @Output() dadosAtualizado = new EventEmitter<void>();
 
+  isLoading = false;
   formulario!: FormGroup;
 
   listaPacientes: Paciente[] = []
@@ -177,12 +178,15 @@ export class ModalFinancPagarComponent {
     const btnCancelar = document.querySelector('#btnCancelar') as HTMLElement;
     if (this.formulario.valid) {
       const dadosToSave: FinancPagar = this.formulario.value as FinancPagar;
+
+      this.isLoading = true;
       if (dadosToSave.id) {
         this.financPagarService.Atualizar(dadosToSave).subscribe({
           next: () => {
             this.toast.success('Conta a pagar atualizada com sucesso', 'Parabéns');
             this.dadosAtualizado.emit();
             btnCancelar.click();
+            this.isLoading = false;
             this.fecharModal();
           },
           error: () => {
@@ -194,10 +198,12 @@ export class ModalFinancPagarComponent {
           next: () => {
             this.toast.success('Conta a pagar criada com sucesso', 'Parabéns');
             this.dadosAtualizado.emit();
+            this.isLoading = false;
             btnCancelar.click();
             this.fecharModal();
           },
           error: () => {
+            this.isLoading = false;
             this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao criar');
           }
         });

@@ -31,6 +31,7 @@ export class ModalSalasComponent {
   @Input() sala = {} as Sala;
   @Output() dataAtualizado = new EventEmitter<void>(); // Adicione este EventEmitter
   formulario: FormGroup;
+  isLoading = false;
 
   carregarSala(sala: any) {
     this.formulario.patchValue(this.sala);
@@ -49,6 +50,7 @@ export class ModalSalasComponent {
       return;
     }
 
+    this.isLoading = true;
     const dataToSave: Sala = this.formulario.value as Sala;
 
     const saveOperation = dataToSave.id
@@ -59,10 +61,12 @@ export class ModalSalasComponent {
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Sala ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
         this.dataAtualizado.emit();
         this.fecharModal();
       },
       error: () => {
+        this.isLoading = false;
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
       },
     })

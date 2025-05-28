@@ -19,7 +19,7 @@ export class ModalProcedimentoComponent {
   formulario!: FormGroup;
 
   listaCategorias: Categoria[] = [];
-
+  isLoading = false;
   constructor(private toast: ToastrService,
     private procedimentoService: ProcedimentoService,
     private fb: FormBuilder,
@@ -39,6 +39,7 @@ export class ModalProcedimentoComponent {
       return;
     }
 
+    this.isLoading = true;
     const dataToSave = this.formulario.value as Procedimento;
 
     const saveOperation = dataToSave.id
@@ -49,10 +50,12 @@ export class ModalProcedimentoComponent {
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
         this.toast.success(`Procedimento ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
         this.dadosAtualizados.emit();
         this.fecharModal();
       },
       error: () => {
+        this.isLoading = false;
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
       },
     });

@@ -14,24 +14,24 @@ export class ModalExercicioComponent {
   constructor(
     private exercicioService: ExercicioService,
     private toast: ToastrService,
-    private fb : FormBuilder) {
-      this.formulario = this.fb.group({
-        id : [null],
-        descricao : ['', Validators.required],
-        tempo : [null],
-        repeticoes : [null],
-        series : [null],
-        evolucaoId : [null],
-        peso : [null],
-      })
-     }
+    private fb: FormBuilder) {
+    this.formulario = this.fb.group({
+      id: [null],
+      descricao: ['', Validators.required],
+      tempo: [null],
+      repeticoes: [null],
+      series: [null],
+      evolucaoId: [null],
+      peso: [null],
+    })
+  }
 
   @ViewChild('modalEditarCriar') modalEditarCriar?: ElementRef;
   @Input() data = {} as Exercicio;
   @Output() dadosAtualizados = new EventEmitter<void>(); // Adicione este EventEmitter
 
-  formulario! : FormGroup;
-
+  formulario!: FormGroup;
+  isLoading = false;
 
   carregarDados(exercicio: any) {
     this.formulario.patchValue(this.data);
@@ -43,35 +43,38 @@ export class ModalExercicioComponent {
     btnCacelar.click();
   }
 
-  onSubmit(){
-    
-    if(this.formulario.invalid){
+  onSubmit() {
+
+    if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');
       return;
     }
-  
+
+    this.isLoading = true;
     const dataToSave = this.formulario.value as Exercicio;
-  
+
     const saveOperation = dataToSave.id
       ? this.exercicioService.Atualizar(dataToSave)
       : this.exercicioService.Criar(dataToSave);
-  
-      saveOperation.subscribe({
-        next: () => {
-          const action = dataToSave.id ? 'atualizado' : 'criado';
-          this.toast.success(`Exercicio ${action} com sucesso!`, 'Parabéns');
-          this.dadosAtualizados.emit();
-          this.fecharModal();
-  
-        },
-        error: () => {
-          this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
-        },
-      });
+
+    saveOperation.subscribe({
+      next: () => {
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+        this.toast.success(`Exercicio ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
+        this.dadosAtualizados.emit();
+        this.fecharModal();
+
+      },
+      error: () => {
+        this.isLoading = false;
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
+    });
   }
 
-  testeEnvio(){
-    console.log('dados formulario',this.formulario.value)
+  testeEnvio() {
+    console.log('dados formulario', this.formulario.value)
   }
 }

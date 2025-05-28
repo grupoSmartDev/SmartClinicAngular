@@ -147,6 +147,8 @@ export class PacienteCompletoComponent implements OnInit {
   podeRenovar: boolean = false;
   planoSelecionado: any = null;
 
+  isLoading = false;
+
   @Output() evolucaoAtualizado = new EventEmitter<void>();
 
   constructor(
@@ -358,6 +360,7 @@ export class PacienteCompletoComponent implements OnInit {
       return;
     }
 
+    this.isLoading = true;
     const dataToSave = this.formEvolucao.value;
     dataToSave.pacienteId = this.Paciente.id;
 
@@ -369,11 +372,13 @@ export class PacienteCompletoComponent implements OnInit {
       next: () => {
         const action = dataToSave.id ? 'atualizada' : 'criada';
         this.toastr.success(`Evolução ${action} com sucesso!`, 'Parabéns');
+        this.isLoading = false;
         this.closeDialog();
         this.evolucaoAtualizado.emit();
       },
       error: (err) => {
         console.error('Erro ao salvar evolução:', err);
+        this.isLoading = false;
         this.toastr.error(
           'Ocorreu um erro ao salvar. Tente novamente.',
           'Erro'
@@ -686,6 +691,8 @@ export class PacienteCompletoComponent implements OnInit {
       return;
     }
 
+
+    this.isLoading = true;
     // Montar objeto para envio
     const planoVinculacao: PlanoVinculacaoDto = {
       planoModeloId: this.formPlano.get('planoId')?.value,
@@ -775,15 +782,18 @@ export class PacienteCompletoComponent implements OnInit {
       next: (response) => {
         if (response && response.status) {
           this.toastr.success(response.mensagem, 'Sucesso');
+          this.isLoading = false;
           this.closeDialogPlano();
           // Atualizar a lista de planos do paciente
           this.atualizarPacientePlano();
         } else {
+          this.isLoading = false;
           this.toastr.error(response.mensagem || 'Erro desconhecido', 'Erro');
         }
       },
       error: (error) => {
         console.error('Erro ao vincular plano:', error);
+        this.isLoading = false;
         this.toastr.error('Erro ao vincular plano. Verifique o console para mais detalhes.', 'Erro');
       }
     });
@@ -1565,6 +1575,7 @@ export class PacienteCompletoComponent implements OnInit {
       return;
     }
 
+    this.isLoading = true;
     // Montar objeto para envio
     const planoRenovacao: PlanoRenovacaoDto = {
       planoId: Number(this.formRenovacao.get('planoId')?.value),
@@ -1659,14 +1670,17 @@ export class PacienteCompletoComponent implements OnInit {
         if (response && response.status) {
           this.toastr.success(response.mensagem || 'Plano renovado com sucesso!', 'Sucesso');
           this.closeDialogRenovacaoPlano();
+          this.isLoading = false;
           // Atualizar a lista de planos do paciente
           this.atualizarPacientePlano();
         } else {
+          this.isLoading = false;
           this.toastr.error(response.mensagem || 'Erro ao renovar plano', 'Erro');
         }
       },
       error: (error) => {
         console.error('Erro ao renovar plano:', error);
+        this.isLoading = false;
         let mensagemErro = 'Erro ao renovar plano.';
 
         if (error.error && error.error.mensagem) {
