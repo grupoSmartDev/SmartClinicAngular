@@ -45,7 +45,7 @@ export class PaginaCadastroComponent {
       QtdeLicencaUsuarioPermitida: [1],
       QtdeLicencaEmpresaUtilizada: [0],
       QtdeLicencaUsuarioUtilizada: [0],
-      DataNascimentoTitular: [''],
+      DataNascimentoTitular: ['', Validators.required],
       _DataNascimentoTitular: [''],
       DataInicioTeste: [today],
       _DataInicioTeste: [today],

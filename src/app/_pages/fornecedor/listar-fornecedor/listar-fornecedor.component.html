@@ -106,7 +106,7 @@
               {{ item.id }}
             </td>
             <td>
-              {{ item.nome }}
+              {{ item.tipo == 'F' ? item.nome : item.fantasia }}
             </td>
             <td>
               {{ item.celular }} 
