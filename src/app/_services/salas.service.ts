@@ -6,13 +6,13 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SalasService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   baseURL: string = environment.apiUrl + 'api/Sala/';
+  baseURLHorario: string = environment.apiUrl + 'api/SalaHorarioFuncionamento/';
 
   Listar(
     page?: number,
@@ -23,18 +23,20 @@ export class SalasService {
     capacidadeFiltro?: string,
     paginar?: boolean
   ): Observable<ResponseModel<Sala[]>> {
-
-    let params = new HttpParams()
+    let params = new HttpParams();
 
     if (page) params = params.set('page', page.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (nomeFiltro) params = params.set('nomeFiltro', nomeFiltro);
     if (idFiltro) params = params.set('idFiltro', idFiltro);
     if (localFiltro) params = params.set('localFiltro', localFiltro);
-    if (capacidadeFiltro) params = params.set('capacidadeFiltro', capacidadeFiltro);
+    if (capacidadeFiltro)
+      params = params.set('capacidadeFiltro', capacidadeFiltro);
     if (paginar) params = params.set('paginar', paginar);
 
-    return this.http.get<ResponseModel<Sala[]>>(`${this.baseURL}Listar`, { params });
+    return this.http.get<ResponseModel<Sala[]>>(`${this.baseURL}Listar`, {
+      params,
+    });
   }
 
   Criar(sala: Sala): Observable<ResponseModel<Sala>> {
@@ -46,7 +48,19 @@ export class SalasService {
   }
 
   Deletar(id: number): Observable<ResponseModel<void>> {
-
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
+  }
+
+  ListarHorarios(salaId: number): Observable<ResponseModel<any[]>> {
+    return this.http.get<ResponseModel<any[]>>(
+      `${this.baseURLHorario}Listar/${salaId}`
+    );
+  }
+
+  salvarSala(sala: Sala): Observable<any> {
+    if (sala.id && parseInt(sala.id) > 0) {
+      return this.http.put<ResponseModel<Sala>>(`${this.baseURL}Editar`, sala);
+    }
+    return this.http.post<ResponseModel<Sala>>(`${this.baseURL}Criar`, sala);
   }
 }

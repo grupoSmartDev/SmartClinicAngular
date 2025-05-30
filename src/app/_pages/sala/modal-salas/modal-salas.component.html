@@ -149,6 +149,84 @@
                 </div>
               </div>
             </div>
+            <div class="card-body">
+              <!-- Tabela de Configuração dos Dias da Semana -->
+              <div class="table-responsive">
+                <table class="table table-hover table-sm">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col" style="width: 80px">Dia</th>
+                      <th scope="col" style="width: 80px">Ativo</th>
+                      <th scope="col">Início</th>
+                      <th scope="col">Fim</th>
+                    </tr>
+                  </thead>
+                  <tbody formArrayName="horariosFuncionamento">
+                    <tr
+                      *ngFor="
+                        let dia of horariosFuncionamentoArray.controls;
+                        let i = index
+                      "
+                      [formGroupName]="i"
+                    >
+                      <input type="hidden" formControlName="diaSemana" />
+                      <td class="align-middle">{{ diasDaSemana[i].nome }}</td>
+                      <td class="text-center">
+                        <div
+                          class="form-check form-switch d-flex justify-content-center"
+                        >
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            formControlName="ativo"
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <input
+                          type="time"
+                          class="form-control form-control-sm"
+                          formControlName="horaInicio"
+                          [class.is-invalid]="
+                              (dia.get('horaInicio')?.invalid && dia.get('horaInicio')?.touched) ||
+                              dia.errors?.['invalidTimeRange']
+                            "
+                        />
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="dia.get('horaInicio')?.hasError('required')"
+                        >
+                          Horário de início é obrigatório.
+                        </div>
+                      </td>
+                      <td>
+                        <input
+                          type="time"
+                          class="form-control form-control-sm"
+                          formControlName="horaFim"
+                          [class.is-invalid]="
+                              (dia.get('horaFim')?.invalid && dia.get('horaFim')?.touched) ||
+                              dia.errors?.['invalidTimeRange']
+                            "
+                        />
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="dia.get('horaFim')?.hasError('required')"
+                        >
+                          Horário de fim é obrigatório.
+                        </div>
+                        <div
+                          class="invalid-feedback"
+                          *ngIf="dia.errors?.['invalidTimeRange']"
+                        >
+                          Horário final deve ser maior que o inicial.
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
             <div class="col-md-12">
               <label for="observacao" class="form-label">Observação</label>
               <textarea
