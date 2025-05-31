@@ -25,6 +25,8 @@ import { ListarFormaPagamentoComponent } from './_pages/formaPagamento/listar-fo
 import { ModalFormaPagamentoComponent } from './_pages/formaPagamento/modal-forma-pagamento/modal-forma-pagamento.component';
 import { ListarFornecedorComponent } from './_pages/fornecedor/listar-fornecedor/listar-fornecedor.component';
 import { ModalFornecedorComponent } from './_pages/fornecedor/modal-fornecedor/modal-fornecedor.component';
+import { PessoaFisicaFormComponent } from './_pages/fornecedor/pessoa-fisica-form/pessoa-fisica-form.component';
+import { PessoaJuridicaFormComponent } from './_pages/fornecedor/pessoa-juridica-form/pessoa-juridica-form.component';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { SelectSexComponent } from './_components/select-sex/select-sex.component';
 import { ListarSalasComponent } from './_pages/sala/listar-salas/listar-salas.component';
@@ -159,6 +161,8 @@ import { ButtonActionComponent } from './_components/button-action/button-action
     ModalFormaPagamentoComponent,
     ListarFornecedorComponent,
     ModalFornecedorComponent,
+    PessoaFisicaFormComponent,
+    PessoaJuridicaFormComponent,
     SelectSexComponent,
     ListarSalasComponent,
     ModalSalasComponent,

@@ -1,0 +1,108 @@
+<div [formGroup]="formulario">
+  <div class="card mb-3">
+    <div class="card-header">Informações Pessoais</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-2">
+          <label for="id" class="form-label">Cód.</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="Id"
+            readonly
+            formControlName="id"
+          />
+        </div>
+        <div class="col-md-2">
+          <label for="tipo" class="form-label">Tipo</label>
+          <select
+            class="form-select form-select-sm"
+            formControlName="tipo"
+            (change)="onTipoChangeInterno()"
+          >
+            <option value="J">Jurídica</option>
+            <option value="F">Física</option>
+          </select>
+        </div>
+
+        <div class="col-md-5">
+          <label class="form-label">Nome</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            formControlName="nome"
+            [ngClass]="{
+              'is-invalid':
+                formulario.get('nome')?.invalid &&
+                formulario.get('nome')?.touched
+            }"
+          />
+          <div
+            *ngIf="
+              formulario.get('nome')?.invalid && formulario.get('nome')?.touched
+            "
+            class="invalid-feedback"
+          >
+            O campo nome é obrigatório.
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">CPF</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            formControlName="cpf"
+            mask="000.000.000-00"
+            [ngClass]="{
+              'is-invalid':
+                formulario.get('cpf')?.invalid &&
+                formulario.get('cpf')?.touched
+            }"
+          />
+          <div
+            *ngIf="
+              formulario.get('cpf')?.invalid && formulario.get('cpf')?.touched
+            "
+            class="invalid-feedback"
+          >
+            O campo CPF é obrigatório.
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Estado Civil</label>
+          <select
+            class="form-select form-select-sm"
+            formControlName="estadoCivil"
+          >
+            <option value="C">Casado(a)</option>
+            <option value="S">Solteiro(a)</option>
+            <option value="D">Divorciado(a)</option>
+            <option value="O">Outros</option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Sexo</label>
+          <select class="form-select form-select-sm" formControlName="sexo">
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+            <option value="O">Outros</option>
+          </select>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Data de Nascimento</label>
+          <input
+            type="date"
+            class="form-control form-control-sm"
+            formControlName="dataNascimento"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

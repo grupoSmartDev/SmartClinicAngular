@@ -1,0 +1,59 @@
+<div [formGroup]="formulario">
+  <div class="card mb-3">
+    <div class="card-header">Informações Pessoais</div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-2">
+          <label for="id" class="form-label">Cód.</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="Id"
+            readonly
+            formControlName="id"
+          />
+        </div>
+        <div class="col-md-2">
+          <label for="tipo" class="form-label">Tipo</label>
+          <select
+            class="form-select form-select-sm"
+            formControlName="tipo"
+            (change)="onTipoChangeInterno()"
+          >
+            <option value="J">Jurídica</option>
+            <option value="F">Física</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label for="cnpj" class="form-label">CNPJ</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            formControlName="cnpj"
+            mask="00.000.000/0000-00"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <label for="razao" class="form-label">Razão Social</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            formControlName="razao"
+          />
+        </div>
+        <div class="col-md-6">
+          <label for="fantasia" class="form-label">Nome Fantasia</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            formControlName="fantasia"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

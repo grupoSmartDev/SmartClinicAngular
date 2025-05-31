@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-button-action',
@@ -35,6 +35,19 @@ export class ButtonActionComponent {
   @Input() id: string = '';
 
   @Output() clicked = new EventEmitter<void>();
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['loading'] && changes['loading'].currentValue && !changes['loading'].firstChange) {
+      const wasRecreated = changes['loading'].previousValue === false && changes['loading'].currentValue === true;
+
+      // Se o botão foi reusado com loading=true vindo de uma renderização anterior, zera
+      if (wasRecreated) {
+        setTimeout(() => {
+          this.loading = false;
+        });
+      }
+    }
+  }
 
   get buttonClass(): string {
     const baseClasses = 'btn me-1';

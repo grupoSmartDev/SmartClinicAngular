@@ -24,266 +24,309 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="formulario">
-          <div class="row g-3">
-            <div class="col-md-2">
-              <label for="id" class="form-label">Cód.</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                id="Id"
-                readonly
-                formControlName="id"
-              />
-            </div>
-            <div class="col-md-2">
-              <label for="tipo" class="form-label">Tipo</label>
-              <select
-                class="form-select form-select-sm"
-                formControlName="tipo"
-                (change)="onTipoChange()"
-              >
-                <option value="F">Física</option>
-                <option value="J">Jurídica</option>
-              </select>
-            </div>
+          <!-- Form para Pessoa Física -->
+          <app-pessoa-fisica-form
+            *ngIf="formulario.get('tipo')?.value === 'F'"
+            [formulario]="formulario"
+            (tipoAlterado)="onTipoChange()"
+          ></app-pessoa-fisica-form>
 
-            <!-- Campos para Pessoa Física -->
-            <ng-container *ngIf="formulario.get('tipo')?.value === 'F'">
-              <div class="col-md-5">
-                <label for="nome" class="form-label">Nome</label>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  formControlName="nome"
-                />
-              </div>
-              <div class="col-md-3">
-                <label for="cpf" class="form-label">CPF</label>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  formControlName="cpf"
-                  mask="000.000.000-00"
-                />
-              </div>
-              <div class="col-md-3">
-                <label for="estadoCivil" class="form-label">Estado Civil</label>
-                <select
-                  class="form-select form-select-sm"
-                  formControlName="estadoCivil"
-                >
-                  <option value="C">Casado(a)</option>
-                  <option value="S">Soltairo(a)</option>
-                  <option value="D">Divorciado(a)</option>
-                  <option value="O">Outros</option>
-                </select>
-              </div>
-              <div class="col-md-3">
-                <label for="sexo" class="form-label">Sexo</label>
-                <select
-                  class="form-select form-select-sm"
-                  formControlName="sexo"
-                >
-                  <option value="M">Masculino</option>
-                  <option value="F">Feminino</option>
-                  <option value="O">Outros</option>
-                </select>
+          <!-- Form para Pessoa Jurídica -->
+          <app-pessoa-juridica-form
+            *ngIf="formulario.get('tipo')?.value === 'J'"
+            [formulario]="formulario"
+            (tipoAlterado)="onTipoChange()"
+          ></app-pessoa-juridica-form>
+
+          <div class="card mb-3">
+            <div class="card-header">Informações de Contato</div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="email" class="form-label">E-mail</label>
+                  <input
+                    type="email"
+                    class="form-control form-control-sm"
+                    formControlName="email"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="celular" class="form-label">Celular</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="celular"
+                    mask="(00) 0 0000-0000"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('celular')?.invalid &&
+                        formulario.get('celular')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('celular')?.invalid &&
+                      formulario.get('celular')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo celular é obrigatório.
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label for="telefoneFixo" class="form-label">Telefone</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="telefoneFixo"
+                    mask="(00) 0000-0000"
+                  />
+                </div>
               </div>
 
-              <div class="col-md-3">
-                <label for="dataNascimento" class="form-label"
-                  >Data de Nascimento</label
-                >
-                <input
-                  type="date"
-                  class="form-control form-control-sm"
-                  formControlName="dataNascimento"
-                />
+              <div class="row">
+                <div class="col-md-2">
+                  <label for="pais" class="form-label">País</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="pais"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('pais')?.invalid &&
+                        formulario.get('pais')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('pais')?.invalid &&
+                      formulario.get('pais')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo pais é obrigatório.
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <label for="cidade" class="form-label">Cidade</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="cidade"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('cidade')?.invalid &&
+                        formulario.get('cidade')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('cidade')?.invalid &&
+                      formulario.get('cidade')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo cidade é obrigatório.
+                  </div>
+                </div>
+                <div class="col-md-1">
+                  <label for="uf" class="form-label">UF</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="uf"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('uf')?.invalid &&
+                        formulario.get('uf')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('uf')?.invalid &&
+                      formulario.get('uf')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo UF é obrigatório.
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label for="bairro" class="form-label">Bairro</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="bairro"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('bairro')?.invalid &&
+                        formulario.get('bairro')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('bairro')?.invalid &&
+                      formulario.get('bairro')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo bairro é obrigatório
+                  </div>
+                </div>
               </div>
-            </ng-container>
 
-            <!-- Campos para Pessoa Jurídica -->
-            <ng-container *ngIf="formulario.get('tipo')?.value === 'J'">
-              <div class="col-md-6">
-                <label for="cnpj" class="form-label">CNPJ</label>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  formControlName="cnpj"
-                  mask="00.000.000/0000-00"
-                />
-              </div>
               <div class="row">
                 <div class="col-md-6">
-                  <label for="razao" class="form-label">Razão Social</label>
+                  <label for="logradouro" class="form-label">Logradouro</label>
                   <input
                     type="text"
                     class="form-control form-control-sm"
-                    formControlName="razao"
+                    formControlName="logradouro"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('logradouro')?.invalid &&
+                        formulario.get('logradouro')?.touched
+                    }"
                   />
+                  <div
+                    *ngIf="
+                      formulario.get('logradouro')?.invalid &&
+                      formulario.get('logradouro')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo logradouro é obrigatório
+                  </div>
                 </div>
-                <div class="col-md-6">
-                  <label for="fantasia" class="form-label">Nome Fantasia</label>
+                <div class="col-md-3">
+                  <label for="nrLogradouro" class="form-label">Número</label>
                   <input
                     type="text"
                     class="form-control form-control-sm"
-                    formControlName="fantasia"
+                    formControlName="nrLogradouro"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('nrLogradouro')?.invalid &&
+                        formulario.get('nrLogradouro')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('nrLogradouro')?.invalid &&
+                      formulario.get('nrLogradouro')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo número é obrigatório
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label for="cep" class="form-label">CEP</label>
+                  <div class="input-group input-group-sm">
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="cep"
+                      id="cep"
+                      mask="00000-000"
+                      [ngClass]="{
+                        'is-invalid':
+                          formulario.get('cep')?.invalid &&
+                          formulario.get('cep')?.touched
+                      }"
+                    />
+                    <div
+                      *ngIf="
+                        formulario.get('cep')?.invalid &&
+                        formulario.get('cep')?.touched
+                      "
+                      class="invalid-feedback"
+                    >
+                      O campo CEP é obrigatório
+                    </div>
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      (click)="buscarCEP()"
+                    >
+                      <i class="bi bi-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-3">
+            <div class="card-header">Informações de Pagamento</div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="banco" class="form-label">Banco</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="banco"
+                    mask="000"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="agencia" class="form-label">Agência</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="agencia"
+                    mask="0000"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="conta" class="form-label">Conta</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="conta"
                   />
                 </div>
               </div>
-            </ng-container>
-
-            <div class="col-md-3">
-              <label for="email" class="form-label">E-mail</label>
-              <input
-                type="email"
-                class="form-control form-control-sm"
-                formControlName="email"
-              />
-            </div>
-
-            <div class="col-md-2">
-              <label for="pais" class="form-label">País</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="pais"
-              />
-            </div>
-            <div class="col-md-1">
-              <label for="uf" class="form-label">UF</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="uf"
-              />
-            </div>
-            <div class="col-md-6">
-              <label for="cidade" class="form-label">Cidade</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="cidade"
-              />
-            </div>
-            <div class="col-md-3">
-              <label for="bairro" class="form-label">Bairro</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="bairro"
-              />
-            </div>
-            <div class="col-md-6">
-              <label for="logradouro" class="form-label">Logradouro</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="logradouro"
-              />
-            </div>
-            <div class="col-md-3">
-              <label for="nrLogradouro" class="form-label">Número</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="nrLogradouro"
-              />
-            </div>
-            <div class="col-md-3">
-              <label for="cep" class="form-label">CEP</label>
-              <div class="input-group input-group-sm">
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  formControlName="cep"
-                  id="cep"
-                  mask="00000-000"
-                />
-                <button
-                  class="btn btn-outline-secondary"
-                  type="button"
-                  (click)="buscarCEP()"
-                >
-                  <i class="bi bi-search"></i>
-                </button>
+              <div class="row">
+                <div class="col-md-3">
+                  <label for="tipoPIX" class="form-label">Tipo Pix</label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="tipoPIX"
+                  >
+                    <option value="CPF">CPF</option>
+                    <option value="CNPJ">CNPJ</option>
+                    <option value="T">Telefone</option>
+                    <option value="E">Email</option>
+                    <option value="A">Chave Aleatória</option>
+                  </select>
+                </div>
+                <div class="col-md-9">
+                  <label for="chavePIX" class="form-label">Chave PIX</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="chavePIX"
+                  />
+                </div>
               </div>
             </div>
-
-            <div class="col-md-6">
-              <label for="celular" class="form-label">Celular</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="celular"
-                mask="(00) 0 0000-0000"
-              />
-            </div>
-            <div class="col-md-6">
-              <label for="telefoneFixo" class="form-label">Telefone</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="telefoneFixo"
-                mask="(00) 0000-0000"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="banco" class="form-label">Banco</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="banco"
-                mask="000"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="agencia" class="form-label">Agência</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="agencia"
-                mask="0000"
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="conta" class="form-label">Conta</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="conta"
-              />
-            </div>
-            <div class="col-md-3">
-              <label for="tipoPIX" class="form-label">Tipo Pix</label>
-              <select
-                class="form-select form-select-sm"
-                formControlName="tipoPIX"
-              >
-                <option value="CPF">CPF</option>
-                <option value="CNPJ">CNPJ</option>
-                <option value="T">Telefone</option>
-                <option value="E">Email</option>
-                <option value="A">Chave Aleatória</option>
-              </select>
-            </div>
-            <div class="col-md-8">
-              <label for="chavePIX" class="form-label">Chave PIX</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="chavePIX"
-              />
-            </div>
-
-            <!-- Campo Observação para ambos os tipos -->
-            <div class="col-md-12">
-              <label for="observacao" class="form-label">Observação</label>
-              <textarea
-                class="form-control form-control-sm"
-                formControlName="observacao"
-                rows="3"
-              ></textarea>
+          </div>
+          <!-- Campo Observação para ambos os tipos -->
+          <div class="card mb-3">
+            <div class="card-header">Informações Adicionais</div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="observacao" class="form-label">Observação</label>
+                  <textarea
+                    class="form-control form-control-sm"
+                    formControlName="observacao"
+                    rows="3"
+                  ></textarea>
+                </div>
+              </div>
             </div>
           </div>
         </form>
