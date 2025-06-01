@@ -14,6 +14,7 @@ import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
 import * as bootstrap from 'bootstrap';
 import { Paciente } from '../../../_module/pacienteModule';
 import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-modal-financ-receber',
@@ -60,7 +61,7 @@ export class ModalFinanceiroReceber implements OnInit {
       id: [],
       idOrigem: [null],
       nrDocto: [null],
-      dataEmissao: ['', Validators.required],
+      dataEmissao: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
       valorOriginal: [null],
       valorPago: [null],
       parcela: [1, [Validators.required, Validators.min(1)]],

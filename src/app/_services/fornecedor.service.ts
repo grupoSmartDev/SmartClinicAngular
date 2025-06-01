@@ -20,7 +20,7 @@ export class FornecedorService {
     page?: number,
     pageSize?: number,
     nomeFiltro? : string,
-    idFiltro? : string,
+    codigoFiltro? : string,
     cpfFiltro? : string,
     cnpjFiltro? : string,
     celularFiltro? : string,
@@ -32,7 +32,7 @@ export class FornecedorService {
     if (page) params = params.set('page', page.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (nomeFiltro) params = params.set('nomeFiltro', nomeFiltro);
-    if (idFiltro) params = params.set('idFiltro', idFiltro);
+    if (codigoFiltro) params = params.set('codigoFiltro', codigoFiltro);
     if (cpfFiltro) params = params.set('cpfFiltro', cpfFiltro);
     if (cnpjFiltro) params = params.set('cnpjFiltro', cnpjFiltro);
     if (celularFiltro) params = params.set('celularFiltro', celularFiltro);

@@ -12,6 +12,7 @@ import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service'
 import { FinancPagarService } from '../../../_services/financ-pagar.service';
 import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
 import { Paciente } from '../../../_module/pacienteModule';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-modal-financ-pagar',
@@ -55,7 +56,7 @@ export class ModalFinancPagarComponent {
       id: [],
       idOrigem: [null],
       nrDocto: [null],
-      dataEmissao: ['', Validators.required],
+      dataEmissao: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
       valorOriginal: [null],
       valorPago: [null],
       parcela: [1, [Validators.required, Validators.min(1)]],

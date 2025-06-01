@@ -29,7 +29,7 @@ export class ListarFornecedorComponent {
   currentPage: number = 1;
   // filtros
   nomeFiltro: string = '';
-  idFiltro: string = '';
+  codigoFiltro: string = '';
   cpfFiltro: string = '';
   cnpjFiltro: string = '';
   celularFiltro: string = '';
@@ -67,7 +67,7 @@ export class ListarFornecedorComponent {
   loadData(): void {
     this.fornecedorService.Listar
       (
-        this.currentPage, this.pageSize, this.nomeFiltro, this.idFiltro,
+        this.currentPage, this.pageSize, this.nomeFiltro, this.codigoFiltro,
         this.cpfFiltro, this.cnpjFiltro, this.celularFiltro, this.paginar
       ).subscribe({
         next: (data) => {
@@ -141,7 +141,7 @@ export class ListarFornecedorComponent {
 
   limparFiltros() {
     this.nomeFiltro = '';
-    this.idFiltro = '';
+    this.codigoFiltro = '';
     this.cpfFiltro = '';
     this.cnpjFiltro = '';
     this.celularFiltro = '';
