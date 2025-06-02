@@ -15,6 +15,7 @@ import * as bootstrap from 'bootstrap';
 import { Paciente } from '../../../_module/pacienteModule';
 import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
 import { formatDate } from '@angular/common';
+import { InputHelpers } from '../../../_shared/helpers/input-helpers';
 
 @Component({
   selector: 'app-modal-financ-receber',
@@ -22,6 +23,7 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./modal-financ-receber.component.css'],
   providers: [DatePtBrPipe]
 })
+
 export class ModalFinanceiroReceber implements OnInit {
   @ViewChild('modalComponent') modalComponent?: ElementRef;
   @ViewChild('clienteOffcanvas') offcanvas?: ElementRef;
@@ -32,7 +34,6 @@ export class ModalFinanceiroReceber implements OnInit {
   isLoading = false;
 
   formulario!: FormGroup;
-
   listaPacientes: Paciente[] = [];
   listaCentroDeCusto!: CentroDeCusto[];
   listaFormaPagamento!: FormaPagamento[];
@@ -46,6 +47,7 @@ export class ModalFinanceiroReceber implements OnInit {
   options: string[] = ['Cliente 1', 'Cliente 2', 'Cliente 3'];
   filteredOptions: string[] = [];
   errorMessage = "";
+  InputHelpers = InputHelpers;
 
   constructor(
     private financReceberService: FinancReceberService,
@@ -174,8 +176,17 @@ export class ModalFinanceiroReceber implements OnInit {
     btnCancelar.click();
   }
 
-  onSubmit() {
+  evitarValorInvalido(event: any): void {
+    const valor = +event.target.value;
 
+    if (valor < 1) {
+      event.target.value = 1;
+      this.formulario.get('parcela')?.setValue(1);
+    }
+  }
+
+
+  onSubmit() {
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
@@ -213,7 +224,7 @@ export class ModalFinanceiroReceber implements OnInit {
   gerarParcelas(): void {
     const valorTotal = this.formulario.get('valor')?.value || 0;
     const quantidadeParcelas = this.formulario.get('parcela')?.value || 1;
-
+    
     this.subFinancReceber.clear();
 
     const valorParcela = parseFloat((valorTotal / quantidadeParcelas).toFixed(2));
@@ -242,8 +253,22 @@ export class ModalFinanceiroReceber implements OnInit {
 
   onValorTotalChange(): void {
     if (this.formulario.get('parcela')?.value > 0) {
+      this.onTipoPagamentoChange();
       this.gerarParcelas();
     }
+  }
+
+  onTipoPagamentoChange(): void {
+    const tipoPagamentoId = this.formulario.get('tipoPagamentoId')?.value;
+
+    if (tipoPagamentoId == "1") {
+      this.formulario.get('parcela')?.setValue(1);
+      this.formulario.get('parcela')?.disable();
+    } else {
+      this.formulario.get('parcela')?.enable();
+    }
+
+    this.gerarParcelas();
   }
 
   testeEnvios(): void {

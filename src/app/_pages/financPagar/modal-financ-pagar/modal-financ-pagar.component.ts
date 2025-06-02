@@ -13,6 +13,7 @@ import { FinancPagarService } from '../../../_services/financ-pagar.service';
 import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
 import { Paciente } from '../../../_module/pacienteModule';
 import { formatDate } from '@angular/common';
+import { InputHelpers } from '../../../_shared/helpers/input-helpers';
 
 @Component({
   selector: 'app-modal-financ-pagar',
@@ -41,6 +42,7 @@ export class ModalFinancPagarComponent {
   options: string[] = ['Cliente 1', 'Cliente 2', 'Cliente 3'];
   filteredOptions: string[] = [];
   errorMessage = "";
+  InputHelpers = InputHelpers;
 
   constructor(
     private financPagarService: FinancPagarService,
@@ -250,8 +252,22 @@ export class ModalFinancPagarComponent {
 
   onValorTotalChange(): void {
     if (this.formulario.get('parcela')?.value > 0) {
+      this.onTipoPagamentoChange();
       this.gerarParcelas();
     }
+  }
+
+  onTipoPagamentoChange(): void {
+    const tipoPagamentoId = this.formulario.get('tipoPagamentoId')?.value;
+
+    if (tipoPagamentoId == "1") {
+      this.formulario.get('parcela')?.setValue(1);
+      this.formulario.get('parcela')?.disable();
+    } else {
+      this.formulario.get('parcela')?.enable();
+    }
+
+    this.gerarParcelas();
   }
 
   testeEnvios(): void {

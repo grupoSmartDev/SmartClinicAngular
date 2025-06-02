@@ -172,6 +172,7 @@
                 id=""
                 class="form-select form-select-sm"
                 formControlName="tipoPagamentoId"
+                (change)="onTipoPagamentoChange()"
                 [ngClass]="{
                   'is-invalid':
                     formulario.get('tipoPagamentoId')?.invalid &&
@@ -223,6 +224,7 @@
                 class="form-control form-control-sm"
                 formControlName="valor"
                 (change)="onValorTotalChange()"
+                (blur)="gerarParcelas()"
                 placeholder="Informe o valor total"
                 [ngClass]="{
                   'is-invalid':
@@ -243,10 +245,13 @@
             <div class="col-md-3">
               <label for="parcela" class="form-label">Parcelas</label>
               <input
+                min="1"
                 id="parcelas"
                 type="number"
                 class="form-control form-control-sm"
                 formControlName="parcela"
+                (input)="InputHelpers.bloqueiaValorMenorQueUm($event, formulario.get('parcela'))"
+                (keydown)="InputHelpers.bloquearNumerosInvalidos($event)"
                 (change)="gerarParcelas()"
                 placeholder="Informe a quantidade de parcelas"
                 [ngClass]="{

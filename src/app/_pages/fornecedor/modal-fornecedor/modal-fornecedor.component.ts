@@ -14,6 +14,7 @@ import { FornecedorService } from '../../../_services/fornecedor.service';
 import { BuscarCepService } from '../../../_services/buscar-cep.service';
 import { Fornecedor } from '../../../_module/fornecedorModule';
 import { ResponseModel } from '../../../_module/ResponseModule';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-modal-fornecedor',
@@ -76,7 +77,6 @@ export class ModalFornecedorComponent implements OnInit {
 
   onTipoChange(): void {
     const tipo = this.formulario.get('tipo')?.value;
-
     const nome = this.formulario.get('nome');
     const cpf = this.formulario.get('cpf');
     const cnpj = this.formulario.get('cnpj');
@@ -183,9 +183,19 @@ export class ModalFornecedorComponent implements OnInit {
   }
 
   carregarFornecedor(fornecedor: any) {
-    this.formulario.patchValue(this.fornecedor);
+    const fornecedorCorrigido = {
+      ...fornecedor,
+      dataNascimento: fornecedor.dataNascimento ? new Date(fornecedor.dataNascimento).toISOString().substring(0, 10) : null
+    };
+
+    this.formulario.patchValue(fornecedorCorrigido);
     this.onTipoChange();
   }
+
+  // carregarFornecedor(fornecedor: any) {
+  //   this.formulario.patchValue(this.fornecedor);
+  //   this.onTipoChange();
+  // }
 
   fecharModal() {
     this.formulario.reset();

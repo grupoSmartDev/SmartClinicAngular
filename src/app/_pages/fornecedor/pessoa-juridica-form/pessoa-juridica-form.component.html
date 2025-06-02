@@ -32,10 +32,22 @@
             class="form-control form-control-sm"
             formControlName="cnpj"
             mask="00.000.000/0000-00"
+            [ngClass]="{
+              'is-invalid':
+                formulario.get('cnpj')?.invalid &&
+                formulario.get('cnpj')?.touched
+            }"
           />
+          <div
+            *ngIf="
+              formulario.get('cnpj')?.invalid && formulario.get('cnpj')?.touched
+            "
+            class="invalid-feedback"
+          >
+            O campo CNPJ é obrigatório.
+          </div>
         </div>
       </div>
-
       <div class="row">
         <div class="col-md-6">
           <label for="razao" class="form-label">Razão Social</label>
@@ -43,7 +55,20 @@
             type="text"
             class="form-control form-control-sm"
             formControlName="razao"
+            [ngClass]="{
+              'is-invalid':
+                formulario.get('razao')?.invalid &&
+                formulario.get('razao')?.touched
+            }"
           />
+          <div
+            *ngIf="
+              formulario.get('razao')?.invalid && formulario.get('razao')?.touched
+            "
+            class="invalid-feedback"
+          >
+            O campo razão é obrigatório.
+          </div>
         </div>
         <div class="col-md-6">
           <label for="fantasia" class="form-label">Nome Fantasia</label>
@@ -51,7 +76,20 @@
             type="text"
             class="form-control form-control-sm"
             formControlName="fantasia"
+            [ngClass]="{
+              'is-invalid':
+                formulario.get('fantasia')?.invalid &&
+                formulario.get('fantasia')?.touched
+            }"
           />
+          <div
+            *ngIf="
+              formulario.get('fantasia')?.invalid && formulario.get('fantasia')?.touched
+            "
+            class="invalid-feedback"
+          >
+            O campo fantasia é obrigatório.
+          </div>
         </div>
       </div>
     </div>
