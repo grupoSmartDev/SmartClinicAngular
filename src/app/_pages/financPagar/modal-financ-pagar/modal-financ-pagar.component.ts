@@ -149,6 +149,7 @@ export class ModalFinancPagarComponent {
 
   fecharModal() {
     this.formulario.reset();
+    this.formulario.get('dataEmissao')?.setValue(this.datePipe.formatToHtmlDate(new Date()));
   }
 
   onSubmi() {
@@ -259,9 +260,9 @@ export class ModalFinancPagarComponent {
 
   onTipoPagamentoChange(): void {
     const tipoPagamentoId = this.formulario.get('tipoPagamentoId')?.value;
+    this.formulario.get('parcela')?.setValue(1);
 
     if (tipoPagamentoId == "1") {
-      this.formulario.get('parcela')?.setValue(1);
       this.formulario.get('parcela')?.disable();
     } else {
       this.formulario.get('parcela')?.enable();
