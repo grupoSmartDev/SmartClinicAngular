@@ -33,7 +33,7 @@ export class ModalFornecedorComponent implements OnInit {
     private toast: ToastrService,
     private fornecedorService: FornecedorService,
     private cepService: BuscarCepService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.formulario = this.fb.group({
@@ -178,7 +178,7 @@ export class ModalFornecedorComponent implements OnInit {
     } else {
       this.isLoading = false;
       this.formulario.markAllAsTouched();
-      console.error('Formulário inválido');
+      this.toast.error('Por favor, preencha os campos obrigatórios', 'Erro');
     }
   }
 
