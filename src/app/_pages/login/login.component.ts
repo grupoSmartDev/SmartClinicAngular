@@ -49,15 +49,16 @@ export class LoginComponent {
       this.f.userKey.value
     ).subscribe({
       next: (response) => {
+        let resposta = response.error;
         if (response.success) {
           this.router.navigate(['/']);
         } else {
-          this.error = 'Erro no login';
+          this.error = resposta;
           this.loading = false;
         }
       },
       error: error => {
-        this.error = error.error || 'Erro no login';
+        this.error = error.error || "Ocorreu um erro ao efetuar o login.";
         this.loading = false;
       }
     });
