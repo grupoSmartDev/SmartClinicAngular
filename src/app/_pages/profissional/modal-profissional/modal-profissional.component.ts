@@ -91,12 +91,17 @@ export class ModalProfissionalComponent {
     const saveOperation = dataToSave.id ? this.profissionalService.Atualizar(dataToSave) : this.profissionalService.Criar(dataToSave);
 
     saveOperation.subscribe({
-      next: () => {
+      next: (response) => {
+        let mensagem = response.mensagem;
         const action = dataToSave.id ? 'atualizado' : 'criado';
-        if (dataToSave.id && dataToSave.ehUsuario) {
-          // this.criarUsuarioParaProfissional(dataToSave);
+        debugger
+        if (response.status) {
+          this.toast.success(`Profissional ${action} com sucesso!`, 'Parabéns');
+
         }
-        this.toast.success(`Profissional ${action} com sucesso!`, 'Parabéns');
+        else {
+          this.toast.error(mensagem, 'Erro');
+        }
         this.isLoading = false;
         this.dataAtualizado.emit();
         this.fecharModal();

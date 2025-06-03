@@ -67,7 +67,7 @@ export class ModalFinanceiroReceber implements OnInit {
       valorOriginal: [null],
       valorPago: [null],
       parcela: [1, [Validators.required, Validators.min(1)]],
-      valor: [0, [Validators.required, Validators.min(1)]],
+      valor: ["0,00", [Validators.required, Validators.min(1)]],
       status: [''],
       notaFiscal: [null],
       descricao: ['', Validators.required],
@@ -224,7 +224,7 @@ export class ModalFinanceiroReceber implements OnInit {
   gerarParcelas(): void {
     const valorTotal = this.formulario.get('valor')?.value || 0;
     const quantidadeParcelas = this.formulario.get('parcela')?.value || 1;
-    
+
     this.subFinancReceber.clear();
 
     const valorParcela = parseFloat((valorTotal / quantidadeParcelas).toFixed(2));
