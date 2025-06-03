@@ -63,7 +63,7 @@ export class ModalFinanceiroReceber implements OnInit {
       id: [],
       idOrigem: [null],
       nrDocto: [null],
-      dataEmissao: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
+      dataEmissao: [this.datePipe.formatToHtmlDate(new Date()), Validators.required],
       valorOriginal: [null],
       valorPago: [null],
       parcela: [1, [Validators.required, Validators.min(1)]],
@@ -173,6 +173,7 @@ export class ModalFinanceiroReceber implements OnInit {
   fecharModal() {
     let btnCancelar = document.getElementById('btnCancelar') as HTMLElement;
     this.formulario.reset();
+    this.formulario.get('dataEmissao')?.setValue(this.datePipe.formatToHtmlDate(new Date()));
     btnCancelar.click();
   }
 
@@ -260,9 +261,9 @@ export class ModalFinanceiroReceber implements OnInit {
 
   onTipoPagamentoChange(): void {
     const tipoPagamentoId = this.formulario.get('tipoPagamentoId')?.value;
-
+    this.formulario.get('parcela')?.setValue(1);
+    
     if (tipoPagamentoId == "1") {
-      this.formulario.get('parcela')?.setValue(1);
       this.formulario.get('parcela')?.disable();
     } else {
       this.formulario.get('parcela')?.enable();

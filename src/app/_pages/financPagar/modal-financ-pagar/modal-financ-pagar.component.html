@@ -220,12 +220,15 @@
               <label for="valor" class="form-label">Valor Total</label>
               <input
                 id="valor"
-                type="number"
+                type="text"
                 class="form-control form-control-sm"
                 formControlName="valor"
                 (change)="onValorTotalChange()"
                 (blur)="gerarParcelas()"
                 placeholder="Informe o valor total"
+                mask="separator.2"
+                thousandSeparator="."
+                decimalMarker=","
                 [ngClass]="{
                   'is-invalid':
                     formulario.get('valor')?.invalid &&
