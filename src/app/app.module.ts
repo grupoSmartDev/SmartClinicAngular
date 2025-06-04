@@ -1,8 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FooterComponent } from './_components/footer/footer.component';
@@ -98,7 +95,6 @@ import { ListarFinancPagarComponent } from './_pages/financPagar/listar-financ-p
 import { ModalFinancPagarComponent } from './_pages/financPagar/modal-financ-pagar/modal-financ-pagar.component';
 import { ListarProfissaoComponent } from './_pages/profissao/listar-profissao/listar-profissao.component';
 import { ModalProfissaoComponent } from './_pages/profissao/modal-profissao/modal-profissao.component';
-
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ListarPlanoContasComponent } from './_pages/planoContas/listar-plano-contas/listar-plano-contas.component';
 import { ModalPlanoContasComponent } from './_pages/planoContas/modal-plano-contas/modal-plano-contas.component';
@@ -137,10 +133,7 @@ import { ConfiguracoesComponent } from './_pages/configuracoes/configuracoes.com
 import { AlterarDadosUsuarioComponent } from './_pages/configuracoes/alterar-dados-usuario/alterar-dados-usuario.component';
 import { AgendaListarComponent } from './_pages/agenda/agenda-listar/agenda-listar.component';
 import { ButtonActionComponent } from './_components/button-action/button-action.component';
-
-
-
-
+import { SelectBancoComponent } from './_components/select-banco/select-banco.component';
 
 @NgModule({
   declarations: [
@@ -260,6 +253,7 @@ import { ButtonActionComponent } from './_components/button-action/button-action
     AlterarDadosUsuarioComponent,
     AgendaListarComponent,
     ButtonActionComponent,
+    SelectBancoComponent,
   ],
   imports: [
     BrowserModule,
@@ -283,7 +277,6 @@ import { ButtonActionComponent } from './_components/button-action/button-action
       }
     }),
     NgxSpinnerModule.forRoot({ type: 'square-jelly-box' })
-
   ],
   providers: [provideNgxMask(), {
     provide: HTTP_INTERCEPTORS,
