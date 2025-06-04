@@ -1,5 +1,19 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { FinancReceberService } from '../../../_services/financ-receber.service';
 import { FinancReceber } from '../../../_module/financReceberModule';
@@ -21,9 +35,8 @@ import { InputHelpers } from '../../../_shared/helpers/input-helpers';
   selector: 'app-modal-financ-receber',
   templateUrl: './modal-financ-receber.component.html',
   styleUrls: ['./modal-financ-receber.component.css'],
-  providers: [DatePtBrPipe]
+  providers: [DatePtBrPipe],
 })
-
 export class ModalFinanceiroReceber implements OnInit {
   @ViewChild('modalComponent') modalComponent?: ElementRef;
   @ViewChild('clienteOffcanvas') offcanvas?: ElementRef;
@@ -46,7 +59,7 @@ export class ModalFinanceiroReceber implements OnInit {
   myControl = new FormControl();
   options: string[] = ['Cliente 1', 'Cliente 2', 'Cliente 3'];
   filteredOptions: string[] = [];
-  errorMessage = "";
+  errorMessage = '';
   InputHelpers = InputHelpers;
 
   constructor(
@@ -63,11 +76,14 @@ export class ModalFinanceiroReceber implements OnInit {
       id: [],
       idOrigem: [null],
       nrDocto: [null],
-      dataEmissao: [this.datePipe.formatToHtmlDate(new Date()), Validators.required],
+      dataEmissao: [
+        this.datePipe.formatToHtmlDate(new Date()),
+        Validators.required,
+      ],
       valorOriginal: [null],
       valorPago: [null],
       parcela: [1, [Validators.required, Validators.min(1)]],
-      valor: ["0,00", [Validators.required, Validators.min(1)]],
+      valor: ['0,00', [Validators.required, Validators.min(1)]],
       status: [''],
       notaFiscal: [null],
       descricao: ['', Validators.required],
@@ -97,32 +113,32 @@ export class ModalFinanceiroReceber implements OnInit {
   filterOptions() {
     const value = this.formulario.get('paciente')?.value;
     if (value && value.length >= 3) {
-      this.pacienteService.pesquisarPorNome(value).subscribe(
-        (response) => {
-          this.listaPacientes = response.dados;
-          this.filteredOptions = this.listaPacientes.map(p => `${p.nome} - ${p.cpf}`);
-        }
-      );
+      this.pacienteService.pesquisarPorNome(value).subscribe((response) => {
+        this.listaPacientes = response.dados;
+        this.filteredOptions = this.listaPacientes.map(
+          (p) => `${p.nome} - ${p.cpf}`
+        );
+      });
     } else {
       this.filteredOptions = [];
     }
   }
 
-
   selectOption(option: string) {
-    const paciente = this.listaPacientes.find(p => `${p.nome} - ${p.cpf}` === option);
+    const paciente = this.listaPacientes.find(
+      (p) => `${p.nome} - ${p.cpf}` === option
+    );
     if (paciente) {
       this.formulario.patchValue({
         paciente: paciente.nome,
         pacienteId: paciente.id,
-        cpf: paciente.cpf
+        cpf: paciente.cpf,
       });
     }
     this.filteredOptions = [];
   }
 
   carregarDados(financReceber: any) {
-
     // Clear existing subFinancReceber array
     while (this.subFinancReceber.length !== 0) {
       this.subFinancReceber.removeAt(0);
@@ -137,7 +153,7 @@ export class ModalFinanceiroReceber implements OnInit {
 
     // Load subFinancReceber if it exists in the data
     if (this.data.subFinancReceber && this.data.subFinancReceber.length > 0) {
-      this.data.subFinancReceber.forEach(subFinanc => {
+      this.data.subFinancReceber.forEach((subFinanc) => {
         let dataVencimento: any = subFinanc.dataVencimento;
         if (dataVencimento) {
           dataVencimento = this.datePipe.formatToHtmlDate(dataVencimento);
@@ -173,7 +189,9 @@ export class ModalFinanceiroReceber implements OnInit {
   fecharModal() {
     let btnCancelar = document.getElementById('btnCancelar') as HTMLElement;
     this.formulario.reset();
-    this.formulario.get('dataEmissao')?.setValue(this.datePipe.formatToHtmlDate(new Date()));
+    this.formulario
+      .get('dataEmissao')
+      ?.setValue(this.datePipe.formatToHtmlDate(new Date()));
     btnCancelar.click();
   }
 
@@ -185,7 +203,6 @@ export class ModalFinanceiroReceber implements OnInit {
       this.formulario.get('parcela')?.setValue(1);
     }
   }
-
 
   onSubmit() {
     if (this.formulario.invalid) {
@@ -204,10 +221,15 @@ export class ModalFinanceiroReceber implements OnInit {
     saveOperation.subscribe({
       next: () => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
-        this.toast.success(`Contas a receber ${action} com sucesso!`, 'Parabéns');
+        this.toast.success(
+          `Contas a receber ${action} com sucesso!`,
+          'Parabéns'
+        );
         this.dadosAtualizado.emit();
         this.isLoading = false;
-        let inputPacientePesquisado = document.getElementById('paciente') as HTMLInputElement;
+        let inputPacientePesquisado = document.getElementById(
+          'paciente'
+        ) as HTMLInputElement;
         inputPacientePesquisado.value = '';
         this.fecharModal();
       },
@@ -223,14 +245,18 @@ export class ModalFinanceiroReceber implements OnInit {
   }
 
   gerarParcelas(): void {
+    this.subFinancReceber.clear();
+    
     const valorTotal = this.formulario.get('valor')?.value || 0;
     const quantidadeParcelas = this.formulario.get('parcela')?.value || 1;
+    const valorBase = Math.floor((valorTotal / quantidadeParcelas) * 100) / 100; 
+    const totalBase = valorBase * quantidadeParcelas;
+    const diferenca = parseFloat((valorTotal - totalBase).toFixed(2)); 
 
-    this.subFinancReceber.clear();
-
-    const valorParcela = parseFloat((valorTotal / quantidadeParcelas).toFixed(2));
     for (let i = 0; i < quantidadeParcelas; i++) {
       const dataVencimento = new Date();
+      const valor = i === quantidadeParcelas - 1 ? parseFloat((valorBase + diferenca).toFixed(2)) : valorBase;
+      
       dataVencimento.setMonth(dataVencimento.getMonth() + i);
 
       this.subFinancReceber.push(
@@ -238,8 +264,11 @@ export class ModalFinanceiroReceber implements OnInit {
           id: [null],
           financReceberId: [null],
           parcela: [i + 1],
-          valor: [valorParcela, [Validators.required, Validators.min(0)]],
-          dataVencimento: [dataVencimento.toISOString().split('T')[0], Validators.required],
+          valor: [valor, [Validators.required, Validators.min(0)]],
+          dataVencimento: [
+            dataVencimento.toISOString().split('T')[0],
+            Validators.required,
+          ],
           dataPagamento: [null],
           observacao: [''],
           desconto: [0],
@@ -262,8 +291,8 @@ export class ModalFinanceiroReceber implements OnInit {
   onTipoPagamentoChange(): void {
     const tipoPagamentoId = this.formulario.get('tipoPagamentoId')?.value;
     this.formulario.get('parcela')?.setValue(1);
-    
-    if (tipoPagamentoId == "1") {
+
+    if (tipoPagamentoId == '1') {
       this.formulario.get('parcela')?.disable();
     } else {
       this.formulario.get('parcela')?.enable();
@@ -304,9 +333,10 @@ export class ModalFinanceiroReceber implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao buscar Centro de custo:', err);
-        this.errorMessage = 'Erro ao carregar os Centro de custo. Tente novamente mais tarde.';
-      }
-    })
+        this.errorMessage =
+          'Erro ao carregar os Centro de custo. Tente novamente mais tarde.';
+      },
+    });
   }
 
   buscarFP(): void {
@@ -318,9 +348,10 @@ export class ModalFinanceiroReceber implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao buscar forma de pagamento:', err);
-        this.errorMessage = 'Erro ao carregar os forma de pagamento. Tente novamente mais tarde.';
-      }
-    })
+        this.errorMessage =
+          'Erro ao carregar os forma de pagamento. Tente novamente mais tarde.';
+      },
+    });
   }
 
   buscarTP(): void {
@@ -332,9 +363,10 @@ export class ModalFinanceiroReceber implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao buscar tipo de pagamento:', err);
-        this.errorMessage = 'Erro ao carregar os tipo de pagamento. Tente novamente mais tarde.';
-      }
-    })
+        this.errorMessage =
+          'Erro ao carregar os tipo de pagamento. Tente novamente mais tarde.';
+      },
+    });
   }
 
   buscarPaciente(): void {
@@ -346,9 +378,10 @@ export class ModalFinanceiroReceber implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao buscar pacientes:', err);
-        this.errorMessage = 'Erro ao carregar os pacientes. Tente novamente mais tarde.';
-      }
-    })
+        this.errorMessage =
+          'Erro ao carregar os pacientes. Tente novamente mais tarde.';
+      },
+    });
   }
 
   pesquisarPorCpf() {
@@ -359,7 +392,7 @@ export class ModalFinanceiroReceber implements OnInit {
           if (paciente) {
             this.formulario.patchValue({
               paciente: paciente.nome,
-              pacienteId: paciente.id
+              pacienteId: paciente.id,
             });
           } else {
             alert('Paciente não encontrado');
@@ -385,7 +418,7 @@ export class ModalFinanceiroReceber implements OnInit {
   selectPatient(patient: Paciente): void {
     this.formulario.patchValue({
       pacienteId: patient.id,
-      'financReceber.pacienteId': patient.id
+      'financReceber.pacienteId': patient.id,
     });
     this.searchTerm = patient.nome || '';
     this.filteredPatients = [];
@@ -393,14 +426,14 @@ export class ModalFinanceiroReceber implements OnInit {
 
   onSearch(): void {
     if (this.searchTerm.length >= 3) {
-      this.filteredPatients = this.listaPacientes.filter(patient =>
-        patient.nome?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        patient.cpf?.includes(this.searchTerm) ||
-        patient.celular?.includes(this.searchTerm)
+      this.filteredPatients = this.listaPacientes.filter(
+        (patient) =>
+          patient.nome?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          patient.cpf?.includes(this.searchTerm) ||
+          patient.celular?.includes(this.searchTerm)
       );
     } else {
       this.filteredPatients = [];
     }
   }
-
 }
