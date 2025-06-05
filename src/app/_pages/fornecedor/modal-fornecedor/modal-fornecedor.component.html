@@ -261,16 +261,13 @@
             <div class="card-header">Informações de Pagamento</div>
             <div class="card-body">
               <div class="row">
-                <div class="col-md-4">
-                  <label for="banco" class="form-label">Banco</label>
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    formControlName="banco"
-                    mask="000"
-                  />
-                </div>
-                <div class="col-md-4">
+                <app-select-banco
+                  class="col-md-5"
+                  id="banco"
+                  [formControlName]="'banco'"
+                  label="Banco"
+                ></app-select-banco>
+                <div class="col-md-3">
                   <label for="agencia" class="form-label">Agência</label>
                   <input
                     type="text"

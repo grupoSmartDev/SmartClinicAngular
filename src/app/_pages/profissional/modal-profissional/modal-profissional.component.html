@@ -308,40 +308,12 @@
                     />
                   </div>
 
-                  <div class="col-md-3">
-                    <label for="banco_comissao" class="form-label">Banco</label>
-                    <select
-                      id="banco_comissao"
-                      name="banco_comissao"
-                      class="form-select form-select-sm"
-                      formControlName="bancoNome"
-                    >
-                      <option value="">Selecione o banco...</option>
-                      <option value="001">001 - Banco do Brasil S.A.</option>
-                      <option value="104">104 - Caixa Econômica Federal</option>
-                      <option value="237">237 - Banco Bradesco S.A.</option>
-                      <option value="341">
-                        341 - Banco Itaú Unibanco S.A.
-                      </option>
-                      <option value="033">
-                        033 - Banco Santander (Brasil) S.A.
-                      </option>
-                      <option value="077">077 - Banco Inter S.A.</option>
-                      <option value="212">212 - Banco Original S.A.</option>
-                      <option value="422">422 - Banco Safra S.A.</option>
-                      <option value="655">655 - Banco Votorantim S.A.</option>
-                      <option value="260">
-                        260 - Nubank (Nu Pagamentos S.A.)
-                      </option>
-                      <option value="323">
-                        323 - Mercado Pago (MercadoLivre.com Soluções
-                        Financeiras Ltda.)
-                      </option>
-                      <option value="380">
-                        380 - PicPay (PicPay Serviços Ltda.)
-                      </option>
-                    </select>
-                  </div>
+                  <app-select-banco
+                    class="col-md-3"
+                    id="banco_comissao"
+                    [formControlName]="'bancoNome'"
+                    label="Banco"
+                  ></app-select-banco>
 
                   <div class="col-md-2">
                     <label for="bancoAgencia" class="form-label">Agência</label>

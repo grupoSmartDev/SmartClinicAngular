@@ -1,0 +1,21 @@
+<label [for]="id" class="form-label">{{ label }}</label>
+<select
+  [id]="id"
+  class="form-select form-select-sm"
+  [value]="value"
+  (change)="handleChange($event)"
+>
+  <option value="">Selecione o banco...</option>
+  <option value="001">001 - Banco do Brasil S.A.</option>
+  <option value="104">104 - Caixa Econômica Federal</option>
+  <option value="237">237 - Banco Bradesco S.A.</option>
+  <option value="341">341 - Banco Itaú Unibanco S.A.</option>
+  <option value="033">033 - Banco Santander (Brasil) S.A.</option>
+  <option value="077">077 - Banco Inter S.A.</option>
+  <option value="212">212 - Banco Original S.A.</option>
+  <option value="422">422 - Banco Safra S.A.</option>
+  <option value="655">655 - Banco Votorantim S.A.</option>
+  <option value="260">260 - Nubank</option>
+  <option value="323">323 - Mercado Pago</option>
+  <option value="380">380 - PicPay</option>
+</select>
