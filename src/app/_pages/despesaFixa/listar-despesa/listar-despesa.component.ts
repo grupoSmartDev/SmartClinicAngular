@@ -6,6 +6,8 @@ import { ModalDespesaComponent } from '../modal-despesa/modal-despesa.component'
 import { DespesaFixa } from '../../../_module/despesaFixaModule';
 import * as bootstrap from 'bootstrap';
 import { TabService } from '../../../_services/tabs.service';
+import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
+import { PlanoContas } from '../../../_module/planoContasModule';
 
 interface CacheData {
   cacheList: DespesaFixa[];
@@ -29,6 +31,9 @@ export class ListarDespesaComponent {
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
 
   lista: DespesaFixa[] = [];
+  centroCustoLista: CentroDeCusto[] = [];
+  planoDeContasLista: PlanoContas[] = [];
+
   errorMessage: string = '';
   idParaExcluir!: string;
   dataParaExcluir!: DespesaFixa;
@@ -39,9 +44,10 @@ export class ListarDespesaComponent {
   currentPage: number = 1;
   // filtros
   idFiltro: string = '';
-  nomeFiltro: string = '';
-  registroAvsFiltro: string = '';
-  telefoneFiltro: string = '';
+  descricaoFiltro: string = '';
+  diaVencimentoFiltro: string = '';
+  centroCustoFiltro: string = '';
+  planoContasFiltro: string = '';
   paginar: boolean = true;
 
   private readonly CACHE_DURATION = 5 * 60 * 1000;
@@ -74,7 +80,7 @@ export class ListarDespesaComponent {
 
   private getCacheKey(): string {
     // Cria uma chave única para o cache baseada nos parâmetros atuais
-    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.nomeFiltro}-${this.idFiltro}-${this.registroAvsFiltro}-${this.telefoneFiltro}-${this.paginar}`;
+    return `convenio-list-${this.currentPage}-${this.pageSize}-${this.descricaoFiltro}-${this.idFiltro}-${this.diaVencimentoFiltro}-${this.centroCustoFiltro}-${this.planoContasFiltro}-${this.paginar}`;
   }
 
   private isCacheValid(timestamp: number): boolean {
@@ -100,10 +106,11 @@ export class ListarDespesaComponent {
         .Listar(
           this.currentPage,
           this.pageSize,
-          this.nomeFiltro,
+          this.descricaoFiltro,
           this.idFiltro,
-          this.registroAvsFiltro,
-          this.telefoneFiltro,
+          this.diaVencimentoFiltro,
+          this.centroCustoFiltro,
+          this.planoContasFiltro,
           (this.paginar = true)
         )
         .subscribe({
@@ -134,7 +141,7 @@ export class ListarDespesaComponent {
       this.modalDespesaComponent.despesa = despesa;
       this.modalDespesaComponent.carregarDespesa(despesa);
     }
-    const modalElement = document.getElementById('modalDespesa');
+    const modalElement = document.getElementById('modalDespesasFixas');
     if (modalElement) {
       const modal = new bootstrap.Modal(modalElement);
       modal.show();
@@ -177,9 +184,10 @@ export class ListarDespesaComponent {
   limparFiltros() {
     this.invalidateCache();
     this.idFiltro = '';
-    this.nomeFiltro = '';
-    this.registroAvsFiltro = '';
-    this.telefoneFiltro = '';
+    this.descricaoFiltro = '';
+    this.diaVencimentoFiltro = '';
+    this.centroCustoFiltro = '';
+    this.planoContasFiltro = '';
     // Opcional: realizar uma busca após limpar
     this.onSearch();
   }

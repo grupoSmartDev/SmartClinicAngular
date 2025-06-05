@@ -1,4 +1,5 @@
 import { CentroDeCusto } from "./centroDeCustoModule";
+import { FinancPagar } from "./financPagarModule";
 import { Fornecedor } from "./fornecedorModule";
 import { PlanoContas } from "./planoContasModule";
 
@@ -10,20 +11,15 @@ export interface DespesaFixa {
     dataInicio: Date;
     dataFim?: Date;
     ativo: boolean;
-    categoria: string;
-    frequencia: TipoFrequencia;
+    frequencia: number;
     fornecedorId?: number;
     fornecedor?: Fornecedor;
     planoContaId?: number;
     planoConta?: PlanoContas;
     centroCustoId?: number;
     centroCusto?: CentroDeCusto;
+    tipoPagamentoId?: number;
+    formaPagamentoId?: number;
+    financPagar?: FinancPagar[];
 }
 
-export enum TipoFrequencia {
-    Mensal = 1,
-    Bimestral = 2,
-    Trimestral = 3,
-    Semestral = 6,
-    Anual = 12
-}

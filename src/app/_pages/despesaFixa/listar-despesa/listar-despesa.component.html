@@ -50,33 +50,53 @@
       </div>
 
       <div class="col-md-3">
-        <label for="" class="form-label small fw-bold">Nome</label>
+        <label for="" class="form-label small fw-bold">Descrição</label>
         <input
           type="text"
           class="form-control form-control-sm"
-          placeholder="Filtrar por nome"
-          [(ngModel)]="nomeFiltro"
-        />
-      </div>
-      <div class="col-md-2">
-        <label for="" class="form-label small fw-bold">Registro</label>
-        <input
-          type="text"
-          class="form-control form-control-sm"
-          placeholder="Filtrar por registro"
-          [(ngModel)]="registroAvsFiltro"
+          placeholder="Filtrar por descrição"
+          [(ngModel)]="descricaoFiltro"
         />
       </div>
 
       <div class="col-md-2">
-        <label for="" class="form-label small fw-bold">Celular</label>
+        <label for="" class="form-label small fw-bold">Vencimento</label>
         <input
           type="text"
-          mask="(00) 00000-0000"
           class="form-control form-control-sm"
-          placeholder="Filtrar por celular"
-          [(ngModel)]="telefoneFiltro"
+          placeholder="Filtrar por vencimento"
+          [(ngModel)]="diaVencimentoFiltro"
         />
+      </div>
+
+      <div class="col-md-2">
+        <label for="" class="form-label small fw-bold">Centro de custo</label>
+        <select
+          name=""
+          id=""
+          class="form-select form-select-sm"
+          [(ngModel)]="centroCustoFiltro"
+        >
+          <option value="">Selecione um centro de custo...</option>
+          @for (item of centroCustoLista; track item.id) {
+          <option value="{{ item.id }}">{{ item.descricao }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <label for="" class="form-label small fw-bold">Plano de contas</label>
+        <select
+          name=""
+          id=""
+          class="form-select form-select-sm"
+          [(ngModel)]="planoContasFiltro"
+        >
+          <option value="">Selecione um centro de custo...</option>
+          @for (item of planoDeContasLista; track item.id) {
+          <option value="{{ item.id }}">{{ item.nome }}</option>
+          }
+        </select>
       </div>
     </div>
   </div>

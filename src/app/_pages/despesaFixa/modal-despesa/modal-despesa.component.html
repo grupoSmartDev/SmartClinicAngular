@@ -1,1 +1,273 @@
-<p>modal-despesa works!</p>
+<!-- Modal -->
+<div
+  #modalDespesasFixas
+  class="modal fade"
+  id="modalDespesasFixas"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="statusModalLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Despesa Fixa</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="row g-3 justify-content-end">
+            <div class="col-md-2">
+              <label for="Id" class="form-label">Cód.</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="Id"
+                readonly
+                formControlName="id"
+              />
+            </div>
+
+            <div class="col-md-4">
+              <label for="descricao" class="form-label">Descrição</label>
+              <input
+                type="text"
+                required
+                class="form-control form-control-sm"
+                formControlName="descricao"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('descricao')?.invalid &&
+                    formulario.get('descricao')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('descricao')?.invalid &&
+                  formulario.get('descricao')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo é obrigatório.
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <label for="valor" class="form-label">Valor</label>
+              <input
+                type="text"
+                required
+                class="form-control form-control-sm"
+                formControlName="valor"
+                mask="separator.2"
+                thousandSeparator="."
+                decimalMarker=","
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('valor')?.invalid &&
+                    formulario.get('valor')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('valor')?.invalid &&
+                  formulario.get('valor')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo é obrigatório.
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2">
+              <label for="diaVencimento" class="form-label">Vencimento</label>
+              <input
+                type="text"
+                required
+                placeholder="5"
+                class="form-control form-control-sm"
+                formControlName="diaVencimento"
+                mask="separator.2"
+                thousandSeparator="."
+                decimalMarker=","
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('diaVencimento')?.invalid &&
+                    formulario.get('diaVencimento')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('diaVencimento')?.invalid &&
+                  formulario.get('diaVencimento')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo é obrigatório.
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label for="dataInicio" class="form-label">Data de início</label>
+              <input
+                type="date"
+                required
+                class="form-control form-control-sm"
+                formControlName="dataInicio"
+                [ngClass]="{
+                  'is-invalid':
+                    formulario.get('dataInicio')?.invalid &&
+                    formulario.get('dataInicio')?.touched
+                }"
+              />
+              <div
+                *ngIf="
+                  formulario.get('dataInicio')?.invalid &&
+                  formulario.get('dataInicio')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo é obrigatório.
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label for="dataFim" class="form-label">Data de término</label>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                formControlName="dataFim"
+              />
+            </div>
+
+            <div class="col-md-4">
+              <label for="frequencia" class="form-label">Frequência</label>
+              <select
+                class="form-select form-select-sm"
+                formControlName="frequencia"
+              >
+                <option value="1">Mensal</option>
+                <option value="2">Bimestral</option>
+                <option value="3">Trimestral</option>
+                <option value="6">Semestral</option>
+                <option value="12">Anual</option>
+              </select>
+              <div
+                *ngIf="
+                  formulario.get('frequencia')?.invalid &&
+                  formulario.get('frequencia')?.touched
+                "
+                class="invalid-feedback"
+              >
+                O campo é obrigatório.
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label for="fornecedorId" class="form-label">Fornecedor</label>
+              <select
+                class="form-select form-select-sm"
+                formControlName="fornecedorId"
+              >
+                <option value="">Selecione...</option>
+                @for (item of fornecedores; track item.id) {
+                <option value="{{ item.id }}">{{ item.nome }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label for="centroCustoId" class="form-label"
+                >Centro de custo</label
+              >
+              <select
+                class="form-select form-select-sm"
+                formControlName="centroCustoId"
+              >
+                <option value="">Selecione...</option>
+                @for (item of centroCustos; track item.id) {
+                <option value="{{ item.id }}">{{ item.descricao }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label for="planoContaId" class="form-label"
+                >Plano de contas</label
+              >
+              <select
+                class="form-select form-select-sm"
+                formControlName="planoContaId"
+              >
+                <option value="">Selecione...</option>
+                @for (item of planoContas; track item.id) {
+                <option value="{{ item.id }}">{{ item.nome }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label for="tipoPagamentoId" class="form-label"
+                >Tipo de pagamento</label
+              >
+              <select
+                class="form-select form-select-sm"
+                formControlName="tipoPagamentoId"
+              >
+                <option value="">Selecione...</option>
+                @for (item of tipoPagamentos; track item.id) {
+                <option value="{{ item.id }}">{{ item.descricao }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label for="formaPagamentoId" class="form-label"
+                >Forma de pagamento</label
+              >
+              <select
+                class="form-select form-select-sm"
+                formControlName="formaPagamentoId"
+              >
+                <option value="">Selecione...</option>
+                @for (item of formaPagamentos; track item.id) {
+                <option value="{{ item.id }}">{{ item.descricao }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <app-button-action
+          text="Confirmar"
+          loadingText="Carregando..."
+          [loading]="isLoading"
+          variant="success"
+          id="btn_salvar_editar"
+          (clicked)="onSubmit()"
+          [type]="'button'"
+        ></app-button-action>
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="btnCancelar"
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
+          aria-label="Close"
+        >
+          <i class="bi bi-x"></i>Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

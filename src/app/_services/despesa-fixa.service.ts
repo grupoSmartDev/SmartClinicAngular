@@ -17,10 +17,11 @@ export class DespesaFixaService {
   Listar(
     page?: number,
     pageSize?: number,
-    nomeFiltro?: string,
     idFiltro?: string,
-    registroAvsFiltro?: string,
-    telefoneFiltro?: string,
+    descricaoFiltro?: string,
+    diaVencimentoFiltro?: string,
+    centroCustoFiltro?: string,
+    planoContasFiltro?: string,
     paginar?: boolean
   ): Observable<ResponseModel<DespesaFixa[]>> {
 
@@ -28,10 +29,11 @@ export class DespesaFixaService {
 
     if (page) params = params.set('page', page.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
-    if (nomeFiltro) params = params.set('nomeFiltro', nomeFiltro);
+    if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
     if (idFiltro) params = params.set('idFiltro', idFiltro);
-    if (registroAvsFiltro) params = params.set('registroAvsFiltro', registroAvsFiltro);
-    if (telefoneFiltro) params = params.set('telefoneFiltro', telefoneFiltro);
+    if (diaVencimentoFiltro) params = params.set('diaVencimentoFiltro', diaVencimentoFiltro);
+    if (centroCustoFiltro) params = params.set('centroCustoFiltro', centroCustoFiltro);
+    if (planoContasFiltro) params = params.set('planoContasFiltro', planoContasFiltro);
     if (paginar) params = params.set('paginar', paginar);
 
     return this.http.get<ResponseModel<DespesaFixa[]>>(`${this.baseURL}Listar`, { params });
