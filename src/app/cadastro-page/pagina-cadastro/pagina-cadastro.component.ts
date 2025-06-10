@@ -65,6 +65,11 @@ export class PaginaCadastroComponent {
         PeriodoTeste: true,
         TipoPagamentoId: '',
       });
+
+      // Remove required validator for trial
+      this.signupForm.get('TipoPagamentoId')!.clearValidators();
+      this.signupForm.get('TipoPagamentoId')!.updateValueAndValidity();
+
     } else {
       this.signupForm.patchValue({
         PeriodoTeste: false,

@@ -178,7 +178,7 @@
                 class="form-select form-select-sm"
                 formControlName="fornecedorId"
               >
-                <option value="">Selecione...</option>
+                <option value="null">Selecione...</option>
                 @for (item of fornecedores; track item.id) {
                 <option value="{{ item.id }}">{{ item.nome }}</option>
                 }
