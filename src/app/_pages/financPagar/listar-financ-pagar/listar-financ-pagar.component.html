@@ -4,27 +4,39 @@
 ></app-label-nome>
 
 <div class="card mb-3">
-  <div class="card-header bg-light d-flex justify-content-between align-items-center" 
-       (click)="toggleFiltros()" 
-       style="cursor: pointer;">
+  <div
+    class="card-header bg-light d-flex justify-content-between align-items-center"
+    (click)="toggleFiltros()"
+    style="cursor: pointer"
+  >
     <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros de Pesquisa</h6>
     <button class="btn btn-sm btn-link text-dark p-0">
-      <i class="bi" [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      <i
+        class="bi"
+        [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"
+      ></i>
     </button>
   </div>
-  <div class="card-body py-3" [ngClass]="{'d-none': !mostrarFiltros}">
-
+  <div class="card-body py-3" [ngClass]="{ 'd-none': !mostrarFiltros }">
     <div class="row mt-3">
       <div class="col-md-12 text-end">
-        <button type="button" class="btn btn-sm btn-primary me-2" (click)="onSearch()">
+        <button
+          type="button"
+          class="btn btn-sm btn-primary me-2"
+          (click)="onSearch()"
+        >
           <i class="bi bi-search me-1"></i> Pesquisar
         </button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limparFiltros()">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="limparFiltros()"
+        >
           <i class="bi bi-x-circle me-1"></i> Limpar Filtros
         </button>
       </div>
     </div>
-    
+
     <div class="row g-3 align-items-end">
       <div class="col-md-2 col-12">
         <label for="idPaiFiltro" class="form-label small fw-bold">Código</label>
@@ -38,20 +50,22 @@
 
       <div class="col-md-2 col-12">
         <label for="" class="form-label small fw-bold">Paciente</label>
-        <select name="" id="" class="form-select form-select-sm"
-        [(ngModel)]="pacienteIdFiltro">
+        <select
+          name=""
+          id=""
+          class="form-select form-select-sm"
+          [(ngModel)]="pacienteIdFiltro"
+        >
           <option value="">Selecione o Paciente</option>
           @for (item of pacienteLista; track item.id) {
-            <option value="{{item.id}}">{{item.nome}}</option>
+          <option value="{{ item.id }}">{{ item.nome }}</option>
           }
-        </select> 
+        </select>
       </div>
 
       <div class="col-md-3">
         <label class="form-label small fw-bold">Período</label>
-        <select 
-          class="form-select form-select-sm"
-          [(ngModel)]="dataBaseFiltro">
+        <select class="form-select form-select-sm" [(ngModel)]="dataBaseFiltro">
           <option value="E">Data de Emissão</option>
           <!-- <option value="V">Data de Vencimento</option>
           <option value="P">Data de Pagamento</option> -->
@@ -83,7 +97,6 @@
         </div>
       </div>
     </div>
-    
   </div>
 </div>
 
@@ -105,86 +118,100 @@
         </thead>
         <tbody>
           @for (item of lista; track item.id) {
-            <!-- Main row -->
-            <tr>
-              <td>
-                <button 
-                  class="btn btn-sm btn-link" 
-                  (click)="toggleRow(item.id)"
-                  *ngIf="item.subFinancPagar"
-                >
-                  <i class="bi" [ngClass]="{'bi-chevron-down': isExpanded(item.id), 'bi-chevron-right': !isExpanded(item.id)}"></i>
-                </button>
-              </td>
-              <td>{{ item.id }}</td>
-              <td>{{ item.dataEmissao | datePtBr }}</td>
-              <td>{{ item.descricao }}</td>
-              <td>{{ item.valor | currencyPtBr }}</td>
-              <td></td>
-              <td class="text-end">
-                <a
-                  href="javascript:void(0);"
-                  (click)="openModal(item)"
-                  class="action-icon btn-tooltip"
-                >
-                  <i class="bi bi-pencil text-warning"></i>
-                  <span class="tooltip-text">Edição rapida</span>
-                </a>
-                <a
-                  href="javascript:void(0);"
-                  (click)="promptDelete(item)"
-                  class="action-icon btn-tooltip"
-                >
-                  <i class="bi bi-trash3 text-danger"></i>
-                  <span class="tooltip-text">Excluir</span>
-                </a>
-              </td>
-            </tr>
-            
-            <!-- Expanded section for child items with its own header -->
-            @if (isExpanded(item.id) && item.subFinancPagar) {
-              <!-- Subtable header -->
-              <tr class="table-primary">
-                <td></td>
-                <td><strong>Código</strong></td>
-                <td><strong>Data Vencimento</strong></td>
-                <td><strong>Detalhes</strong></td>
-                <td><strong>Valor Parcela</strong></td>
-                <td><strong>Status</strong></td>
-                <td><strong></strong></td>
-              </tr>
-              
-              <!-- Subtable rows -->
-              @for (subItem of item.subFinancPagar; track subItem.id) {
-                <tr class="table-light">
-                  <td></td>
-                  <td><small>{{ subItem.id }}</small></td>
-                  <td><small>{{ subItem.dataVencimento | datePtBr }}</small></td>
-                  <td><strong>{{ 'Parcela n° ' + subItem.parcela + '  ' + subItem.observacao}}</strong></td>
-                  <td><strong>{{ subItem.valor | currencyPtBr}}</strong></td>
-                  <td>
-                    @if (subItem.dataPagamento) {
-                      <span class="span-status-green">Pago</span>
-                    } @else if (isOverdue(subItem.dataVencimento)) {
-                      <span class="span-status-red">Vencido</span>
-                    } @else {
-                      <span class="span-status-orange">A Vencer</span>
-                    }
-                  </td>
-                  <td class="text-end">
-                    <a
-                      href="javascript:void(0);"
-                      (click)="openModalBaixa(subItem)"
-                      class="action-icon btn-tooltip"
-                    >
-                      <i class="bi bi-cash-stack text-warning"></i>
-                      <span class="tooltip-text">Baixar parcela</span>
-                    </a>
-                  </td>
-                </tr>
+          <!-- Main row -->
+          <tr>
+            <td>
+              <button
+                class="btn btn-sm btn-link"
+                (click)="toggleRow(item.id)"
+                *ngIf="item.subFinancPagar"
+              >
+                <i
+                  class="bi"
+                  [ngClass]="{
+                    'bi-chevron-down': isExpanded(item.id),
+                    'bi-chevron-right': !isExpanded(item.id)
+                  }"
+                ></i>
+              </button>
+            </td>
+            <td>{{ item.id }}</td>
+            <td>{{ item.dataEmissao | datePtBr }}</td>
+            <td>{{ item.descricao }}</td>
+            <td>{{ item.valor | currencyPtBr }}</td>
+            <td></td>
+            <td class="text-end">
+              <a
+                href="javascript:void(0);"
+                (click)="openModal(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-pencil text-warning"></i>
+                <span class="tooltip-text">Edição rapida</span>
+              </a>
+              <a
+                href="javascript:void(0);"
+                (click)="promptDelete(item)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-trash3 text-danger"></i>
+                <span class="tooltip-text">Excluir</span>
+              </a>
+            </td>
+          </tr>
+
+          <!-- Expanded section for child items with its own header -->
+          @if (isExpanded(item.id) && item.subFinancPagar) {
+          <!-- Subtable header -->
+          <tr class="table-primary">
+            <td></td>
+            <td><strong>Código</strong></td>
+            <td><strong>Data Vencimento</strong></td>
+            <td><strong>Detalhes</strong></td>
+            <td><strong>Valor Parcela</strong></td>
+            <td><strong>Status</strong></td>
+            <td><strong></strong></td>
+          </tr>
+
+          <!-- Subtable rows -->
+          @for (subItem of item.subFinancPagar; track subItem.id) {
+          <tr class="table-light">
+            <td></td>
+            <td>
+              <small>{{ subItem.id }}</small>
+            </td>
+            <td>
+              <small>{{ subItem.dataVencimento | datePtBr }}</small>
+            </td>
+            <td>
+              <strong>{{
+                "Parcela n° " + subItem.parcela + "  " + subItem.observacao
+              }}</strong>
+            </td>
+            <td>
+              <strong>{{ subItem.valor | currencyPtBr }}</strong>
+            </td>
+            <td>
+              @if (subItem.dataPagamento) {
+              <span class="span-status-green">Pago</span>
+              } @else if (isOverdue(subItem.dataVencimento)) {
+              <span class="span-status-red">Vencido</span>
+              } @else {
+              <span class="span-status-orange">A Vencer</span>
               }
-            }
-          }
+            </td>
+            <td class="text-end">
+              <a
+                href="javascript:void(0);"
+                (click)="openModalBaixa(subItem)"
+                class="action-icon btn-tooltip"
+              >
+                <i class="bi bi-cash-stack text-warning"></i>
+                <span class="tooltip-text">Baixar parcela</span>
+              </a>
+            </td>
+          </tr>
+          } } }
         </tbody>
       </table>
     </div>
@@ -219,9 +246,9 @@
 ></app-modal-financ-pagar>
 
 <app-baixa-financ-pagar-sub
-[financPagarSub]="parcelaSelecionada"
-(confirmarPagamento)="loadData()">
-
+  [financPagarSub]="parcelaSelecionada"
+  (confirmarPagamento)="atualizarLista()"
+>
 </app-baixa-financ-pagar-sub>
 
 <app-confirm-dialog

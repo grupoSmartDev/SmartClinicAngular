@@ -10,7 +10,7 @@ import * as bootstrap from 'bootstrap';
   templateUrl: './baixa-financ-pagar-sub.component.html',
   styleUrl: './baixa-financ-pagar-sub.component.css'
 })
-export class BaixaFinancPagarSubComponent implements OnInit, OnChanges  {
+export class BaixaFinancPagarSubComponent implements OnInit, OnChanges {
   @Input() financPagarSub: SubFinancPagar = {} as SubFinancPagar;
   @Output() closeModal = new EventEmitter<void>();
   @Output() confirmarPagamento = new EventEmitter<SubFinancPagar>();
@@ -19,7 +19,7 @@ export class BaixaFinancPagarSubComponent implements OnInit, OnChanges  {
   valorPago: number = 0;
   observacao: string = '';
 
-  constructor(private financPagarService : FinancPagarService, private toast : ToastrService) { }
+  constructor(private financPagarService: FinancPagarService, private toast: ToastrService) { }
 
   ngOnInit(): void {
     this.inicializarCampos();
@@ -34,12 +34,12 @@ export class BaixaFinancPagarSubComponent implements OnInit, OnChanges  {
   private inicializarCampos(): void {
     console.log('Inicializando campos com:', this.financPagarSub);
     this.dataPagamento = new Date().toISOString().split('T')[0];
-    
+
     // Verificando se há valor antes de atribuir
     if (this.financPagarSub && this.financPagarSub.valor) {
       this.valorPago = this.financPagarSub.valor;
     }
-    
+
     // Verificando se há descrição antes de atribuir
     if (this.financPagarSub && this.financPagarSub.financPagar) {
       this.observacao = this.financPagarSub.financPagar.descricao || '';
@@ -53,8 +53,8 @@ export class BaixaFinancPagarSubComponent implements OnInit, OnChanges  {
       parcelaAtualizada.dataPagamento = new Date(this.dataPagamento);
       parcelaAtualizada.valorPago = this.valorPago;
       parcelaAtualizada.observacao = this.observacao;
-      
-      if(parcelaAtualizada.valorPago != this.financPagarSub.valor){
+
+      if (parcelaAtualizada.valorPago != this.financPagarSub.valor) {
         alert("Erro ao tentar baixar a parcela, verifique os valores a serem pagos");
         return;
       }

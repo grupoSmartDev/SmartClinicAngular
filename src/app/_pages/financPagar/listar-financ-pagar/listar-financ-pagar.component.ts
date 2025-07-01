@@ -135,7 +135,7 @@ export class ListarFinancPagarComponent {
             if (data.dados) {
               this.lista = data.dados;
               this.totalItems = data.totalCount ?? 0;
-
+              console.table(this.lista);
               // Armazena os dados no cache
               this.tabService.setCacheData(cacheKey, {
                 cacheList: this.lista,
@@ -214,6 +214,7 @@ export class ListarFinancPagarComponent {
   }
 
   atualizarLista(): void {
+    this.invalidateCache();
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
