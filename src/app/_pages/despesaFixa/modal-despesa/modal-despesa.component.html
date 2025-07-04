@@ -13,7 +13,10 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Despesa Fixa</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          <i class="bi bi-receipt me-2"></i>
+          {{ despesa.id ? "Editar" : "Nova" }} Despesa Fixa
+        </h1>
         <button
           type="button"
           class="btn-close"
@@ -23,227 +26,337 @@
         ></button>
       </div>
       <div class="modal-body">
+        <!-- Loading overlay -->
+        <div *ngIf="isLoading" class="position-relative">
+          <div
+            class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-light bg-opacity-75"
+            style="z-index: 1000"
+          >
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Carregando...</span>
+            </div>
+          </div>
+        </div>
+
         <form [formGroup]="formulario">
-          <div class="row g-3 justify-content-end">
-            <div class="col-md-2">
-              <label for="Id" class="form-label">Cód.</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                id="Id"
-                readonly
-                formControlName="id"
-              />
+          <!-- Seção: Informações Básicas -->
+          <div class="card mb-3">
+            <div class="card-header py-2">
+              <h6 class="mb-0">
+                <i class="bi bi-info-circle me-2"></i>
+                Informações Básicas
+              </h6>
             </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-2">
+                  <label for="Id" class="form-label fw-semibold">Código</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="Id"
+                    readonly
+                    formControlName="id"
+                    placeholder="Auto"
+                  />
+                </div>
 
-            <div class="col-md-4">
-              <label for="descricao" class="form-label">Descrição</label>
-              <input
-                type="text"
-                required
-                class="form-control form-control-sm"
-                formControlName="descricao"
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('descricao')?.invalid &&
-                    formulario.get('descricao')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('descricao')?.invalid &&
-                  formulario.get('descricao')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo é obrigatório.
-              </div>
-            </div>
+                <div class="col-md-6">
+                  <label for="descricao" class="form-label fw-semibold">
+                    Descrição <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="descricao"
+                    placeholder="Ex: Aluguel do consultório"
+                    maxlength="150"
+                    [class.is-invalid]="isFieldInvalid('descricao')"
+                  />
+                  <div class="invalid-feedback">
+                    {{ getFieldError("descricao") }}
+                  </div>
+                  <div class="form-text">Máximo 150 caracteres</div>
+                </div>
 
-            <div class="col-md-2">
-              <label for="valor" class="form-label">Valor</label>
-              <input
-                type="text"
-                required
-                class="form-control form-control-sm"
-                formControlName="valor"
-                mask="separator.2"
-                thousandSeparator="."
-                decimalMarker=","
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('valor')?.invalid &&
-                    formulario.get('valor')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('valor')?.invalid &&
-                  formulario.get('valor')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo é obrigatório.
+                <div class="col-md-4">
+                  <label for="valor" class="form-label fw-semibold">
+                    Valor <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-text">R$</span>
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="valor"
+                      placeholder="0,00"
+                      mask="separator.2"
+                      thousandSeparator="."
+                      decimalMarker=","
+                      [class.is-invalid]="isFieldInvalid('valor')"
+                    />
+                  </div>
+                  <div class="invalid-feedback">
+                    {{ getFieldError("valor") }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-2">
-              <label for="diaVencimento" class="form-label">Vencimento</label>
-              <input
-                type="text"
-                required
-                placeholder="5"
-                class="form-control form-control-sm"
-                formControlName="diaVencimento"
-                mask="separator.2"
-                thousandSeparator="."
-                decimalMarker=","
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('diaVencimento')?.invalid &&
-                    formulario.get('diaVencimento')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('diaVencimento')?.invalid &&
-                  formulario.get('diaVencimento')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo é obrigatório.
+
+          <!-- Seção: Configurações de Vencimento -->
+          <div class="card mb-3">
+            <div class="card-header text-dark py-2">
+              <h6 class="mb-0">
+                <i class="bi bi-calendar-event me-2"></i>
+                Configurações de Vencimento
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label for="diaVencimento" class="form-label fw-semibold">
+                    Dia do Vencimento <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    formControlName="diaVencimento"
+                    placeholder="5"
+                    min="1"
+                    max="31"
+                    [class.is-invalid]="isFieldInvalid('diaVencimento')"
+                  />
+                  <div class="invalid-feedback">
+                    {{ getFieldError("diaVencimento") }}
+                  </div>
+                  <div class="form-text">Entre 1 e 31</div>
+                </div>
+
+                <div class="col-md-3">
+                  <label for="dataInicio" class="form-label fw-semibold">
+                    Data de Início <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    class="form-control form-control-sm"
+                    formControlName="dataInicio"
+                    [class.is-invalid]="isFieldInvalid('dataInicio')"
+                  />
+                  <div class="invalid-feedback">
+                    {{ getFieldError("dataInicio") }}
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label for="dataFim" class="form-label fw-semibold">
+                    Data de Término
+                  </label>
+                  <input
+                    type="date"
+                    class="form-control form-control-sm"
+                    formControlName="dataFim"
+                  />
+                  <div class="form-text">Opcional</div>
+                </div>
+
+                <div class="col-md-3">
+                  <label for="frequencia" class="form-label fw-semibold">
+                    Frequência <span class="text-danger">*</span>
+                  </label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="frequencia"
+                    [class.is-invalid]="isFieldInvalid('frequencia')"
+                  >
+                    <option
+                      *ngFor="let freq of frequenciaOptions"
+                      [value]="freq.valor"
+                    >
+                      {{ freq.texto }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    {{ getFieldError("frequencia") }}
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div class="col-md-3">
-              <label for="dataInicio" class="form-label">Data de início</label>
-              <input
-                type="date"
-                required
-                class="form-control form-control-sm"
-                formControlName="dataInicio"
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('dataInicio')?.invalid &&
-                    formulario.get('dataInicio')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('dataInicio')?.invalid &&
-                  formulario.get('dataInicio')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo é obrigatório.
+          <!-- Seção: Classificação Contábil -->
+          <div class="card mb-3">
+            <div class="card-header py-2">
+              <h6 class="mb-0">
+                <i class="bi bi-diagram-3 me-2"></i>
+                Classificação Contábil
+              </h6>
+            </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="centroCustoId" class="form-label fw-semibold">
+                    Centro de Custo <span class="text-danger">*</span>
+                  </label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="centroCustoId"
+                    [class.is-invalid]="isFieldInvalid('centroCustoId')"
+                  >
+                    <option value="">Selecione o centro de custo...</option>
+                    <option *ngFor="let item of centroCustos" [value]="item.id">
+                      {{ item.descricao }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    {{ getFieldError("centroCustoId") }}
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="planoContaId" class="form-label fw-semibold">
+                    Plano de Contas <span class="text-danger">*</span>
+                  </label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="planoContaId"
+                    [class.is-invalid]="isFieldInvalid('planoContaId')"
+                  >
+                    <option value="">Selecione o plano de contas...</option>
+                    <option *ngFor="let item of planoContas" [value]="item.id">
+                      {{ item.nome }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    {{ getFieldError("planoContaId") }}
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div class="col-md-3">
-              <label for="dataFim" class="form-label">Data de término</label>
-              <input
-                type="date"
-                class="form-control form-control-sm"
-                formControlName="dataFim"
-              />
+          <!-- Seção: Pagamento -->
+          <div class="card mb-3">
+            <div class="card-header py-2">
+              <h6 class="mb-0">
+                <i class="bi bi-credit-card me-2"></i>
+                Configurações de Pagamento
+              </h6>
             </div>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label for="fornecedorId" class="form-label fw-semibold">
+                    Fornecedor
+                  </label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="fornecedorId"
+                  >
+                    <option value="">Selecione o fornecedor...</option>
+                    <option *ngFor="let item of fornecedores" [value]="item.id">
+                      {{ item.nome }}
+                    </option>
+                  </select>
+                  <div class="form-text">Opcional</div>
+                </div>
 
-            <div class="col-md-4">
-              <label for="frequencia" class="form-label">Frequência</label>
-              <select
-                class="form-select form-select-sm"
-                formControlName="frequencia"
-              >
-                <option value="1">Mensal</option>
-                <option value="2">Bimestral</option>
-                <option value="3">Trimestral</option>
-                <option value="6">Semestral</option>
-                <option value="12">Anual</option>
-              </select>
-              <div
-                *ngIf="
-                  formulario.get('frequencia')?.invalid &&
-                  formulario.get('frequencia')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo é obrigatório.
+                <div class="col-md-4">
+                  <label for="tipoPagamentoId" class="form-label fw-semibold">
+                    Tipo de Pagamento <span class="text-danger">*</span>
+                  </label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="tipoPagamentoId"
+                    [class.is-invalid]="isFieldInvalid('tipoPagamentoId')"
+                  >
+                    <option value="">Selecione o tipo...</option>
+                    <option
+                      *ngFor="let item of tipoPagamentos"
+                      [value]="item.id"
+                    >
+                      {{ item.descricao }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    {{ getFieldError("tipoPagamentoId") }}
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <label for="formaPagamentoId" class="form-label fw-semibold">
+                    Forma de Pagamento <span class="text-danger">*</span>
+                  </label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="formaPagamentoId"
+                    [class.is-invalid]="isFieldInvalid('formaPagamentoId')"
+                  >
+                    <option value="">Selecione a forma...</option>
+                    <option
+                      *ngFor="let item of formaPagamentos"
+                      [value]="item.id"
+                    >
+                      {{ item.descricao }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    {{ getFieldError("formaPagamentoId") }}
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div class="col-md-4">
-              <label for="fornecedorId" class="form-label">Fornecedor</label>
-              <select
-                class="form-select form-select-sm"
-                formControlName="fornecedorId"
-              >
-                <option value="null">Selecione...</option>
-                @for (item of fornecedores; track item.id) {
-                <option value="{{ item.id }}">{{ item.nome }}</option>
-                }
-              </select>
+          <!-- Status da Despesa -->
+          <div class="card">
+            <div class="card-header py-2">
+              <h6 class="mb-0">
+                <i class="bi bi-toggle-on me-2"></i>
+                Status
+              </h6>
             </div>
+            <div class="card-body">
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="ativo"
+                  formControlName="ativo"
+                />
+                <label class="form-check-label fw-semibold" for="ativo">
+                  Despesa Ativa
+                </label>
+                <div class="form-text">
+                  Desative para interromper a geração de novos lançamentos
+                </div>
+              </div>
+            </div>
+          </div>
 
-            <div class="col-md-4">
-              <label for="centroCustoId" class="form-label"
-                >Centro de custo</label
-              >
-              <select
-                class="form-select form-select-sm"
-                formControlName="centroCustoId"
-              >
-                <option value="">Selecione...</option>
-                @for (item of centroCustos; track item.id) {
-                <option value="{{ item.id }}">{{ item.descricao }}</option>
-                }
-              </select>
-            </div>
-
-            <div class="col-md-4">
-              <label for="planoContaId" class="form-label"
-                >Plano de contas</label
-              >
-              <select
-                class="form-select form-select-sm"
-                formControlName="planoContaId"
-              >
-                <option value="">Selecione...</option>
-                @for (item of planoContas; track item.id) {
-                <option value="{{ item.id }}">{{ item.nome }}</option>
-                }
-              </select>
-            </div>
-
-            <div class="col-md-4">
-              <label for="tipoPagamentoId" class="form-label"
-                >Tipo de pagamento</label
-              >
-              <select
-                class="form-select form-select-sm"
-                formControlName="tipoPagamentoId"
-              >
-                <option value="">Selecione...</option>
-                @for (item of tipoPagamentos; track item.id) {
-                <option value="{{ item.id }}">{{ item.descricao }}</option>
-                }
-              </select>
-            </div>
-
-            <div class="col-md-4">
-              <label for="formaPagamentoId" class="form-label"
-                >Forma de pagamento</label
-              >
-              <select
-                class="form-select form-select-sm"
-                formControlName="formaPagamentoId"
-              >
-                <option value="">Selecione...</option>
-                @for (item of formaPagamentos; track item.id) {
-                <option value="{{ item.id }}">{{ item.descricao }}</option>
-                }
-              </select>
-            </div>
+          <!-- Resumo da Geração (se não for edição) -->
+          <div *ngIf="!despesa.id" class="alert alert-info mt-3">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Informação:</strong> Serão gerados lançamentos financeiros
+            automaticamente baseados na frequência selecionada.
+            <span *ngIf="formulario.get('dataFim')?.value">
+              Do período de
+              <strong>{{
+                formulario.get("dataInicio")?.value | date : "dd/MM/yyyy"
+              }}</strong>
+              até
+              <strong>{{
+                formulario.get("dataFim")?.value | date : "dd/MM/yyyy"
+              }}</strong
+              >.
+            </span>
+            <span *ngIf="!formulario.get('dataFim')?.value">
+              Iniciando em
+              <strong>{{
+                formulario.get("dataInicio")?.value | date : "dd/MM/yyyy"
+              }}</strong>
+              por <strong>12 meses</strong>.
+            </span>
           </div>
         </form>
       </div>

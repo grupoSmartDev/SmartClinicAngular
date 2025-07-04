@@ -8,8 +8,8 @@ export interface DespesaFixa {
     descricao: string;
     valor: number;
     diaVencimento: number;
-    dataInicio: Date;
-    dataFim?: Date;
+    dataInicio: Date | string;
+    dataFim?: Date | string;
     ativo: boolean;
     frequencia: number;
     fornecedorId?: number;

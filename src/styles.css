@@ -375,28 +375,41 @@ table {
   word-wrap: break-word;
 }
 
-.span-status-green {
+/* .span-status-green {
   border: 1px solid green;
   padding: 0.2rem;
   border-radius: 1rem;
   color: white;
   background-color: green;
+} */
+
+.span-status-green {
+  background: #22c55e;
+  color: white;
+  border: none;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #22c55e;
+  padding: 0.2rem;
+  border-radius: 1rem;
 }
 
 .span-status-orange {
-  border: 1px solid orange;
+  border: 1px solid #f97316;
   padding: 0.2rem;
   border-radius: 1rem;
   color: white;
-  background-color: orange;
+  background: #f97316;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .span-status-red {
-  border: 1px solid red;
+  border: 1px solid #ef4444;
   padding: 0.2rem;
   border-radius: 1rem;
   color: white;
-  background-color: red;
+  background: #ef4444;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Esconde o checkbox padrão */

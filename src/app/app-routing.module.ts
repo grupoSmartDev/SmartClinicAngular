@@ -10,7 +10,7 @@ import { ListarConselhoComponent } from './_pages/conselho/listar-conselho/lista
 import { AgendaComponent } from './_pages/agenda/agenda.component';
 import { DashboardComponent } from './_pages/dashboard/dashboard.component';
 import { LoginComponent } from './_pages/login/login.component';
-import { MainLayoutComponent } from './main-layout/main-layout.component'; // Importa o novo layout
+import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { LandinPageComponent } from './landin-page/landin-page.component';
 import { ListarBancoComponent } from './_pages/banco/listar-banco/listar-banco.component';
 import { ListarCentroDeCustoComponent } from './_pages/centroDeCusto/listar-centro-de-custo/listar-centro-de-custo.component';
@@ -48,9 +48,10 @@ const routes: Routes = [
 
   {
     path: '',
-    component: MainLayoutComponent, // Usa o MainLayoutComponent como pai
+    component: MainLayoutComponent,
+    canActivate: [AuthGuard], // ← APLICADO AQUI para proteger todas as rotas filhas
     children: [
-      { path: '', component: DashboardComponent }, // Página inicial
+      { path: '', component: DashboardComponent }, // Página inicial protegida
       { path: 'status/listar', component: ListarComponent },
       { path: 'tipoPagamento/listar', component: ListarTipoPagamentoComponent },
       {
@@ -70,27 +71,17 @@ const routes: Routes = [
         component: ListarSubCentroDeCustoComponent,
       },
       { path: 'profissional/listar', component: ListarProfissionalComponent },
-
-      { path: 'pacientes/listar', component: ListarPacienteComponent }, // Nova rota com parâmetro ID
-
+      { path: 'pacientes/listar', component: ListarPacienteComponent },
       { path: 'log/listar', component: ListarLogComponent },
-
-      { path: 'paciente/:id', component: PacienteCompletoComponent }, // Atualizado para aceitar o ID do paciente
-      { path: 'usuario/listar', component: ListarUsuarioComponent }, // Atualizado para aceitar o ID do paciente
+      { path: 'paciente/:id', component: PacienteCompletoComponent },
+      { path: 'usuario/listar', component: ListarUsuarioComponent },
       { path: 'teste', component: TesteRelacionamentoComponent },
-
       { path: 'testeComponents', component: TesteNovosComponentsComponent },
-
       { path: 'exercicio/listar', component: ListarExerciciosComponent },
-
       { path: 'atividade/listar', component: ListaAtividadeComponent },
-
       { path: 'plano/listar', component: ListarPlanosComponent },
-
       { path: 'procedimento/listar', component: ListaProcedimentoComponent },
-
       { path: 'categoria/listar', component: ListarCategoriaComponent },
-
       {
         path: 'FinancReceber/listarAnalitico',
         component: ListarFinancReceberComponent,
@@ -99,7 +90,6 @@ const routes: Routes = [
         path: 'FinancReceber/listarSintetico',
         component: ListarReceberSinteticoComponent,
       },
-
       {
         path: 'FinancPagar/listarAnalitico',
         component: ListarFinancPagarComponent,
@@ -108,7 +98,6 @@ const routes: Routes = [
         path: 'FinancPagar/listarSintetico',
         component: ListarPagarSinteticoComponent,
       },
-
       { path: 'profissao/listar', component: ListarProfissaoComponent },
       { path: 'planoContas/listar', component: ListarPlanoContasComponent },
       {
