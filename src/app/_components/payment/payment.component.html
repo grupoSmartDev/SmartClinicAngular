@@ -1,0 +1,28 @@
+<div class="payment-container">
+  <h2>Finalizar Pagamento</h2>
+
+  <div class="customer-info">
+    <h3>Dados do Cliente</h3>
+    <input [(ngModel)]="customerData.name" placeholder="Nome completo" />
+    <input [(ngModel)]="customerData.email" placeholder="Email" type="email" />
+  </div>
+
+  <div class="payment-form">
+    <h3>Dados do Cartão</h3>
+    <div id="card-element">
+      <!-- Stripe Elements vai inserir o formulário aqui -->
+    </div>
+
+    <button
+      (click)="processPayment()"
+      [disabled]="isLoading"
+      class="pay-button"
+    >
+      {{ isLoading ? "Processando..." : "Pagar R$ 29,90" }}
+    </button>
+
+    <div *ngIf="paymentStatus" class="payment-status">
+      {{ paymentStatus }}
+    </div>
+  </div>
+</div>

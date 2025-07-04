@@ -134,6 +134,7 @@ import { AlterarDadosUsuarioComponent } from './_pages/configuracoes/alterar-dad
 import { AgendaListarComponent } from './_pages/agenda/agenda-listar/agenda-listar.component';
 import { ButtonActionComponent } from './_components/button-action/button-action.component';
 import { SelectBancoComponent } from './_components/select-banco/select-banco.component';
+import { PaymentComponent } from './_components/payment/payment.component';
 
 @NgModule({
   declarations: [
@@ -254,6 +255,7 @@ import { SelectBancoComponent } from './_components/select-banco/select-banco.co
     AgendaListarComponent,
     ButtonActionComponent,
     SelectBancoComponent,
+    PaymentComponent,
   ],
   imports: [
     BrowserModule,

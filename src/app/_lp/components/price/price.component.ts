@@ -48,7 +48,7 @@ export class PriceComponent {
         'Relatórios financeiros',
         'Relatórios de clientes',
         'Envio de lembrete',
-        'Recirrência',
+        'Recorrência',
         'Acesso para até 5 profissionais',
         '+ R$ 29,90 por usuário/profissional',
       ],
