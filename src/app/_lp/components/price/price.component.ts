@@ -13,7 +13,7 @@ export class PriceComponent {
       type: 'basic',
       title: 'Basic',
       subtitle: 'Para clínicas individuais',
-      priceMonthly: 99.0,
+      priceMonthly: 149.0,
       priceSemiannual: 89.0,
       popular: false,
       features: [
@@ -34,7 +34,7 @@ export class PriceComponent {
       type: 'Plus',
       title: 'Plus',
       subtitle: 'Ideal para clínicas em crescimento',
-      priceMonthly: 199.0,
+      priceMonthly: 249.0,
       priceSemiannual: 189.0,
       popular: true,
       features: [
@@ -59,7 +59,7 @@ export class PriceComponent {
       type: 'Premium',
       title: 'Premium',
       subtitle: 'Para clínicas de alto desempenho',
-      priceMonthly: 289.0,
+      priceMonthly: 329.0,
       priceSemiannual: 269.0,
       popular: false,
       features: [
