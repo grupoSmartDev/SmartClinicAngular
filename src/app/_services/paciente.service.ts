@@ -26,7 +26,7 @@ export class PacienteService {
 
     let params = new HttpParams()
 
-    if (page) params = params.set('page', page.toString());
+    if (page) params = params.set('pageNumber', page.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (nomeFiltro) params = params.set('nomeFiltro', nomeFiltro);
     if (idFiltro) params = params.set('idFiltro', idFiltro);

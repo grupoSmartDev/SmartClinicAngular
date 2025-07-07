@@ -1,17 +1,19 @@
-import { Component, ViewChild } from '@angular/core';
-import { PacienteService } from '../../../_services/paciente.service';
-import { ToastrService } from 'ngx-toastr';
-import { ModalPacienteComponent } from '../modal-paciente/modal-paciente.component';
-import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
-import { Paciente } from '../../../_module/pacienteModule';
-import * as bootstrap from 'bootstrap';
+import { Component, ViewChild, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PacienteCompletoComponent } from '../paciente-completo/paciente-completo.component';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
+import * as bootstrap from 'bootstrap';
+
+import { PacienteService } from '../../../_services/paciente.service';
+import { TabService } from '../../../_services/tabs.service';
+import { Paciente } from '../../../_module/pacienteModule';
 import { TipoMes } from '../../../_module/planoModule';
 import { StatusPagamento } from '../../../_module/financReceberModule';
-import { NgxSpinnerService } from 'ngx-spinner';
+
+import { ModalPacienteComponent } from '../modal-paciente/modal-paciente.component';
+import { PacienteCompletoComponent } from '../paciente-completo/paciente-completo.component';
 import { FichaAvaliacaoComponent } from '../ficha-avaliacao/ficha-avaliacao.component';
-import { TabService } from '../../../_services/tabs.service';
+import { ConfirmDialogComponent } from '../../../_components/confirm-dialog/confirm-dialog.component';
 
 interface CacheData {
   cacheList: Paciente[];
@@ -19,12 +21,48 @@ interface CacheData {
   timestamp: number;
 }
 
+interface FiltrosPaciente {
+  nome: string;
+  id: string;
+  cpf: string;
+  celular: string;
+}
+
 @Component({
   selector: 'app-listar-paciente',
   templateUrl: './listar-paciente.component.html',
   styleUrl: './listar-paciente.component.css',
 })
-export class ListarPacienteComponent {
+export class ListarPacienteComponent implements OnInit, OnDestroy {
+  // ViewChild references
+  @ViewChild(ModalPacienteComponent) modalPacienteComponent!: ModalPacienteComponent;
+  @ViewChild(PacienteCompletoComponent) modalPacienteCompletoComponent!: PacienteCompletoComponent;
+  @ViewChild(FichaAvaliacaoComponent) modalFichaAvaliacaoComponent!: FichaAvaliacaoComponent;
+  @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
+
+  // Lista e controle de dados
+  lista: Paciente[] = [];
+  errorMessage: string = '';
+  dataParaExcluir?: Paciente;
+  mostrarFiltros: boolean = false;
+
+  // Paginação
+  totalItems: number = 0;
+  pageSize: number = 10;
+  currentPage: number = 1;
+  paginar: boolean = true;
+
+  // Filtros
+  filtros: FiltrosPaciente = {
+    nome: '',
+    id: '',
+    cpf: '',
+    celular: ''
+  };
+
+  // Cache
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+
   constructor(
     private pacienteService: PacienteService,
     private toast: ToastrService,
@@ -34,470 +72,256 @@ export class ListarPacienteComponent {
     private tabService: TabService
   ) { }
 
-  @ViewChild(ModalPacienteComponent)
-  modalPacienteComponent!: ModalPacienteComponent;
-  @ViewChild(PacienteCompletoComponent)
-  modalPacienteCompletoComponent!: PacienteCompletoComponent;
-  @ViewChild(FichaAvaliacaoComponent)
-  modalFichaAvaliacaoComponent!: FichaAvaliacaoComponent;
-  @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
-
-  lista: Paciente[] = [];
-  errorMessage: string = '';
-  idParaExcluir!: string;
-  dataParaExcluir!: Paciente;
-  mostrarFiltros: boolean = false; // Começa expandido por padrão
-  //paginacao
-  totalItems: number = 0;
-  pageSize: number = 10;
-  currentPage: number = 1;
-  // filtros
-  nomeFiltro: string = '';
-  idFiltro: string = '';
-  cpfFiltro: string = '';
-  celularFiltro: string = '';
-  paginar: boolean = true;
-
-  pacienteId: string = ''; // Para armazenar o ID do paciente da rota
-
-  private readonly CACHE_DURATION = 5 * 60 * 1000;
-
-  private inputListeners: Map<HTMLInputElement, (event: KeyboardEvent) => void> = new Map();
-
   ngOnInit(): void {
-    // Verificar se há um parâmetro ID na rota
-    // this.route.params.subscribe(params => {
-    //   if (params['id']) {
-    //     this.pacienteId = params['id'];
-    //     this.idFiltro = this.pacienteId;
-    //     // Se houver ID na rota, abrir o modal detalhado diretamente
-    //     this.loadPacienteEspefico();
-    //   } else {
-    //     this.loadData(); // Carrega lista normal de pacientes se não tiver ID
-    //   }
-    // });
     this.loadData();
-
-
-    const allInputs = document.querySelectorAll('input');
-
-    allInputs.forEach(input => {
-      // Cria uma função de listener para cada input
-      const listener = (event: KeyboardEvent) => {
-        if (event.key === 'Enter') {
-          this.onSearch(); // Passa o input para a função filtrar
-        }
-      };
-      input.addEventListener('keydown', listener);
-      this.inputListeners.set(input, listener); // Armazena para remover depois
-    });
   }
-
 
   ngOnDestroy(): void {
-    // Remove os listeners de todos os inputs
-    this.inputListeners.forEach((listener, input) => {
-      input.removeEventListener('keydown', listener);
-    });
-    this.inputListeners.clear();
+    // Cleanup automático do Angular para ViewChild e subscriptions
   }
 
+  /**
+   * Listener para capturar Enter em qualquer input da página
+   */
+  @HostListener('keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' && event.target instanceof HTMLInputElement) {
+      this.onSearch();
+    }
+  }
+
+  /**
+   * Gera chave única para cache baseada nos parâmetros atuais
+   */
   private getCacheKey(): string {
-    // Cria uma chave única para o cache baseada nos parâmetros atuais
-    return `paciente-list-${this.currentPage}-${this.pageSize}-${this.nomeFiltro}-${this.idFiltro}-${this.paginar}`;
+    const { nome, id, cpf, celular } = this.filtros;
+    return `paciente-list-${this.currentPage}-${this.pageSize}-${nome}-${id}-${cpf}-${celular}-${this.paginar}`;
   }
 
+  /**
+   * Verifica se o cache ainda é válido
+   */
   private isCacheValid(timestamp: number): boolean {
     return Date.now() - timestamp < this.CACHE_DURATION;
   }
 
-  // Método para invalidar o cache quando necessário
+  /**
+   * Invalida o cache quando necessário
+   */
   private invalidateCache(): void {
     const cacheKey = this.getCacheKey();
     this.tabService.setCacheData(cacheKey, null);
   }
 
-  loadPacienteEspefico(): void {
-    //this.spinner.show();
-
+  /**
+   * Carrega dados dos pacientes com cache opcional
+   */
+  loadData(): void {
     const cacheKey = this.getCacheKey();
     const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
 
+    // Verifica se existe cache válido
     if (cachedData && this.isCacheValid(cachedData.timestamp)) {
-      // Se temos dados em cache válidos, use-os
       this.lista = cachedData.cacheList;
       this.totalItems = cachedData.totalItems;
-    } else {
-      this.pacienteService
-        .Listar(
-          this.currentPage,
-          this.pageSize,
-          this.nomeFiltro,
-          this.idFiltro,
-          this.cpfFiltro,
-          this.celularFiltro,
-          this.paginar
-        )
-        .subscribe({
-          next: (response) => {
-            if (response && response.dados) {
-              // Abrir o modal detalhado do paciente
-              setTimeout(() => {
-                this.openModalDetalhado(response.dados[0]);
-              }, 1000); // Pequeno atraso para garantir que componentes estejam inicializados
-            }
+      return;
+    }
 
-            // Armazena os dados no cache
+    // Carrega dados do servidor
+    this.spinner.show();
+
+    this.pacienteService
+      .Listar(
+        this.currentPage,
+        this.pageSize,
+        this.filtros.nome,
+        this.filtros.id,
+        this.filtros.cpf,
+        this.filtros.celular,
+        this.paginar
+      )
+      .subscribe({
+        next: (response) => {
+          if (response?.dados) {
+            this.lista = response.dados;
+            this.totalItems = response.totalCount ?? 0;
+
+            // Armazena no cache
             this.tabService.setCacheData(cacheKey, {
               cacheList: this.lista,
               totalItems: this.totalItems,
               timestamp: Date.now(),
             });
-            // Ainda carrega a lista com o filtro aplicado
-            this.loadData();
-          },
-          error: (err) => {
-            console.error('Erro ao buscar paciente específico:', err);
-            this.toast.error('Erro ao buscar dados do paciente', 'Erro');
-            this.loadData(); // Carrega a lista normal em caso de erro
-            //this.spinner.hide();
-          },
-        });
-    }
-  }
-
-  loadData(): void {
-    this.pacienteService
-      .Listar(
-        this.currentPage,
-        this.pageSize,
-        this.nomeFiltro,
-        this.idFiltro,
-        this.cpfFiltro,
-        this.celularFiltro,
-        this.paginar
-      )
-      .subscribe({
-        next: (data) => {
-          // this.spinner.show();
-          if (data.dados) {
-            this.lista = data.dados;
-            this.totalItems = data.totalCount ?? 0;
-            console.log(this.lista);
           }
         },
-        error: (err) => {
-          console.error('Erro ao buscar Paciente:', err);
-          this.errorMessage =
-            'Erro ao carregar os Paciente. Tente novamente mais tarde.';
+        error: (error) => {
+          console.error('Erro ao buscar pacientes:', error);
+          this.errorMessage = 'Erro ao carregar os pacientes. Tente novamente mais tarde.';
+          this.toast.error('Erro ao carregar dados', 'Erro');
         },
         complete: () => {
-          // this.spinner.hide();
+          this.spinner.hide();
         },
       });
-
-    // this.lista = [
-    //   {
-    //     "id": 1,
-    //     "bairro": "Centro",
-    //     "breveDiagnostico": "Hipertensão",
-    //     "celular": "(11) 98765-4321",
-    //     "cep": "01000-000",
-    //     "cidade": "São Paulo",
-    //     "comoConheceu": "Indicação de amigo",
-    //     "complemento": "Apt. 45",
-    //     "convenioId": 101,
-    //     "cpf": "123.456.789-00",
-    //     "dataNascimento": "1985-06-15",
-    //     "email": "joao.silva@email.com",
-    //     "uf": "SP",
-    //     "estadoCivil": "Casado",
-    //     "logradouro": "Rua das Flores",
-    //     "medicamento": "Losartana",
-    //     "profissionalId": 3,
-    //     "nome": "João Silva",
-    //     "numero": "123",
-    //     "pais": "Brasil",
-    //     "permitirLembretes": true,
-    //     "preferenciaDeContato": "WhatsApp",
-    //     "profissao": "Engenheiro",
-    //     "responsavel": false,
-    //     "rg": "12.345.678-9",
-    //     "sexo": "Masculino",
-    //     "telefone": "(11) 3232-1234",
-    //     "planoId": 201,
-    //     "evolucoes": [],
-    //     "dataUltimoAtendimento": "2024-11-01",
-    //     "financReceber": []
-    //   }, {
-    //     "id": 2,
-    //     "bairro": "Botafogo",
-    //     "breveDiagnostico": "",
-    //     "celular": "(21) 99876-5432",
-    //     "cep": "22250-040",
-    //     "cidade": "Rio de Janeiro",
-    //     "comoConheceu": "Redes sociais",
-    //     "complemento": "Casa 2",
-    //     "convenioId": null,
-    //     "cpf": "987.654.321-00",
-    //     "dataNascimento": "1995-03-20",
-    //     "email": "maria.oliveira@email.com",
-    //     "uf": "RJ",
-    //     "estadoCivil": "Solteira",
-    //     "logradouro": "Av. Atlântica",
-    //     "medicamento": "Salbutamol",
-    //     "profissionalId": 5,
-    //     "nome": "Maria Oliveira",
-    //     "numero": "456",
-    //     "pais": "Brasil",
-    //     "permitirLembretes": "Sim",
-    //     "preferenciaDeContato": "Email",
-    //     "profissao": "Advogada",
-    //     "responsavel": "Não",
-    //     "rg": "34.567.890-1",
-    //     "sexo": "Feminino",
-    //     "telefone": "(21) 3232-5678",
-    //     "planoId": 1,
-    //     "plano" : {
-    //       "id" : 1,
-    //       "descricao" : "teste",
-    //       "ativo" : true,
-    //       "diasSemana" : 3,
-    //       "dataFim" : new Date(),
-    //       "centroCustoId" : undefined,
-    //       "dataInicio" : undefined,
-    //       "financeiroId" : undefined,
-    //       "pacienteId" : 2,
-    //       "tempoMinutos" : 230,
-    //       "tipoMes" : TipoMes.Mensal
-    //     },
-    //     "evolucoes": [
-    //       {
-    //         "id": 1,
-    //         "observacao": "Evolução 1",
-    //         "pacienteId": 2,
-    //         "profissionalId": "1",
-    //         "dataEvolucao" : new Date(),
-    //         "atividades" : [
-    //           {
-    //             "descricao" : "Atividade A",
-    //             "evolucaoId" : 1,
-    //             "id" : 2,
-    //             "tempo" : 60,
-    //             "titulo" : "teste titulo atividade"
-    //           },
-    //           {
-    //             "descricao" : "Atividade B",
-    //             "evolucaoId" : 1,
-    //             "id" : 3,
-    //             "tempo" : 30,
-    //             "titulo" : "teste titulo 2"
-    //           }
-    //         ],
-    //         "exercicios" : [
-    //           {
-    //             "descricao" : "Exercício A",
-    //             "evolucaoId" : 1,
-    //             "id" : 4,
-    //             "repeticoes" : 10,
-    //             "series" : 3,
-    //             "tempo" : 30,
-    //             "obs" : "Teste titulo exercicio 1"
-    //           }
-    //         ]
-    //       }
-    //     ],
-    //     "dataUltimoAtendimento": "2024-10-15",
-    //     "financReceber": [
-    //       {
-    //         "id": "1",
-    //         "idOrigem": "123",
-    //         "nrDocto": "DOC123456",
-    //         "dataEmissao": new Date("2025-01-01"),
-    //         "valorOriginal": 1500.0,
-    //         "valorPago": 500.0,
-    //         "parcela": 3,
-    //         "valor": 500.0,
-    //         "status": StatusPagamento.PENDENTE, // Exemplo de valor para StatusPagamento
-    //         "notaFiscal": "NF12345",
-    //         "descricao": "Consulta médica",
-    //         "classificacao": "Saúde",
-    //         "observacao": "Primeira parcela paga",
-    //         "pacienteId": "P001",
-    //         "paciente": {
-    //           "id": 1,
-    //           "nome": "João Silva",
-    //           "cpf": "123.456.789-00",
-    //           "telefone": "99999-9999"
-    //         },
-    //         "fornecedorId": "F001",
-    //         "centroCustoId": "CC001",
-    //         "centroCusto": {
-    //           "id": "CC001",
-    //           "descricao": "Centro de Custo 1",
-    //           "tipo": "Receitas Diversas"
-    //         },
-    //         "bancoId": "B001",
-    //         "subFinancReceber": [
-    //           {
-    //             "id": 1,
-    //             "financReceberId": "1",
-    //             "parcela": "1/3",
-    //             "valor": 500.0,
-    //             "dataVencimento": new Date("2025-01-10"),
-    //             "dataPagamento": new Date("2025-01-05"),
-    //             "observacao": "Pagamento adiantado",
-    //             "desconto": 50.0,
-    //             "juros": 0.0,
-    //             "multa": 0.0,
-    //             "formaPagamentoId": "FP001",
-    //             "formaPagamento": {
-    //               "id": "FP001",
-    //               "descricao": "Cartão de Crédito",
-    //               "parcelas": 1
-    //             },
-    //             "tipoPagamentoId": "TP001",
-    //             "tipoPagamento": {
-    //               "id": "TP001",
-    //               "descricao": "Entrada"
-    //             }
-    //           },
-    //           {
-    //             "id": 2,
-    //             "financReceberId": "1",
-    //             "parcela": "2/3",
-    //             "valor": 500.0,
-    //             "dataVencimento": new Date("2025-02-10"),
-    //             "dataPagamento": new Date("2005-02-10"),
-    //             "observacao": "Pendente",
-    //             "desconto": 0.0,
-    //             "juros": 0.0,
-    //             "multa": 0.0,
-    //             "formaPagamentoId": "FP002",
-    //             "formaPagamento": {
-    //               "id": "FP002",
-    //               "descricao": "Boleto",
-    //               "parcelas": 1
-    //             },
-    //             "tipoPagamentoId": "TP002",
-    //             "tipoPagamento": {
-    //               "id": "TP002",
-    //               "descricao": "Normal"
-    //             }
-    //           }
-    //         ],
-    //         "usuarioResponsavelId": "U001",
-    //         "dataUltimaAtualizacao": new Date("2025-01-02")
-    //       }
-    //     ]
-    //   }
-
-    //   ];
   }
 
-  openModal(paciente: any) {
-    if (paciente.id) {
+  /**
+   * Abre modal de edição/criação de paciente
+   */
+  openModal(paciente: any): void {
+    if (paciente?.id) {
       this.modalPacienteComponent.paciente = paciente;
       this.modalPacienteComponent.carregarData(paciente);
     }
-    const modalElement = document.getElementById('modalEditarCriar');
-    if (modalElement) {
-      const modal = new bootstrap.Modal(modalElement);
-      modal.show();
-    }
+    this.openBootstrapModal('modalEditarCriar');
   }
 
-  openModalDetalhado(paciente: any) {
+  /**
+   * Abre modal detalhado do paciente
+   */
+  openModalDetalhado(paciente: Paciente): void {
     if (paciente) {
       this.modalPacienteCompletoComponent.Paciente = paciente;
-      console.table(paciente);
     }
+    this.openBootstrapModal('modalPacienteDetalhado');
+  }
 
-    const modalElement = document.getElementById('modalPacienteDetalhado');
+  /**
+   * Abre modal de ficha de avaliação
+   */
+  openFichaAvaliacao(paciente: Paciente): void {
+    if (paciente?.id) {
+      this.modalFichaAvaliacaoComponent.getFac(paciente.id.toString());
+      this.modalFichaAvaliacaoComponent.paciente = paciente;
+      this.openBootstrapModal('modalFichaAvaliacao');
+    }
+  }
+
+  /**
+   * Método auxiliar para abrir modais Bootstrap
+   */
+  private openBootstrapModal(modalId: string): void {
+    const modalElement = document.getElementById(modalId);
     if (modalElement) {
       const modal = new bootstrap.Modal(modalElement);
       modal.show();
     }
   }
 
-  openfichaAvaliacao(paciente: any) {
-    if (paciente.id) {
-      this.modalFichaAvaliacaoComponent.getFac(paciente.id);
-      this.modalFichaAvaliacaoComponent.paciente = paciente;
-
-      const modalElement = document.getElementById('modalFichaAvaliacao');
-      if (modalElement) {
-        const modal = new bootstrap.Modal(modalElement);
-        modal.show();
-      }
+  /**
+   * Exclui um paciente
+   */
+  excluirPaciente(paciente: Paciente): void {
+    if (!paciente?.id) {
+      this.toast.error('Paciente inválido', 'Erro');
+      return;
     }
-  }
 
-  Exluir(paciente: Paciente) {
-    let id = paciente.id;
-    this.pacienteService.Deletar(id.toString()).subscribe({
-      next: (response) => {
-        console.log('Paciente excluído com sucesso:', response);
-        this.lista = this.lista.filter((paciente) => paciente.id !== id);
-        this.toast.success('Paciente  excluído com sucesso!', 'Excluído');
+    this.pacienteService.Deletar(paciente.id.toString()).subscribe({
+      next: () => {
+        this.lista = this.lista.filter(p => p.id !== paciente.id);
+        this.toast.success('Paciente excluído com sucesso!', 'Sucesso');
         this.invalidateCache();
       },
-      error: (err) => {
-        console.error('Erro ao excluir Paciente :', err);
-        this.toast.error(
-          'Tente novamente ou fale com o suporte',
-          'Erro ao excluir um Paciente'
-        );
+      error: (error) => {
+        console.error('Erro ao excluir paciente:', error);
+        this.toast.error('Erro ao excluir paciente. Tente novamente ou fale com o suporte.', 'Erro');
       },
     });
   }
 
+  /**
+   * Navega para página completa do paciente
+   */
   pacienteCompleto(paciente: Paciente): void {
-    // Verifica se o paciente possui um id antes de navegar
-    if (paciente && paciente.id) {
+    if (paciente?.id) {
       this.router.navigate(['/paciente', paciente.id]);
     } else {
       console.error('Paciente inválido ou sem ID.');
+      this.toast.error('Paciente inválido', 'Erro');
     }
   }
 
+  /**
+   * Atualiza a lista recarregando os dados
+   */
   atualizarLista(): void {
-    this.loadData(); // Chama o método para buscar os cc novamente
+    this.invalidateCache();
+    this.loadData();
   }
 
-  promptDelete(dataParaExcluir: any) {
-    this.dataParaExcluir = dataParaExcluir;
+  /**
+   * Abre dialog de confirmação para exclusão
+   */
+  promptDelete(paciente: Paciente): void {
+    this.dataParaExcluir = paciente;
     this.confirmDialog.openDialog();
   }
 
-  confirmDelete() {
-    this.Exluir(this.dataParaExcluir);
+  /**
+   * Confirma a exclusão do paciente
+   */
+  confirmDelete(): void {
+    if (this.dataParaExcluir) {
+      this.excluirPaciente(this.dataParaExcluir);
+      this.dataParaExcluir = undefined;
+    }
   }
 
-  cancelDelete() {
-    this.idParaExcluir = '';
+  /**
+   * Cancela a exclusão
+   */
+  cancelDelete(): void {
+    this.dataParaExcluir = undefined;
   }
 
+  /**
+   * Muda a página atual
+   */
   onPageChange(page: number): void {
-    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.currentPage = page;
     this.loadData();
   }
 
+  /**
+   * Executa busca com filtros
+   */
   onSearch(): void {
     this.currentPage = 1;
+    this.invalidateCache();
     this.loadData();
   }
 
-  toggleFiltros() {
+  /**
+   * Alterna visibilidade dos filtros
+   */
+  toggleFiltros(): void {
     this.mostrarFiltros = !this.mostrarFiltros;
   }
 
-  limparFiltros() {
-    this.nomeFiltro = '';
-    this.idFiltro = '';
-    this.cpfFiltro = '';
-    this.celularFiltro = '';
-    // Opcional: realizar uma busca após limpar
+  /**
+   * Limpa todos os filtros e executa nova busca
+   */
+  limparFiltros(): void {
+    this.filtros = {
+      nome: '',
+      id: '',
+      cpf: '',
+      celular: ''
+    };
     this.onSearch();
   }
+
+  // Getters para facilitar o binding no template
+  get nomeFiltro(): string { return this.filtros.nome; }
+  set nomeFiltro(value: string) { this.filtros.nome = value; }
+
+  get idFiltro(): string { return this.filtros.id; }
+  set idFiltro(value: string) { this.filtros.id = value; }
+
+  get cpfFiltro(): string { return this.filtros.cpf; }
+  set cpfFiltro(value: string) { this.filtros.cpf = value; }
+
+  get celularFiltro(): string { return this.filtros.celular; }
+  set celularFiltro(value: string) { this.filtros.celular = value; }
 }
