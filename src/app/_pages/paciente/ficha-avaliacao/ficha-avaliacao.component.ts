@@ -68,13 +68,13 @@ export class FichaAvaliacaoComponent {
       doencaNeurodegenerativa: [''],
       tratamentosRealizados: [''],
       alergiaMedicamentos: [''],
-      frequenciaConsumoAlcool: ['', Validators.required],
+      frequenciaConsumoAlcool: [''],
       praticaAtividade: [false],
       tabagista: [false],
 
       // Queixa e Objetivos
-      queixaPrincipal: ['', Validators.required],
-      objetivosDoTratamento: ['', Validators.required],
+      queixaPrincipal: [''],
+      objetivosDoTratamento: [''],
 
       // Avaliações Específicas
       avaliacaoPostural: [''],
@@ -111,10 +111,9 @@ export class FichaAvaliacaoComponent {
   }
 
   onSubmit() {
-
+    debugger
     if (this.fichaForm.valid) {
       console.log('Formulário enviado:', this.fichaForm.value);
-
 
       this.isLoading = true;
       const dataToSave = this.fichaForm.value as FichaAvaliacao;
@@ -122,6 +121,7 @@ export class FichaAvaliacaoComponent {
       const saveOperation = dataToSave.id
         ? this.facService.Atualizar(dataToSave)
         : this.facService.Criar(dataToSave);
+
       saveOperation.subscribe({
         next: () => {
           const action = dataToSave.id ? 'atualizado' : 'criado';
@@ -134,22 +134,55 @@ export class FichaAvaliacaoComponent {
           this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
         },
       });
-      // Aqui você pode implementar a lógica para salvar os dados
     } else {
       this.isLoading = false;
-      this.marcarCamposInvalidos();
+      const camposInvalidos = this.marcarCamposInvalidos();
+
+      // Log dos campos inválidos para debug
+      console.log('Campos inválidos:', camposInvalidos);
+
+      // Opcional: Mostrar toast com os campos inválidos
+      if (camposInvalidos.length > 0) {
+        const listaCampos = camposInvalidos.map(campo => campo.campo).join(', ');
+        this.toast.warning(`Verifique os seguintes campos: ${listaCampos}`, 'Campos obrigatórios');
+      }
     }
   }
 
   marcarCamposInvalidos() {
+    const camposInvalidos: Array<{ campo: string, erros: any }> = [];
+
     Object.keys(this.fichaForm.controls).forEach(campo => {
       const controle = this.fichaForm.get(campo);
       if (controle?.invalid) {
         controle.markAsTouched();
+
+        // Adiciona o campo inválido à lista com seus erros
+        camposInvalidos.push({
+          campo: campo,
+          erros: controle.errors
+        });
       }
     });
+
+    return camposInvalidos;
   }
 
+  // Método auxiliar para obter mensagem de erro mais amigável
+  obterMensagemErro(campo: string, erros: any): string {
+    const mensagens: { [key: string]: string } = {
+      'required': `${campo} é obrigatório`,
+      'email': `${campo} deve ter um formato válido de e-mail`,
+      'minlength': `${campo} deve ter pelo menos ${erros.minlength?.requiredLength} caracteres`,
+      'maxlength': `${campo} deve ter no máximo ${erros.maxlength?.requiredLength} caracteres`,
+      'pattern': `${campo} não atende ao formato esperado`,
+      'min': `${campo} deve ser maior ou igual a ${erros.min?.min}`,
+      'max': `${campo} deve ser menor ou igual a ${erros.max?.max}`
+    };
+
+    const tipoErro = Object.keys(erros)[0];
+    return mensagens[tipoErro] || `${campo} é inválido`;
+  }
   // ficha-avaliacao.component.ts
   fecharModal() {
     this.fichaForm.reset();
