@@ -111,7 +111,7 @@ export class FichaAvaliacaoComponent {
   }
 
   onSubmit() {
-    debugger
+
     if (this.fichaForm.valid) {
       console.log('Formulário enviado:', this.fichaForm.value);
 

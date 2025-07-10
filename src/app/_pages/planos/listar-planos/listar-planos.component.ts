@@ -119,7 +119,7 @@ export class ListarPlanosComponent {
   }
 
   openModal(plano: any) {
-    debugger
+
     if (plano.id) {
       this.modalComponent.data = plano;
       this.modalComponent.carregarDados(plano);

@@ -74,7 +74,7 @@ export class ModalPlanoContasComponent {
 
 
   carregarDados(plano: any) {
-    debugger
+
     while (this.subPlanos.length !== 0) {
       this.subPlanos.removeAt(0);
     }

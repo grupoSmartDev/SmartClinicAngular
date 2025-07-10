@@ -94,7 +94,7 @@ export class ModalProfissionalComponent {
       next: (response) => {
         let mensagem = response.mensagem;
         const action = dataToSave.id ? 'atualizado' : 'criado';
-        debugger
+
         if (response.status) {
           this.toast.success(`Profissional ${action} com sucesso!`, 'Parabéns');
 
