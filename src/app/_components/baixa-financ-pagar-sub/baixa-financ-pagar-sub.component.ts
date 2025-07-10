@@ -48,21 +48,18 @@ export class BaixaFinancPagarSubComponent implements OnInit, OnChanges {
 
   handleConfirm(): void {
     if (this.financPagarSub && this.financPagarSub.id) {
-      // Criando um novo objeto para não alterar o original por referência
-      const parcelaAtualizada = { ...this.financPagarSub };
-      parcelaAtualizada.dataPagamento = new Date(this.dataPagamento);
-      parcelaAtualizada.valorPago = this.valorPago;
-      parcelaAtualizada.observacao = this.observacao;
+      const parcelaId = this.financPagarSub.id;
+      const valorPago = this.valorPago;
 
-      if (parcelaAtualizada.valorPago != this.financPagarSub.valor) {
+      if (valorPago != this.financPagarSub.valor) {
         alert("Erro ao tentar baixar a parcela, verifique os valores a serem pagos");
         return;
       }
 
-      this.financPagarService.BaixarParcela(parcelaAtualizada).subscribe({
+      this.financPagarService.BaixarParcela(parcelaId, valorPago).subscribe({
         next: (response) => {
           this.toast.success(`Parcela baixada com sucesso!`, 'Parabéns');
-          this.confirmarPagamento.emit(parcelaAtualizada);
+          this.confirmarPagamento.emit(this.financPagarSub);
           this.fecharModal();
         },
         error: (err) => {
