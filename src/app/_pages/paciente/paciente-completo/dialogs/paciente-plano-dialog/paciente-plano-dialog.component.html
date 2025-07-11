@@ -1,0 +1,511 @@
+<!-- patient-plan-dialog.component.html -->
+<dialog id="plan-dialog" class="modal-dialog modal-xl">
+  <div class="modal-content">
+    <form [formGroup]="formPlano" (ngSubmit)="salvarPlano()">
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ isRenovacao ? "Renovar" : "Adicionar" }} Plano -
+          {{ paciente.nome }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeDialog()"
+          aria-label="Fechar"
+        ></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <!-- Informações do Plano -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-light py-3">
+            <h6 class="mb-0 fw-semibold">Informações do Plano</h6>
+          </div>
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col-md-3">
+                <label for="planoId" class="form-label">
+                  Plano <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="planoId"
+                  class="form-select form-select-sm"
+                  formControlName="planoId"
+                  [class.is-invalid]="
+                    formPlano.get('planoId')?.invalid &&
+                    formPlano.get('planoId')?.touched
+                  "
+                >
+                  <option value="">Selecione...</option>
+                  <option *ngFor="let plano of listaPlanos" [value]="plano.id">
+                    {{ plano.descricao }}
+                  </option>
+                </select>
+                <div class="invalid-feedback">Selecione um plano</div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="tipoMes" class="form-label">
+                  Tipo de Assinatura <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="tipoMes"
+                  class="form-select form-select-sm"
+                  formControlName="tipoMes"
+                  [class.is-invalid]="
+                    formPlano.get('tipoMes')?.invalid &&
+                    formPlano.get('tipoMes')?.touched
+                  "
+                >
+                  <option value="">Selecione...</option>
+                  <option value="m">Mensal</option>
+                  <option value="b">Bimestral</option>
+                  <option value="t">Trimestral</option>
+                  <option value="q">Quadrimestral</option>
+                  <option value="s">Semestral</option>
+                  <option value="a">Anual</option>
+                </select>
+                <div class="invalid-feedback">
+                  Selecione o tipo de assinatura
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="dataInicio" class="form-label">
+                  Data de Início <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="dataInicio"
+                  class="form-control form-control-sm"
+                  formControlName="dataInicio"
+                  [class.is-invalid]="
+                    formPlano.get('dataInicio')?.invalid &&
+                    formPlano.get('dataInicio')?.touched
+                  "
+                />
+                <div class="invalid-feedback">Data de início é obrigatória</div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="dataFim" class="form-label">Data de Término</label>
+                <input
+                  type="date"
+                  id="dataFim"
+                  class="form-control form-control-sm"
+                  formControlName="dataFim"
+                  readonly
+                />
+                <small class="text-muted">Calculada automaticamente</small>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="descricao" class="form-label">
+                  Descrição <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="descricao"
+                  class="form-control form-control-sm"
+                  formControlName="descricao"
+                  [class.is-invalid]="
+                    formPlano.get('descricao')?.invalid &&
+                    formPlano.get('descricao')?.touched
+                  "
+                />
+                <div class="invalid-feedback">Descrição é obrigatória</div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="valor" class="form-label">Valor</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">R$</span>
+                  <input
+                    type="number"
+                    id="valor"
+                    class="form-control"
+                    formControlName="valor"
+                    readonly
+                    step="0.01"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Checkboxes para Gerar Financeiro e Agendamento -->
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="gerarFinanceiro"
+                    formControlName="gerarFinanceiro"
+                  />
+                  <label class="form-check-label" for="gerarFinanceiro">
+                    Gerar registro financeiro
+                  </label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="gerarAgendamento"
+                    formControlName="gerarAgendamento"
+                  />
+                  <label class="form-check-label" for="gerarAgendamento">
+                    Gerar agendamentos
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção Financeira -->
+        <div
+          class="card shadow-sm mb-4"
+          *ngIf="isFinanceiroAtivo()"
+          [@fadeInOut]
+          formGroupName="financeiro"
+        >
+          <div class="card-header bg-light py-3">
+            <h6 class="mb-0 fw-semibold">Informações de Pagamento</h6>
+          </div>
+          <div class="card-body">
+            <!-- Campos de Valor e Parcelas -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-3">
+                <label for="valorTotal" class="form-label small fw-semibold">
+                  Valor Total <span class="text-danger">*</span>
+                </label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">R$</span>
+                  <input
+                    type="number"
+                    id="valorTotal"
+                    class="form-control"
+                    formControlName="valor"
+                    (change)="gerarParcelas()"
+                    step="0.01"
+                    min="0.01"
+                  />
+                </div>
+              </div>
+
+              <div class="col-md-2">
+                <label for="parcelas" class="form-label small fw-semibold">
+                  Parcelas
+                </label>
+                <input
+                  type="number"
+                  id="parcelas"
+                  class="form-control form-control-sm"
+                  formControlName="parcela"
+                  (change)="gerarParcelas()"
+                  min="1"
+                />
+              </div>
+
+              <div class="col-md-3">
+                <label for="centroCusto" class="form-label small fw-semibold">
+                  Centro de Custo <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="centroCusto"
+                  class="form-select form-select-sm"
+                  formControlName="centroCustoId"
+                >
+                  <option value="" disabled>Selecione</option>
+                  <option
+                    *ngFor="let centro of listaCentroDeCusto"
+                    [value]="centro.id"
+                  >
+                    {{ centro.descricao }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label for="tipoPagamento" class="form-label small fw-semibold">
+                  Tipo de Pagamento <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="tipoPagamento"
+                  class="form-select form-select-sm"
+                  formControlName="tipoPagamentoId"
+                >
+                  <option value="" disabled>Selecione</option>
+                  <option
+                    *ngFor="let tipo of listaTipoPagamento"
+                    [value]="tipo.id"
+                  >
+                    {{ tipo.descricao }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Observação -->
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label
+                  for="observacaoFinanceiro"
+                  class="form-label small fw-semibold"
+                >
+                  Observação
+                </label>
+                <textarea
+                  id="observacaoFinanceiro"
+                  class="form-control form-control-sm"
+                  formControlName="observacao"
+                  rows="2"
+                  placeholder="Observações sobre o pagamento"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Tabela de Parcelas -->
+            <div class="table-responsive mt-4" *ngIf="hasSubFinancItems">
+              <h6 class="fw-semibold mb-3">Parcelas Geradas</h6>
+              <table class="table table-sm table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Vencimento</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Forma Pagamento</th>
+                    <th scope="col">Observação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let parcela of subFinancControls; let i = index"
+                    [formGroup]="$any(parcela)"
+                  >
+                    <td class="align-middle">{{ i + 1 }}</td>
+                    <td>
+                      <input
+                        type="date"
+                        class="form-control form-control-sm"
+                        formControlName="dataVencimento"
+                      />
+                    </td>
+                    <td>
+                      <div class="input-group input-group-sm">
+                        <span class="input-group-text">R$</span>
+                        <input
+                          type="number"
+                          class="form-control"
+                          formControlName="valor"
+                          readonly
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <select
+                        class="form-select form-select-sm"
+                        formControlName="formaPagamentoId"
+                      >
+                        <option value="" disabled>Selecione</option>
+                        <option
+                          *ngFor="let forma of listaFormaPagamento"
+                          [value]="forma.id"
+                        >
+                          {{ forma.descricao }}
+                        </option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        formControlName="observacao"
+                        placeholder="Obs."
+                        maxlength="200"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Agendamento -->
+        <div
+          class="card shadow-sm mb-4"
+          *ngIf="isAgendamentoAtivo()"
+          [@fadeInOut]
+          formGroupName="agendamento"
+        >
+          <div class="card-header bg-light py-3">
+            <h6 class="mb-0 fw-semibold">Configuração de Agendamentos</h6>
+          </div>
+          <div class="card-body">
+            <!-- Informação sobre limite de dias -->
+            <div class="alert alert-info small mb-3" *ngIf="planoSelecionado">
+              <i class="bi bi-info-circle-fill me-2"></i>
+              Você pode selecionar até
+              {{ planoSelecionado[0]?.diasSemana || 0 }} dia(s) da semana para
+              agendamento.
+            </div>
+
+            <!-- Data Final da Recorrência -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label
+                  for="dataFimRecorrencia"
+                  class="form-label small fw-semibold"
+                >
+                  Data Final da Recorrência
+                </label>
+                <input
+                  type="date"
+                  id="dataFimRecorrencia"
+                  class="form-control form-control-sm"
+                  [value]="formPlano.get('dataFim')?.value"
+                  readonly
+                />
+                <small class="text-muted">
+                  A data final do plano será usada como data final da
+                  recorrência
+                </small>
+              </div>
+
+              <div class="col-md-6 d-flex align-items-end">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm"
+                  (click)="copiarHorarioPrincipal()"
+                >
+                  <i class="bi bi-clipboard"></i> Copiar horário principal para
+                  dias selecionados
+                </button>
+              </div>
+            </div>
+
+            <!-- Tabela de Configuração dos Dias da Semana -->
+            <div class="table-responsive">
+              <table class="table table-hover table-sm">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col" style="width: 80px">Dia</th>
+                    <th scope="col" style="width: 80px">Ativo</th>
+                    <th scope="col">Início</th>
+                    <th scope="col">Fim</th>
+                    <th scope="col">Profissional</th>
+                    <th scope="col">Sala</th>
+                  </tr>
+                </thead>
+                <tbody formArrayName="diasRecorrencia">
+                  <tr
+                    *ngFor="
+                      let dia of diasRecorrenciaArray.controls;
+                      let i = index
+                    "
+                    [formGroupName]="i"
+                  >
+                    <input type="hidden" formControlName="diaSemana" />
+                    <td class="align-middle">{{ diasDaSemana[i].nome }}</td>
+                    <td class="text-center">
+                      <div
+                        class="form-check form-switch d-flex justify-content-center"
+                      >
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          formControlName="ativo"
+                          (change)="verificarLimiteDiasSemana()"
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <input
+                        type="time"
+                        class="form-control form-control-sm"
+                        formControlName="horaInicio"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="time"
+                        class="form-control form-control-sm"
+                        formControlName="horaFim"
+                      />
+                    </td>
+                    <td>
+                      <select
+                        class="form-select form-select-sm"
+                        formControlName="profissionalId"
+                      >
+                        <option value="" disabled>Selecione</option>
+                        <option
+                          *ngFor="let prof of listaProfissional"
+                          [value]="prof.id"
+                        >
+                          {{ prof.nome }}
+                        </option>
+                      </select>
+                    </td>
+                    <td>
+                      <select
+                        class="form-select form-select-sm"
+                        formControlName="salaId"
+                      >
+                        <option value="" disabled>Selecione</option>
+                        <option
+                          *ngFor="let sala of listaSala"
+                          [value]="sala.id"
+                        >
+                          {{ sala.nome }}
+                        </option>
+                      </select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="alert alert-info small mt-3">
+              <i class="bi bi-info-circle-fill me-2"></i>
+              Configure os horários específicos para cada dia da semana. Marque
+              apenas os dias que deseja incluir no agendamento.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeDialog()"
+          [disabled]="isLoading"
+        >
+          <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-success"
+          [disabled]="!isFormValid() || isLoading"
+        >
+          <span
+            *ngIf="isLoading"
+            class="spinner-border spinner-border-sm me-2"
+          ></span>
+          <i *ngIf="!isLoading" class="bi bi-check-circle"></i>
+          {{ isLoading ? "Salvando..." : "Salvar Plano" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>

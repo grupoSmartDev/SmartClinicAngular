@@ -135,6 +135,10 @@ import { AgendaListarComponent } from './_pages/agenda/agenda-listar/agenda-list
 import { ButtonActionComponent } from './_components/button-action/button-action.component';
 import { SelectBancoComponent } from './_components/select-banco/select-banco.component';
 import { PaymentComponent } from './_components/payment/payment.component';
+import { PacienteEvolucaoDialogComponent } from './_pages/paciente/paciente-completo/dialogs/paciente-evolucao-dialog/paciente-evolucao-dialog.component';
+import { PacientePlanoDialogComponent } from './_pages/paciente/paciente-completo/dialogs/paciente-plano-dialog/paciente-plano-dialog.component';
+import { PacientePlanoRenovacaoDialogComponent } from './_pages/paciente/paciente-completo/dialogs/paciente-plano-renovacao-dialog/paciente-plano-renovacao-dialog.component';
+import { PacienteDetailsComponent } from './_pages/paciente/paciente-completo/paciente-details/paciente-details.component';
 
 @NgModule({
   declarations: [
@@ -256,6 +260,10 @@ import { PaymentComponent } from './_components/payment/payment.component';
     ButtonActionComponent,
     SelectBancoComponent,
     PaymentComponent,
+    PacienteEvolucaoDialogComponent,
+    PacientePlanoDialogComponent,
+    PacientePlanoRenovacaoDialogComponent,
+    PacienteDetailsComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,466 @@
+<!-- patient-detail.component.html -->
+<div
+  #modalPacienteDetalhado
+  id="modalPacienteDetalhado"
+  class="modal fade"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="modalPacienteLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <!-- Header -->
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          Gerenciamento do Paciente - {{ formatPatientName() }}
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeModal()"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <div class="container my-4">
+          <!-- Navigation Tabs -->
+          <ul class="nav nav-tabs" id="patientTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                [class.active]="isTabActive('info')"
+                type="button"
+                (click)="setActiveTab('info')"
+              >
+                <i class="bi bi-person-fill me-2"></i>
+                Informações do Paciente
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                [class.active]="isTabActive('finance')"
+                type="button"
+                (click)="setActiveTab('finance')"
+              >
+                <i class="bi bi-currency-dollar me-2"></i>
+                Financeiro
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                [class.active]="isTabActive('appointments')"
+                type="button"
+                (click)="setActiveTab('appointments')"
+              >
+                <i class="bi bi-calendar-check me-2"></i>
+                Atendimentos
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                [class.active]="isTabActive('plans')"
+                type="button"
+                (click)="setActiveTab('plans')"
+              >
+                <i class="bi bi-card-list me-2"></i>
+                Planos
+              </button>
+            </li>
+          </ul>
+
+          <!-- Tab Content -->
+          <div class="tab-content mt-3">
+            <!-- ===== ABA INFORMAÇÕES ===== -->
+            <div
+              class="tab-pane fade"
+              [class.show]="isTabActive('info')"
+              [class.active]="isTabActive('info')"
+            >
+              <div class="row justify-content-space-between">
+                <!-- Card do Paciente -->
+                <div class="col-md-4">
+                  <div class="card h-100 shadow-sm border-success-preco">
+                    <div class="card-body">
+                      <p class="titulo-pequeno">Paciente</p>
+                      <h3 class="descricao-grande">
+                        {{ formatPatientName() }}
+                      </h3>
+
+                      <p *ngIf="hasWhatsApp()">
+                        <a
+                          target="_blank"
+                          [href]="getWhatsAppLink()"
+                          class="text-decoration-none"
+                        >
+                          <i class="bi bi-whatsapp text-success"></i>
+                          {{ formatPatientPhone() }}
+                        </a>
+                      </p>
+
+                      <p>
+                        <i class="bi bi-envelope text-primary"></i>
+                        {{ formatPatientEmail() }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card do Histórico -->
+                <div class="col-md-4">
+                  <div class="card h-100 shadow-sm border-success-preco">
+                    <div class="card-body">
+                      <p class="titulo-pequeno">Histórico</p>
+
+                      <!-- Estatísticas -->
+                      <div class="row">
+                        <div class="col-6">
+                          <p class="descricao-grande">
+                            {{ quantidadeAgendamentos() }}
+                          </p>
+                          <p class="descricao-medio">Agendamentos</p>
+                          <hr />
+                        </div>
+                        <div class="col-6">
+                          <p class="descricao-grande">
+                            {{ quantidadeAulasCanceladas() }}
+                          </p>
+                          <p class="descricao-medio">Cancelamentos</p>
+                          <hr />
+                        </div>
+                      </div>
+
+                      <!-- Informações do Plano -->
+                      <div class="row">
+                        <div class="col-6">
+                          <p class="descricao-grande">
+                            {{ paciente.plano?.descricao || "Sem plano" }}
+                          </p>
+                          <p class="descricao-medio">
+                            {{ getPlanTypeDescription() }}
+                          </p>
+                          <hr />
+                        </div>
+                        <div class="col-6">
+                          <p class="descricao-grande">
+                            {{ getInsuranceInfo() }}
+                          </p>
+                          <p class="descricao-medio">
+                            {{ getInsurancePhone() }}
+                          </p>
+                          <hr />
+                        </div>
+                      </div>
+
+                      <!-- Receita Total -->
+                      <div>
+                        <p class="descricao-grande">
+                          {{ calcularValorTotalReceita() | currencyPtBr }}
+                        </p>
+                        <p class="descricao-medio">em receita</p>
+                        <hr />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card de Observações -->
+                <div class="col-md-4">
+                  <div class="card h-100 shadow-sm border-success-preco">
+                    <div class="card-body">
+                      <p class="titulo-pequeno">Observação</p>
+                      <p class="descricao-medio">{{ formatObservation() }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== ABA FINANCEIRO ===== -->
+            <div
+              class="tab-pane fade"
+              [class.show]="isTabActive('finance')"
+              [class.active]="isTabActive('finance')"
+            >
+              <h5>Histórico Financeiro</h5>
+
+              <div class="alert alert-info" *ngIf="!hasFinancialRecords()">
+                <i class="bi bi-info-circle me-2"></i>
+                Nenhum registro financeiro encontrado para este paciente.
+              </div>
+
+              <div class="table-responsive" *ngIf="hasFinancialRecords()">
+                <table class="table table-striped table-hover">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Cód. Parcela</th>
+                      <th>Data Emissão</th>
+                      <th>Data Pagamento</th>
+                      <th>Valor</th>
+                      <th>Valor Pago</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let item of paciente.financReceber">
+                      <tr *ngFor="let subItem of item.subFinancReceber">
+                        <td>{{ subItem.id }}</td>
+                        <td>{{ item.dataEmissao | datePtBr }}</td>
+                        <td>{{ subItem.dataPagamento | datePtBr }}</td>
+                        <td>{{ subItem.valor | currencyPtBr }}</td>
+                        <td>{{ subItem.valorPago | currencyPtBr }}</td>
+                        <td>
+                          <span
+                            class="badge"
+                            [class.bg-success]="subItem.dataPagamento"
+                            [class.bg-warning]="!subItem.dataPagamento"
+                          >
+                            {{ subItem.dataPagamento ? "Pago" : "Pendente" }}
+                          </span>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ===== ABA ATENDIMENTOS ===== -->
+            <div
+              class="tab-pane fade"
+              [class.show]="isTabActive('appointments')"
+              [class.active]="isTabActive('appointments')"
+            >
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <h5>Histórico de Atendimentos</h5>
+                <button class="btn btn-success" (click)="openEvolutionDialog()">
+                  <i class="bi bi-plus me-2"></i>Nova Evolução
+                </button>
+              </div>
+
+              <div class="alert alert-info" *ngIf="!hasEvolutions()">
+                <i class="bi bi-info-circle me-2"></i>
+                Nenhuma evolução registrada para este paciente.
+              </div>
+
+              <div class="table-responsive" *ngIf="hasEvolutions()">
+                <table class="table table-striped table-hover">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Data</th>
+
+                      <th>Observação</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let evolucao of paciente.evolucoes">
+                      <td>{{ evolucao.dataEvolucao | datePtBr }}</td>
+
+                      <td>
+                        <span
+                          [title]="evolucao.observacao"
+                          class="text-truncate d-inline-block"
+                          style="max-width: 300px"
+                        >
+                          {{ evolucao.observacao }}
+                        </span>
+                      </td>
+                      <td>
+                        <button
+                          class="btn btn-sm btn-outline-primary"
+                          (click)="openEvolutionDialog(evolucao)"
+                          title="Ver/Editar Evolução"
+                        >
+                          <i class="bi bi-eye"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- ===== ABA PLANOS ===== -->
+            <div
+              class="tab-pane fade"
+              [class.show]="isTabActive('plans')"
+              [class.active]="isTabActive('plans')"
+            >
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <h5>Planos do Paciente</h5>
+                <div class="btn-group">
+                  <button
+                    *ngIf="!hasPlan()"
+                    class="btn btn-success"
+                    (click)="openPlanDialog()"
+                  >
+                    <i class="bi bi-plus me-2"></i>Adicionar Plano
+                  </button>
+
+                  <button
+                    *ngIf="hasPlan() && canRenewPlan()"
+                    class="btn btn-primary"
+                    (click)="openPlanRenewalDialog()"
+                  >
+                    <i class="bi bi-arrow-repeat me-2"></i>Renovar Plano
+                  </button>
+
+                  <button
+                    *ngIf="hasPlan() && !canRenewPlan()"
+                    class="btn btn-secondary"
+                    disabled
+                    title="Plano ainda vigente"
+                  >
+                    <i class="bi bi-arrow-repeat me-2"></i>Renovar Plano
+                  </button>
+                </div>
+              </div>
+
+              <!-- Informações do Plano Atual -->
+              <div class="card mb-4" *ngIf="hasPlan()">
+                <div class="card-header bg-primary text-white">
+                  <h6 class="mb-0">
+                    <i class="bi bi-card-list me-2"></i>Plano Atual
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h6 class="fw-bold">{{ paciente.plano?.descricao }}</h6>
+                      <p class="mb-1">
+                        <strong>Tipo:</strong> {{ getPlanTypeDescription() }}
+                      </p>
+                      <p class="mb-1">
+                        <strong>Início:</strong>
+                        {{ paciente.plano?.dataInicio | datePtBr }}
+                      </p>
+                      <p class="mb-1">
+                        <strong>Término:</strong>
+                        {{ paciente.plano?.dataFim | datePtBr }}
+                      </p>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="text-end">
+                        <span
+                          class="badge fs-6 px-3 py-2"
+                          [class.bg-success]="canRenewPlan()"
+                          [class.bg-warning]="!canRenewPlan()"
+                        >
+                          {{ canRenewPlan() ? "Pode Renovar" : "Vigente" }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lista de Todos os Planos (Histórico) -->
+              <div class="card" *ngIf="hasPlan()">
+                <div class="card-header">
+                  <h6 class="mb-0">
+                    <i class="bi bi-clock-history me-2"></i>Histórico de Planos
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                      <thead class="table-light">
+                        <tr>
+                          <th>Descrição</th>
+                          <th>Tipo</th>
+                          <th>Início</th>
+                          <th>Término</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{{ paciente.plano?.descricao }}</td>
+                          <td>{{ getPlanTypeDescription() }}</td>
+                          <td>{{ paciente.plano?.dataInicio | datePtBr }}</td>
+                          <td>{{ paciente.plano?.dataFim | datePtBr }}</td>
+                          <td>
+                            <span
+                              class="badge"
+                              [class.bg-success]="!canRenewPlan()"
+                              [class.bg-secondary]="canRenewPlan()"
+                            >
+                              {{ canRenewPlan() ? "Expirado" : "Ativo" }}
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mensagem quando não há plano -->
+              <div class="alert alert-info" *ngIf="!hasPlan()">
+                <i class="bi bi-info-circle me-2"></i>
+                Este paciente ainda não possui nenhum plano ativo.
+                <a href="#" (click)="openPlanDialog()" class="alert-link">
+                  Clique aqui para adicionar um plano.
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="onSubmit()"
+          [disabled]="isLoading"
+        >
+          <span
+            *ngIf="isLoading"
+            class="spinner-border spinner-border-sm me-2"
+          ></span>
+          <i *ngIf="!isLoading" class="bi bi-check-circle me-2"></i>
+          {{ isLoading ? "Carregando..." : "Confirmar" }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="closeModal()"
+          [disabled]="isLoading"
+        >
+          <i class="bi bi-x-circle me-2"></i>Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== COMPONENTES DOS DIÁLOGOS ===== -->
+
+  <!-- Diálogo de Evolução -->
+  <app-paciente-evolucao-dialog
+    [paciente]="paciente"
+    (evolutionSaved)="onEvolutionSaved()"
+    (dialogClosed)="onEvolutionDialogClosed()"
+  ></app-paciente-evolucao-dialog>
+
+  <!-- Diálogo de Planos -->
+  <app-patient-plan-dialog
+    [paciente]="paciente"
+    (planSaved)="onPlanSaved()"
+    (dialogClosed)="onPlanDialogClosed()"
+  ></app-patient-plan-dialog>
+</div>

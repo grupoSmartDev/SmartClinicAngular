@@ -1,0 +1,287 @@
+<!-- patient-evolution-dialog.component.html -->
+<dialog id="evolution-dialog" class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <form [formGroup]="formEvolucao" (ngSubmit)="salvarEvolucao()">
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">Evolução - {{ paciente.nome }}</h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeDialog()"
+          aria-label="Fechar"
+        ></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+        <!-- Informações Básicas -->
+        <div class="row mb-3 align-items-end">
+          <div class="col-2">
+            <label for="codigo" class="form-label">Código</label>
+            <input
+              type="text"
+              id="codigo"
+              class="form-control form-control-sm"
+              formControlName="id"
+              readonly
+            />
+          </div>
+
+          <input type="hidden" formControlName="pacienteId" />
+
+          <div class="col-md-4">
+            <label for="profissional" class="form-label">
+              Profissional <span class="text-danger">*</span>
+            </label>
+            <select
+              id="profissional"
+              class="form-select form-select-sm"
+              formControlName="profissionalId"
+              [class.is-invalid]="
+                formEvolucao.get('profissionalId')?.invalid &&
+                formEvolucao.get('profissionalId')?.touched
+              "
+            >
+              <option value="">Selecione...</option>
+              <option *ngFor="let prof of listaProfissional" [value]="prof.id">
+                {{ prof.nome }}
+              </option>
+            </select>
+            <div class="invalid-feedback">Selecione um profissional</div>
+          </div>
+
+          <div class="col-md-3">
+            <label for="dataEvolucao" class="form-label">
+              Data <span class="text-danger">*</span>
+            </label>
+            <input
+              type="date"
+              id="dataEvolucao"
+              class="form-control form-control-sm"
+              formControlName="dataEvolucao"
+              [class.is-invalid]="
+                formEvolucao.get('dataEvolucao')?.invalid &&
+                formEvolucao.get('dataEvolucao')?.touched
+              "
+            />
+            <div class="invalid-feedback">Data é obrigatória</div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="d-flex gap-2">
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                (click)="adicionarExercicio()"
+              >
+                <i class="bi bi-plus"></i> Exercício
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                (click)="adicionarAtividade()"
+              >
+                <i class="bi bi-plus"></i> Atividade
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Exercícios -->
+        <div formArrayName="exercicios" class="mb-4" *ngIf="hasExercises()">
+          <h6 class="fw-bold text-primary mb-3">
+            <i class="bi bi-activity"></i> Exercícios
+          </h6>
+
+          <div
+            *ngFor="let exercicio of exercicios.controls; let i = index"
+            [formGroupName]="i"
+            class="card mb-3"
+          >
+            <div
+              class="card-header d-flex justify-content-between align-items-center py-2"
+            >
+              <h6 class="mb-0">Exercício {{ i + 1 }}</h6>
+              <button
+                type="button"
+                class="btn btn-outline-danger btn-sm"
+                (click)="removerExercicio(i)"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label"
+                    >Exercício <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="descricao"
+                    placeholder="Nome do exercício"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Observação</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="obs"
+                    placeholder="Observações do exercício"
+                  />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Tempo (min)</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    formControlName="tempo"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Repetições</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    formControlName="repeticoes"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label">Séries</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    formControlName="series"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Atividades -->
+        <div formArrayName="atividades" class="mb-4" *ngIf="hasActivities()">
+          <h6 class="fw-bold text-success mb-3">
+            <i class="bi bi-clipboard-check"></i> Atividades
+          </h6>
+
+          <div
+            *ngFor="let atividade of atividades.controls; let i = index"
+            [formGroupName]="i"
+            class="card mb-3"
+          >
+            <div
+              class="card-header d-flex justify-content-between align-items-center py-2"
+            >
+              <h6 class="mb-0">Atividade {{ i + 1 }}</h6>
+              <button
+                type="button"
+                class="btn btn-outline-danger btn-sm"
+                (click)="removerAtividade(i)"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label"
+                    >Atividade <span class="text-danger">*</span></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="titulo"
+                    placeholder="Nome da atividade"
+                  />
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Tempo (min)</label>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    formControlName="tempo"
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
+
+                <div class="col-md-12">
+                  <label class="form-label">Descrição</label>
+                  <textarea
+                    class="form-control form-control-sm"
+                    formControlName="descricao"
+                    rows="2"
+                    placeholder="Descrição detalhada da atividade"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Observações Gerais -->
+        <div class="row">
+          <div class="col-12">
+            <label for="observacao" class="form-label">
+              Observações Gerais <span class="text-danger">*</span>
+            </label>
+            <textarea
+              id="observacao"
+              class="form-control form-control-sm"
+              formControlName="observacao"
+              rows="4"
+              placeholder="Descreva a evolução do paciente, observações importantes..."
+              [class.is-invalid]="
+                formEvolucao.get('observacao')?.invalid &&
+                formEvolucao.get('observacao')?.touched
+              "
+            ></textarea>
+            <div class="invalid-feedback">Observação é obrigatória</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeDialog()"
+          [disabled]="isLoading"
+        >
+          <i class="bi bi-x-circle"></i> Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-success"
+          [disabled]="!isFormValid() || isLoading"
+        >
+          <span
+            *ngIf="isLoading"
+            class="spinner-border spinner-border-sm me-2"
+          ></span>
+          <i *ngIf="!isLoading" class="bi bi-check-circle"></i>
+          {{ isLoading ? "Salvando..." : "Salvar Evolução" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>
