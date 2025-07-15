@@ -21,6 +21,9 @@ export class EvolucaoService {
   Criar(evolucao: Evolucao): Observable<ResponseModel<Evolucao>> {
     return this.http.post<ResponseModel<Evolucao>>(`${this.baseURL}Criar`, evolucao);
   }
+  CriarEvolucaoPaciente(evolucao: Evolucao): Observable<ResponseModel<Evolucao>> {
+    return this.http.post<ResponseModel<Evolucao>>(`${this.baseURL}CriarEvolucaoPaciente`, evolucao);
+  }
 
   Atualizar(evolucao: Evolucao): Observable<ResponseModel<Evolucao>> {
     return this.http.put<ResponseModel<Evolucao>>(`${this.baseURL}Editar`, evolucao);

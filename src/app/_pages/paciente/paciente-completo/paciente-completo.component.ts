@@ -353,10 +353,7 @@ export class PacienteCompletoComponent implements OnInit {
     });
 
     if (this.formEvolucao.invalid) {
-      this.toastr.error(
-        'Preencha todos os campos',
-        'Erro ao cadastrar uma evolução'
-      );
+      this.toastr.error('Preencha todos os campos', 'Erro ao cadastrar uma evolução');
       return;
     }
 
@@ -366,7 +363,7 @@ export class PacienteCompletoComponent implements OnInit {
 
     const saveOperation = dataToSave.id
       ? this.evolucaoService.Atualizar(dataToSave)
-      : this.evolucaoService.Criar(dataToSave);
+      : this.evolucaoService.CriarEvolucaoPaciente(dataToSave);
 
     saveOperation.subscribe({
       next: (response) => {
@@ -374,16 +371,23 @@ export class PacienteCompletoComponent implements OnInit {
         this.toastr.success(`Evolução ${action} com sucesso!`, 'Parabéns');
         this.isLoading = false;
         this.closeDialog();
-        this.evolucaoAtualizado.emit();
 
+        // 🎯 AQUI - atualiza o Paciente.evolucoes diretamente
+        if (dataToSave.id) {
+          // Se está editando, atualiza o item existente
+          const index = this.Paciente.evolucoes!.findIndex(e => e.id === dataToSave.id);
+          if (index !== -1) {
+            this.Paciente.evolucoes![index] = response.dados;
+          }
+        } else {
+          // Se é novo, adiciona no início da lista
+          this.Paciente.evolucoes!.unshift(response.dados);
+        }
       },
       error: (err) => {
         console.error('Erro ao salvar evolução:', err);
         this.isLoading = false;
-        this.toastr.error(
-          'Ocorreu um erro ao salvar. Tente novamente.',
-          'Erro'
-        );
+        this.toastr.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
       },
     });
   }
