@@ -1742,4 +1742,30 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
 
+  onInativePlan(plano: any) {
+    if (plano && plano.id) {
+      this.planoService.InativarPlanoPaciente(plano).subscribe({
+        next: (response) => {
+          if (response && response.status) {
+            this.toastr.success(response.mensagem || 'Plano inativado com sucesso!', 'Sucesso');
+            this.atualizarPacientePlano();
+
+            if (this.Paciente.plano) {
+              this.Paciente.plano.ativo = false;
+            }
+
+          } else {
+            this.toastr.error(response.mensagem || 'Erro ao inativar plano', 'Erro');
+          }
+        },
+        error: (error) => {
+          console.error('Erro ao inativar plano:', error);
+          this.toastr.error('Erro ao inativar plano', 'Erro');
+        }
+      });
+    }
+  }
+
+
+
 }

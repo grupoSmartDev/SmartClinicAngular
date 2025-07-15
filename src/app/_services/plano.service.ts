@@ -48,6 +48,10 @@ export class PlanoService {
     return this.http.put<ResponseModel<Plano>>(`${this.baseURL}Editar`, plano);
   }
 
+  InativarPlanoPaciente(plano: Plano): Observable<ResponseModel<Plano>> {
+    return this.http.put<ResponseModel<Plano>>(`${this.baseURL}InativarPlanoPaciente`, plano);
+  }
+
   Deletar(id: string): Observable<ResponseModel<void>> {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }

@@ -327,6 +327,8 @@
                       <th>Descrição</th>
                       <th>Plano</th>
                       <th>Validade</th>
+                      <th>Status</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -344,6 +346,26 @@
                       } }
 
                       <td>{{ Paciente.plano?.dataFim | datePtBr }}</td>
+                      <td>
+                        <span
+                          class="badge"
+                          [class.bg-success]="Paciente.plano?.ativo"
+                          [class.bg-warning]="!Paciente.plano?.ativo"
+                        >
+                          {{ Paciente.plano?.ativo ? "Ativo" : "Inativo" }}
+                        </span>
+                      </td>
+
+                      <td>
+                        <a
+                          href="javascript:void(0);"
+                          (click)="onInativePlan(Paciente.plano)"
+                          class="action-icon btn-tooltip"
+                        >
+                          <i class="bi bi-trash3 text-danger"></i>
+                          <span class="tooltip-text">Inativar</span>
+                        </a>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
