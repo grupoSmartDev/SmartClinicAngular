@@ -72,6 +72,7 @@ const routes: Routes = [
       },
       { path: 'profissional/listar', component: ListarProfissionalComponent },
       { path: 'pacientes/listar', component: ListarPacienteComponent },
+      { path: 'pacientes/listar/:id', component: ListarPacienteComponent },
       { path: 'log/listar', component: ListarLogComponent },
       { path: 'paciente/:id', component: PacienteCompletoComponent },
       { path: 'usuario/listar', component: ListarUsuarioComponent },

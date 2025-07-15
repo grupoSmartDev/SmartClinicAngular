@@ -369,12 +369,13 @@ export class PacienteCompletoComponent implements OnInit {
       : this.evolucaoService.Criar(dataToSave);
 
     saveOperation.subscribe({
-      next: () => {
+      next: (response) => {
         const action = dataToSave.id ? 'atualizada' : 'criada';
         this.toastr.success(`Evolução ${action} com sucesso!`, 'Parabéns');
         this.isLoading = false;
         this.closeDialog();
         this.evolucaoAtualizado.emit();
+
       },
       error: (err) => {
         console.error('Erro ao salvar evolução:', err);

@@ -149,6 +149,7 @@ export class ListarPlanosComponent {
   }
 
   atualizarLista(): void {
+    this.invalidateCache();
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
@@ -172,6 +173,7 @@ export class ListarPlanosComponent {
 
   onSearch(): void {
     this.currentPage = 1;
+    this.invalidateCache();
     this.loadData();
   }
 

@@ -24,7 +24,8 @@ export class TabService {
     if (existingTabIndex !== -1) {
       // Se a aba já existe, apenas ative-a
       this.activeTab = existingTabIndex;
-      this.router.navigate([tab.path], { skipLocationChange: true }); // Evita recarregar
+      // this.router.navigate([tab.path], { skipLocationChange: true }); // Evita recarregar
+      this.router.navigate([tab.path]);
     } else {
       // Se é uma nova aba, adicione-a
       this.tabs.push(tab);
@@ -37,7 +38,8 @@ export class TabService {
     if (index >= 0 && index < this.tabs.length) {
       this.activeTab = index;
       // Usa skipLocationChange para evitar requisições desnecessárias
-      this.router.navigate([this.tabs[index].path], { skipLocationChange: true });
+      //his.router.navigate([this.tabs[index].path], { skipLocationChange: true });
+      this.router.navigate([this.tabs[index].path]);
     }
   }
 
@@ -73,7 +75,8 @@ export class TabService {
 
     // Navega para a nova aba ativa ou abre o dashboard
     if (this.tabs.length > 0) {
-      this.router.navigate([this.tabs[this.activeTab].path], { skipLocationChange: true });
+      // this.router.navigate([this.tabs[this.activeTab].path], { skipLocationChange: true });
+      this.router.navigate([this.tabs[this.activeTab].path]);
     } else {
       this.openDefaultTab(); // Isso garante que o dashboard será reaberto se for a última aba e não for o dashboard.
     }

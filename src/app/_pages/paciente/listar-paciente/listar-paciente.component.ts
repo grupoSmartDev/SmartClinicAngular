@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, OnDestroy, HostListener } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import * as bootstrap from 'bootstrap';
@@ -46,6 +46,7 @@ export class ListarPacienteComponent implements OnInit, OnDestroy {
   dataParaExcluir?: Paciente;
   mostrarFiltros: boolean = false;
 
+  pacienteIdParametro: string | null = null;
   // Paginação
   totalItems: number = 0;
   pageSize: number = 10;
@@ -73,7 +74,13 @@ export class ListarPacienteComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.loadData();
+    // Execução inicial
+    this.pacienteIdParametro = this.route.snapshot.paramMap.get('id');
+    if (this.pacienteIdParametro) {
+      this.loadPacienteId();
+    } else {
+      this.loadData();
+    }
   }
 
   ngOnDestroy(): void {
@@ -163,6 +170,44 @@ export class ListarPacienteComponent implements OnInit, OnDestroy {
           this.spinner.hide();
         },
       });
+  }
+
+  loadPacienteId() {
+
+    this.invalidateCache();
+
+    // Carrega dados do servidor
+    this.spinner.show();
+
+    this.idFiltro = this.pacienteIdParametro!;
+
+    this.pacienteService
+      .Listar(
+        this.currentPage,
+        this.pageSize,
+        this.filtros.nome,
+        this.pacienteIdParametro!,
+        this.filtros.cpf,
+        this.filtros.celular,
+        this.paginar
+      )
+      .subscribe({
+        next: (response) => {
+          if (response?.dados) {
+            this.lista = response.dados;
+            this.totalItems = response.totalCount ?? 0;
+          }
+        },
+        error: (error) => {
+          console.error('Erro ao buscar pacientes:', error);
+          this.errorMessage = 'Erro ao carregar os pacientes. Tente novamente mais tarde.';
+          this.toast.error('Erro ao carregar dados', 'Erro');
+        },
+        complete: () => {
+          this.spinner.hide();
+        },
+      });
+
   }
 
   /**
