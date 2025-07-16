@@ -237,8 +237,8 @@ export class ListarFinancPagarComponent {
   }
 
   onSearch(): void {
-    this.invalidateCache();
     this.currentPage = 1;
+    this.invalidateCache();
     this.loadData();
   }
 
