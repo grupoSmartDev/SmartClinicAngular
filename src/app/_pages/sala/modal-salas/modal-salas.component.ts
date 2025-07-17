@@ -127,7 +127,7 @@ export class ModalSalasComponent {
   }
 
   copiarHorarioPrincipal(): void {
-    const base = this.horariosFuncionamentoArray.at(1); 
+    const base = this.horariosFuncionamentoArray.at(1);
     const horaInicio = base.get('horaInicio')?.value;
     const horaFim = base.get('horaFim')?.value;
     const ativo = base.get('ativo')?.value;
@@ -192,13 +192,69 @@ export class ModalSalasComponent {
     }
 
     const dados = this.formulario.value;
-    dados.horariosFuncionamento = dados.horariosFuncionamento.filter(
-      (h: any) => h.ativo
-    );
+
+    // ✅ Função para garantir formato TimeSpan correto
+    const formatarHorario = (horario: string): string => {
+      if (!horario) return '';
+
+      // Se já tem segundos (formato HH:mm:ss), não adiciona nada
+      if (horario.split(':').length === 3) {
+        return horario;
+      }
+
+      // Se só tem hora e minuto (formato HH:mm), adiciona :00
+      if (horario.split(':').length === 2) {
+        return horario + ':00';
+      }
+
+      return horario;
+    };
+
+    // ✅ Criar objeto Sala completo para os horários
+    const salaCompleta = {
+      id: dados.id,
+      nome: dados.nome,
+      local: dados.local,
+      capacidade: dados.capacidade,
+      tipo: dados.tipo,
+      horarioFincionamento: dados.horarioFincionamento,
+      status: dados.status,
+      observacao: dados.observacao
+    };
+
+    // ✅ Processar horários com objeto Sala completo
+    const horariosFuncionamento = dados.horariosFuncionamento
+      .filter((h: any) => h.ativo)
+      .map((h: any) => ({
+        diaSemana: h.diaSemana,
+        horaInicio: formatarHorario(h.horaInicio),
+        horaFim: formatarHorario(h.horaFim),
+        Sala: salaCompleta  // ✅ Campo 'Sala' com objeto completo
+      }));
+
+    // ✅ Estrutura final
+    const payload = {
+      id: dados.id,
+      nome: dados.nome,
+      local: dados.local,
+      capacidade: dados.capacidade,
+      tipo: dados.tipo,
+      horarioFincionamento: dados.horarioFincionamento,
+      status: dados.status,
+      observacao: dados.observacao,
+      horariosFuncionamento: horariosFuncionamento
+    };
+
+    // 🔧 Para debugging
+    console.log('Payload final:', payload);
+    console.log('Horários com Sala:', horariosFuncionamento);
 
     this.isLoading = true;
-    this.salaService.salvarSala(dados).subscribe({
-      next: () => this.fecharModal(),
+    this.salaService.salvarSala(payload).subscribe({
+      next: () => {
+        this.fecharModal();
+        this.dataAtualizado.emit();
+      },
       error: (err) => console.error(err),
       complete: () => (this.isLoading = false),
     });
