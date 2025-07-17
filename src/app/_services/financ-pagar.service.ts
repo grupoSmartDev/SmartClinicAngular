@@ -28,7 +28,7 @@ export class FinancPagarService {
   ): Observable<ResponseModel<FinancPagar[]>> {
     let params = new HttpParams();
 
-    if (page) params = params.set('page', page.toString());
+    if (page) params = params.set('pageNumber', page.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (descricaoFiltro)
       params = params.set('descricaoFiltro', descricaoFiltro);
@@ -91,14 +91,12 @@ export class FinancPagarService {
   ): Observable<ResponseModel<FinancPagar[]>> {
     let params = new HttpParams();
 
-    if (page) params = params.set('page', page.toString());
+    if (page) params = params.set('pageNumber', page.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
-    if (descricaoFiltro)
-      params = params.set('descricaoFiltro', descricaoFiltro);
+    if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
     if (idFiltro) params = params.set('idFiltro', idFiltro);
     if (dataBaseFiltro) params = params.set('dataBaseFiltro', dataBaseFiltro);
-    if (pacienteIdFiltro)
-      params = params.set('pacienteIdFiltro', pacienteIdFiltro);
+    if (pacienteIdFiltro) params = params.set('pacienteIdFiltro', pacienteIdFiltro);
     if (ccFiltro) params = params.set('ccFiltro', ccFiltro);
     if (paginar) params = params.set('paginar', paginar);
 
@@ -138,9 +136,7 @@ export class FinancPagarService {
     if (pageNumber) params = params.set('pageNumber', pageNumber.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (idPaiFiltro) params = params.set('idPaiFiltro', idPaiFiltro);
-    if (parcelaNumeroFiltro)
-      params = params.set('parcelaNumeroFiltro', parcelaNumeroFiltro);
-
+    if (parcelaNumeroFiltro) params = params.set('parcelaNumeroFiltro', parcelaNumeroFiltro);
     
     // Melhor formatação de datas para API .NET
     if (dataFiltroInicio) {
@@ -159,17 +155,14 @@ export class FinancPagarService {
 
     // Parâmetros booleanos precisam ser convertidos explicitamente para string
     if (parcelasVencidasFiltro !== undefined) {
-      params = params.set(
-        'parcelasVencidasFiltro',
-        parcelasVencidasFiltro.toString()
-      );
+      params = params.set('parcelasVencidasFiltro', parcelasVencidasFiltro.toString());
     }
 
     if (dataBaseFiltro) params = params.set('dataBaseFiltro', dataBaseFiltro);
 
-    if (paginar !== undefined) {
-      params = params.set('paginar', paginar.toString());
-    }
+    // if (paginar !== undefined) {
+    //   params = params.set('paginar', paginar.toString());
+    // }
 
     return this.http.get<ResponseModel<SubFinancPagar[]>>(
       `${this.baseURL}ListarSintetico`,

@@ -15,14 +15,14 @@ export class ProfissaoService {
   baseURL: string = environment.apiUrl +  'api/Profissao/';
 
   Listar(
-    page?: number,
+    pageNumber?: number,
     pageSize?: number,
     descricaoFiltro?: string
   ): Observable<ResponseModel<Profissao[]>> {
     
     let params = new HttpParams()
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:4242440096.
-    if (page) params = params.set('page', page.toString());
+    if (pageNumber) params = params.set('pageNumber', pageNumber.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
     

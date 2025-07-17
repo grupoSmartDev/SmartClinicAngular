@@ -88,7 +88,7 @@ export class ListarProfissaoComponent {
       this.lista = cachedData.ListCache;
       this.totalItems = cachedData.totalItems;
     } else {
-      this.profissaoService.Listar(undefined, undefined, this.descricaoFiltro).subscribe({
+      this.profissaoService.Listar(this.currentPage, this.pageSize, this.descricaoFiltro).subscribe({
         next: (data) => {
           if (data.dados) {
             this.lista = data.dados;
