@@ -39,9 +39,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'; // Plugin de visualização D
 import timeGridPlugin from '@fullcalendar/timegrid'; // Plugin de visualização TimeGrid
 import interactionPlugin from '@fullcalendar/interaction';
 import { DashboardComponent } from './_pages/dashboard/dashboard.component';
-import { ClienteChartsComponent } from './_components/cliente-charts/cliente-charts.component';
 import { AgendamentoChartsComponent } from './_components/agendamento-charts/agendamento-charts.component';
-import { GeneroChartsComponent } from './_components/genero-charts/genero-charts.component'; // Plugin para 
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { LoginComponent } from './_pages/login/login.component';
@@ -171,9 +169,7 @@ import { PacienteDetailsComponent } from './_pages/paciente/paciente-completo/pa
     ModalConselhoComponent,
     AgendaComponent,
     DashboardComponent,
-    ClienteChartsComponent,
     AgendamentoChartsComponent,
-    GeneroChartsComponent,
     MainLayoutComponent,
     LoginComponent,
     MenuComponent,
