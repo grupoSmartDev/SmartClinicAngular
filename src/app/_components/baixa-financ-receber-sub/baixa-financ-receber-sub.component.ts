@@ -54,10 +54,10 @@ export class BaixaFinancReceberSubComponent implements OnInit, OnChanges {
       parcelaAtualizada.valorPago = this.valorPago;
       parcelaAtualizada.observacao = this.observacao;
       
-      if(parcelaAtualizada.valorPago != this.financReceberSub.valor){
-        alert("Erro ao tentar baixar a parcela, verifique os valores a serem pagos");
-        return;
-      }
+      // if(parcelaAtualizada.valorPago != this.financReceberSub.valor){
+      //   alert("Erro ao tentar baixar a parcela, verifique os valores a serem pagos");
+      //   return;
+      // }
 
       this.financReceberService.BaixarParcela(parcelaAtualizada).subscribe({
         next: (response) => {

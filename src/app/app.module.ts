@@ -54,8 +54,6 @@ import { ListarCentroDeCustoComponent } from './_pages/centroDeCusto/listar-cent
 import { ModalCentroDeCustoComponent } from './_pages/centroDeCusto/modal-centro-de-custo/modal-centro-de-custo.component';
 import { ModalSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/modal-sub-centro-de-custo/modal-sub-centro-de-custo.component';
 import { ListarSubCentroDeCustoComponent } from './_pages/subCentroDeCusto/listar-sub-centro-de-custo/listar-sub-centro-de-custo.component';
-import { ListarContasAPagarComponent } from './_pages/contasAPagar/listar-contas-apagar/listar-contas-apagar.component';
-import { ModalContasAPagarComponent } from './_pages/contasAPagar/modal-contas-apagar/modal-contas-apagar.component';
 import { ListarProfissionalComponent } from './_pages/profissional/listar-profissional/listar-profissional.component';
 import { ModalProfissionalComponent } from './_pages/profissional/modal-profissional/modal-profissional.component';
 import { CardDadosComponent } from './_components/card-dados/card-dados.component';
@@ -184,8 +182,6 @@ import { PacienteDetailsComponent } from './_pages/paciente/paciente-completo/pa
     ModalCentroDeCustoComponent,
     ModalSubCentroDeCustoComponent,
     ListarSubCentroDeCustoComponent,
-    ListarContasAPagarComponent,
-    ModalContasAPagarComponent,
     ListarProfissionalComponent,
     ModalProfissionalComponent,
     CardDadosComponent,
