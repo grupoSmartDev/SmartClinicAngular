@@ -135,6 +135,7 @@ import { PacienteEvolucaoDialogComponent } from './_pages/paciente/paciente-comp
 import { PacientePlanoDialogComponent } from './_pages/paciente/paciente-completo/dialogs/paciente-plano-dialog/paciente-plano-dialog.component';
 import { PacientePlanoRenovacaoDialogComponent } from './_pages/paciente/paciente-completo/dialogs/paciente-plano-renovacao-dialog/paciente-plano-renovacao-dialog.component';
 import { PacienteDetailsComponent } from './_pages/paciente/paciente-completo/paciente-details/paciente-details.component';
+import { BtnWppFloatComponent } from './_components/btn-wpp-float/btn-wpp-float.component';
 
 @NgModule({
   declarations: [
@@ -256,6 +257,7 @@ import { PacienteDetailsComponent } from './_pages/paciente/paciente-completo/pa
     PacientePlanoDialogComponent,
     PacientePlanoRenovacaoDialogComponent,
     PacienteDetailsComponent,
+    BtnWppFloatComponent,
   ],
   imports: [
     BrowserModule,
