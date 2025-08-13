@@ -19,6 +19,17 @@
             Você está a um passo de ter o ClinicSmart como aliado do crescimento
             do seu negócio.
           </p>
+
+          <!-- Mostrar informações do plano selecionado se veio da página de preços -->
+          <div *ngIf="selectedPlanData" class="alert alert-info mt-3">
+            <strong>Plano selecionado:</strong>
+            {{ selectedPlanData.plan | titlecase }} - <strong>Período:</strong>
+            {{
+              selectedPlanData.billing === "monthly" ? "Mensal" : "Semestral"
+            }}
+            - <strong>Valor:</strong> R$
+            {{ selectedPlanData.price | number : "1.2-2" }}
+          </div>
         </div>
 
         <div class="card-body p-4">
@@ -53,29 +64,6 @@
               </div>
             </div>
 
-            <!-- User information -->
-            <!-- <div class="mb-3">
-              <label for="usuario" class="form-label"
-                >Crie seu usuário de acesso</label
-              >
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="Nome"
-                id="usuario"
-                placeholder="Não use espaços e caracteres especiais"
-              />
-              <div
-                *ngIf="
-                  signupForm.get('Nome')!.invalid &&
-                  signupForm.get('Nome')!.touched
-                "
-                class="text-danger small mt-1"
-              >
-                Nome de usuário é obrigatório
-              </div>
-            </div> -->
-
             <div class="mb-3">
               <label for="email" class="form-label">E-mail</label>
               <input
@@ -95,21 +83,6 @@
                 E-mail válido é obrigatório
               </div>
             </div>
-
-            <!-- <div class="mb-3">
-              <label for="senha" class="form-label">Senha</label>
-              <div class="input-group">
-                <input
-                  type="password"
-                  class="form-control form-control-sm"
-                  id="senha"
-                  placeholder="Crie uma senha forte"
-                />
-                <span class="input-group-text">
-                  <i class="bi bi-eye"></i>
-                </span>
-              </div>
-            </div> -->
 
             <div class="row">
               <div class="col-md-6 mb-3">
@@ -271,28 +244,81 @@
               </div>
             </div>
 
-            <!-- Plan Selection -->
-            <div class="mb-3">
-              <label for="plano" class="form-label">Plano Escolhido</label>
-              <select
-                class="form-select"
-                formControlName="PlanoEscolhido"
-                id="plano"
-              >
-                <option value="" selected disabled>Selecione</option>
-                <option value="Basic">Basic</option>
-                <option value="Plus">Plus</option>
-                <option value="premium">Premium</option>
-              </select>
-              <div
-                *ngIf="
-                  signupForm.get('PlanoEscolhido')!.invalid &&
-                  signupForm.get('PlanoEscolhido')!.touched
-                "
-                class="text-danger small mt-1"
-              >
-                Plano é obrigatório
+            <!-- Plan Selection - Agora com dois selects lado a lado -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="plano" class="form-label">Plano Escolhido</label>
+                <select
+                  class="form-select"
+                  formControlName="PlanoEscolhido"
+                  id="plano"
+                >
+                  <option value="" selected disabled>Selecione</option>
+                  <option value="Basic">Basic</option>
+                  <option value="Plus">Plus</option>
+                  <option value="Premium">Premium</option>
+                </select>
+                <div
+                  *ngIf="
+                    signupForm.get('PlanoEscolhido')!.invalid &&
+                    signupForm.get('PlanoEscolhido')!.touched
+                  "
+                  class="text-danger small mt-1"
+                >
+                  Plano é obrigatório
+                </div>
               </div>
+
+              <!-- Novo select para período de cobrança -->
+              <div class="col-md-6 mb-3" *ngIf="selectedOption === 'plan'">
+                <label for="periodo" class="form-label"
+                  >Período de Cobrança</label
+                >
+                <select
+                  class="form-select"
+                  formControlName="PeriodoCobranca"
+                  id="periodo"
+                >
+                  <option value="" selected disabled>Selecione</option>
+                  <option value="monthly">Mensal</option>
+                  <option value="semiannual">Semestral</option>
+                </select>
+                <div
+                  *ngIf="
+                    signupForm.get('PeriodoCobranca')!.invalid &&
+                    signupForm.get('PeriodoCobranca')!.touched &&
+                    selectedOption === 'plan'
+                  "
+                  class="text-danger small mt-1"
+                >
+                  Período de cobrança é obrigatório
+                </div>
+              </div>
+            </div>
+
+            <!-- Mostrar preço atualizado quando plano e período estiverem selecionados -->
+            <div
+              *ngIf="
+                selectedOption === 'plan' &&
+                signupForm.get('PlanoEscolhido')?.value &&
+                signupForm.get('PeriodoCobranca')?.value
+              "
+              class="alert alert-success mb-3"
+            >
+              <strong>Valor do plano:</strong> R$
+              {{ getCurrentPrice() | number : "1.2-2" }}
+              <span
+                *ngIf="signupForm.get('PeriodoCobranca')?.value === 'monthly'"
+              >
+                /mês
+              </span>
+              <span
+                *ngIf="
+                  signupForm.get('PeriodoCobranca')?.value === 'semiannual'
+                "
+              >
+                /semestre
+              </span>
             </div>
 
             <!-- Payment method (only shown when plan is selected) -->

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-price',
@@ -6,7 +7,10 @@ import { Component } from '@angular/core';
   styleUrl: './price.component.css',
 })
 export class PriceComponent {
-  isMonthly = true; // Por padrão, mostra preços mensais
+
+  constructor(private router: Router) { }
+
+  isMonthly = false; // Por padrão, mostra preços semestral
 
   plans = [
     {
@@ -89,5 +93,20 @@ export class PriceComponent {
   // Calcula a economia semestral (para mostrar no toggle)
   getSavings(plan: any): number {
     return plan.priceMonthly * 6 - plan.priceSemiannual * 6;
+  }
+
+  selectPlan(plan: any): void {
+    const planType = plan.type;
+    const billingPeriod = this.isMonthly ? 'monthly' : 'semiannual';
+    const selectedPrice = this.isMonthly ? plan.priceMonthly : plan.priceSemiannual;
+
+    // Opção 1: Navegação com query parameters
+    this.router.navigate(['/cadastro'], {
+      queryParams: {
+        plan: planType,
+        billing: billingPeriod,
+        price: selectedPrice
+      }
+    });
   }
 }

@@ -108,6 +108,7 @@
               <button
                 class="btn btn-lg w-100 rounded-pill"
                 [ngClass]="plan.popular ? 'btn-primary' : 'btn-success'"
+                (click)="selectPlan(plan)"
               >
                 {{ plan.cta }}
               </button>
