@@ -5,18 +5,20 @@
       Ofereça uma experiência moderna e prática usando tecnologia de ponta e as
       melhores ferramentas de gestão para o seu negócio.
     </p>
-    <a href="#" class="btn btn-success">Conheça nossos planos</a>
+    <a (click)="scrollTo('Assinaturas')" class="btn btn-success"
+      >Conheça nossos planos</a
+    >
   </div>
 
   <div class="row g-4">
     <div class="col-md-4 text-center">
-        <app-card-beneficios
+      <app-card-beneficios
         [icone]="'bi bi-calendar2-check'"
         [tituloCard]="'Agendamento Online'"
         [descricao]="
           'Permita que seus clientes agendem atendimentos de forma prática e rápida.'
         "
-      ></app-card-beneficios>   
+      ></app-card-beneficios>
     </div>
 
     <div class="col-md-4 text-center">
@@ -64,10 +66,11 @@
       <app-card-beneficios
         [icone]="'bi bi-people'"
         [tituloCard]="'Gestão de Clientes'"
-        [descricao]="'Crie e gerencie clientes de forma eficiente. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;'"
+        [descricao]="
+          'Crie e gerencie clientes de forma eficiente. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;'
+        "
       >
-      
-    </app-card-beneficios>
+      </app-card-beneficios>
     </div>
   </div>
 </div>
