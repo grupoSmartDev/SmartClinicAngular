@@ -6,5 +6,7 @@ import { Component } from '@angular/core';
   styleUrl: './segunda-dobra.component.css'
 })
 export class SegundaDobraComponent {
-
+  openWhatsApp(message: string) {
+    window.open(`https://wa.me/5519953214593?text=${message}`, '_blank');
+  }
 }
