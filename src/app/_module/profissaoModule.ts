@@ -1,4 +1,5 @@
-export interface Profissao{
-    id : number,
-    descricao : string
+export interface Profissao {
+    id: number,
+    descricao: string,
+    ativo: boolean
 }

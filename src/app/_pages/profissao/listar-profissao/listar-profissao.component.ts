@@ -6,6 +6,7 @@ import { ProfissaoService } from '../../../_services/profissao.service';
 import { ToastrService } from 'ngx-toastr';
 import * as bootstrap from 'bootstrap';
 import { TabService } from '../../../_services/tabs.service';
+import { DialogAtivarComponent } from '../../../_components/dialog-ativar/dialog-ativar.component';
 
 interface CacheData {
   ListCache: Profissao[];
@@ -20,6 +21,7 @@ interface CacheData {
 export class ListarProfissaoComponent {
   @ViewChild(ModalProfissaoComponent) modalSalaComponent!: ModalProfissaoComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
+  @ViewChild('dialogAtivar') dialogAtivar!: DialogAtivarComponent;
   lista: Profissao[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
@@ -146,6 +148,23 @@ export class ListarProfissaoComponent {
     });
   }
 
+  Ativar() {
+    this.profissaoService.Ativar(this.dataParaExcluir).subscribe({
+      next: (response) => {
+        console.log('Profissional ativado com sucesso:', response);
+        this.toast.success(response.mensagem, 'Ativado');
+      },
+      error: (err) => {
+        console.error('Erro ao ativar Profissional :', err);
+        this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao ativar um Profissional');
+      },
+      complete: () => {
+        this.atualizarLista();
+      }
+    })
+  }
+
+
   atualizarLista(): void {
     this.invalidateCache();
     this.loadData(); // Chama o método para buscar os status novamente
@@ -156,12 +175,21 @@ export class ListarProfissaoComponent {
     this.confirmDialog.openDialog();
   }
 
+  promptAtivar(dataParaAtivar: any) {
+    this.dataParaExcluir = dataParaAtivar;
+    this.dialogAtivar.openDialog();
+  }
+
   confirmDelete() {
     this.Excluir(this.dataParaExcluir);
   }
 
   cancelDelete() {
     this.idParaExcluir = '';
+  }
+
+  confirmAtivar() {
+    this.Ativar();
   }
 
   onPageChange(page: number): void {
