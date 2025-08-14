@@ -28,4 +28,6 @@ export interface Profissional {
 
     // Data de cadastro
     dataCadastro: Date; // Guarda a data de criação do registro
+
+    ativo: Boolean
 }

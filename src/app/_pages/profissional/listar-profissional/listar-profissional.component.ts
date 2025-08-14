@@ -9,6 +9,7 @@ import { ModalProfissionalComponent } from '../modal-profissional/modal-profissi
 import { Profissao } from '../../../_module/profissaoModule';
 import { TabService } from '../../../_services/tabs.service';
 import { ProfissaoService } from '../../../_services/profissao.service';
+import { DialogAtivarComponent } from '../../../_components/dialog-ativar/dialog-ativar.component';
 
 @Component({
   selector: 'app-listar-profissional',
@@ -19,6 +20,7 @@ export class ListarProfissionalComponent {
   constructor(private profissionalService: ProfissionalService, private toast: ToastrService, private tabService: TabService, private profissaoService: ProfissaoService) { }
   @ViewChild(ModalProfissionalComponent) modalProfissional!: ModalProfissionalComponent;
   @ViewChild('confirmDialog') confirmDialog!: ConfirmDialogComponent;
+  @ViewChild('dialogAtivar') dialogAtivar!: DialogAtivarComponent;
   lista: Profissional[] = [];
   listaProfissao: Profissao[] = [];
   errorMessage: string = '';
@@ -89,13 +91,37 @@ export class ListarProfissionalComponent {
       next: (response) => {
         console.log('Profissional excluído com sucesso:', response);
         this.lista = this.lista.filter(profissional => profissional.id !== id);
-        this.toast.success('Profissional  excluído com sucesso!', 'Excluído');
+        this.toast.success(response.mensagem, 'Inativo');
       },
       error: (err) => {
         console.error('Erro ao excluir Profissional :', err);
         this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir um Profissional');
+      },
+      complete: () => {
+        this.atualizarLista();
       }
     });
+  }
+
+  Ativar() {
+    this.profissionalService.Ativar(this.dataParaExcluir).subscribe({
+      next: (response) => {
+        console.log('Profissional ativado com sucesso:', response);
+        this.toast.success(response.mensagem, 'Ativado');
+      },
+      error: (err) => {
+        console.error('Erro ao ativar Profissional :', err);
+        this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao ativar um Profissional');
+      },
+      complete: () => {
+        this.atualizarLista();
+      }
+    })
+  }
+
+  promptAtivar(dataParaAtivar: any) {
+    this.dataParaExcluir = dataParaAtivar;
+    this.dialogAtivar.openDialog();
   }
 
   getProfissao(): void {
@@ -122,6 +148,10 @@ export class ListarProfissionalComponent {
 
   confirmDelete() {
     this.Excluir(this.dataParaExcluir);
+  }
+
+  confirmAtivar() {
+    this.Ativar();
   }
 
   cancelDelete() {

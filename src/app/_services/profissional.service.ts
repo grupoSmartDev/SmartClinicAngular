@@ -62,7 +62,9 @@ export class ProfissionalService {
   Atualizar(profissonal: Profissional): Observable<ResponseModel<Profissional>> {
     return this.http.put<ResponseModel<Profissional>>(`${this.baseURL}Editar`, profissonal);
   }
-
+  Ativar(profissonal: Profissional): Observable<ResponseModel<Profissional>> {
+    return this.http.put<ResponseModel<Profissional>>(`${this.baseURL}Ativar`, profissonal);
+  }
   Deletar(id: string): Observable<ResponseModel<void>> {
     return this.http.delete<ResponseModel<void>>(`${this.baseURL}Delete/${id}`);
   }
