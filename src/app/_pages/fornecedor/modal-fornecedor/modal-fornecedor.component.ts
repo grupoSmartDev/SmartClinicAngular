@@ -165,8 +165,15 @@ export class ModalFornecedorComponent implements OnInit {
         });
       } else {
         this.fornecedorService.Criar(fornecedorToSave).subscribe({
-          next: () =>
-            this.toast.success('Fornecedor criado com sucesso', 'Parabéns'),
+          next: (response) => {
+            let message = response.mensagem;
+            let status = response.status;
+            if (status) {
+              this.toast.success(message, 'Parabéns');
+            } else {
+              this.toast.error(message, 'Erro');
+            }
+          },
           error: () =>
             this.toast.error(
               'Erro ao criar Fornecedor',

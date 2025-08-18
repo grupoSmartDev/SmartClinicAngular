@@ -135,6 +135,8 @@
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="uf"
+                    appLetters
+                    mask="AA"
                     [ngClass]="{
                       'is-invalid':
                         formulario.get('uf')?.invalid &&
