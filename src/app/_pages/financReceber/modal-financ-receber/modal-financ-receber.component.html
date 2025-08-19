@@ -225,9 +225,14 @@
                 id="valor"
                 class="form-control form-control-sm"
                 formControlName="valor"
-                mask="separator.2"
-                thousandSeparator="."
-                decimalMarker=","
+                [currencyMask]="{
+                  prefix: '',
+                  thousands: '.',
+                  decimal: ',',
+                  precision: 2,
+                  allowNegative: false
+                }"
+                inputmode="numeric"
                 (change)="onValorTotalChange()"
                 (blur)="gerarParcelas()"
                 placeholder="Informe o valor total"
@@ -335,7 +340,14 @@
                   </td>
                   <td>
                     <input
-                      type="number"
+                      [currencyMask]="{
+                        prefix: '',
+                        thousands: '.',
+                        decimal: ',',
+                        precision: 2,
+                        allowNegative: false
+                      }"
+                      inputmode="numeric"
                       class="form-control form-control-sm"
                       formControlName="valor"
                       readonly

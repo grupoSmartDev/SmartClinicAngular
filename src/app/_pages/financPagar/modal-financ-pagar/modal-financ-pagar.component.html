@@ -226,9 +226,14 @@
                 (change)="onValorTotalChange()"
                 (blur)="gerarParcelas()"
                 placeholder="Informe o valor total"
-                mask="separator.2"
-                thousandSeparator="."
-                decimalMarker=","
+                [currencyMask]="{
+                  prefix: '',
+                  thousands: '.',
+                  decimal: ',',
+                  precision: 2,
+                  allowNegative: false
+                }"
+                inputmode="numeric"
                 [ngClass]="{
                   'is-invalid':
                     formulario.get('valor')?.invalid &&
@@ -328,9 +333,16 @@
                   </td>
                   <td>
                     <input
-                      type="number"
                       class="form-control form-control-sm"
                       formControlName="valor"
+                      [currencyMask]="{
+                        prefix: '',
+                        thousands: '.',
+                        decimal: ',',
+                        precision: 2,
+                        allowNegative: false
+                      }"
+                      inputmode="numeric"
                       readonly
                     />
                   </td>

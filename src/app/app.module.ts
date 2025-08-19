@@ -138,6 +138,7 @@ import { PacienteDetailsComponent } from './_pages/paciente/paciente-completo/pa
 import { BtnWppFloatComponent } from './_components/btn-wpp-float/btn-wpp-float.component';
 import { LettersDirective } from './_shared/pipes/letters.directive';
 import { DialogAtivarComponent } from './_components/dialog-ativar/dialog-ativar.component';
+import { NgxCurrencyDirective } from 'ngx-currency';
 
 @NgModule({
   declarations: [
@@ -272,7 +273,7 @@ import { DialogAtivarComponent } from './_components/dialog-ativar/dialog-ativar
     ToastrModule.forRoot(),
     NgxMaskDirective,
     FullCalendarModule,
-    NgxChartsModule,
+    NgxCurrencyDirective ,
     FormsModule,
     CommonModule,
     PaginationModule.forRoot(),

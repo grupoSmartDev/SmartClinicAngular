@@ -32,6 +32,7 @@
     "bootswatch": "^5.3.3",
     "jquery": "^3.7.1",
     "ngx-bootstrap": "~8.0.0",
+    "ngx-currency": "^19.0.0",
     "ngx-mask": "^18.0.0",
     "ngx-spinner": "^17.0.0",
     "ngx-toastr": "^19.0.0",
@@ -42,9 +43,12 @@
     "zone.js": "~0.14.10"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^18.2.2",
-    "@angular/cli": "^18.2.2",
+    "@angular-devkit/architect": "^0.1800.7",
+    "@angular-devkit/build-angular": "^18.2.20",
+    "@angular-devkit/core": "^18.2.20",
+    "@angular/cli": "^18.2.20",
     "@angular/compiler-cli": "^18.2.0",
+    "@schematics/angular": "^18.2.20",
     "@types/bootstrap": "^5.2.10",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.2.0",
