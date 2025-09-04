@@ -164,12 +164,17 @@ export class ModalFinanceiroReceber implements OnInit {
           dataPagamento = this.datePipe.formatToHtmlDate(dataPagamento);
         }
 
+        // Formata o valor para o formato brasileiro (ex: 1.234,56)
+        const valorFormatado = typeof subFinanc.valor === 'number'
+          ? subFinanc.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          : subFinanc.valor;
+
         this.subFinancReceber.push(
           this.fb.group({
             id: [subFinanc.id],
             financReceberId: [subFinanc.financReceberId],
             parcela: [subFinanc.parcela],
-            valor: [subFinanc.valor, [Validators.required, Validators.min(0)]],
+            valor: [valorFormatado, [Validators.required, Validators.min(0)]],
             dataVencimento: [dataVencimento],
             dataPagamento: [dataPagamento],
             observacao: [subFinanc.observacao],
@@ -189,6 +194,7 @@ export class ModalFinanceiroReceber implements OnInit {
   fecharModal() {
     let btnCancelar = document.getElementById('btnCancelar') as HTMLElement;
     this.formulario.reset();
+    this.subFinancReceber.clear();
     this.formulario
       .get('dataEmissao')
       ?.setValue(this.datePipe.formatToHtmlDate(new Date()));
@@ -245,22 +251,24 @@ export class ModalFinanceiroReceber implements OnInit {
   }
 
   gerarParcelas(): void {
-    this.subFinancReceber.clear();
-    
     const valorTotal = this.formulario.get('valor')?.value || 0;
     const quantidadeParcelas = this.formulario.get('parcela')?.value || 1;
-    const valorBase = Math.floor((valorTotal / quantidadeParcelas) * 100) / 100; 
+    const valorBase = Math.floor((valorTotal / quantidadeParcelas) * 100) / 100;
     const totalBase = valorBase * quantidadeParcelas;
-    const diferenca = parseFloat((valorTotal - totalBase).toFixed(2)); 
+    const diferenca = parseFloat((valorTotal - totalBase).toFixed(2));
 
     for (let i = 0; i < quantidadeParcelas; i++) {
       const dataVencimento = new Date();
-      const valor = i === quantidadeParcelas - 1 ? parseFloat((valorBase + diferenca).toFixed(2)) : valorBase;
-      
-      dataVencimento.setMonth(dataVencimento.getMonth() + i);
+      const valor =
+        i === quantidadeParcelas - 1
+          ? parseFloat((valorBase + diferenca).toFixed(2))
+          : valorBase;
 
-      this.subFinancReceber.push(
-        this.fb.group({
+      let formGroup = this.subFinancReceber.at(i) as FormGroup;
+
+      if (!formGroup) {
+        dataVencimento.setMonth(dataVencimento.getMonth() + i);
+        formGroup = this.fb.group({
           id: [null],
           financReceberId: [null],
           parcela: [i + 1],
@@ -276,8 +284,39 @@ export class ModalFinanceiroReceber implements OnInit {
           multa: [0],
           formaPagamentoId: [null],
           tipoPagamentoId: [null],
-        })
-      );
+        });
+        this.subFinancReceber.push(formGroup);
+      } else {
+        formGroup.patchValue({
+          valor: valor,
+          // dataVencimento: dataVencimento.toISOString().split('T')[0],
+          parcela: i + 1,
+        });
+      }
+
+      // this.subFinancReceber.push(
+      //   this.fb.group({
+      //     id: [null],
+      //     financReceberId: [null],
+      //     parcela: [i + 1],
+      //     valor: [valor, [Validators.required, Validators.min(0)]],
+      //     dataVencimento: [
+      //       dataVencimento.toISOString().split('T')[0],
+      //       Validators.required,
+      //     ],
+      //     dataPagamento: [null],
+      //     observacao: [''],
+      //     desconto: [0],
+      //     juros: [0],
+      //     multa: [0],
+      //     formaPagamentoId: [null],
+      //     tipoPagamentoId: [null],
+      //   })
+      // );
+    }
+
+    while (this.subFinancReceber.length > quantidadeParcelas) {
+      this.subFinancReceber.removeAt(this.subFinancReceber.length - 1);
     }
   }
 

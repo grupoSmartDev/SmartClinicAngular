@@ -163,10 +163,18 @@ export class ModalFinancPagarComponent {
   }
 
   fecharModal() {
+    // this.formulario.reset();
+    // this.formulario
+    //   .get('dataEmissao')
+    //   ?.setValue(this.datePipe.formatToHtmlDate(new Date()));
+
+    let btnCancelar = document.getElementById('btnCancelar') as HTMLElement;
     this.formulario.reset();
+    this.subFinancPagar.clear();
     this.formulario
       .get('dataEmissao')
       ?.setValue(this.datePipe.formatToHtmlDate(new Date()));
+    btnCancelar.click();
   }
 
   onSubmi() {
@@ -204,45 +212,37 @@ export class ModalFinancPagarComponent {
       const dadosToSave: FinancPagar = this.formulario.value as FinancPagar;
 
       this.isLoading = true;
-      if (dadosToSave.id) {
-        this.financPagarService.Atualizar(dadosToSave).subscribe({
-          next: () => {
-            this.toast.success(
-              'Conta a pagar atualizada com sucesso',
-              'Parabéns'
-            );
-            this.dadosAtualizado.emit();
-            btnCancelar.click();
-            this.isLoading = false;
-            this.fecharModal();
-          },
-          error: () => {
-            this.toast.error(
-              'Tente novamente ou fale com o suporte',
-              'Erro ao atualizar'
-            );
-          },
-        });
-      } else {
-        this.financPagarService.Criar(dadosToSave).subscribe({
-          next: () => {
-            this.toast.success('Conta a pagar criada com sucesso', 'Parabéns');
-            this.dadosAtualizado.emit();
-            this.isLoading = false;
-            btnCancelar.click();
-            this.fecharModal();
-          },
-          error: () => {
-            this.isLoading = false;
-            this.toast.error(
-              'Tente novamente ou fale com o suporte',
-              'Erro ao criar'
-            );
-          },
-        });
-      }
+      const saveOperation = dadosToSave.id
+        ? this.financPagarService.Atualizar(dadosToSave)
+        : this.financPagarService.Criar(dadosToSave);
+      saveOperation.subscribe({
+        next: () => {
+          const action = dadosToSave.id ? 'atualizada' : 'criada';
+          this.toast.success(
+            `Conta a pagar ${action} com sucesso!`,
+            'Parabéns'
+          );
+          this.dadosAtualizado.emit();
+          // btnCancelar.click();
+          this.isLoading = false;
+          let inputPacientePesquisado = document.getElementById(
+            'paciente'
+          ) as HTMLInputElement;
+          inputPacientePesquisado.value = '';
+          this.fecharModal();
+        },
+        error: () => {
+          this.isLoading = false;
+          this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+        }
+      });
     } else {
-      console.error('Formulário inválido');
+      this.formulario.markAllAsTouched();
+      this.toast.error(
+        'Por favor, preencha todos os campos obrigatórios',
+        'Erro'
+      );
+      this.isLoading = false;
     }
   }
 
