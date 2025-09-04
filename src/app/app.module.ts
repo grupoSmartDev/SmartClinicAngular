@@ -139,6 +139,7 @@ import { BtnWppFloatComponent } from './_components/btn-wpp-float/btn-wpp-float.
 import { LettersDirective } from './_shared/pipes/letters.directive';
 import { DialogAtivarComponent } from './_components/dialog-ativar/dialog-ativar.component';
 import { NgxCurrencyDirective } from 'ngx-currency';
+import { ListarComissoesComponent } from './_pages/comissao/listar-comissoes/listar-comissoes.component';
 
 @NgModule({
   declarations: [
@@ -263,6 +264,7 @@ import { NgxCurrencyDirective } from 'ngx-currency';
     BtnWppFloatComponent,
     LettersDirective,
     DialogAtivarComponent,
+    ListarComissoesComponent,
   ],
   imports: [
     BrowserModule,

@@ -229,6 +229,13 @@
             >Sintético</a
           >
         </li>
+        <li class="sidebar-item">
+          <a
+            class="sidebar-link"
+            (click)="openTab('/Comissoes/Listar', 'Comissões')"
+            >Comissões</a
+          >
+        </li>
       </ul>
     </li>
 
@@ -271,55 +278,6 @@
       </ul>
     </li>
 
-    <!-- <li class="sidebar-item">
-      <a
-        href="#"
-        class="sidebar-link collapsed has-dropdown"
-        (click)="toggleSubmenu('auth')"
-        data-bs-toggle="collapse"
-      >
-        <i class="lni lni-files"></i>
-        <span>Relatórios</span>
-      </a>
-      <ul
-        [ngClass]="{
-          'sidebar-dropdown': true,
-          collapse: !isMenuOpen['auth'],
-          show: isMenuOpen['auth']
-        }"
-        id="auth"
-      >
-        <li class="sidebar-item">
-          <a
-            class="sidebar-link"
-            (click)="openTab('/relatorios/pacientes', 'Relatório de Pacientes')"
-            >Pacientes</a
-          >
-        </li>
-        <li class="sidebar-item">
-          <a
-            class="sidebar-link"
-            (click)="openTab('/relatorios/contasPagar', 'Contas a Pagar')"
-            >Contas a Pagar</a
-          >
-        </li>
-        <li class="sidebar-item">
-          <a
-            class="sidebar-link"
-            (click)="openTab('/relatorios/contasReceber', 'Contas a Receber')"
-            >Contas a Receber</a
-          >
-        </li>
-        <li class="sidebar-item">
-          <a
-            class="sidebar-link"
-            (click)="openTab('/relatorios/tipoPagamento', 'Tipo de Pagamento')"
-            >Tipo de Pagamento</a
-          >
-        </li>
-      </ul>
-    </li> -->
-
     <li class="sidebar-item">
       <a class="sidebar-link" (click)="openTab('/log/listar', 'Log')">
         <i class="bi bi-person-lines-fill"></i>
@@ -348,7 +306,9 @@
         <li class="sidebar-item">
           <a
             class="sidebar-link"
-            (click)="openTab('/Configuracoes/alterarDadosUsuario', 'Dados do Usuário')"
+            (click)="
+              openTab('/Configuracoes/alterarDadosUsuario', 'Dados do Usuário')
+            "
           >
             <i class="bi bi-person-lines-fill"></i>
             <span>Dados do Usuário</span>
@@ -364,11 +324,4 @@
       </a>
     </li>
   </ul>
-  <!-- 
-  <div class="sidebar-footer">
-    <a class="sidebar-link" (click)="logout()">
-      <i class="lni lni-exit"></i>
-      <span>Logout</span>
-    </a>
-  </div> -->
 </aside>
