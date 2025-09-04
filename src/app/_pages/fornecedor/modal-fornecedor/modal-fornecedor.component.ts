@@ -52,6 +52,17 @@ export class ModalFornecedorComponent implements OnInit {
       razao: [''],
       fantasia: [''],
 
+      // Informações da Área da Saúde
+      crf: [''],
+      anvisa: [''],
+      categoriaFornecedor: [''],
+      especialidadeFornecimento: [''],
+
+      // Representante
+      representante: [''],
+      telefoneRepresentante: [''],
+      emailRepresentante: [''],
+
       // Comum
       email: [''],
       pais: ['', Validators.required],
@@ -133,7 +144,7 @@ export class ModalFornecedorComponent implements OnInit {
             uf: data.uf,
           });
         } else {
-          alert('CEP não encontrado.');
+          this.toast.error('CEP não encontrado.', 'Erro');
         }
       });
     }
@@ -192,17 +203,13 @@ export class ModalFornecedorComponent implements OnInit {
   carregarFornecedor(fornecedor: any) {
     const fornecedorCorrigido = {
       ...fornecedor,
-      dataNascimento: fornecedor.dataNascimento ? new Date(fornecedor.dataNascimento).toISOString().substring(0, 10) : null
+      dataNascimento: fornecedor.dataNascimento ?
+        new Date(fornecedor.dataNascimento).toISOString().substring(0, 10) : null
     };
 
     this.formulario.patchValue(fornecedorCorrigido);
     this.onTipoChange();
   }
-
-  // carregarFornecedor(fornecedor: any) {
-  //   this.formulario.patchValue(this.fornecedor);
-  //   this.onTipoChange();
-  // }
 
   fecharModal() {
     this.formulario.reset();
