@@ -8,14 +8,14 @@ export interface ComissaoCalculada {
   profissionalId: number;
   agendamentoId: number;
   dataAgendamento: Date;
-  tipoComissaoUtilizado: TipoComissao;
+  tipoComissaoUtilizado: String | string;
   percentualOuValor: number;
   valorBase: number;
   valorComissao: number;
   nomePaciente?: string;
   nomePlano?: string;
   observacoes?: string;
-  status: StatusComissao;
+  status: string | string;
   dataPagamento?: Date;
   usuarioPagamento?: string;
   dataCalculo: Date;
@@ -107,28 +107,28 @@ export class ComissaoService {
   }
 
   // Métodos auxiliares
-  getStatusText(status: StatusComissao): string {
+  getStatusText(status: string): string {
     switch (status) {
-      case StatusComissao.Pendente: return 'Pendente';
-      case StatusComissao.Pago: return 'Pago';
-      case StatusComissao.Cancelado: return 'Cancelado';
+      case "Pendente": return 'Pendente';
+      case "Pago": return 'Pago';
+      case "Cancelado": return 'Cancelado';
       default: return 'Desconhecido';
     }
   }
 
-  getTipoComissaoText(tipo: TipoComissao): string {
+  getTipoComissaoText(tipo: string | String): string {
     switch (tipo) {
-      case TipoComissao.Percentual: return 'Percentual';
-      case TipoComissao.ValorFixo: return 'Valor Fixo';
+      case "P": return 'Percentual';
+      case "VL": return 'Valor Fixo';
       default: return 'Desconhecido';
     }
   }
 
-  getStatusClass(status: StatusComissao): string {
+  getStatusClass(status: string): string {
     switch (status) {
-      case StatusComissao.Pendente: return 'badge bg-warning';
-      case StatusComissao.Pago: return 'badge bg-success';
-      case StatusComissao.Cancelado: return 'badge bg-danger';
+      case "Pendente": return 'badge bg-warning';
+      case "Pago": return 'badge bg-success';
+      case "Cancelado": return 'badge bg-danger';
       default: return 'badge bg-secondary';
     }
   }

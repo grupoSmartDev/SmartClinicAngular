@@ -162,7 +162,7 @@ export class ListarComissoesComponent {
 
     // Verificar se todas são pendentes
     const comissoesPendentes = this.comissoes.filter(c =>
-      this.comissoesSelecionadas.includes(c.id) && c.status === StatusComissao.Pendente
+      this.comissoesSelecionadas.includes(c.id) && c.status === "Pendente"
     );
 
     if (comissoesPendentes.length !== this.comissoesSelecionadas.length) {
@@ -194,7 +194,7 @@ export class ListarComissoesComponent {
 
   // Métodos de seleção
   toggleSelecao(comissao: ComissaoCalculada): void {
-    if (comissao.status !== StatusComissao.Pendente) {
+    if (comissao.status !== "Pendente") {
       return; // Só permite selecionar pendentes
     }
 
@@ -212,7 +212,7 @@ export class ListarComissoesComponent {
     if (checked) {
       // Selecionar todas as pendentes
       this.comissoesSelecionadas = this.comissoes
-        .filter(c => c.status === StatusComissao.Pendente)
+        .filter(c => c.status === "Pendente")
         .map(c => c.id);
     } else {
       // Limpar seleção
@@ -230,12 +230,12 @@ export class ListarComissoesComponent {
 
   // Getters para template
   get todosSelecionados(): boolean {
-    const pendentes = this.comissoes.filter(c => c.status === StatusComissao.Pendente);
+    const pendentes = this.comissoes.filter(c => c.status === "Pendente");
     return pendentes.length > 0 && pendentes.every(c => this.isSelecionada(c.id));
   }
 
   get algunsSelecionados(): boolean {
-    const pendentes = this.comissoes.filter(c => c.status === StatusComissao.Pendente);
+    const pendentes = this.comissoes.filter(c => c.status === "Pendente");
     return this.comissoesSelecionadas.length > 0 && !this.todosSelecionados;
   }
 
@@ -246,15 +246,15 @@ export class ListarComissoesComponent {
   }
 
   // Métodos auxiliares para template
-  getStatusText(status: StatusComissao): string {
+  getStatusText(status: string): string {
     return this.comissaoService.getStatusText(status);
   }
 
-  getTipoComissaoText(tipo: TipoComissao): string {
+  getTipoComissaoText(tipo: string | String): string {
     return this.comissaoService.getTipoComissaoText(tipo);
   }
 
-  getStatusClass(status: StatusComissao): string {
+  getStatusClass(status: string): string {
     return this.comissaoService.getStatusClass(status);
   }
 
