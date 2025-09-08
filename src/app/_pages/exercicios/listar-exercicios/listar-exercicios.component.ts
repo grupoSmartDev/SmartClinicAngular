@@ -110,7 +110,7 @@ export class ListarExerciciosComponent {
         .subscribe({
           next: (data) => {
             if (data.dados) {
-              this.lista = data.dados;
+              this.lista = data.dados.filter((exercicio) => exercicio.evolucaoId == null);
               this.totalItems = data.totalCount ?? 0;
 
               // Armazena os dados no cache

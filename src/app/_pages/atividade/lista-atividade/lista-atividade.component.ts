@@ -107,7 +107,7 @@ export class ListaAtividadeComponent {
         .subscribe({
           next: (data) => {
             if (data.dados) {
-              this.lista = data.dados;
+              this.lista = data.dados.filter((atividade) => atividade.evolucaoId == null);
               this.totalItems = data.totalCount ?? 0;
 
               // Armazena os dados no cache
