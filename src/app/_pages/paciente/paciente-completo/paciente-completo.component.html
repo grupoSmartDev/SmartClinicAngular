@@ -332,10 +332,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- Exemplo de plano -->
+                    @if (Paciente.plano) {
                     <tr>
-                      <td>{{ Paciente.plano?.descricao }}</td>
-                      @switch (Paciente.plano?.tipoMes) { @case ('m') {
+                      <td>{{ Paciente.plano.descricao }}</td>
+                      @switch (Paciente.plano.tipoMes) { @case ('m') {
                       <td>Mensal</td>
                       } @case ('s') {
                       <td>Semestral</td>
@@ -345,14 +345,14 @@
                       <td></td>
                       } }
 
-                      <td>{{ Paciente.plano?.dataFim | datePtBr }}</td>
+                      <td>{{ Paciente.plano.dataFim | datePtBr }}</td>
                       <td>
                         <span
                           class="badge"
-                          [class.bg-success]="Paciente.plano?.ativo"
-                          [class.bg-warning]="!Paciente.plano?.ativo"
+                          [class.bg-success]="Paciente.plano.ativo"
+                          [class.bg-warning]="!Paciente.plano.ativo"
                         >
-                          {{ Paciente.plano?.ativo ? "Ativo" : "Inativo" }}
+                          {{ Paciente.plano.ativo ? "Ativo" : "Inativo" }}
                         </span>
                       </td>
 
@@ -367,6 +367,13 @@
                         </a>
                       </td>
                     </tr>
+                    } @else {
+                    <tr>
+                      <td colspan="5" class="text-center text-muted">
+                        Nenhum plano encontrado
+                      </td>
+                    </tr>
+                    }
                   </tbody>
                 </table>
               </div>

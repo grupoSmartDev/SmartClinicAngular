@@ -316,6 +316,7 @@ export class PacienteCompletoComponent implements OnInit {
 
   // MÉTODOS DE GERENCIAMENTO DE FORMULÁRIO
   adicionarExercicio(): void {
+    debugger
     const novoItem = this.fb.group({
       obs: ['', Validators.required],
       descricao: ['', Validators.required],
@@ -348,6 +349,7 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   salvarEvolucao(): void {
+    debugger
     this.formEvolucao.patchValue({
       pacienteId: this.Paciente.id,
     });
@@ -365,6 +367,26 @@ export class PacienteCompletoComponent implements OnInit {
       ? this.evolucaoService.Atualizar(dataToSave)
       : this.evolucaoService.CriarEvolucaoPaciente(dataToSave);
 
+    if (dataToSave.id) {
+      // Processar exercícios
+      if (dataToSave.exercicios && dataToSave.exercicios.length > 0) {
+        dataToSave.exercicios.forEach((exercicio: Exercicio) => {
+          exercicio.evolucaoId = dataToSave.id;
+        });
+      } else {
+        dataToSave.exercicios = [];
+      }
+
+      // Processar atividades
+      if (dataToSave.atividades && dataToSave.atividades.length > 0) {
+        dataToSave.atividades.forEach((atividade: Atividade) => {
+          atividade.evolucaoId = dataToSave.id;
+        });
+      } else {
+        dataToSave.atividades = [];
+      }
+    }
+
     saveOperation.subscribe({
       next: (response) => {
         const action = dataToSave.id ? 'atualizada' : 'criada';
@@ -372,16 +394,21 @@ export class PacienteCompletoComponent implements OnInit {
         this.isLoading = false;
         this.closeDialog();
 
-        // 🎯 AQUI - atualiza o Paciente.evolucoes diretamente
+        // Verifica se response.dados é array
+        const dadosArray = Array.isArray(response.dados) ? response.dados : [response.dados];
+
         if (dataToSave.id) {
           // Se está editando, atualiza o item existente
           const index = this.Paciente.evolucoes!.findIndex(e => e.id === dataToSave.id);
           if (index !== -1) {
-            this.Paciente.evolucoes![index] = response.dados;
+            const itemAtualizado = dadosArray.find(item => item.id === dataToSave.id);
+            if (itemAtualizado) {
+              this.Paciente.evolucoes![index] = itemAtualizado;
+            }
           }
         } else {
           // Se é novo, adiciona no início da lista
-          this.Paciente.evolucoes!.unshift(response.dados);
+          this.Paciente.evolucoes!.unshift(dadosArray[0]);
         }
       },
       error: (err) => {
