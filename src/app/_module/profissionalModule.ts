@@ -29,5 +29,8 @@ export interface Profissional {
     // Data de cadastro
     dataCadastro: Date; // Guarda a data de criação do registro
 
-    ativo: Boolean
+    ativo: Boolean;
+    tipoComissao?: string; // tipo de comissao P ou VF
+    valorComissao?: number;
+
 }

@@ -10,6 +10,7 @@ import { Profissao } from '../../../_module/profissaoModule';
 import { ProfissaoService } from '../../../_services/profissao.service';
 import { ConselhoService } from '../../../_services/conselho.service';
 import { Conselho } from '../../../_module/conselhoModule';
+import { TipoComissao } from '../../../_services/comissao-service.service';
 
 @Component({
   selector: 'app-modal-profissional',
@@ -55,7 +56,9 @@ export class ModalProfissionalComponent {
       ehUsuario: [false], // padrão desmarcado
 
       // Data de cadastro
-      dataCadastro: [null]
+      dataCadastro: [null],
+      TipoComissao: [null],
+      ValorComissao: [0, Validators.required],
     })
   }
 

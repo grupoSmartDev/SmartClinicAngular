@@ -364,6 +364,46 @@
               </div>
             </div>
 
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0">Informações de Comissão</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="tipoComissao" class="form-label"
+                      >Tipo de comissão</label
+                    >
+                    <select
+                      class="form-select form-select-sm"
+                      formControlName="tipoComissao"
+                    >
+                      <option value="null">Selecione...</option>
+                      <option value="P">Porcentagem</option>
+                      <option value="VF">Valor Fixo</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-3">
+                    <label for="ValorComissao" class="form-label">Valor</label>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="ValorComissao"
+                      onlyNumbers
+                      [currencyMask]="{
+                        prefix: '',
+                        thousands: '.',
+                        decimal: ',',
+                        precision: 2,
+                        allowNegative: false
+                      }"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="row">
               <div class="form-check form-switch mb-3">
                 <input
