@@ -57,8 +57,8 @@ export class ModalProfissionalComponent {
 
       // Data de cadastro
       dataCadastro: [null],
-      TipoComissao: [null],
-      ValorComissao: [0, Validators.required],
+      tipoComissao: [null],
+      valorComissao: ['0,00', Validators.required],
     })
   }
 
