@@ -44,7 +44,25 @@ export class ModalPlanosComponent {
   formulario!: FormGroup;
   valorMensalCalculado: string = '';
 
-
+  private getValoresPadrao() {
+    return {
+      id: null,
+      descricao: null,
+      tempoMinutos: 0,
+      diasSemana: 1,
+      centroDeCustoId: null,
+      valorBimestral: 0,
+      valorTrimestral: 0,
+      valorQuadrimestral: 0,
+      valorSemestral: 0,
+      valorAnual: 0,
+      valorMensal: 0,
+      data: null,
+      pacienteId: null,
+      financeiroId: null,
+      tipoMes: 'a'
+    };
+  }
 
 
   calculoValorMensal(event: any) {
@@ -59,7 +77,7 @@ export class ModalPlanosComponent {
 
 
   onSubmit() {
-
+    debugger
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       this.toast.error('Por favor, preencha os campos obrigatórios.', 'Erro');
@@ -95,7 +113,7 @@ export class ModalPlanosComponent {
 
   fecharModal() {
     const btnCacelar = document.querySelector('#btnCancelar') as HTMLElement;
-    this.formulario.reset();
+    this.formulario.reset(this.getValoresPadrao());
     btnCacelar.click();
   }
 }
