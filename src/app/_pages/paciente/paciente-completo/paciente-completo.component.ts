@@ -588,11 +588,11 @@ export class PacienteCompletoComponent implements OnInit {
 
     switch (tipoMes) {
       case 'm': valor = plano.valorMensal || 0; break;
-      case 'b': valor = plano.valorBimestral || 0; break;
-      case 't': valor = plano.valorTrimestral || 0; break;
-      case 'q': valor = plano.valorQuadrimestral || 0; break;
-      case 's': valor = plano.valorSemestral || 0; break;
-      case 'a': valor = plano.valorAnual || 0; break;
+      case 'b': valor = plano.valorBimestral * 2 || 0; break;
+      case 't': valor = plano.valorTrimestral * 3 || 0; break;
+      case 'q': valor = plano.valorQuadrimestral * 4 || 0; break;
+      case 's': valor = plano.valorSemestral * 6 || 0; break;
+      case 'a': valor = plano.valorAnual * 12 || 0; break;
     }
 
     this.formPlano.get('financeiro.valor')?.setValue(valor);

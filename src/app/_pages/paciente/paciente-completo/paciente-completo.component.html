@@ -741,7 +741,7 @@
             </div>
 
             <div class="col-md-3">
-              <label for="">Valor</label>
+              <label for="">Valor mensal</label>
               <input
                 type="text"
                 formControlName="valor"
@@ -1235,7 +1235,7 @@
                           class="form-select form-select-sm"
                           formControlName="profissionalId"
                         >
-                          <option value="" disabled selected>Selecione</option>
+                          <option value="" selected>Selecione</option>
                           <option
                             *ngFor="let prof of listaProfissional"
                             [value]="prof.id"
@@ -1249,7 +1249,7 @@
                           class="form-select form-select-sm"
                           formControlName="salaId"
                         >
-                          <option value="" disabled selected>Selecione</option>
+                          <option value="" selected>Selecione</option>
                           <option
                             *ngFor="let sala of listaSala"
                             [value]="sala.id"
