@@ -15,7 +15,7 @@
             [ngClass]="selectedEvent ? 'bi-calendar-check' : 'bi-calendar-plus'"
           ></i>
           {{ selectedEvent ? "Detalhes do Evento" : "Novo Agendamento" }}
-          <span>{{ selectedEvent?.data }}</span>
+          <span>{{ selectedDate | datePtBr }}</span>
         </h5>
         <button
           type="button"
