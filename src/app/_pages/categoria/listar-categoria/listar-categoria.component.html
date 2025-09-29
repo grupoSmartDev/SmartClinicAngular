@@ -73,6 +73,7 @@
           <tr>
             <th>Cód.</th>
             <th>Descrição</th>
+            <th>Ativo</th>
             <th class="text-end"></th>
           </tr>
         </thead>
@@ -84,6 +85,13 @@
             </td>
             <td>
               {{ item.nome }}
+            </td>
+            <td>
+              @if(item.ativo){
+              <span class="span-status-green">Ativo</span>
+              } @else{
+              <span class="span-status-red">Inativo</span>
+              }
             </td>
 
             <td class="text-end">

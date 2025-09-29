@@ -1,8 +1,8 @@
 import { Procedimento } from "./procedimentoModule"
 
-export interface Categoria{
-    id : string
-    nome : string
-    procedimentos : Procedimento[] 
-    
+export interface Categoria {
+    id: string
+    nome: string
+    procedimentos: Procedimento[]
+    ativo: Boolean
 }
