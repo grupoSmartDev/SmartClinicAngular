@@ -10,10 +10,12 @@
   aria-modal="true"
   role="dialog"
 >
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Banco</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          <i class="bi bi-bank me-2"></i>Banco
+        </h1>
         <button
           type="button"
           class="btn-close"
@@ -24,291 +26,345 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="formulario">
-          <div class="row g-3">
-            <div class="col-md-2">
-              <label for="id" class="form-label">Cód.</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                id="id"
-                readonly
-                formControlName="id"
-              />
+          <!-- Informações Básicas -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="bi bi-info-circle me-2"></i>Informações Básicas
             </div>
-            <div class="col-md-4">
-              <label for="nomeBanco" class="form-label">Nome Banco</label>
-              <input
-                type="text"
-                required
-                class="form-control form-control-sm"
-                formControlName="nomeBanco"
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('nomeBanco')?.invalid &&
-                    formulario.get('nomeBanco')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('nomeBanco')?.invalid &&
-                  formulario.get('nomeBanco')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo nome é obrigatório.
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-2">
+                  <label for="id" class="form-label">Cód.</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="id"
+                    readonly
+                    formControlName="id"
+                  />
+                </div>
+                <div class="col-md-5">
+                  <label for="nomeBanco" class="form-label">
+                    <span class="text-danger">*</span> Nome Banco
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    class="form-control form-control-sm"
+                    formControlName="nomeBanco"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('nomeBanco')?.invalid &&
+                        formulario.get('nomeBanco')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('nomeBanco')?.invalid &&
+                      formulario.get('nomeBanco')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo nome do banco é obrigatório.
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <label for="codigo" class="form-label">
+                    <span class="text-danger">*</span> Código
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="codigo"
+                    onlyNumbers
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('codigo')?.invalid &&
+                        formulario.get('codigo')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('codigo')?.invalid &&
+                      formulario.get('codigo')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo código é obrigatório.
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <label for="ativo" class="form-label d-block">
+                    <span class="text-danger">*</span> Ativo
+                  </label>
+                  <div class="form-check form-switch">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      id="ativo"
+                      formControlName="ativo"
+                      role="switch"
+                    />
+                    <label class="form-check-label" for="ativo">
+                      {{ formulario.get("ativo")?.value ? "Sim" : "Não" }}
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="col-md-3">
-              <label for="codigo" class="form-label">Código</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="codigo"
-                onlyNumbers
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('codigo')?.invalid &&
-                    formulario.get('codigo')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('codigo')?.invalid &&
-                  formulario.get('codigo')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo código é obrigatório.
+          </div>
+
+          <!-- Dados da Conta -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="bi bi-wallet2 me-2"></i>Dados da Conta
+            </div>
+            <div class="card-body">
+              <div class="row mb-2">
+                <div class="col-md-3">
+                  <label for="agencia" class="form-label">
+                    <span class="text-danger">*</span> Agência
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="agencia"
+                    onlyNumbers
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('agencia')?.invalid &&
+                        formulario.get('agencia')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('agencia')?.invalid &&
+                      formulario.get('agencia')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo agência é obrigatório.
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label for="numeroConta" class="form-label">
+                    <span class="text-danger">*</span> Número da Conta
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="numeroConta"
+                    onlyNumbers
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('numeroConta')?.invalid &&
+                        formulario.get('numeroConta')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('numeroConta')?.invalid &&
+                      formulario.get('numeroConta')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo número da conta é obrigatório.
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <label for="tipoConta" class="form-label">
+                    <span class="text-danger">*</span> Tipo de Conta
+                  </label>
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="tipoConta"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('tipoConta')?.invalid &&
+                        formulario.get('tipoConta')?.touched
+                    }"
+                  >
+                    <option value="" disabled selected>Selecione...</option>
+                    <option value="Poupanca">Poupança</option>
+                    <option value="Corrente">Conta Corrente</option>
+                  </select>
+                  <div
+                    *ngIf="
+                      formulario.get('tipoConta')?.invalid &&
+                      formulario.get('tipoConta')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo tipo de conta é obrigatório.
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="saldoInicial" class="form-label">
+                    <span class="text-danger">*</span> Saldo Inicial
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    class="form-control form-control-sm"
+                    formControlName="saldoInicial"
+                    placeholder="0,00"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('saldoInicial')?.invalid &&
+                        formulario.get('saldoInicial')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('saldoInicial')?.invalid &&
+                      formulario.get('saldoInicial')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo saldo inicial é obrigatório.
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="col-md-3">
-              <label for="agencia" class="form-label">Agência</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="agencia"
-                onlyNumbers
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('agencia')?.invalid &&
-                    formulario.get('agencia')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('agencia')?.invalid &&
-                  formulario.get('agencia')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo agência é obrigatório.
+          </div>
+
+          <!-- Dados do Titular -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="bi bi-person me-2"></i>Dados do Titular
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="nomeTitular" class="form-label">
+                    <span class="text-danger">*</span> Nome do Titular
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="nomeTitular"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('nomeTitular')?.invalid &&
+                        formulario.get('nomeTitular')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('nomeTitular')?.invalid &&
+                      formulario.get('nomeTitular')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo nome do titular é obrigatório.
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="documentoTitular" class="form-label">
+                    <span class="text-danger">*</span> Documento do Titular
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="documentoTitular"
+                    placeholder="Digite o CPF"
+                    mask="000.000.000-00"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('documentoTitular')?.invalid &&
+                        formulario.get('documentoTitular')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('documentoTitular')?.invalid &&
+                      formulario.get('documentoTitular')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo documento do titular é obrigatório.
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="col-md-4">
-              <label for="numeroConta" class="form-label"
-                >Número da Conta</label
-              >
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="numeroConta"
-                onlyNumbers
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('numeroConta')?.invalid &&
-                    formulario.get('numeroConta')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('numeroConta')?.invalid &&
-                  formulario.get('numeroConta')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo número da conta é obrigatório.
+          </div>
+
+          <!-- Configurações de Boleto -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="bi bi-file-earmark-text me-2"></i>Configurações de
+              Boleto
+            </div>
+            <div class="card-body">
+              <div class="row mb-2">
+                <div class="col-md-4">
+                  <label for="codigoConvenio" class="form-label">
+                    Código Convênio
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="codigoConvenio"
+                    onlyNumbers
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="carteira" class="form-label">Carteira</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="carteira"
+                    onlyNumbers
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="variacaoCarteira" class="form-label">
+                    Variação Carteira
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="variacaoCarteira"
+                    onlyNumbers
+                  />
+                </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <label for="tipoConta" class="form-label">Tipo de Conta</label>
-              <select
-                class="form-select form-select-sm"
-                formControlName="tipoConta"
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('tipoConta')?.invalid &&
-                    formulario.get('tipoConta')?.touched
-                }"
-              >
-                <option value="Poupanca">Poupança</option>
-                <option value="Corrente">Conta Corrente</option>
-              </select>
-              <div
-                *ngIf="
-                  formulario.get('tipoConta')?.invalid &&
-                  formulario.get('tipoConta')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo tipo é obrigatório.
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="codigoBeneficiario" class="form-label">
+                    Código Beneficiário
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="codigoBeneficiario"
+                    onlyNumbers
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="numeroContrato" class="form-label">
+                    Número do Contrato
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="numeroContrato"
+                    onlyNumbers
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="codigoTransmissao" class="form-label">
+                    Código de Transmissão
+                  </label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="codigoTransmissao"
+                  />
+                </div>
               </div>
-            </div>
-            <div class="col-md-4">
-              <label for="nomeTitular" class="form-label"
-                >Nome do Titular</label
-              >
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="nomeTitular"
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('nomeTitular')?.invalid &&
-                    formulario.get('nomeTitular')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('nomeTitular')?.invalid &&
-                  formulario.get('nomeTitular')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo nome do titular é obrigatório.
-              </div>
-            </div>
-            <div class="col-md-4">
-              <label for="documentoTitular" class="form-label"
-                >Documento do Titular</label
-              >
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="documentoTitular"
-                placeholder="Digite o CPF"
-                mask="000.000.000-00"
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('documentoTitular')?.invalid &&
-                    formulario.get('documentoTitular')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('documentoTitular')?.invalid &&
-                  formulario.get('documentoTitular')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo documento titular é obrigatório.
-              </div>
-            </div>
-            <div class="col-md-4">
-              <label for="saldoInicial" class="form-label">Saldo Inicial</label>
-              <input
-                type="number"
-                class="form-control form-control-sm"
-                formControlName="saldoInicial"
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('saldoInicial')?.invalid &&
-                    formulario.get('saldoInicial')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('saldoInicial')?.invalid &&
-                  formulario.get('saldoInicial')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo saldo inicial é obrigatório.
-              </div>
-            </div>
-            <div class="col-md-2">
-              <label for="ativo" class="form-label">Ativo</label>
-              <input
-                type="checkbox"
-                class="form-check-input"
-                formControlName="ativo"
-                [ngClass]="{
-                  'is-invalid':
-                    formulario.get('ativo')?.invalid &&
-                    formulario.get('ativo')?.touched
-                }"
-              />
-              <div
-                *ngIf="
-                  formulario.get('ativo')?.invalid &&
-                  formulario.get('ativo')?.touched
-                "
-                class="invalid-feedback"
-              >
-                O campo é obrigatório.
-              </div>
-            </div>
-            <div class="col-md-4">
-              <label for="codigoConvenio" class="form-label"
-                >Código Convênio</label
-              >
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="codigoConvenio"
-                onlyNumbers
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="carteira" class="form-label">Carteira</label>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="carteira"
-                onlyNumbers
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="variacaoCarteira" class="form-label"
-                >Variação Carteira</label
-              >
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="variacaoCarteira"
-                onlyNumbers
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="codigoBeneficiario" class="form-label"
-                >Código Beneficiário</label
-              >
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="codigoBeneficiario"
-                onlyNumbers
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="numeroContrato" class="form-label"
-                >Número do Contrato</label
-              >
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="numeroContrato"
-                onlyNumbers
-              />
-            </div>
-            <div class="col-md-4">
-              <label for="codigoTransmissao" class="form-label"
-                >Código de Transmissão</label
-              >
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                formControlName="codigoTransmissao"
-              />
             </div>
           </div>
         </form>
@@ -330,7 +386,7 @@
           (click)="fecharModal()"
           id="btnCancelar"
         >
-          <i class="bi bi-x"></i> Cancelar
+          <i class="bi bi-x me-1"></i>Cancelar
         </button>
       </div>
     </div>
