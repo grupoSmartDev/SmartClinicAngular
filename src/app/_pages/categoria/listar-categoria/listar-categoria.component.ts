@@ -159,10 +159,16 @@ export class ListarCategoriaComponent {
     let id = categoria.id;
     this.categoriaService.Deletar(id).subscribe({
       next: (response) => {
-        this.lista = this.lista.filter(categoria => categoria.id !== id);
-        this.toast.success('categoria excluido com sucesso!', 'Excluído');
-
-        this.invalidateCache();
+        let status = response.status;
+        let mensagem = response.mensagem;
+        if (status) {
+          this.toast.success(mensagem, 'Excluido');
+          this.lista = this.lista.filter(categoria => categoria.id !== id);
+          this.invalidateCache();
+        }
+        else {
+          this.toast.error(mensagem, 'Erro');
+        }
       },
       error: () => {
         this.toast.error('Tente novamente ou fale com o suporte', 'Erro ao excluir um categoria');
