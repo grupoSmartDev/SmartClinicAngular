@@ -11,18 +11,18 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class PaginaCadastroComponent {
   signupForm!: FormGroup;
-  selectedOption: string = 'trial'; // Default to trial option
-  step: number = 1; // For multi-step form if needed
+  selectedOption: string = 'trial';
+  step: number = 1;
   loading = false;
-
-  // Dados do plano selecionado vindos da página de preços
   selectedPlanData: any = null;
+  cardFlipped = false;
+  detectedBrand = '';
 
   constructor(
     private fb: FormBuilder,
     private cadastroService: CadastroUsuarioService,
     private router: Router,
-    private activatedRoute: ActivatedRoute, // Adicionado para capturar query params
+    private activatedRoute: ActivatedRoute,
     private toast: ToastrService
   ) { }
 
@@ -31,36 +31,29 @@ export class PaginaCadastroComponent {
     this.loadPlanFromQueryParams();
   }
 
-  // Método para capturar dados do plano da URL
   loadPlanFromQueryParams(): void {
     this.activatedRoute.queryParams.subscribe(params => {
       if (params['plan'] && params['billing'] && params['price']) {
         this.selectedPlanData = {
           plan: params['plan'],
-          billing: params['billing'], // 'monthly' ou 'semiannual'
+          billing: params['billing'],
           price: parseFloat(params['price'])
         };
 
-        // Se veio com plano selecionado, muda para modo "assinar plano"
         this.selectedOption = 'plan';
 
-        // Atualiza o formulário com os dados do plano
         this.signupForm.patchValue({
           PlanoEscolhido: this.capitalizeFirstLetter(params['plan']),
           PeriodoCobranca: params['billing'],
           PeriodoTeste: false,
         });
 
-        // Adiciona validador para forma de pagamento
-        this.signupForm.get('TipoPagamentoId')!.setValidators(Validators.required);
-        this.signupForm.get('TipoPagamentoId')!.updateValueAndValidity();
-
+        this.updateValidators();
         console.log('Plano carregado:', this.selectedPlanData);
       }
     });
   }
 
-  // Método auxiliar para capitalizar primeira letra
   capitalizeFirstLetter(string: string): string {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   }
@@ -68,24 +61,24 @@ export class PaginaCadastroComponent {
   initForm(): void {
     const today = new Date();
     const endDate = new Date(today);
-    endDate.setDate(today.getDate() + 7); // Add 7 days for trial period
+    endDate.setDate(today.getDate() + 7);
 
     this.signupForm = this.fb.group({
       Nome: ['', Validators.required],
       Sobrenome: ['', Validators.required],
       TitularCPF: ['', Validators.required],
-      CNPJEmpresaMatriz: [''], // Not required
+      CNPJEmpresaMatriz: [''],
       Email: ['', [Validators.required, Validators.email]],
       Celular: ['', Validators.required],
       Especialidade: ['', Validators.required],
       PlanoEscolhido: ['', Validators.required],
-      PeriodoCobranca: ['', Validators.required], // Novo campo para período
+      PeriodoCobranca: [''],
       TelefoneFixo: [''],
       Ativo: [true],
-      PeriodoTeste: [true], // Default to trial period
+      PeriodoTeste: [true],
       CelularComWhatsApp: [false],
       ReceberNotificacoes: [true],
-      TipoPagamentoId: [0],
+      TipoPagamentoId: [''],
       QtdeLicencaEmpresaPermitida: [1],
       QtdeLicencaUsuarioPermitida: [1],
       QtdeLicencaEmpresaUtilizada: [0],
@@ -98,57 +91,89 @@ export class PaginaCadastroComponent {
       _DataFim: [endDate],
       DataInicio: [today],
       _DataInicio: [today],
+      QtdeParcelas: [1],
+      HolderName: [''],
+      CardNumber: [''],
+      ExpiryMonth: [''],
+      ExpiryYear: [''],
+      Ccv: [''],
+      PostalCode: [''],
+      AddressNumber: [''],
+      AddressComplement: ['']
     });
   }
 
   onSelectOption(option: string): void {
     this.selectedOption = option;
 
-    // Update form values based on selected option
     if (option === 'trial') {
       this.signupForm.patchValue({
         PeriodoTeste: true,
         TipoPagamentoId: '',
-        PeriodoCobranca: '', // Limpa período para trial
+        PeriodoCobranca: '',
       });
-
-      // Remove required validator for trial
-      this.signupForm.get('TipoPagamentoId')!.clearValidators();
-      this.signupForm.get('TipoPagamentoId')!.updateValueAndValidity();
-
-      // Remove required validator for período no trial
-      this.signupForm.get('PeriodoCobranca')!.clearValidators();
-      this.signupForm.get('PeriodoCobranca')!.updateValueAndValidity();
-
     } else {
       this.signupForm.patchValue({
         PeriodoTeste: false,
       });
+    }
 
-      // Make payment type required if selecting a paid plan
+    this.updateValidators();
+  }
+
+  onPaymentMethodChange(): void {
+    this.updateValidators();
+  }
+
+  updateValidators(): void {
+    const isPlan = this.selectedOption === 'plan';
+    const isCartao = this.signupForm.get('TipoPagamentoId')?.value === '1';
+
+    if (isPlan) {
       this.signupForm.get('TipoPagamentoId')!.setValidators(Validators.required);
-      this.signupForm.get('TipoPagamentoId')!.updateValueAndValidity();
-
-      // Make período cobrança required if selecting a paid plan
       this.signupForm.get('PeriodoCobranca')!.setValidators(Validators.required);
-      this.signupForm.get('PeriodoCobranca')!.updateValueAndValidity();
+    } else {
+      this.signupForm.get('TipoPagamentoId')!.clearValidators();
+      this.signupForm.get('PeriodoCobranca')!.clearValidators();
     }
+
+    const cartaoFields = ['HolderName', 'CardNumber', 'ExpiryMonth', 'ExpiryYear', 'Ccv', 'PostalCode', 'AddressNumber'];
+
+    if (isPlan && isCartao) {
+      cartaoFields.forEach(field => {
+        this.signupForm.get(field)!.setValidators(Validators.required);
+      });
+    } else {
+      cartaoFields.forEach(field => {
+        this.signupForm.get(field)!.clearValidators();
+      });
+    }
+
+    Object.keys(this.signupForm.controls).forEach(key => {
+      this.signupForm.get(key)!.updateValueAndValidity({ emitEvent: false });
+    });
   }
 
-  // Método para obter o preço atual baseado no plano e período selecionados
+  shouldShowCardFields(): boolean {
+    return this.selectedOption === 'plan' &&
+      this.signupForm.get('TipoPagamentoId')?.value === '1';
+  }
+
   getCurrentPrice(): number {
-    if (!this.selectedPlanData) return 0;
+    if (!this.selectedPlanData) {
+      const billing = this.signupForm.get('PeriodoCobranca')?.value;
+      const plan = this.signupForm.get('PlanoEscolhido')?.value;
 
-    const billing = this.signupForm.get('PeriodoCobranca')?.value;
-    if (billing === 'monthly') {
-      return this.getPlanMonthlyPrice(this.signupForm.get('PlanoEscolhido')?.value);
-    } else if (billing === 'semiannual') {
-      return this.getPlanSemiannualPrice(this.signupForm.get('PlanoEscolhido')?.value);
+      if (billing === 'monthly') {
+        return this.getPlanMonthlyPrice(plan);
+      } else if (billing === 'semiannual') {
+        return this.getPlanSemiannualPrice(plan);
+      }
+      return 0;
     }
-    return 0;
+    return this.selectedPlanData.price;
   }
 
-  // Métodos auxiliares para obter preços (você pode ajustar conforme sua estrutura)
   getPlanMonthlyPrice(plan: string): number {
     const prices: any = {
       'Basic': 149.0,
@@ -168,31 +193,39 @@ export class PaginaCadastroComponent {
   }
 
   onSubmit(): void {
-    // Set loading to true at the start of submission
     this.loading = true;
 
-    // Check form validity
     if (this.signupForm.invalid) {
-      // Mark all fields as touched to show validation errors
       Object.keys(this.signupForm.controls).forEach((key) => {
         this.signupForm.get(key)!.markAsTouched();
       });
-
-      // Immediately set loading to false
       this.loading = false;
       return;
     }
 
-    // Adiciona dados do plano selecionado ao formulário antes de enviar
-    const formData = {
+    const formData: any = {
       ...this.signupForm.value,
-      PrecoSelecionado: this.getCurrentPrice(), // Adiciona o preço atual
-      DadosPlanoOriginal: this.selectedPlanData // Adiciona dados originais do plano
+      PrecoSelecionado: this.getCurrentPrice(),
+      DadosPlanoOriginal: this.selectedPlanData
     };
+
+    if (this.shouldShowCardFields()) {
+      formData.DadosCartao = {
+        holderName: this.signupForm.get('HolderName')?.value,
+        number: this.signupForm.get('CardNumber')?.value,
+        expiryMonth: this.signupForm.get('ExpiryMonth')?.value,
+        expiryYear: this.signupForm.get('ExpiryYear')?.value,
+        ccv: this.signupForm.get('Ccv')?.value,
+        postalCode: this.signupForm.get('PostalCode')?.value,
+        addressNumber: this.signupForm.get('AddressNumber')?.value,
+        addressComplement: this.signupForm.get('AddressComplement')?.value
+      };
+    } else {
+      formData.DadosCartao = null;
+    }
 
     console.log('Dados a serem enviados:', formData);
 
-    // Proceed with form submission
     this.cadastroService.criarCadastro(formData).subscribe({
       next: (response) => {
         if (response.status) {
@@ -200,19 +233,70 @@ export class PaginaCadastroComponent {
           console.log('Cadastro criado com sucesso:', response.mensagem);
           this.router.navigate(['/login']);
         } else {
-          alert('Erro ao criar cadastro:' + response.mensagem);
+          this.toast.error('Erro ao criar cadastro: ' + response.mensagem, 'Erro');
           console.error('Erro ao criar cadastro:', response.mensagem);
         }
       },
       error: (error) => {
-        // Handle any HTTP errors
         console.error('Erro na requisição:', error);
-        alert('Erro na requisição. Tente novamente.');
+        this.toast.error('Erro na requisição. Tente novamente.', 'Erro');
       },
       complete: () => {
-        // Always set loading to false when the observable completes
         this.loading = false;
       }
     });
+  }
+
+  // Adicione estes métodos
+
+  getCardNumber(): string {
+    const number = this.signupForm.get('CardNumber')?.value || '';
+    return number || '•••• •••• •••• ••••';
+  }
+
+  getCardHolder(): string {
+    const holder = this.signupForm.get('HolderName')?.value || '';
+    return holder || 'NOME DO TITULAR';
+  }
+
+  getCardExpiry(): string {
+    const month = this.signupForm.get('ExpiryMonth')?.value || 'MM';
+    const year = this.signupForm.get('ExpiryYear')?.value || 'AA';
+    return `${month}/${year}`;
+  }
+
+  getCardCvv(): string {
+    const cvv = this.signupForm.get('Ccv')?.value || '';
+    return cvv || '•••';
+  }
+
+  detectCardBrand(): void {
+    const number = this.signupForm.get('CardNumber')?.value?.replace(/\s/g, '') || '';
+
+    if (number.startsWith('4')) {
+      this.detectedBrand = 'VISA';
+    } else if (number.startsWith('5')) {
+      this.detectedBrand = 'MASTERCARD';
+    } else if (number.startsWith('34') || number.startsWith('37')) {
+      this.detectedBrand = 'AMEX';
+    } else if (number.startsWith('6')) {
+      this.detectedBrand = 'DISCOVER';
+    } else if (number.startsWith('35')) {
+      this.detectedBrand = 'JCB';
+    } else {
+      this.detectedBrand = '';
+    }
+  }
+
+  onCvvFocus(): void {
+    this.cardFlipped = true;
+  }
+
+  onCvvBlur(): void {
+    this.cardFlipped = false;
+  }
+
+  onCardNumberChange(): void {
+    this.detectCardBrand();
   }
 }
