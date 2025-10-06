@@ -128,6 +128,7 @@ export class PaginaCadastroComponent {
   updateValidators(): void {
     const isPlan = this.selectedOption === 'plan';
     const isCartao = this.signupForm.get('TipoPagamentoId')?.value === '1';
+    const isMensal = this.signupForm.get('PeriodoCobranca')?.value === 'monthly';
 
     if (isPlan) {
       this.signupForm.get('TipoPagamentoId')!.setValidators(Validators.required);
@@ -135,6 +136,11 @@ export class PaginaCadastroComponent {
     } else {
       this.signupForm.get('TipoPagamentoId')!.clearValidators();
       this.signupForm.get('PeriodoCobranca')!.clearValidators();
+    }
+
+    // Se for mensal, força 1 parcela
+    if (isMensal && isCartao) {
+      this.signupForm.patchValue({ QtdeParcelas: 1 });
     }
 
     const cartaoFields = ['HolderName', 'CardNumber', 'ExpiryMonth', 'ExpiryYear', 'Ccv', 'PostalCode', 'AddressNumber'];
@@ -298,5 +304,23 @@ export class PaginaCadastroComponent {
 
   onCardNumberChange(): void {
     this.detectCardBrand();
+  }
+
+  getValorTotal(): number {
+    const billing = this.signupForm.get('PeriodoCobranca')?.value;
+    const valorMensal = this.getCurrentPrice();
+
+    if (billing === 'semiannual') {
+      return valorMensal * 6; // 6 meses
+    }
+    return valorMensal;
+  }
+
+  isSemestral(): boolean {
+    return this.signupForm.get('PeriodoCobranca')?.value === 'semiannual';
+  }
+
+  isMensal(): boolean {
+    return this.signupForm.get('PeriodoCobranca')?.value === 'monthly';
   }
 }

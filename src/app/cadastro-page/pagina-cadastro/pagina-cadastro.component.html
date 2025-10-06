@@ -292,6 +292,7 @@
               </div>
             </div>
 
+            <!-- ALERTA DE PREÇO -->
             <div
               *ngIf="
                 selectedOption === 'plan' &&
@@ -300,20 +301,24 @@
               "
               class="alert alert-success mb-3"
             >
-              <strong>Valor do plano:</strong> R$
-              {{ getCurrentPrice() | number : "1.2-2" }}
-              <span
-                *ngIf="signupForm.get('PeriodoCobranca')?.value === 'monthly'"
-              >
-                /mês
-              </span>
-              <span
-                *ngIf="
-                  signupForm.get('PeriodoCobranca')?.value === 'semiannual'
-                "
-              >
-                /semestre
-              </span>
+              <div *ngIf="isMensal()">
+                <strong>Valor do plano:</strong> R$
+                {{ getCurrentPrice() | number : "1.2-2" }} /mês
+                <br />
+                <small class="text-muted">Pagamento mensal recorrente</small>
+              </div>
+
+              <div *ngIf="isSemestral()">
+                <strong>Valor mensal:</strong> R$
+                {{ getCurrentPrice() | number : "1.2-2" }} /mês
+                <br />
+                <strong>Valor total (6 meses):</strong> R$
+                {{ getValorTotal() | number : "1.2-2" }}
+                <br />
+                <small class="text-muted"
+                  >Pagamento semestral com desconto no valor mensal</small
+                >
+              </div>
             </div>
 
             <div class="mb-3" *ngIf="selectedOption === 'plan'">
@@ -530,9 +535,9 @@
                       class="form-control form-control-sm"
                       formControlName="Ccv"
                       id="ccv"
-                      [mask]="'0000'"
+                      [mask]="'000'"
                       placeholder="123"
-                      maxlength="4"
+                      maxlength="3"
                       (focus)="onCvvFocus()"
                       (blur)="onCvvBlur()"
                     />
@@ -548,7 +553,8 @@
                   </div>
                 </div>
 
-                <div class="mb-3">
+                <!-- PARCELAS - Só aparece se for semestral -->
+                <div class="mb-3" *ngIf="isSemestral()">
                   <label for="parcelas" class="form-label"
                     >Número de Parcelas</label
                   >
@@ -557,19 +563,41 @@
                     formControlName="QtdeParcelas"
                     id="parcelas"
                   >
-                    <option value="1">1x sem juros</option>
-                    <option value="2">2x sem juros</option>
-                    <option value="3">3x sem juros</option>
-                    <option value="4">4x sem juros</option>
-                    <option value="5">5x sem juros</option>
-                    <option value="6">6x sem juros</option>
-                    <option value="7">7x sem juros</option>
-                    <option value="8">8x sem juros</option>
-                    <option value="9">9x sem juros</option>
-                    <option value="10">10x sem juros</option>
-                    <option value="11">11x sem juros</option>
-                    <option value="12">12x sem juros</option>
+                    <option value="1">
+                      1x de R$ {{ getValorTotal() | number : "1.2-2" }} sem
+                      juros
+                    </option>
+                    <option value="2">
+                      2x de R$ {{ getValorTotal() / 2 | number : "1.2-2" }} sem
+                      juros
+                    </option>
+                    <option value="3">
+                      3x de R$ {{ getValorTotal() / 3 | number : "1.2-2" }} sem
+                      juros
+                    </option>
+                    <option value="4">
+                      4x de R$ {{ getValorTotal() / 4 | number : "1.2-2" }} sem
+                      juros
+                    </option>
+                    <option value="5">
+                      5x de R$ {{ getValorTotal() / 5 | number : "1.2-2" }} sem
+                      juros
+                    </option>
+                    <option value="6">
+                      6x de R$ {{ getValorTotal() / 6 | number : "1.2-2" }} sem
+                      juros
+                    </option>
                   </select>
+                  <small class="text-muted"
+                    >Parcelamento disponível apenas para pagamento
+                    semestral</small
+                  >
+                </div>
+
+                <!-- Aviso quando for mensal -->
+                <div class="alert alert-info mb-3" *ngIf="isMensal()">
+                  <strong>Pagamento à vista:</strong> Planos mensais são
+                  cobrados em parcela única todos os meses.
                 </div>
 
                 <hr class="my-3" />
