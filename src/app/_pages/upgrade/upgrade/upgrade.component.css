@@ -1,0 +1,240 @@
+.upgrade-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+/* // Badge do plano atual */
+.bg-gradient-premium {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+/* // Toggle de período */
+.periodo-toggle {
+    display: inline-flex;
+    background: white;
+    border-radius: 50px;
+    padding: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+    .btn {
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 50px;
+        background: transparent;
+        color: #6c757d;
+        font-weight: 600;
+        transition: all 0.3s ease;
+
+        &.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        &:hover:not(.active) {
+            color: #667eea;
+        }
+    }
+}
+
+/* // Cards dos Planos */
+.plano-card {
+    border: 2px solid #e9ecef;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:hover:not(.bloqueado) {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    &.destaque {
+        border-color: #764ba2;
+        border-width: 3px;
+        box-shadow: 0 10px 30px rgba(118, 75, 162, 0.3);
+
+        &:hover {
+            box-shadow: 0 20px 50px rgba(118, 75, 162, 0.4);
+        }
+    }
+
+    &.plano-atual {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+
+        &::before {
+            content: '✓ Seu Plano';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+    }
+
+    &.bloqueado {
+        opacity: 0.6;
+
+        &:hover {
+            transform: none;
+            box-shadow: none;
+        }
+    }
+}
+
+/* // Badge Popular */
+.popular-badge {
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 0 0 15px 15px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(245, 87, 108, 0.3);
+    z-index: 10;
+}
+
+/* // Ícone do plano */
+.plano-icon {
+    font-size: 3rem;
+    text-align: center;
+}
+
+/* // Nome do plano */
+.plano-nome {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* // Preço */
+.plano-preco {
+    text-align: center;
+
+    .moeda {
+        font-size: 1.5rem;
+        vertical-align: top;
+        color: #6c757d;
+    }
+
+    .valor {
+        font-size: 3.5rem;
+        font-weight: bold;
+        color: #212529;
+    }
+
+    .periodo {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+
+    .economia {
+        margin-top: 0.5rem;
+        font-weight: 600;
+    }
+}
+
+/* // Lista de features */
+.features-list {
+    list-style: none;
+    padding: 0;
+
+    li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f3f5;
+        font-size: 0.95rem;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+    }
+}
+
+/* // Botão */
+.btn-plano {
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.btn-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+
+    &:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+}
+
+/* // FAQ */
+.faq-section {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.faq-item {
+    h5 {
+        color: #212529;
+        margin-bottom: 1rem;
+
+        i {
+            margin-right: 0.5rem;
+        }
+    }
+
+    p {
+        color: #6c757d;
+        margin-bottom: 0;
+        line-height: 1.6;
+    }
+}
+
+/* // CTA Final */
+.cta-final {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+
+    h3,
+    p {
+        color: white;
+    }
+}
+
+/* // Responsivo */
+@media (max-width: 768px) {
+    .plano-card {
+        margin-bottom: 2rem;
+    }
+
+    .periodo-toggle .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}

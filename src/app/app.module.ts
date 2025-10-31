@@ -140,6 +140,9 @@ import { LettersDirective } from './_shared/pipes/letters.directive';
 import { DialogAtivarComponent } from './_components/dialog-ativar/dialog-ativar.component';
 import { NgxCurrencyDirective } from 'ngx-currency';
 import { ListarComissoesComponent } from './_pages/comissao/listar-comissoes/listar-comissoes.component';
+import { UpgradeComponent } from './_pages/upgrade/upgrade/upgrade.component';
+import { ListarPacoteComponent } from './_pages/pacote/listar-pacote/listar-pacote.component';
+import { ModalPacoteComponent } from './_pages/pacote/modal-pacote/modal-pacote.component';
 
 @NgModule({
   declarations: [
@@ -265,6 +268,9 @@ import { ListarComissoesComponent } from './_pages/comissao/listar-comissoes/lis
     LettersDirective,
     DialogAtivarComponent,
     ListarComissoesComponent,
+    UpgradeComponent,
+    ListarPacoteComponent,
+    ModalPacoteComponent,
   ],
   imports: [
     BrowserModule,

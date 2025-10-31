@@ -21,6 +21,7 @@ export interface AuthResponse {
     accessToken: string;
     expiresIn: number;
     userToken: UserToken;
+    plano: string;
   };
   error: string;
 }

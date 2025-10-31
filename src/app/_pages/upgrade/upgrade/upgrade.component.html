@@ -1,0 +1,195 @@
+<div class="upgrade-container">
+  <div class="container py-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+      <h1 class="display-4 fw-bold mb-3">
+        Escolha o Plano Ideal para Sua Clínica
+      </h1>
+      <p class="lead text-muted">
+        Seu plano atual:
+        <span
+          class="badge"
+          [ngClass]="{
+            'bg-secondary': planoAtual === 'Basic',
+            'bg-primary': planoAtual === 'Plus',
+            'bg-gradient-premium': planoAtual === 'Premium'
+          }"
+        >
+          {{ planoAtual }}
+        </span>
+      </p>
+
+      <!-- Toggle Mensal/Semestral -->
+      <div class="periodo-toggle mt-4">
+        <button
+          class="btn"
+          [class.active]="periodoSelecionado === 'mensal'"
+          (click)="periodoSelecionado = 'mensal'"
+        >
+          Mensal
+        </button>
+        <button
+          class="btn"
+          [class.active]="periodoSelecionado === 'semestral'"
+          (click)="periodoSelecionado = 'semestral'"
+        >
+          Semestral
+          <span class="badge bg-success ms-2">Economize</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Cards dos Planos -->
+    <div class="row g-4">
+      <div class="col-lg-4" *ngFor="let plano of planos">
+        <div
+          class="card plano-card h-100"
+          [class.destaque]="plano.destaque"
+          [class.plano-atual]="plano.tipo === planoAtual"
+          [class.bloqueado]="isPlanoBloqueado(plano)"
+        >
+          <!-- Badge Popular -->
+          <div class="popular-badge" *ngIf="plano.popular">
+            <i class="bi bi-star-fill"></i> Mais Escolhido
+          </div>
+
+          <div class="card-body d-flex flex-column">
+            <!-- Ícone -->
+            <div class="plano-icon mb-3" [style.color]="plano.cor">
+              <i [class]="'bi ' + plano.icone"></i>
+            </div>
+
+            <!-- Nome -->
+            <h3 class="plano-nome mb-3">{{ plano.nome }}</h3>
+
+            <!-- Preço -->
+            <div class="plano-preco mb-4">
+              <span class="moeda">R$</span>
+              <span class="valor">{{ getPreco(plano) }}</span>
+              <span class="periodo">/mês</span>
+
+              <!-- Economia Semestral -->
+              <div class="economia" *ngIf="getEconomia(plano) > 0">
+                <small class="text-success">
+                  <i class="bi bi-piggy-bank-fill"></i>
+                  Economize R$ {{ getEconomia(plano) | number : "1.2-2" }} no
+                  semestre
+                </small>
+              </div>
+            </div>
+
+            <!-- Features -->
+            <ul class="features-list mb-4 flex-grow-1">
+              <li *ngFor="let feature of plano.features">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                {{ feature }}
+              </li>
+            </ul>
+
+            <!-- Botão -->
+            <button
+              class="btn btn-plano w-100"
+              [class.btn-primary]="!plano.destaque && !isPlanoBloqueado(plano)"
+              [class.btn-gradient]="plano.destaque && !isPlanoBloqueado(plano)"
+              [class.btn-secondary]="plano.tipo === planoAtual"
+              [class.btn-outline-secondary]="
+                isPlanoBloqueado(plano) && plano.tipo !== planoAtual
+              "
+              [disabled]="isPlanoBloqueado(plano)"
+              (click)="selecionarPlano(plano)"
+            >
+              <span *ngIf="plano.tipo === planoAtual">
+                <i class="bi bi-check-circle-fill"></i>
+                {{ getTextoBotao(plano) }}
+              </span>
+              <span
+                *ngIf="plano.tipo !== planoAtual && !isPlanoBloqueado(plano)"
+              >
+                <i class="bi bi-arrow-up-circle-fill"></i>
+                {{ getTextoBotao(plano) }}
+              </span>
+              <span
+                *ngIf="isPlanoBloqueado(plano) && plano.tipo !== planoAtual"
+              >
+                <i class="bi bi-x-circle-fill"></i> {{ getTextoBotao(plano) }}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section mt-5 pt-5">
+      <h2 class="text-center mb-5">Perguntas Frequentes</h2>
+
+      <div class="row">
+        <div class="col-lg-6 mb-4">
+          <div class="faq-item">
+            <h5>
+              <i class="bi bi-question-circle-fill text-primary"></i> Posso
+              trocar de plano a qualquer momento?
+            </h5>
+            <p>
+              Sim! Você pode fazer upgrade para um plano superior a qualquer
+              momento. O valor será ajustado proporcionalmente.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+          <div class="faq-item">
+            <h5>
+              <i class="bi bi-question-circle-fill text-primary"></i> Como
+              funciona o pagamento?
+            </h5>
+            <p>
+              Aceitamos cartão de crédito, boleto e PIX. O pagamento pode ser
+              mensal ou semestral.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+          <div class="faq-item">
+            <h5>
+              <i class="bi bi-question-circle-fill text-primary"></i> Posso
+              cancelar quando quiser?
+            </h5>
+            <p>
+              Sim, sem multas ou taxas. Seus dados ficam salvos por 30 dias caso
+              queira voltar.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+          <div class="faq-item">
+            <h5>
+              <i class="bi bi-question-circle-fill text-primary"></i> Qual a
+              diferença entre os planos?
+            </h5>
+            <p>
+              Quanto maior o plano, mais recursos avançados você tem acesso,
+              como relatórios, BI, CRM e mais usuários.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Final -->
+    <div class="cta-final text-center mt-5 p-5 rounded">
+      <h3 class="mb-3">Ainda tem dúvidas?</h3>
+      <p class="lead mb-4">
+        Nossa equipe está pronta para te ajudar a escolher o melhor plano!
+      </p>
+      <button class="btn btn-lg btn-light me-3">
+        <i class="bi bi-whatsapp"></i> Falar no WhatsApp
+      </button>
+      <button class="btn btn-lg btn-outline-light" routerLink="/home">
+        <i class="bi bi-arrow-left"></i> Voltar ao Dashboard
+      </button>
+    </div>
+  </div>
+</div>
