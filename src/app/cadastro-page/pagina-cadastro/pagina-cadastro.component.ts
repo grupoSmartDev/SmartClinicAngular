@@ -230,6 +230,11 @@ export class PaginaCadastroComponent {
       formData.DadosCartao = null;
     }
 
+    if (formData.PeriodoTeste) {
+      formData.TipoPagamentoId = null;
+    }
+
+
     console.log('Dados a serem enviados:', formData);
 
     this.cadastroService.criarCadastro(formData).subscribe({
