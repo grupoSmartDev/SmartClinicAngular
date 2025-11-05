@@ -8,7 +8,7 @@ import * as bootstrap from 'bootstrap';
 @Component({
   selector: 'app-baixa-financ-pagar-sub',
   templateUrl: './baixa-financ-pagar-sub.component.html',
-  styleUrl: './baixa-financ-pagar-sub.component.css'
+  styleUrls: ['./baixa-financ-pagar-sub.component.css']
 })
 export class BaixaFinancPagarSubComponent implements OnInit, OnChanges {
   @Input() financPagarSub: SubFinancPagar = {} as SubFinancPagar;

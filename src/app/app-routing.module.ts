@@ -107,6 +107,7 @@ const routes: Routes = [
       },
       { path: 'DespesasFixa/ListarDespesa', component: ListarDespesaComponent },
       { path: 'Configuracoes/alterarDadosUsuario', component: AlterarDadosUsuarioComponent },
+      { path: 'Configuracoes/BuscarPorId', component: ConfiguracoesComponent },
     ],
   },
 

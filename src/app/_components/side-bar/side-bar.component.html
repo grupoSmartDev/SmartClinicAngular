@@ -354,6 +354,16 @@
             <span>Dados do Usuário</span>
           </a>
         </li>
+
+        <li class="sidebar-item">
+          <a
+            class="sidebar-link"
+            (click)="openTab('/Configuracoes/BuscarPorId', 'Sistema')"
+          >
+            <i class="bi bi-person-lines-fill"></i>
+            <span>Sistema</span>
+          </a>
+        </li>
       </ul>
     </li>
 
@@ -364,7 +374,7 @@
       </a>
     </li>
   </ul>
-  <!-- 
+  <!--
   <div class="sidebar-footer">
     <a class="sidebar-link" (click)="logout()">
       <i class="lni lni-exit"></i>

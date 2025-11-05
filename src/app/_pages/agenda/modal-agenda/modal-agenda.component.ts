@@ -348,8 +348,8 @@ export class ModalAgendaComponent implements OnInit {
     // Reset do formulário antes de preencher para evitar estados inconsistentes
     this.formulario.reset();
 
-    //TERMINAR DE PREENCHER O METODO COM AS INFORMAÇÕES; COLCOAR UMA OPÇÃO DE FINANCEIRO GERADO, E COMEÇAR A TRBALHAR COM O TRATAMENTO DO STATUS DO EVENTO. 
-    //VERIFICAR FUNÇÃO DE REAGENDAMENTO PARA CASO O PACIENTE NÃO VENHA. 
+    //TERMINAR DE PREENCHER O METODO COM AS INFORMAÇÕES; COLCOAR UMA OPÇÃO DE FINANCEIRO GERADO, E COMEÇAR A TRBALHAR COM O TRATAMENTO DO STATUS DO EVENTO.
+    //VERIFICAR FUNÇÃO DE REAGENDAMENTO PARA CASO O PACIENTE NÃO VENHA.
     if (eventoExistente) {
       this.formulario.patchValue({
         ...this.eventoEscolhido
