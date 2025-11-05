@@ -113,6 +113,7 @@ const routes: Routes = [
       { path: 'Configuracoes/alterarDadosUsuario', component: AlterarDadosUsuarioComponent },
       { path: 'Comissoes/Listar', component: ListarComissoesComponent },
       { path: 'upgrade', component: UpgradeComponent },
+      { path: 'Configuracoes/BuscarPorId', component: ConfiguracoesComponent },
     ],
   },
 

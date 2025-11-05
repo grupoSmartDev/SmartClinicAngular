@@ -66,11 +66,18 @@
               <td>{{ status.legenda }}</td>
               <td class="text-end">
                 <a href="javascript:void(0);" (click)="openModal(status)" class="action-icon">
-                  <i class="bi bi-pencil text-success"></i>
+                  <i class="bi bi-pencil text-warning"></i>
                 </a>
-                <a href="javascript:void(0);" (click)="promptDelete(status.id ?? '')" class="action-icon">
+                <button type="button"
+                        class="btn btn-link p-0 action-icon"
+                        (click)="promptDelete(status.id ?? '')"
+                        [disabled]="status.isSystemDefault"
+                        [attr.title]="status.isSystemDefault ? 'Registro padrão do sistema não pode ser excluído' : 'Excluir'">
+                  <i class="bi bi-trash3" [class.text-danger]="!status.isSystemDefault" [class.text-muted]="status.isSystemDefault"></i>
+                </button>
+                <!-- <a *ngIf="!status.isSystemDefault" href="javascript:void(0);" (click)="promptDelete(status.id ?? '')" class="action-icon">
                   <i class="bi bi-trash3 text-danger"></i>
-                </a>
+                </a> -->
               </td>
             </tr>
           </tbody>

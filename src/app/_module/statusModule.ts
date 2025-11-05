@@ -3,4 +3,5 @@ export interface Status{
     status:string;
     legenda: string;
     cor: string;
+    isSystemDefault: boolean;
 }
