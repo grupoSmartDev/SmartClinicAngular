@@ -168,6 +168,7 @@ export class CalendarioComponent {
   // Mapeia diretamente da API para o formato de agendamentos
   private mapApiToAgendamento(agenda: any): Agendamento {
     try {
+
       // Criar data de início
       const dataInicio = this.criarDataComHora(agenda.data, agenda.horaInicio);
 
