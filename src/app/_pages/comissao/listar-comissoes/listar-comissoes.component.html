@@ -1,0 +1,324 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <!-- Header -->
+      <!-- <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-currency-dollar me-2"></i>Gestão de Comissões</h2>
+      </div> -->
+
+      <app-label-nome [nomeTela]="'Gestão de Comissões'"></app-label-nome>
+
+      <!-- Filtros -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <i class="bi bi-funnel me-2"></i>Filtros e Cálculo
+        </div>
+        <div class="card-body">
+          <form [formGroup]="filtroForm">
+            <div class="row">
+              <div class="col-md-3">
+                <label for="dataInicio" class="form-label">Data Início *</label>
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  formControlName="dataInicio"
+                  [ngClass]="{
+                    'is-invalid':
+                      filtroForm.get('dataInicio')?.invalid &&
+                      filtroForm.get('dataInicio')?.touched
+                  }"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    filtroForm.get('dataInicio')?.invalid &&
+                    filtroForm.get('dataInicio')?.touched
+                  "
+                >
+                  Data início é obrigatória
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="dataFim" class="form-label">Data Fim *</label>
+                <input
+                  type="date"
+                  class="form-control form-control-sm"
+                  formControlName="dataFim"
+                  [ngClass]="{
+                    'is-invalid':
+                      filtroForm.get('dataFim')?.invalid &&
+                      filtroForm.get('dataFim')?.touched
+                  }"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    filtroForm.get('dataFim')?.invalid &&
+                    filtroForm.get('dataFim')?.touched
+                  "
+                >
+                  Data fim é obrigatória
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="profissional" class="form-label"
+                  >Profissional</label
+                >
+                <select
+                  class="form-select form-select-sm"
+                  formControlName="profissionalId"
+                >
+                  <option value="">Todos os profissionais</option>
+                  <option *ngFor="let prof of profissionais" [value]="prof.id">
+                    {{ prof.nome }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label for="status" class="form-label">Status</label>
+                <select
+                  class="form-select form-select-sm"
+                  formControlName="status"
+                >
+                  <option value="">Todos os status</option>
+                  <option value="1">Pendente</option>
+                  <option value="2">Pago</option>
+                  <option value="3">Cancelado</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-12">
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm me-2"
+                  [disabled]="filtroForm.invalid || isCalculating"
+                  (click)="calcularComissoes()"
+                >
+                  <i class="bi bi-calculator me-1"></i>
+                  <span *ngIf="!isCalculating">Calcular Comissões</span>
+                  <span *ngIf="isCalculating">Calculando...</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-success btn-sm me-2"
+                  [disabled]="filtroForm.invalid || isLoading"
+                  (click)="buscarComissoes()"
+                >
+                  <i class="bi bi-search me-1"></i>
+                  <span *ngIf="!isLoading">Buscar</span>
+                  <span *ngIf="isLoading">Buscando...</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm"
+                  (click)="limparFiltros()"
+                >
+                  <i class="bi bi-eraser me-1"></i>Limpar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Resumo -->
+      <div class="row mb-4" *ngIf="resumo">
+        <div class="col-md-3">
+          <div class="card border-primary">
+            <div class="card-body text-center">
+              <h5 class="card-title text-primary">Total Geral</h5>
+              <h3 class="text-primary">
+                {{ resumo.totalGeral | currency : "BRL" }}
+              </h3>
+              <small class="text-muted"
+                >{{ resumo.quantidadeTotal }} comissões</small
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-warning">
+            <div class="card-body text-center">
+              <h5 class="card-title text-warning">Pendentes</h5>
+              <h3 class="text-warning">
+                {{ resumo.totalPendente | currency : "BRL" }}
+              </h3>
+              <small class="text-muted"
+                >{{ resumo.quantidadePendente }} comissões</small
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-success">
+            <div class="card-body text-center">
+              <h5 class="card-title text-success">Pagas</h5>
+              <h3 class="text-success">
+                {{ resumo.totalPago | currency : "BRL" }}
+              </h3>
+              <small class="text-muted"
+                >{{ resumo.quantidadePago }} comissões</small
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="card border-info">
+            <div class="card-body text-center">
+              <h5 class="card-title text-info">Selecionadas</h5>
+              <h3 class="text-info">
+                {{ valorSelecionado | currency : "BRL" }}
+              </h3>
+              <small class="text-muted"
+                >{{ comissoesSelecionadas.length }} comissões</small
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ações em lote -->
+      <div class="card mb-3" *ngIf="comissoesSelecionadas.length > 0">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <span class="me-3">
+              <strong>{{ comissoesSelecionadas.length }}</strong> comissão(ões)
+              selecionada(s)
+            </span>
+            <button
+              class="btn btn-success btn-sm me-2"
+              [disabled]="isPagando"
+              (click)="darBaixaComissoes()"
+            >
+              <i class="bi bi-check-circle me-1"></i>
+              <span *ngIf="!isPagando">Dar Baixa (Pagar)</span>
+              <span *ngIf="isPagando">Processando...</span>
+            </button>
+            <button
+              class="btn btn-outline-secondary btn-sm"
+              (click)="limparSelecao()"
+            >
+              <i class="bi bi-x-circle me-1"></i>Limpar Seleção
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela de Comissões -->
+      <div class="card">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <span><i class="bi bi-table me-2"></i>Comissões Encontradas</span>
+          <span class="badge bg-primary" *ngIf="comissoes.length > 0"
+            >{{ comissoes.length }} registros</span
+          >
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th width="50">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      [checked]="todosSelecionados"
+                      [indeterminate]="algunsSelecionados"
+                      (change)="toggleTodos($event)"
+                    />
+                  </th>
+                  <th>Data</th>
+                  <th>Profissional</th>
+                  <th>Paciente</th>
+                  <th>Plano</th>
+                  <th>Tipo</th>
+                  <th>Base</th>
+                  <th>%/Valor</th>
+                  <th>Comissão</th>
+                  <th>Status</th>
+                  <th>Pagamento</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="comissoes.length === 0">
+                  <td colspan="11" class="text-center text-muted py-4">
+                    <i class="bi bi-inbox display-6 d-block mb-2"></i>
+                    Nenhuma comissão encontrada para os filtros selecionados
+                  </td>
+                </tr>
+
+                <tr
+                  *ngFor="let comissao of comissoes"
+                  [class.table-warning]="comissao.status === 'Pendente'"
+                  [class.table-success]="comissao.status === 'Pago'"
+                >
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      [checked]="isSelecionada(comissao.id)"
+                      [disabled]="comissao.status !== 'Pendente'"
+                      (change)="toggleSelecao(comissao)"
+                    />
+                  </td>
+                  <td>{{ comissao.dataAgendamento | date : "dd/MM/yyyy" }}</td>
+                  <td>
+                    <strong>{{ comissao.profissional?.nome }}</strong>
+                  </td>
+                  <td>{{ comissao.nomePaciente }}</td>
+                  <td>
+                    <small class="text-muted">{{ comissao.nomePlano }}</small>
+                  </td>
+                  <td>
+                    <small>{{
+                      getTipoComissaoText(comissao.tipoComissaoUtilizado)
+                    }}</small>
+                  </td>
+                  <td>{{ comissao.valorBase | currency : "BRL" }}</td>
+                  <td>
+                    <span *ngIf="comissao.tipoComissaoUtilizado === 'P'"
+                      >{{ comissao.percentualOuValor }}%</span
+                    >
+                    <span *ngIf="comissao.tipoComissaoUtilizado === 'VL'">{{
+                      comissao.percentualOuValor | currency : "BRL"
+                    }}</span>
+                  </td>
+                  <td>
+                    <strong class="text-success">{{
+                      comissao.valorComissao | currency : "BRL"
+                    }}</strong>
+                  </td>
+                  <td>
+                    <span [class]="getStatusClass(comissao.status)">
+                      {{ getStatusText(comissao.status) }}
+                    </span>
+                  </td>
+                  <td>
+                    <small *ngIf="comissao.dataPagamento" class="text-muted">
+                      {{ comissao.dataPagamento | date : "dd/MM/yyyy HH:mm" }}
+                    </small>
+                    <small *ngIf="!comissao.dataPagamento" class="text-muted"
+                      >-</small
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

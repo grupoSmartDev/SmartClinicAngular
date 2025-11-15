@@ -15,8 +15,10 @@ export class AuthService {
   public currentUser: Observable<UserToken | null>;
   private jwtHelper = new JwtHelperService();
 
+  // 👇 CHAVE SECRETA (mude isso para algo único do seu sistema)
+  private readonly SECRET_KEY = 'ClinicSmart_2024_SecureKey';
+
   constructor(private http: HttpClient) {
-    // Prioriza sessionStorage, fallback para localStorage
     this.currentUserSubject = new BehaviorSubject<UserToken | null>(
       JSON.parse(
         sessionStorage.getItem('currentUser') ||
@@ -32,25 +34,59 @@ export class AuthService {
   }
 
   public get userKey(): string | null {
-    // Prioriza sessionStorage, fallback para localStorage
     return sessionStorage.getItem('userKey') || localStorage.getItem('userKey');
   }
 
-  // Método auxiliar para obter token
   private getToken(): string | null {
     return sessionStorage.getItem('token') || localStorage.getItem('token');
   }
 
-  // Método auxiliar para obter dados do storage
   private getStorageItem(key: string): string | null {
     return sessionStorage.getItem(key) || localStorage.getItem(key);
   }
 
+  // 👇 NOVO: Gera hash de segurança
+  private gerarHash(valor: string): string {
+    return btoa(`${valor}_${this.SECRET_KEY}`);
+  }
+
+  // 👇 NOVO: Valida se o hash está correto
+  private validarHash(valor: string | null, hash: string | null): boolean {
+    if (!valor || !hash) return false;
+    return hash === this.gerarHash(valor);
+  }
+
+  // 👇 NOVO: Obtém o plano validado
+  public getPlano(): string {
+    const plano = this.getStorageItem('plano');
+    const hash = this.getStorageItem('plano_hash');
+
+    // Valida se foi adulterado
+    if (!this.validarHash(plano, hash)) {
+      console.error('⚠️ Plano foi adulterado! Fazendo logout...');
+      this.logout();
+      return 'Basic';
+    }
+
+    return plano || 'Basic';
+  }
+
+  // 👇 NOVO: Verifica se tem acesso a uma feature
+  public temAcessoFeature(plano: string, feature: string): boolean {
+    // Validação básica - você pode expandir isso
+    const featuresBasic = ['GestaoPaciente', 'Agenda', 'FichaAvaliacao'];
+    const featuresPlus = [...featuresBasic, 'RelatoriosFinanceiros', 'ContasPagar'];
+
+    if (plano === 'Premium') return true;
+    if (plano === 'Plus') return featuresPlus.includes(feature);
+    if (plano === 'Basic') return featuresBasic.includes(feature);
+
+    return false;
+  }
+
   login(email: string, password: string, userKey: string): Observable<AuthResponse> {
-    // Verifica se o userKey armazenado é diferente do novo
     const storedUserKey = localStorage.getItem('userKey');
 
-    // Se o userKey for diferente, limpa os dados antigos
     if (storedUserKey && storedUserKey !== userKey) {
       console.log('UserKey diferente detectado. Limpando dados antigos...');
       this.clearStorageData();
@@ -68,14 +104,25 @@ export class AuthService {
       .pipe(
         tap(response => {
           if (response.success && response.data) {
-            // Salvando em ambos storages
+            // 👇 NOVO: Extrai o plano da resposta
+            const plano = response.data.plano || 'Basic';
+            const planoHash = this.gerarHash(plano);
+
+            console.log('✅ Login bem-sucedido');
+            console.log(`📋 Plano detectado: ${plano}`);
+
+            // Salva dados em ambos storages
             localStorage.setItem('currentUser', JSON.stringify(response.data.userToken));
             localStorage.setItem('token', response.data.accessToken);
             localStorage.setItem('userKey', response.data.key);
+            localStorage.setItem('plano', plano); // 👈 SALVA O PLANO
+            localStorage.setItem('plano_hash', planoHash); // 👈 SALVA O HASH
 
             sessionStorage.setItem('currentUser', JSON.stringify(response.data.userToken));
             sessionStorage.setItem('token', response.data.accessToken);
             sessionStorage.setItem('userKey', response.data.key);
+            sessionStorage.setItem('plano', plano); // 👈 SALVA O PLANO
+            sessionStorage.setItem('plano_hash', planoHash); // 👈 SALVA O HASH
 
             this.currentUserSubject.next(response.data.userToken);
           }
@@ -92,20 +139,23 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
-  // Método auxiliar para limpar dados do storage
   private clearStorageData(): void {
     // Remove de ambos storages
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
     localStorage.removeItem('userKey');
+    localStorage.removeItem('plano'); // 👈 REMOVE O PLANO
+    localStorage.removeItem('plano_hash'); // 👈 REMOVE O HASH
 
     sessionStorage.removeItem('currentUser');
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('userKey');
+    sessionStorage.removeItem('plano'); // 👈 REMOVE O PLANO
+    sessionStorage.removeItem('plano_hash'); // 👈 REMOVE O HASH
   }
 
   isAuthenticated(): boolean {
-    const token = this.getToken(); // Usa o método auxiliar
+    const token = this.getToken();
     return token ? !this.jwtHelper.isTokenExpired(token) : false;
   }
 
@@ -119,7 +169,6 @@ export class AuthService {
     return currentUser?.role === 'Admin' || currentUser?.role === 'Support';
   }
 
-  // Método opcional: para saber de onde veio o token
   getStorageSource(): 'session' | 'local' | null {
     if (sessionStorage.getItem('token')) return 'session';
     if (localStorage.getItem('token')) return 'local';

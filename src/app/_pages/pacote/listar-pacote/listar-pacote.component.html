@@ -1,9 +1,5 @@
-<div class="row">
-  <app-label-nome
-    [nomeTela]="'Categoria'"
-    (adicionarClicked)="openModal('')"
-  ></app-label-nome>
-</div>
+<app-label-nome [nomeTela]="'Pacote'" (adicionarClicked)="openModal('')">
+</app-label-nome>
 
 <div class="card mb-3">
   <div
@@ -20,12 +16,24 @@
     </button>
   </div>
   <div class="card-body py-3" [ngClass]="{ 'd-none': !mostrarFiltros }">
+    <div class="row mb-2">
+      <div class="col-md-4">
+        <label for="" class="form-label small fw-bold">Descrição</label>
+        <input
+          type="text"
+          [(ngModel)]="descricaoFiltro"
+          placeholder="Filtrar por descrição"
+          class="form-control form-control-sm"
+        />
+      </div>
+    </div>
+
     <div class="row mt-3">
       <div class="col-md-12 text-end">
         <button
           type="button"
           class="btn btn-sm btn-primary me-2"
-          (click)="onSearch()"
+          (click)="filtrar()"
         >
           <i class="bi bi-search me-1"></i> Pesquisar
         </button>
@@ -36,29 +44,6 @@
         >
           <i class="bi bi-x-circle me-1"></i> Limpar Filtros
         </button>
-      </div>
-    </div>
-
-    <!--COLOCAR ABAIXO OS FILTROS-->
-    <div class="row mb-2">
-      <div class="col-md-2">
-        <label for="" class="form-label small fw-bold">Cód.</label>
-        <input
-          type="text"
-          class="form-control form-control-sm"
-          placeholder="Filtrar por código"
-          [(ngModel)]="idFiltro"
-        />
-      </div>
-
-      <div class="col-md-3">
-        <label for="" class="form-label small fw-bold">Descrição</label>
-        <input
-          type="text"
-          class="form-control form-control-sm"
-          placeholder="Filtrar por descrição"
-          [(ngModel)]="descricaoFiltro"
-        />
       </div>
     </div>
   </div>
@@ -73,27 +58,19 @@
           <tr>
             <th>Cód.</th>
             <th>Descrição</th>
-            <th>Ativo</th>
+            <th>Procedimento</th>
+            <th>Qtd. Sessões</th>
+            <th>Valor</th>
             <th class="text-end"></th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let item of lista">
-            <!-- Renderiza dinamicamente as células com base nas colunas -->
-            <td>
-              {{ item.id }}
-            </td>
-            <td>
-              {{ item.nome }}
-            </td>
-            <td>
-              @if(item.ativo){
-              <span class="span-status-green">Ativo</span>
-              } @else{
-              <span class="span-status-red">Inativo</span>
-              }
-            </td>
-
+            <td>{{ item.id }}</td>
+            <td>{{ item.descricao }}</td>
+            <td>{{ item.procedimento?.nome || "-" }}</td>
+            <td>{{ item.quantidadeSessoes }}</td>
+            <td>{{ item.valor | currencyPtBr }}</td>
             <td class="text-end">
               <a
                 href="javascript:void(0);"
@@ -101,8 +78,9 @@
                 class="action-icon btn-tooltip"
               >
                 <i class="bi bi-pencil text-warning"></i>
-                <span class="tooltip-text">Edição rapida</span>
+                <span class="tooltip-text">Edição rápida</span>
               </a>
+              @if(item.ativo == true){
               <a
                 href="javascript:void(0);"
                 (click)="promptDelete(item)"
@@ -111,6 +89,7 @@
                 <i class="bi bi-trash3 text-danger"></i>
                 <span class="tooltip-text">Excluir</span>
               </a>
+              }
             </td>
           </tr>
         </tbody>
@@ -120,12 +99,10 @@
     <div class="alert alert-danger" role="alert">
       Nenhum registro encontrado
     </div>
-    <img src="public\image\semRegistro.svg" alt="" />
     }
   </div>
 </div>
 
-<!-- Paginação Bootstrap -->
 <div class="row justify-content-center">
   <div class="">
     <pagination
@@ -142,10 +119,7 @@
   </div>
 </div>
 
-<app-modal-categoria
-  [nomeModal]="'Categoria'"
-  (DadosAtualizados)="atualizarLista()"
-></app-modal-categoria>
+<app-modal-pacote (dataAtualizado)="atualizarLista()"> </app-modal-pacote>
 
 <app-confirm-dialog
   #confirmDialog

@@ -100,6 +100,20 @@
                 Planos
               </button>
             </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="pacotes-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#pacotes"
+                type="button"
+                role="tab"
+                aria-controls="pacotes"
+                aria-selected="false"
+              >
+                Pacotes
+              </button>
+            </li>
           </ul>
 
           <!-- Tab Content -->
@@ -348,10 +362,10 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- Exemplo de plano -->
+                    @if (Paciente.plano) {
                     <tr>
-                      <td>{{ Paciente.plano?.descricao }}</td>
-                      @switch (Paciente.plano?.tipoMes) { @case ('m') {
+                      <td>{{ Paciente.plano.descricao }}</td>
+                      @switch (Paciente.plano.tipoMes) { @case ('m') {
                       <td>Mensal</td>
                       } @case ('s') {
                       <td>Semestral</td>
@@ -361,14 +375,14 @@
                       <td></td>
                       } }
 
-                      <td>{{ Paciente.plano?.dataFim | datePtBr }}</td>
+                      <td>{{ Paciente.plano.dataFim | datePtBr }}</td>
                       <td>
                         <span
                           class="badge"
-                          [class.bg-success]="Paciente.plano?.ativo"
-                          [class.bg-warning]="!Paciente.plano?.ativo"
+                          [class.bg-success]="Paciente.plano.ativo"
+                          [class.bg-warning]="!Paciente.plano.ativo"
                         >
-                          {{ Paciente.plano?.ativo ? "Ativo" : "Inativo" }}
+                          {{ Paciente.plano.ativo ? "Ativo" : "Inativo" }}
                         </span>
                       </td>
 
@@ -383,10 +397,640 @@
                         </a>
                       </td>
                     </tr>
+                    } @else {
+                    <tr>
+                      <td colspan="5" class="text-center text-muted">
+                        Nenhum plano encontrado
+                      </td>
+                    </tr>
+                    }
                   </tbody>
                 </table>
               </div>
             </div>
+
+            <div
+              class="tab-pane fade"
+              id="pacotes"
+              role="tabpanel"
+              aria-labelledby="pacotes-tab"
+            >
+              <div class="container-fluid">
+                <!-- Cabeçalho -->
+                <div class="row mb-3">
+                  <div class="col-12">
+                    <div
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <h5 class="mb-0">Pacotes do Paciente</h5>
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        (click)="openDialogVendaPacote()"
+                      >
+                        <i class="bi bi-plus-circle"></i> Vender Pacote
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Lista de Pacotes -->
+                <div class="row">
+                  @if (pacotesPaciente.length > 0) { @for (pacote of
+                  pacotesPaciente; track pacote.id) {
+                  <div class="col-md-6 mb-3">
+                    <div class="card shadow-sm h-100">
+                      <div class="card-header bg-light">
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <h6 class="mb-0">{{ pacote.pacote?.descricao }}</h6>
+                          <span
+                            class="badge"
+                            [ngClass]="{
+                              'bg-success': pacote.status === 'Ativo',
+                              'bg-danger': pacote.status === 'Esgotado',
+                              'bg-secondary': pacote.status === 'Cancelado'
+                            }"
+                          >
+                            {{ pacote.status }}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="row mb-2">
+                          <div class="col-6">
+                            <small class="text-muted">Procedimento:</small>
+                            <p class="mb-0 fw-semibold">
+                              {{
+                                pacote.pacote?.procedimento?.descricao || "-"
+                              }}
+                            </p>
+                          </div>
+                          <div class="col-6">
+                            <small class="text-muted">Data da Compra:</small>
+                            <p class="mb-0">
+                              {{ pacote.dataCompra | date : "dd/MM/yyyy" }}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="row mb-2">
+                          <div class="col-4">
+                            <small class="text-muted">Total:</small>
+                            <p class="mb-0 fw-bold">
+                              {{ pacote.quantidadeTotal }}
+                            </p>
+                          </div>
+                          <div class="col-4">
+                            <small class="text-muted">Usadas:</small>
+                            <p class="mb-0 text-warning fw-bold">
+                              {{ pacote.quantidadeUsada }}
+                            </p>
+                          </div>
+                          <div class="col-4">
+                            <small class="text-muted">Disponível:</small>
+                            <p class="mb-0 text-success fw-bold">
+                              {{ pacote.quantidadeDisponivel }}
+                            </p>
+                          </div>
+                        </div>
+
+                        <!-- Barra de Progresso -->
+                        <div class="progress mb-3" style="height: 20px">
+                          <div
+                            class="progress-bar bg-success"
+                            role="progressbar"
+                            [style.width.%]="
+                              (pacote.quantidadeUsada /
+                                pacote.quantidadeTotal) *
+                              100
+                            "
+                            [attr.aria-valuenow]="pacote.quantidadeUsada"
+                            [attr.aria-valuemin]="0"
+                            [attr.aria-valuemax]="pacote.quantidadeTotal"
+                          >
+                            {{
+                              (
+                                (pacote.quantidadeUsada /
+                                  pacote.quantidadeTotal) *
+                                100
+                              ).toFixed(0)
+                            }}%
+                          </div>
+                        </div>
+
+                        @if (pacote.observacao) {
+                        <div class="alert alert-info small mb-2">
+                          <strong>Obs:</strong> {{ pacote.observacao }}
+                        </div>
+                        }
+
+                        <!-- Ações -->
+                        <div class="d-flex gap-2">
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-primary flex-fill"
+                            (click)="openDialogHistoricoUso(pacote)"
+                          >
+                            <i class="bi bi-clock-history"></i> Histórico
+                          </button>
+                          @if (pacote.quantidadeDisponivel > 0) {
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-success flex-fill"
+                            (click)="openDialogConsumoSessao(pacote)"
+                          >
+                            <i class="bi bi-check-circle"></i> Consumir Sessão
+                          </button>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  } } @else {
+                  <div class="col-12">
+                    <div class="alert alert-warning text-center">
+                      <i class="bi bi-inbox"></i>
+                      <p class="mb-0 mt-2">
+                        Nenhum pacote cadastrado para este paciente
+                      </p>
+                    </div>
+                  </div>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- DIÁLOGO: VENDER PACOTE -->
+            <!-- ============================================ -->
+            <dialog id="dialogVendaPacote">
+              <div class="card">
+                <div class="card-header bg-primary text-white">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <h5 class="mb-0">Vender Pacote</h5>
+                    <button
+                      type="button"
+                      class="btn-close btn-close-white"
+                      (click)="closeDialogVendaPacote()"
+                    ></button>
+                  </div>
+                </div>
+                <div
+                  class="card-body"
+                  style="max-height: 70vh; overflow-y: auto"
+                >
+                  <form [formGroup]="formVendaPacote">
+                    <!-- Seleção do Pacote -->
+                    <div class="row mb-3">
+                      <div class="col-12">
+                        <label class="form-label fw-semibold">Pacote *</label>
+                        <select
+                          class="form-select"
+                          formControlName="pacoteId"
+                          [ngClass]="{
+                            'is-invalid':
+                              formVendaPacote.get('pacoteId')?.invalid &&
+                              formVendaPacote.get('pacoteId')?.touched
+                          }"
+                        >
+                          <option value="">Selecione um pacote</option>
+                          @for (pacote of listaPacotes; track pacote.id) {
+                          <option [value]="pacote.id">
+                            {{ pacote.descricao }} -
+                            {{ pacote.quantidadeSessoes }} sessões -
+                            {{ pacote.valor | currency : "BRL" }}
+                          </option>
+                          }
+                        </select>
+                        <div class="invalid-feedback">Selecione um pacote</div>
+                      </div>
+                    </div>
+
+                    <!-- Observação -->
+                    <div class="row mb-3">
+                      <div class="col-12">
+                        <label class="form-label">Observação</label>
+                        <textarea
+                          class="form-control"
+                          formControlName="observacao"
+                          rows="2"
+                          placeholder="Observações sobre a venda..."
+                        ></textarea>
+                      </div>
+                    </div>
+
+                    <!-- Gerar Financeiro -->
+                    <div class="row mb-3">
+                      <div class="col-12">
+                        <div class="form-check form-switch">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            formControlName="gerarFinanceiro"
+                            id="gerarFinanceiroVenda"
+                            (change)="toggleFinanceiroVendaPacote()"
+                          />
+                          <label
+                            class="form-check-label"
+                            for="gerarFinanceiroVenda"
+                          >
+                            Gerar Financeiro
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Seção Financeiro -->
+                    <div
+                      *ngIf="formVendaPacote.get('gerarFinanceiro')?.value"
+                      [@fadeInOut]
+                      formGroupName="financeiro"
+                    >
+                      <div class="card mb-3">
+                        <div class="card-header bg-light">
+                          <h6 class="mb-0">Informações Financeiras</h6>
+                        </div>
+                        <div class="card-body">
+                          <div class="row mb-3">
+                            <div class="col-md-4">
+                              <label class="form-label">Valor *</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                formControlName="valor"
+                                [currencyMask]="{
+                                  prefix: 'R$ ',
+                                  thousands: '.',
+                                  decimal: ',',
+                                  precision: 2,
+                                  allowNegative: false
+                                }"
+                              />
+                            </div>
+
+                            <div class="col-md-4">
+                              <label class="form-label">Tipo Pagamento *</label>
+                              <select
+                                class="form-select"
+                                formControlName="tipoPagamentoId"
+                              >
+                                <option value="">Selecione</option>
+                                @for (tipo of listaTipoPagamento; track tipo.id)
+                                {
+                                <option [value]="tipo.id">
+                                  {{ tipo.descricao }}
+                                </option>
+                                }
+                              </select>
+                            </div>
+
+                            <div class="col-md-4">
+                              <label class="form-label">Nº Parcelas *</label>
+                              <input
+                                type="number"
+                                class="form-control"
+                                formControlName="parcela"
+                                min="1"
+                              />
+                            </div>
+                          </div>
+
+                          <div class="row mb-3">
+                            <div class="col-md-6">
+                              <label class="form-label">Centro de Custo</label>
+                              <select
+                                class="form-select"
+                                formControlName="centroCustoId"
+                              >
+                                <option value="">Selecione</option>
+                                @for (cc of listaCentroDeCusto; track cc.id) {
+                                <option [value]="cc.id">
+                                  {{ cc.descricao }}
+                                </option>
+                                }
+                              </select>
+                            </div>
+
+                            <div class="col-md-6">
+                              <label class="form-label">Observação</label>
+                              <input
+                                type="text"
+                                class="form-control"
+                                formControlName="observacao"
+                                placeholder="Observação financeira"
+                              />
+                            </div>
+                          </div>
+
+                          <!-- Botão Gerar Parcelas -->
+                          <div class="row mb-3">
+                            <div class="col-12">
+                              <button
+                                type="button"
+                                class="btn btn-outline-primary btn-sm"
+                                (click)="gerarParcelasVendaPacote()"
+                              >
+                                <i class="bi bi-calculator"></i> Gerar Parcelas
+                              </button>
+                            </div>
+                          </div>
+
+                          <!-- Tabela de Parcelas -->
+                          <div
+                            class="table-responsive"
+                            formArrayName="subFinancReceber"
+                          >
+                            <table class="table table-sm table-bordered">
+                              <thead class="table-light">
+                                <tr>
+                                  <th style="width: 60px">#</th>
+                                  <th>Valor</th>
+                                  <th>Vencimento</th>
+                                  <th>Tipo Pag.</th>
+                                  <th>Forma Pag.</th>
+                                  <th style="width: 50px"></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                @for (parcela of
+                                subFinancReceberVendaPacote.controls; track
+                                $index; let i = $index) {
+                                <tr [formGroupName]="i">
+                                  <td class="text-center">{{ i + 1 }}</td>
+                                  <td>
+                                    <input
+                                      type="text"
+                                      class="form-control form-control-sm"
+                                      formControlName="valor"
+                                      [currencyMask]="{
+                                        prefix: 'R$ ',
+                                        thousands: '.',
+                                        decimal: ',',
+                                        precision: 2,
+                                        allowNegative: false
+                                      }"
+                                    />
+                                  </td>
+                                  <td>
+                                    <input
+                                      type="date"
+                                      class="form-control form-control-sm"
+                                      formControlName="dataVencimento"
+                                    />
+                                  </td>
+                                  <td>
+                                    <select
+                                      class="form-select form-select-sm"
+                                      formControlName="tipoPagamentoId"
+                                    >
+                                      <option value="">Selecione</option>
+                                      @for (tipo of listaTipoPagamento; track
+                                      tipo.id) {
+                                      <option [value]="tipo.id">
+                                        {{ tipo.descricao }}
+                                      </option>
+                                      }
+                                    </select>
+                                  </td>
+                                  <td>
+                                    <select
+                                      class="form-select form-select-sm"
+                                      formControlName="formaPagamentoId"
+                                    >
+                                      <option value="">Selecione</option>
+                                      @for (forma of listaFormaPagamento; track
+                                      forma.id) {
+                                      <option [value]="forma.id">
+                                        {{ forma.descricao }}
+                                      </option>
+                                      }
+                                    </select>
+                                  </td>
+                                  <td class="text-center">
+                                    <button
+                                      type="button"
+                                      class="btn btn-sm btn-outline-danger"
+                                      (click)="removerParcelaVendaPacote(i)"
+                                    >
+                                      <i class="bi bi-trash"></i>
+                                    </button>
+                                  </td>
+                                </tr>
+                                } @if (subFinancReceberVendaPacote.length === 0)
+                                {
+                                <tr>
+                                  <td
+                                    colspan="6"
+                                    class="text-center text-muted"
+                                  >
+                                    Clique em "Gerar Parcelas" para criar as
+                                    parcelas
+                                  </td>
+                                </tr>
+                                }
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-end">
+                  <button
+                    type="button"
+                    class="btn btn-secondary me-2"
+                    (click)="closeDialogVendaPacote()"
+                  >
+                    Cancelar
+                  </button>
+                  <app-button-action
+                    text="Confirmar Venda"
+                    loadingText="Vendendo..."
+                    [loading]="isLoading"
+                    variant="success"
+                    (clicked)="venderPacote()"
+                    [type]="'button'"
+                  ></app-button-action>
+                </div>
+              </div>
+            </dialog>
+
+            <!-- ============================================ -->
+            <!-- DIÁLOGO: CONSUMIR SESSÃO -->
+            <!-- ============================================ -->
+            <dialog id="dialogConsumoSessao">
+              <div class="card" style="width: 500px">
+                <div class="card-header bg-success text-white">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <h5 class="mb-0">Consumir Sessão</h5>
+                    <button
+                      type="button"
+                      class="btn-close btn-close-white"
+                      (click)="closeDialogConsumoSessao()"
+                    ></button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  @if (pacoteSelecionado) {
+                  <div class="alert alert-info mb-3">
+                    <strong>Pacote:</strong>
+                    {{ pacoteSelecionado.pacote?.descricao }}<br />
+                    <strong>Sessões disponíveis:</strong>
+                    {{ pacoteSelecionado.quantidadeDisponivel }}
+                  </div>
+                  }
+
+                  <form [formGroup]="formConsumoSessao">
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold"
+                        >Agendamento *</label
+                      >
+                      <select
+                        class="form-select"
+                        formControlName="agendaId"
+                        [ngClass]="{
+                          'is-invalid':
+                            formConsumoSessao.get('agendaId')?.invalid &&
+                            formConsumoSessao.get('agendaId')?.touched
+                        }"
+                      >
+                        <option value="">Selecione um agendamento</option>
+                        @for (agenda of Paciente.agendamentos; track agenda.id)
+                        {
+                        <option [value]="agenda.id">
+                          {{ agenda.data | date : "dd/MM/yyyy HH:mm" }} -
+                          {{ agenda.profissionalId }}
+                        </option>
+                        }
+                      </select>
+                      <div class="invalid-feedback">
+                        Selecione um agendamento
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label class="form-label">Observação</label>
+                      <textarea
+                        class="form-control"
+                        formControlName="observacao"
+                        rows="3"
+                        placeholder="Observações sobre o uso..."
+                      ></textarea>
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-end">
+                  <button
+                    type="button"
+                    class="btn btn-secondary me-2"
+                    (click)="closeDialogConsumoSessao()"
+                  >
+                    Cancelar
+                  </button>
+                  <app-button-action
+                    text="Consumir"
+                    loadingText="Consumindo..."
+                    [loading]="isLoading"
+                    variant="success"
+                    (clicked)="consumirSessao()"
+                    [type]="'button'"
+                  ></app-button-action>
+                </div>
+              </div>
+            </dialog>
+
+            <!-- ============================================ -->
+            <!-- DIÁLOGO: HISTÓRICO DE USO -->
+            <!-- ============================================ -->
+            <dialog id="dialogHistoricoUso">
+              <div class="card" style="width: 700px">
+                <div class="card-header bg-primary text-white">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <h5 class="mb-0">Histórico de Uso</h5>
+                    <button
+                      type="button"
+                      class="btn-close btn-close-white"
+                      (click)="closeDialogHistoricoUso()"
+                    ></button>
+                  </div>
+                </div>
+                <div
+                  class="card-body"
+                  style="max-height: 60vh; overflow-y: auto"
+                >
+                  @if (pacoteSelecionado) {
+                  <div class="alert alert-info mb-3">
+                    <strong>Pacote:</strong>
+                    {{ pacoteSelecionado.pacote?.descricao }}<br />
+                    <strong>Total de usos:</strong>
+                    {{ pacoteSelecionado.quantidadeUsada }} de
+                    {{ pacoteSelecionado.quantidadeTotal }}
+                  </div>
+                  } @if (historicoUsoPacote.length > 0) {
+                  <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                      <thead class="table-light">
+                        <tr>
+                          <th>Data</th>
+                          <th>Agendamento</th>
+                          <th>Observação</th>
+                          <th class="text-end">Ações</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (uso of historicoUsoPacote; track uso.id) {
+                        <tr>
+                          <td>{{ uso.dataUso | date : "dd/MM/yyyy HH:mm" }}</td>
+                          <td>
+                            @if (uso.agenda) {
+                            {{ uso.agenda.data | date : "dd/MM/yyyy HH:mm" }}
+                            } @else { - }
+                          </td>
+                          <td>{{ uso.observacao || "-" }}</td>
+                          <td class="text-end">
+                            <button
+                              type="button"
+                              class="btn btn-sm btn-outline-danger"
+                              (click)="estornarUso(uso.id)"
+                              title="Estornar uso"
+                            >
+                              <i class="bi bi-arrow-counterclockwise"></i>
+                            </button>
+                          </td>
+                        </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                  } @else {
+                  <div class="alert alert-warning text-center">
+                    <i class="bi bi-inbox"></i>
+                    <p class="mb-0 mt-2">
+                      Nenhum uso registrado para este pacote
+                    </p>
+                  </div>
+                  }
+                </div>
+                <div class="card-footer text-end">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="closeDialogHistoricoUso()"
+                  >
+                    Fechar
+                  </button>
+                </div>
+              </div>
+            </dialog>
           </div>
         </div>
 
@@ -750,7 +1394,7 @@
             </div>
 
             <div class="col-md-3">
-              <label for="">Valor</label>
+              <label for="">Valor mensal</label>
               <input
                 type="text"
                 formControlName="valor"
@@ -1244,7 +1888,7 @@
                           class="form-select form-select-sm"
                           formControlName="profissionalId"
                         >
-                          <option value="" disabled selected>Selecione</option>
+                          <option value="" selected>Selecione</option>
                           <option
                             *ngFor="let prof of listaProfissional"
                             [value]="prof.id"
@@ -1258,7 +1902,7 @@
                           class="form-select form-select-sm"
                           formControlName="salaId"
                         >
-                          <option value="" disabled selected>Selecione</option>
+                          <option value="" selected>Selecione</option>
                           <option
                             *ngFor="let sala of listaSala"
                             [value]="sala.id"

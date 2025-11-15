@@ -9,14 +9,16 @@
     height: 100%;
     border-radius: 0rem 1rem 1rem 0rem;
 
-    z-index: 1050; /* Aumente o z-index */
-    position: relative; /* Se o menu precisa ser posicionado relativo ao pai */
+    z-index: 1050;
+    /* Aumente o z-index */
+    position: relative;
+    /* Se o menu precisa ser posicionado relativo ao pai */
 }
 
-    #sidebar.expand {
-        width: 18rem;
-        min-width: 18rem;
-    }
+#sidebar.expand {
+    width: 18rem;
+    min-width: 18rem;
+}
 
 .toggle-btn {
     background-color: transparent;
@@ -25,20 +27,20 @@
     padding: 1rem 1.5rem;
 }
 
-    .toggle-btn i {
-        font-size: 1.2rem;
-        color: #fff;
-    }
+.toggle-btn i {
+    font-size: 1.2rem;
+    color: #fff;
+}
 
 .sidebar-logo {
     margin: auto 0;
 }
 
-    .sidebar-logo a {
-        color: #fff;
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
+.sidebar-logo a {
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
 
 #sidebar:not(.expand) .sidebar-logo,
 #sidebar:not(.expand) a.sidebar-link span {
@@ -101,13 +103,13 @@ a.sidebar-link:hover {
     display: none;
 }
 
-#sidebar:not(.expand) .sidebar-item:hover .has-dropdown + .sidebar-dropdown {
+#sidebar:not(.expand) .sidebar-item:hover .has-dropdown+.sidebar-dropdown {
     display: block;
-   /* max-height: 15em;*/
+    /* max-height: 15em;*/
     width: 100%;
     opacity: 1;
     background-color: #389d8cde;
-    z-index: 1060; 
+    z-index: 1060;
 }
 
 #sidebar.expand .sidebar-link[data-bs-toggle="collapse"]::after {
@@ -144,5 +146,61 @@ a.sidebar-link:hover {
 
 
 
-@media (min-width: 768px) {
+@media (min-width: 768px) {}
+
+
+/* // Badge do plano */
+.plano-badge {
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+
+        &.bg-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    }
+}
+
+/* // Item bloqueado */
+.item-bloqueado {
+    opacity: 0.6;
+
+    .sidebar-link {
+        cursor: not-allowed !important;
+
+        &:hover {
+            background-color: rgba(255, 193, 7, 0.1) !important;
+        }
+    }
+}
+
+/* // Menu inteiro bloqueado */
+.menu-bloqueado {
+    opacity: 0.6;
+
+    >a {
+        cursor: help !important;
+    }
+}
+
+/* // Ícone de cadeado animado */
+.bi-lock-fill {
+    animation: pulse 2s infinite;
+    font-size: 0.85em;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
 }

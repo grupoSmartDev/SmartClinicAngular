@@ -40,6 +40,9 @@ import { PaginaCadastroComponent } from './cadastro-page/pagina-cadastro/pagina-
 import { ConfiguracoesComponent } from './_pages/configuracoes/configuracoes.component';
 import { AlterarDadosUsuarioComponent } from './_pages/configuracoes/alterar-dados-usuario/alterar-dados-usuario.component';
 import { AgendaListarComponent } from './_pages/agenda/agenda-listar/agenda-listar.component';
+import { ListarComissoesComponent } from './_pages/comissao/listar-comissoes/listar-comissoes.component';
+import { UpgradeComponent } from './_pages/upgrade/upgrade/upgrade.component';
+import { ListarPacoteComponent } from './_pages/pacote/listar-pacote/listar-pacote.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent }, // Rota para a página de login
@@ -100,6 +103,7 @@ const routes: Routes = [
         component: ListarPagarSinteticoComponent,
       },
       { path: 'profissao/listar', component: ListarProfissaoComponent },
+      { path: 'pacote/listar', component: ListarPacoteComponent },
       { path: 'planoContas/listar', component: ListarPlanoContasComponent },
       {
         path: 'planoContaSub/listar',
@@ -107,6 +111,8 @@ const routes: Routes = [
       },
       { path: 'DespesasFixa/ListarDespesa', component: ListarDespesaComponent },
       { path: 'Configuracoes/alterarDadosUsuario', component: AlterarDadosUsuarioComponent },
+      { path: 'Comissoes/Listar', component: ListarComissoesComponent },
+      { path: 'upgrade', component: UpgradeComponent },
       { path: 'Configuracoes/BuscarPorId', component: ConfiguracoesComponent },
     ],
   },

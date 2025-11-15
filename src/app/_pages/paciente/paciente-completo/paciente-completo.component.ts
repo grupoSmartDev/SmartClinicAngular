@@ -150,6 +150,14 @@ export class PacienteCompletoComponent implements OnInit {
   podeRenovar: boolean = false;
   planoSelecionado: any = null;
 
+  // Pacotes
+  listaPacotes: Pacote[] = [];
+  pacotesPaciente: PacotePaciente[] = [];
+  pacoteSelecionado: PacotePaciente | null = null;
+  historicoUsoPacote: PacoteUso[] = [];
+  formVendaPacote!: FormGroup;
+  formConsumoSessao!: FormGroup;
+
   isLoading = false;
 
   @Output() evolucaoAtualizado = new EventEmitter<void>();
@@ -175,6 +183,11 @@ export class PacienteCompletoComponent implements OnInit {
     this.inicializarFormularioPlano();
     this.iniciarGettersLista();
     this.verificarRenovacao();
+
+    this.carregarPacotes();
+    this.carregarPacotesPaciente();
+    this.inicializarFormVendaPacote();
+    this.inicializarFormConsumoSessao();
   }
 
   // Métodos básicos de UI
@@ -334,6 +347,7 @@ export class PacienteCompletoComponent implements OnInit {
 
   // MÉTODOS DE GERENCIAMENTO DE FORMULÁRIO
   adicionarExercicio(): void {
+    debugger
     const novoItem = this.fb.group({
       obs: ['', Validators.required],
       descricao: ['', Validators.required],
@@ -366,6 +380,7 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   salvarEvolucao(): void {
+    debugger
     this.formEvolucao.patchValue({
       pacienteId: this.Paciente.id,
     });
@@ -383,6 +398,26 @@ export class PacienteCompletoComponent implements OnInit {
       ? this.evolucaoService.Atualizar(dataToSave)
       : this.evolucaoService.CriarEvolucaoPaciente(dataToSave);
 
+    if (dataToSave.id) {
+      // Processar exercícios
+      if (dataToSave.exercicios && dataToSave.exercicios.length > 0) {
+        dataToSave.exercicios.forEach((exercicio: Exercicio) => {
+          exercicio.evolucaoId = dataToSave.id;
+        });
+      } else {
+        dataToSave.exercicios = [];
+      }
+
+      // Processar atividades
+      if (dataToSave.atividades && dataToSave.atividades.length > 0) {
+        dataToSave.atividades.forEach((atividade: Atividade) => {
+          atividade.evolucaoId = dataToSave.id;
+        });
+      } else {
+        dataToSave.atividades = [];
+      }
+    }
+
     saveOperation.subscribe({
       next: (response) => {
         const action = dataToSave.id ? 'atualizada' : 'criada';
@@ -390,16 +425,21 @@ export class PacienteCompletoComponent implements OnInit {
         this.isLoading = false;
         this.closeDialog();
 
-        // 🎯 AQUI - atualiza o Paciente.evolucoes diretamente
+        // Verifica se response.dados é array
+        const dadosArray = Array.isArray(response.dados) ? response.dados : [response.dados];
+
         if (dataToSave.id) {
           // Se está editando, atualiza o item existente
           const index = this.Paciente.evolucoes!.findIndex(e => e.id === dataToSave.id);
           if (index !== -1) {
-            this.Paciente.evolucoes![index] = response.dados;
+            const itemAtualizado = dadosArray.find(item => item.id === dataToSave.id);
+            if (itemAtualizado) {
+              this.Paciente.evolucoes![index] = itemAtualizado;
+            }
           }
         } else {
           // Se é novo, adiciona no início da lista
-          this.Paciente.evolucoes!.unshift(response.dados);
+          this.Paciente.evolucoes!.unshift(dadosArray[0]);
         }
       },
       error: (err) => {
@@ -579,11 +619,11 @@ export class PacienteCompletoComponent implements OnInit {
 
     switch (tipoMes) {
       case 'm': valor = plano.valorMensal || 0; break;
-      case 'b': valor = plano.valorBimestral || 0; break;
-      case 't': valor = plano.valorTrimestral || 0; break;
-      case 'q': valor = plano.valorQuadrimestral || 0; break;
-      case 's': valor = plano.valorSemestral || 0; break;
-      case 'a': valor = plano.valorAnual || 0; break;
+      case 'b': valor = plano.valorBimestral * 2 || 0; break;
+      case 't': valor = plano.valorTrimestral * 3 || 0; break;
+      case 'q': valor = plano.valorQuadrimestral * 4 || 0; break;
+      case 's': valor = plano.valorSemestral * 6 || 0; break;
+      case 'a': valor = plano.valorAnual * 12 || 0; break;
     }
 
     this.formPlano.get('financeiro.valor')?.setValue(valor);
@@ -1789,6 +1829,315 @@ export class PacienteCompletoComponent implements OnInit {
     }
   }
 
+  // ============================================
+  // MÉTODOS PARA ADICIONAR NA CLASSE
+  // ============================================
+
+  // ---------- CARREGAR DADOS ----------
+  carregarPacotes(): void {
+    this.pacoteService.Listar(undefined, undefined, undefined, false).subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.listaPacotes = response.dados;
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao carregar pacotes:', err);
+        this.toastr.error('Erro ao carregar pacotes', 'Erro');
+      }
+    });
+  }
+
+  carregarPacotesPaciente(): void {
+    if (!this.Paciente?.id) return;
+
+    this.pacoteService.ListarPacotesPaciente(this.Paciente.id).subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.pacotesPaciente = response.dados;
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao carregar pacotes do paciente:', err);
+        this.toastr.error('Erro ao carregar pacotes do paciente', 'Erro');
+      }
+    });
+  }
+
+  carregarHistoricoUso(pacotePacienteId: number): void {
+    this.pacoteService.ListarHistoricoUso(pacotePacienteId).subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.historicoUsoPacote = response.dados;
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao carregar histórico:', err);
+        this.toastr.error('Erro ao carregar histórico de uso', 'Erro');
+      }
+    });
+  }
+
+  // ---------- FORMULÁRIOS ----------
+  inicializarFormVendaPacote(): void {
+    this.formVendaPacote = this.fb.group({
+      pacoteId: ['', Validators.required],
+      pacienteId: [this.Paciente?.id || ''],
+      observacao: [''],
+      gerarFinanceiro: [true],
+
+      financeiro: this.fb.group({
+        valor: [0, [Validators.required, Validators.min(0.01)]],
+        tipoPagamentoId: ['', Validators.required],
+        parcela: [1, [Validators.required, Validators.min(1)]],
+        centroCustoId: [''],
+        observacao: [''],
+        subFinancReceber: this.fb.array([])
+      })
+    });
+
+    // Listener para atualizar valor quando pacote for selecionado
+    this.formVendaPacote.get('pacoteId')?.valueChanges.subscribe(pacoteId => {
+      const pacote = this.listaPacotes.find(p => p.id === +pacoteId);
+      if (pacote) {
+        this.formVendaPacote.get('financeiro.valor')?.setValue(pacote.valor);
+        this.formVendaPacote.get('financeiro.centroCustoId')?.setValue(pacote.centroCustoId);
+      }
+    });
+
+    // Desabilitar financeiro inicialmente
+    this.formVendaPacote.get('financeiro')?.disable();
+  }
+
+  inicializarFormConsumoSessao(): void {
+    this.formConsumoSessao = this.fb.group({
+      pacotePacienteId: ['', Validators.required],
+      agendaId: ['', Validators.required],
+      pacienteUtilizadoId: [this.Paciente?.id || '', Validators.required],
+      observacao: ['']
+    });
+  }
+
+  // ---------- DIÁLOGOS ----------
+  openDialogVendaPacote(): void {
+    const dialog = document.getElementById('dialogVendaPacote') as HTMLDialogElement;
+    if (dialog) {
+      this.formVendaPacote.patchValue({
+        pacienteId: this.Paciente?.id
+      });
+      dialog.showModal();
+    }
+  }
+
+  closeDialogVendaPacote(): void {
+    const dialog = document.getElementById('dialogVendaPacote') as HTMLDialogElement;
+    if (dialog) {
+      this.formVendaPacote.reset({
+        pacienteId: this.Paciente?.id,
+        gerarFinanceiro: true
+      });
+      dialog.close();
+    }
+  }
+
+  openDialogConsumoSessao(pacotePaciente: PacotePaciente): void {
+    const dialog = document.getElementById('dialogConsumoSessao') as HTMLDialogElement;
+    if (dialog) {
+      this.pacoteSelecionado = pacotePaciente;
+      this.formConsumoSessao.patchValue({
+        pacotePacienteId: pacotePaciente.id,
+        pacienteUtilizadoId: this.Paciente?.id
+      });
+      dialog.showModal();
+    }
+  }
+
+  closeDialogConsumoSessao(): void {
+    const dialog = document.getElementById('dialogConsumoSessao') as HTMLDialogElement;
+    if (dialog) {
+      this.formConsumoSessao.reset({
+        pacienteUtilizadoId: this.Paciente?.id
+      });
+      this.pacoteSelecionado = null;
+      dialog.close();
+    }
+  }
+
+  openDialogHistoricoUso(pacotePaciente: PacotePaciente): void {
+    const dialog = document.getElementById('dialogHistoricoUso') as HTMLDialogElement;
+    if (dialog) {
+      this.pacoteSelecionado = pacotePaciente;
+      this.carregarHistoricoUso(pacotePaciente.id);
+      dialog.showModal();
+    }
+  }
+
+  closeDialogHistoricoUso(): void {
+    const dialog = document.getElementById('dialogHistoricoUso') as HTMLDialogElement;
+    if (dialog) {
+      this.pacoteSelecionado = null;
+      this.historicoUsoPacote = [];
+      dialog.close();
+    }
+  }
+
+  // ---------- AÇÕES ----------
+  venderPacote(): void {
+    if (this.formVendaPacote.invalid) {
+      this.formVendaPacote.markAllAsTouched();
+      this.toastr.error('Preencha todos os campos obrigatórios', 'Formulário Inválido');
+      return;
+    }
+
+    this.isLoading = true;
+    const dados = this.formVendaPacote.getRawValue();
+
+    // Limpar financeiro se não gerar
+    if (!dados.gerarFinanceiro) {
+      dados.financeiro = null;
+    }
+
+    this.pacoteService.VenderPacote(dados).subscribe({
+      next: (response) => {
+        if (response.status) {
+          this.toastr.success('Pacote vendido com sucesso!', 'Sucesso');
+          this.carregarPacotesPaciente();
+          this.closeDialogVendaPacote();
+        } else {
+          this.toastr.error(response.mensagem, 'Erro');
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erro ao vender pacote:', err);
+        this.toastr.error('Erro ao vender pacote', 'Erro');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  consumirSessao(): void {
+    if (this.formConsumoSessao.invalid) {
+      this.formConsumoSessao.markAllAsTouched();
+      this.toastr.error('Preencha todos os campos obrigatórios', 'Formulário Inválido');
+      return;
+    }
+
+    this.isLoading = true;
+    const dados = this.formConsumoSessao.value;
+
+    this.pacoteService.ConsumirSessao(dados).subscribe({
+      next: (response) => {
+        if (response.status) {
+          this.toastr.success('Sessão consumida com sucesso!', 'Sucesso');
+          this.carregarPacotesPaciente();
+          this.closeDialogConsumoSessao();
+        } else {
+          this.toastr.error(response.mensagem, 'Erro');
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erro ao consumir sessão:', err);
+        this.toastr.error('Erro ao consumir sessão', 'Erro');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  estornarUso(usoId: number): void {
+    if (!confirm('Deseja realmente estornar este uso?')) {
+      return;
+    }
+
+    this.pacoteService.EstornarUso(usoId).subscribe({
+      next: (response) => {
+        if (response.status) {
+          this.toastr.success('Uso estornado com sucesso!', 'Sucesso');
+          this.carregarHistoricoUso(this.pacoteSelecionado!.id);
+          this.carregarPacotesPaciente();
+        } else {
+          this.toastr.error(response.mensagem, 'Erro');
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao estornar uso:', err);
+        this.toastr.error('Erro ao estornar uso', 'Erro');
+      }
+    });
+  }
+
+  // ---------- CONTROLES DE FORMULÁRIO ----------
+  toggleFinanceiroVendaPacote(): void {
+    const financeiro = this.formVendaPacote.get('financeiro');
+    const gerarFinanceiro = this.formVendaPacote.get('gerarFinanceiro')?.value;
+
+    if (gerarFinanceiro) {
+      financeiro?.enable();
+    } else {
+      financeiro?.disable();
+    }
+  }
+
+  get subFinancReceberVendaPacote(): FormArray {
+    return this.formVendaPacote.get('financeiro.subFinancReceber') as FormArray;
+  }
+
+  adicionarParcelaVendaPacote(): void {
+    const parcela = this.fb.group({
+      parcela: [this.subFinancReceberVendaPacote.length + 1],
+      valor: [0, [Validators.required, Validators.min(0.01)]],
+      tipoPagamentoId: [''],
+      formaPagamentoId: [''],
+      dataPagamento: [null],
+      desconto: [0],
+      juros: [0],
+      multa: [0],
+      dataVencimento: ['', Validators.required],
+      observacao: ['']
+    });
+
+    this.subFinancReceberVendaPacote.push(parcela);
+  }
+
+  removerParcelaVendaPacote(index: number): void {
+    this.subFinancReceberVendaPacote.removeAt(index);
+
+    // Reindexar parcelas
+    this.subFinancReceberVendaPacote.controls.forEach((control, i) => {
+      control.get('parcela')?.setValue(i + 1);
+    });
+  }
+
+  gerarParcelasVendaPacote(): void {
+    const numeroParcelas = this.formVendaPacote.get('financeiro.parcela')?.value || 1;
+    const valorTotal = this.formVendaPacote.get('financeiro.valor')?.value || 0;
+    const valorParcela = (valorTotal / numeroParcelas).toFixed(2);
+
+    // Limpar parcelas existentes
+    this.subFinancReceberVendaPacote.clear();
+
+    // Criar novas parcelas
+    for (let i = 0; i < numeroParcelas; i++) {
+      const dataVencimento = new Date();
+      dataVencimento.setMonth(dataVencimento.getMonth() + i);
+
+      const parcela = this.fb.group({
+        parcela: [i + 1],
+        valor: [+valorParcela, [Validators.required, Validators.min(0.01)]],
+        tipoPagamentoId: [''],
+        formaPagamentoId: [''],
+        dataPagamento: [null],
+        desconto: [0],
+        juros: [0],
+        multa: [0],
+        dataVencimento: [dataVencimento.toISOString().split('T')[0], Validators.required],
+        observacao: ['']
+      });
+
+      this.subFinancReceberVendaPacote.push(parcela);
+    }
+  }
 
 
 }

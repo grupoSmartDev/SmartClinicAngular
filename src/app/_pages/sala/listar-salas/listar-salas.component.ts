@@ -147,9 +147,16 @@ export class ListarSalasComponent {
     let id = sala.id;
     this.salaService.Deletar(parseInt(id)).subscribe({
       next: (response) => {
-        console.log('Sala excluído com sucesso:', response);
-        this.lista = this.lista.filter((sala) => sala.id !== id);
-        this.toast.success('Sala excluído com sucesso!', 'Excluído');
+
+        let status = response.status;
+        let mensagem = response.mensagem;
+        if (status) {
+          this.toast.success(mensagem, 'Excluído');
+          this.lista = this.lista.filter((sala) => sala.id !== id);
+        }
+        else {
+          this.toast.error(mensagem, 'Erro');
+        }
 
         this.invalidateCache();
       },

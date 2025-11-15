@@ -143,12 +143,19 @@ export class CalendarioComponent {
   // Método auxiliar para criar uma data com hora
   private criarDataComHora(dataString: string, horaString?: string): Date {
     try {
-      // Criar uma nova data a partir da string de data
-      const data = new Date(dataString);
+      // Parse manual da data para evitar conversões de timezone
+      const dateOnly = dataString.split('T')[0]; // Pega apenas a parte da data (YYYY-MM-DD)
+      const [ano, mes, dia] = dateOnly.split('-').map(Number);
+
+      // Criar data local sem conversão de timezone
+      const data = new Date(ano, mes - 1, dia); // mes - 1 porque Date usa mês baseado em 0
 
       if (horaString) {
         const [horas, minutos, segundos] = horaString.split(':').map(Number);
-        data.setHours(horas || 0, minutos || 0, segundos || 0);
+        data.setHours(horas || 0, minutos || 0, segundos || 0, 0);
+      } else {
+        // Se não tem hora, definir como meio-dia para evitar problemas de timezone
+        data.setHours(12, 0, 0, 0);
       }
 
       return data;
@@ -161,6 +168,7 @@ export class CalendarioComponent {
   // Mapeia diretamente da API para o formato de agendamentos
   private mapApiToAgendamento(agenda: any): Agendamento {
     try {
+
       // Criar data de início
       const dataInicio = this.criarDataComHora(agenda.data, agenda.horaInicio);
 

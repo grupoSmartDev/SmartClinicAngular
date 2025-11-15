@@ -5,6 +5,7 @@ import { fadeInOut, INavbarData } from './helper';
 import { navbarData } from './nav-data';
 import { TabService } from '../../_services/tabs.service';
 import { AuthService } from '../../_services/auth.service';
+import { PlanoTipo, PlanosService } from '../../_services/planos.service'; // 👈 IMPORTA
 
 interface SideNavToggle {
   screenWidth: number;
@@ -39,6 +40,9 @@ export class SidenavComponent implements OnInit {
   isExpanded = true;
   isMenuOpen: { [key: string]: boolean } = {};
 
+  // 👇 ADICIONA ESTAS PROPRIEDADES
+  planoAtual: PlanoTipo = PlanoTipo.Basic;
+  PlanoTipo = PlanoTipo; // Para usar no template
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -49,9 +53,12 @@ export class SidenavComponent implements OnInit {
     }
   }
 
-  constructor(public router: Router, private tabService: TabService, private authService: AuthService) { }
-
-  // Alterna a expansão da sidebar
+  constructor(
+    public router: Router,
+    private tabService: TabService,
+    private authService: AuthService,
+    private planoService: PlanosService // 👈 INJETA AQUI
+  ) { }
 
   toggleSidebar(): void {
     this.isExpanded = !this.isExpanded;
@@ -63,6 +70,10 @@ export class SidenavComponent implements OnInit {
 
   ngOnInit(): void {
     this.screenWidth = window.innerWidth;
+
+    // 👇 CARREGA O PLANO
+    this.planoAtual = this.planoService.getPlanoAtual();
+    console.log('📋 Plano atual do usuário:', this.planoAtual);
   }
 
   toggleCollapse(): void {
@@ -94,9 +105,57 @@ export class SidenavComponent implements OnInit {
     }
   }
 
+  // 👇 NOVO: Verifica se tem acesso a uma feature
+  temAcesso(feature: string): boolean {
+    return this.planoService.temAcesso(feature);
+  }
 
-  // Método para abrir uma nova aba
-  openTab(path: string, title: string) {
+  // 👇 NOVO: Mostra modal de upgrade
+  mostrarModalUpgrade(feature: string, nomeFeature: string): void {
+    const planoNecessario = this.getPlanoNecessario(feature);
+
+    const mensagem = `🔒 Recurso Bloqueado\n\n` +
+      `O recurso "${nomeFeature}" está disponível apenas no plano ${planoNecessario}.\n\n` +
+      `Seu plano atual: ${this.planoAtual}\n\n` +
+      `Deseja fazer upgrade?\n\n` +
+      `Entre em contato com o nosso suporte.`;
+
+    ;
+
+    if (confirm(mensagem)) {
+      // Redireciona para página de upgrade(você pode criar essa página depois)
+      this.router.navigate(['/upgrade'], {
+        queryParams: { plano: planoNecessario }
+      });
+    }
+  }
+
+  // 👇 NOVO: Retorna qual plano é necessário
+  getPlanoNecessario(feature: string): string {
+    const mapa: { [key: string]: string } = {
+      'ContasPagar': 'Plus',
+      'ContasReceber': 'Plus',
+      'TipoPagamento': 'Plus',
+      'FormaPagamento': 'Plus',
+      'CentroCusto': 'Plus',
+      'PlanoContas': 'Plus',
+      'DespesasFixas': 'Plus',
+      'Comissoes': 'Plus',
+      'RelatoriosFinanceiros': 'Plus'
+    };
+
+    return mapa[feature] || 'Premium';
+  }
+
+  // 👇 MODIFICA O openTab para verificar acesso
+  openTab(path: string, title: string, requiredFeature?: string) {
+    // Se tem feature obrigatória, verifica acesso
+    if (requiredFeature && !this.temAcesso(requiredFeature)) {
+      this.mostrarModalUpgrade(requiredFeature, title);
+      return;
+    }
+
+    // Se passou na verificação, abre a tab normalmente
     this.tabService.openTab({ path, title });
   }
 
@@ -107,6 +166,5 @@ export class SidenavComponent implements OnInit {
     } catch (error) {
       console.log(error);
     }
-
   }
 }

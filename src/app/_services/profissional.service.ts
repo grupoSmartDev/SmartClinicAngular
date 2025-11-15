@@ -25,8 +25,6 @@ export class ProfissionalService {
   ): Observable<ResponseModel<Profissional[]>> {
     let params = new HttpParams()
 
-
-
     if (page) {
       params = params.set('page', page.toString());
     }

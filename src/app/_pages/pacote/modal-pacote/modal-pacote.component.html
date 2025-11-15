@@ -1,0 +1,206 @@
+<!-- Modal Pacote -->
+<div
+  #modalPacote
+  class="modal fade"
+  id="modalEditarCriar"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="pacoteModalLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Pacote</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formulario">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">Informações do Pacote</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-2">
+                  <label for="id" class="form-label">Cód.</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="id"
+                    readonly
+                    formControlName="id"
+                  />
+                </div>
+
+                <div class="col-md-10">
+                  <label for="descricao" class="form-label">Descrição *</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="descricao"
+                    placeholder="Ex: Pacote 10 Massagens"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('descricao')?.invalid &&
+                        formulario.get('descricao')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('descricao')?.invalid &&
+                      formulario.get('descricao')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo descrição é obrigatório.
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="procedimentoId" class="form-label"
+                    >Procedimento *</label
+                  >
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="procedimentoId"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('procedimentoId')?.invalid &&
+                        formulario.get('procedimentoId')?.touched
+                    }"
+                  >
+                    <option [value]="null">Selecione o procedimento</option>
+                    @for (item of listaProcedimento; track item.id) {
+                    <option [value]="item.id">{{ item.descricao }}</option>
+                    }
+                  </select>
+                  <div
+                    *ngIf="
+                      formulario.get('procedimentoId')?.invalid &&
+                      formulario.get('procedimentoId')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo procedimento é obrigatório.
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label for="quantidadeSessoes" class="form-label"
+                    >Qtd. Sessões *</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    formControlName="quantidadeSessoes"
+                    min="1"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('quantidadeSessoes')?.invalid &&
+                        formulario.get('quantidadeSessoes')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('quantidadeSessoes')?.invalid &&
+                      formulario.get('quantidadeSessoes')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    A quantidade deve ser maior que zero.
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label for="valor" class="form-label">Valor *</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="valor"
+                    onlyNumbers
+                    [currencyMask]="{
+                      prefix: 'R$ ',
+                      thousands: '.',
+                      decimal: ',',
+                      precision: 2,
+                      allowNegative: false
+                    }"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('valor')?.invalid &&
+                        formulario.get('valor')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('valor')?.invalid &&
+                      formulario.get('valor')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    O campo valor é obrigatório.
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="centroCustoId" class="form-label"
+                    >Centro de Custo</label
+                  >
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="centroCustoId"
+                  >
+                    <option [value]="null">Selecione...</option>
+                    @for (item of listaCentroCusto; track item.id) {
+                    <option [value]="item.id">{{ item.descricao }}</option>
+                    }
+                  </select>
+                </div>
+
+                <div class="col-md-12">
+                  <label for="observacao" class="form-label">Observação</label>
+                  <textarea
+                    class="form-control form-control-sm"
+                    formControlName="observacao"
+                    rows="3"
+                    placeholder="Observações sobre o pacote..."
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <app-button-action
+          text="Confirmar"
+          loadingText="Carregando..."
+          [loading]="isLoading"
+          variant="success"
+          id="btn_salvar_editar"
+          (clicked)="onSubmit()"
+          [type]="'button'"
+        ></app-button-action>
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="btnCancelar"
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
+          aria-label="Close"
+        >
+          <i class="bi bi-x"></i>Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

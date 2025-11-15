@@ -124,6 +124,7 @@
         <thead>
           <tr>
             <th>Cód.</th>
+            <th>Data</th>
             <th>Descrição</th>
             <th class="text-end"></th>
           </tr>
@@ -133,6 +134,9 @@
             <!-- Renderiza dinamicamente as células com base nas colunas -->
             <td>
               {{ item.id }}
+            </td>
+            <td>
+              {{ item.data | datePtBr }}
             </td>
             <td>
               {{ item.titulo }}

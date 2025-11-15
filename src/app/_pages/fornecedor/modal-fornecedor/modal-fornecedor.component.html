@@ -10,10 +10,12 @@
   aria-modal="true"
   role="dialog"
 >
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Fornecedor</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          <i class="bi bi-building me-2"></i>Fornecedor
+        </h1>
         <button
           type="button"
           class="btn-close"
@@ -38,16 +40,124 @@
             (tipoAlterado)="onTipoChange()"
           ></app-pessoa-juridica-form>
 
+          <!-- Informações Específicas da Área da Saúde -->
           <div class="card mb-3">
-            <div class="card-header">Informações de Contato</div>
+            <div class="card-header">
+              <i class="bi bi-heart-pulse me-2"></i>Informações da Área da Saúde
+            </div>
             <div class="card-body">
               <div class="row">
                 <div class="col-md-4">
-                  <label for="email" class="form-label">E-mail</label>
+                  <label for="categoriaFornecedor" class="form-label"
+                    >Categoria do Fornecedor</label
+                  >
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="categoriaFornecedor"
+                  >
+                    <option value="">Selecione uma categoria</option>
+                    <option value="Medicamentos">Medicamentos</option>
+                    <option value="Equipamentos">Equipamentos Médicos</option>
+                    <option value="Materiais">Materiais Médicos</option>
+                    <option value="Servicos">Serviços</option>
+                    <option value="Laboratorio">Laboratório</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="especialidadeFornecimento" class="form-label"
+                    >Especialidade</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="especialidadeFornecimento"
+                    placeholder="Ex: Cardiologia, Ortopedia..."
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="crf" class="form-label">CRF (Farmácias)</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="crf"
+                    placeholder="Registro no CRF"
+                  />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="anvisa" class="form-label">Registro ANVISA</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="anvisa"
+                    placeholder="Número do registro ANVISA"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informações do Representante -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="bi bi-person-badge me-2"></i>Representante/Contato
+              Comercial
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="representante" class="form-label"
+                    >Nome do Representante</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="representante"
+                    placeholder="Nome completo"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="telefoneRepresentante" class="form-label"
+                    >Telefone do Representante</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="telefoneRepresentante"
+                    mask="(00) 0 0000-0000"
+                    placeholder="(11) 9 9999-9999"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="emailRepresentante" class="form-label"
+                    >E-mail do Representante</label
+                  >
+                  <input
+                    type="email"
+                    class="form-control form-control-sm"
+                    formControlName="emailRepresentante"
+                    placeholder="representante@email.com"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informações de Contato da Empresa -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="bi bi-telephone me-2"></i>Informações de Contato
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="email" class="form-label">E-mail Principal</label>
                   <input
                     type="email"
                     class="form-control form-control-sm"
                     formControlName="email"
+                    placeholder="contato@empresa.com"
                   />
                 </div>
                 <div class="col-md-4">
@@ -57,6 +167,7 @@
                     class="form-control form-control-sm"
                     formControlName="celular"
                     mask="(00) 0 0000-0000"
+                    placeholder="(11) 9 9999-9999"
                     [ngClass]="{
                       'is-invalid':
                         formulario.get('celular')?.invalid &&
@@ -70,27 +181,74 @@
                     "
                     class="invalid-feedback"
                   >
-                    <!-- O campo celular é obrigatório. -->
+                    O campo celular é obrigatório.
                   </div>
                 </div>
                 <div class="col-md-4">
-                  <label for="telefoneFixo" class="form-label">Telefone</label>
+                  <label for="telefoneFixo" class="form-label"
+                    >Telefone Fixo</label
+                  >
                   <input
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="telefoneFixo"
                     mask="(00) 0000-0000"
+                    placeholder="(11) 3333-4444"
                   />
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div class="row">
+          <!-- Endereço -->
+          <div class="card mb-3">
+            <div class="card-header">
+              <i class="bi bi-geo-alt me-2"></i>Endereço
+            </div>
+            <div class="card-body">
+              <div class="row mb-2">
+                <div class="col-md-3">
+                  <label for="cep" class="form-label">CEP</label>
+                  <div class="input-group input-group-sm">
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      formControlName="cep"
+                      id="cep"
+                      mask="00000-000"
+                      placeholder="00000-000"
+                      [ngClass]="{
+                        'is-invalid':
+                          formulario.get('cep')?.invalid &&
+                          formulario.get('cep')?.touched
+                      }"
+                    />
+                    <button
+                      class="btn btn-outline-secondary"
+                      type="button"
+                      (click)="buscarCEP()"
+                      title="Buscar CEP"
+                    >
+                      <i class="bi bi-search"></i>
+                    </button>
+                  </div>
+                  <div
+                    *ngIf="
+                      formulario.get('cep')?.invalid &&
+                      formulario.get('cep')?.touched
+                    "
+                    class="invalid-feedback d-block"
+                  >
+                    O campo CEP é obrigatório
+                  </div>
+                </div>
                 <div class="col-md-2">
                   <label for="pais" class="form-label">País</label>
                   <input
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="pais"
+                    placeholder="Brasil"
                     [ngClass]="{
                       'is-invalid':
                         formulario.get('pais')?.invalid &&
@@ -104,29 +262,7 @@
                     "
                     class="invalid-feedback"
                   >
-                    <!-- O campo pais é obrigatório. -->
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <label for="cidade" class="form-label">Cidade</label>
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    formControlName="cidade"
-                    [ngClass]="{
-                      'is-invalid':
-                        formulario.get('cidade')?.invalid &&
-                        formulario.get('cidade')?.touched
-                    }"
-                  />
-                  <div
-                    *ngIf="
-                      formulario.get('cidade')?.invalid &&
-                      formulario.get('cidade')?.touched
-                    "
-                    class="invalid-feedback"
-                  >
-                    <!-- O campo cidade é obrigatório. -->
+                    Campo obrigatório
                   </div>
                 </div>
                 <div class="col-md-2">
@@ -135,6 +271,9 @@
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="uf"
+                    appLetters
+                    mask="AA"
+                    placeholder="SP"
                     [ngClass]="{
                       'is-invalid':
                         formulario.get('uf')?.invalid &&
@@ -148,15 +287,42 @@
                     "
                     class="invalid-feedback"
                   >
-                    <!-- O campo UF é obrigatório. -->
+                    Campo obrigatório
                   </div>
                 </div>
+                <div class="col-md-5">
+                  <label for="cidade" class="form-label">Cidade</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="cidade"
+                    placeholder="São Paulo"
+                    [ngClass]="{
+                      'is-invalid':
+                        formulario.get('cidade')?.invalid &&
+                        formulario.get('cidade')?.touched
+                    }"
+                  />
+                  <div
+                    *ngIf="
+                      formulario.get('cidade')?.invalid &&
+                      formulario.get('cidade')?.touched
+                    "
+                    class="invalid-feedback"
+                  >
+                    Campo obrigatório
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mb-2">
                 <div class="col-md-4">
                   <label for="bairro" class="form-label">Bairro</label>
                   <input
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="bairro"
+                    placeholder="Centro"
                     [ngClass]="{
                       'is-invalid':
                         formulario.get('bairro')?.invalid &&
@@ -170,18 +336,16 @@
                     "
                     class="invalid-feedback"
                   >
-                    <!-- O campo bairro é obrigatório -->
+                    Campo obrigatório
                   </div>
                 </div>
-              </div>
-
-              <div class="row">
                 <div class="col-md-6">
                   <label for="logradouro" class="form-label">Logradouro</label>
                   <input
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="logradouro"
+                    placeholder="Rua das Flores"
                     [ngClass]="{
                       'is-invalid':
                         formulario.get('logradouro')?.invalid &&
@@ -195,15 +359,16 @@
                     "
                     class="invalid-feedback"
                   >
-                    <!-- O campo logradouro é obrigatório -->
+                    Campo obrigatório
                   </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                   <label for="nrLogradouro" class="form-label">Número</label>
                   <input
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="nrLogradouro"
+                    placeholder="123"
                     [ngClass]="{
                       'is-invalid':
                         formulario.get('nrLogradouro')?.invalid &&
@@ -217,50 +382,34 @@
                     "
                     class="invalid-feedback"
                   >
-                    <!-- O campo número é obrigatório -->
+                    Campo obrigatório
                   </div>
                 </div>
-                <div class="col-md-3">
-                  <label for="cep" class="form-label">CEP</label>
-                  <div class="input-group input-group-sm">
-                    <input
-                      type="text"
-                      class="form-control form-control-sm"
-                      formControlName="cep"
-                      id="cep"
-                      mask="00000-000"
-                      [ngClass]="{
-                        'is-invalid':
-                          formulario.get('cep')?.invalid &&
-                          formulario.get('cep')?.touched
-                      }"
-                    />
-                    <div
-                      *ngIf="
-                        formulario.get('cep')?.invalid &&
-                        formulario.get('cep')?.touched
-                      "
-                      class="invalid-feedback"
-                    >
-                      <!-- O campo CEP é obrigatório -->
-                    </div>
-                    <button
-                      class="btn btn-outline-secondary"
-                      type="button"
-                      (click)="buscarCEP()"
-                    >
-                      <i class="bi bi-search"></i>
-                    </button>
-                  </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="complemento" class="form-label"
+                    >Complemento</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="complemento"
+                    placeholder="Apto 101, Bloco A..."
+                  />
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- Informações de Pagamento -->
           <div class="card mb-3">
-            <div class="card-header">Informações de Pagamento</div>
+            <div class="card-header">
+              <i class="bi bi-credit-card me-2"></i>Informações de Pagamento
+            </div>
             <div class="card-body">
-              <div class="row">
+              <div class="row mb-2">
                 <app-select-banco
                   class="col-md-5"
                   id="banco"
@@ -274,6 +423,7 @@
                     class="form-control form-control-sm"
                     formControlName="agencia"
                     mask="0000"
+                    placeholder="1234"
                   />
                 </div>
                 <div class="col-md-4">
@@ -282,16 +432,18 @@
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="conta"
+                    placeholder="12345-6"
                   />
                 </div>
               </div>
               <div class="row">
                 <div class="col-md-3">
-                  <label for="tipoPIX" class="form-label">Tipo Pix</label>
+                  <label for="tipoPIX" class="form-label">Tipo PIX</label>
                   <select
                     class="form-select form-select-sm"
                     formControlName="tipoPIX"
                   >
+                    <option value="">Selecione</option>
                     <option value="CPF">CPF</option>
                     <option value="CNPJ">CNPJ</option>
                     <option value="T">Telefone</option>
@@ -305,22 +457,27 @@
                     type="text"
                     class="form-control form-control-sm"
                     formControlName="chavePIX"
+                    placeholder="Digite a chave PIX"
                   />
                 </div>
               </div>
             </div>
           </div>
-          <!-- Campo Observação para ambos os tipos -->
+
+          <!-- Informações Adicionais -->
           <div class="card mb-3">
-            <div class="card-header">Informações Adicionais</div>
+            <div class="card-header">
+              <i class="bi bi-chat-text me-2"></i>Informações Adicionais
+            </div>
             <div class="card-body">
               <div class="row">
                 <div class="col-md-12">
-                  <label for="observacao" class="form-label">Observação</label>
+                  <label for="observacao" class="form-label">Observações</label>
                   <textarea
                     class="form-control form-control-sm"
                     formControlName="observacao"
                     rows="3"
+                    placeholder="Observações gerais sobre o fornecedor..."
                   ></textarea>
                 </div>
               </div>
@@ -346,7 +503,7 @@
           (click)="fecharModal()"
           aria-label="Close"
         >
-          <i class="bi bi-x"></i>Cancelar
+          <i class="bi bi-x me-1"></i>Cancelar
         </button>
       </div>
     </div>
