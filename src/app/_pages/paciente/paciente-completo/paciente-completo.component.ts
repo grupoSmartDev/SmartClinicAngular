@@ -29,6 +29,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 import { Agenda } from '../../../_module/agendaModule';
 import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
+import { PacoteService } from '../../../_services/pacote.service';
+import { Pacote, PacotePaciente, PacoteUso } from '../../../_module/pacoteModule';
+import { ProntuarioPrintService, ModeloProntuario } from '../../../_services/prontuario-print.service';
 
 // DTOs
 interface FinanceiroDto {
@@ -162,7 +165,9 @@ export class PacienteCompletoComponent implements OnInit {
     private tipoPagamentoService: TipoPagamentoService,
     private centroCustoService: CentroDeCustoService,
     private formaPagamentoService: FormaPagamentoService,
-    private datePipe: DatePtBrPipe
+    private datePipe: DatePtBrPipe,
+    private pacoteService: PacoteService,
+    private prontuarioPrint: ProntuarioPrintService
   ) { }
 
   ngOnInit(): void {
@@ -175,6 +180,19 @@ export class PacienteCompletoComponent implements OnInit {
   // Métodos básicos de UI
   onSubmit() { }
   fecharModal() { }
+
+  imprimirProntuario(modelo?: ModeloProntuario): void {
+    try {
+      if (!this.Paciente || !this.Paciente.id) {
+        this.toastr.error('Paciente não carregado.', 'Erro');
+        return;
+      }
+      this.prontuarioPrint.print(this.Paciente, modelo);
+    } catch (e) {
+      console.error(e);
+      this.toastr.error('Falha ao preparar impressão.', 'Erro');
+    }
+  }
 
   // FORMULÁRIOS
   preencherFormularioEvolucao() {

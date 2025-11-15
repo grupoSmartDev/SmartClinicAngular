@@ -31,6 +31,7 @@ export interface Configuracoes {
   // modeloProntuario?: string;
   // habilitarHistoricoClinico?: boolean;
   // diasBloqueioEdicaoProntuario?: number;
+  modeloProntuario?: 'completo' | 'resumido' | 'anamnese';
 
   // Campos que existem no backend e podem interessar
   // ativo?: boolean;

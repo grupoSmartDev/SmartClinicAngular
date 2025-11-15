@@ -114,6 +114,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
       siteOuRedeSocial: [''],
       celular: [''],
       celularComWhatsApp: [false],
+      modeloProntuario: [this.getModeloProntuarioLocal() || 'completo'],
     });
   }
 
@@ -150,7 +151,16 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
       email: api.email,
       siteOuRedeSocial: api.siteOuRedeSocial,
       celularComWhatsApp: api.celularComWhatsApp,
+      modeloProntuario:
+        api.modeloProntuario || this.getModeloProntuarioLocal() || 'completo',
     });
+
+    this.formulario
+      .get('modeloProntuario')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((v) => this.setModeloProntuarioLocal(v));
+
+    this.setEmpresaBrandLocal(api);
   }
 
   private toApi(): Configuracoes {
@@ -172,9 +182,49 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
       cnpjEmpresaMatriz: v.cnpjEmpresaMatriz,
       celular: v.celular,
       celularComWhatsApp: v.celularComWhatsApp,
+      modeloProntuario: v.modeloProntuario,
     };
 
     return dto;
+  }
+
+  private getModeloProntuarioLocal():
+    | 'completo'
+    | 'resumido'
+    | 'anamnese'
+    | null {
+    try {
+      const v = localStorage.getItem('modeloProntuario');
+      if (v == 'completo' || v == 'resumido' || v == 'anamnese') return v;
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
+  private setModeloProntuarioLocal(v: any): void {
+    try {
+      if (v) localStorage.setItem('modeloProntuario', String(v));
+    } catch {}
+  }
+
+  private setEmpresaBrandLocal(api: Configuracoes): void {
+    try {
+      if (!api) return;
+      const nome = api.nome || api.sobrenome || '';
+      const endereco = api.endereco || '';
+      const cidadeUf = [api.cidade, api.estado].filter(Boolean).join(' - ');
+      const telefone = api.telefoneFixo || api.celular || '';
+      const email = api.email || '';
+      const cnpj = api.cnpjEmpresaMatriz || '';
+
+      localStorage.setItem('empresa.nome', nome);
+      localStorage.setItem('empresa.cnpj', cnpj);
+      localStorage.setItem('empresa.endereco', endereco);
+      localStorage.setItem('empresa.cidadeUf', cidadeUf);
+      localStorage.setItem('empresa.telefone', telefone);
+      localStorage.setItem('empresa.email', email);
+    } catch {}
   }
 
   salvar(): void {
@@ -194,8 +244,14 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.salvando = false;
-          var toast = this.toastr.success('Configurações salvas com sucesso.', 'Sucesso', { timeOut: 1200 });
-          toast.onHidden.pipe(take(1)).subscribe(() => window.location.reload());
+          var toast = this.toastr.success(
+            'Configurações salvas com sucesso.',
+            'Sucesso',
+            { timeOut: 1200 }
+          );
+          toast.onHidden
+            .pipe(take(1))
+            .subscribe(() => window.location.reload());
         },
         error: (err: any) => {
           console.error('Erro ao salvar empresa', err);
@@ -215,7 +271,6 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
       this.cepService.buscarCEP(cep).subscribe(
         (data) => {
           if (!data.erro) {
-            // Atualiza os campos do formulário automaticamente
             this.formulario.patchValue({
               endereco: data.logradouro + ' - ' + data.bairro,
               cidade: data.localidade,

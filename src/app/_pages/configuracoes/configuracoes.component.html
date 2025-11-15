@@ -12,6 +12,18 @@
         Dados da Clínica
       </button>
     </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="documentacao-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#documentacao"
+        type="button"
+        role="tab"
+      >
+        Documentação
+      </button>
+    </li>
   </ul>
 
   <div class="tab-content pt-3" id="empresaTabsContent">
@@ -206,6 +218,61 @@
             class="form-control form-control-sm"
             formControlName="siteOuRedeSocial"
           />
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="documentacao" role="tabpanel" aria-labelledby="documentacao-tab">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6 class="mb-2">Impressãoo de Prontuário (padrão)</h6>
+          <p class="text-muted mb-2">Escolha o modelo padrão que será usado ao imprimir o prontuário. Você pode alterar quando quiser.</p>
+        </div>
+
+        <div class="col-12">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="modelo-completo"
+              value="completo"
+              formControlName="modeloProntuario"
+              name="modeloProntuario"
+            />
+            <label class="form-check-label" for="modelo-completo">
+              Completo
+            </label>
+            <div class="small text-muted">Inclui dados do paciente, anamnese, evoluções, medicamentos, alergias e anexos.</div>
+          </div>
+
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="modelo-resumido"
+              value="resumido"
+              formControlName="modeloProntuario"
+              name="modeloProntuario"
+            />
+            <label class="form-check-label" for="modelo-resumido">
+              Resumido
+            </label>
+            <div class="small text-muted">Foco em dados essenciais: identificação, queixa principal e condutas.</div>
+          </div>
+
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="modelo-anamnese"
+              value="anamnese"
+              formControlName="modeloProntuario"
+              name="modeloProntuario"
+            />
+            <label class="form-check-label" for="modelo-anamnese">
+              Anamnese
+            </label>
+            <div class="small text-muted">Detalhamento da anamnese e histórico clínico, com evoluções em resumo.</div>
+          </div>
         </div>
       </div>
     </div>
