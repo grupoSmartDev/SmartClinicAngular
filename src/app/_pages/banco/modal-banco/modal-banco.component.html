@@ -43,7 +43,7 @@
                     formControlName="id"
                   />
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 d-none">
                   <label for="nomeBanco" class="form-label">
                     <span class="text-danger">*</span> Nome Banco
                   </label>
@@ -51,6 +51,7 @@
                     type="text"
                     required
                     class="form-control form-control-sm"
+                    hidden
                     formControlName="nomeBanco"
                     [ngClass]="{
                       'is-invalid':
@@ -68,7 +69,7 @@
                     O campo nome do banco é obrigatório.
                   </div>
                 </div>
-                <div class="col-md-3">
+                <!-- <div class="col-md-3">
                   <label for="codigo" class="form-label">
                     <span class="text-danger">*</span> Código
                   </label>
@@ -92,7 +93,15 @@
                   >
                     O campo código é obrigatório.
                   </div>
-                </div>
+                </div> -->
+                <app-select-banco
+                  class="col-md-3"
+                  id="banco_comissao"
+                  [formControlName]="'codigo'"
+                  label="Banco"
+                  (bancoSelecionado)="onBancoSelecionado($event)"
+                  [required]="true"
+                ></app-select-banco>
                 <div class="col-md-2">
                   <label for="ativo" class="form-label d-block">
                     <span class="text-danger">*</span> Ativo

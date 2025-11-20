@@ -28,7 +28,7 @@ export class ModalBancoComponent {
       nomeTitular: [null, Validators.required],
       documentoTitular: [null, Validators.required],
       saldoInicial: [null, Validators.required],
-      ativo: [null, Validators.required],
+      ativo: [true, Validators.required],
       codigoConvenio: [null],
       carteira: [null],
       variacaoCarteira: [null],
@@ -126,5 +126,13 @@ export class ModalBancoComponent {
 
   fecharModal() {
     this.formulario.reset();
+  }
+
+  onBancoSelecionado(event: { codigo: string, nome: string }) {
+    this.formulario.patchValue({
+      nomeBanco: event.nome,
+      codigo: event.codigo
+    });
+
   }
 }
