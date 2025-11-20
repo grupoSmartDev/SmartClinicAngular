@@ -27,7 +27,7 @@ export class ModalConvenioComponent {
       periodoCarencia: [null, Validators.required],
       telefone: [null, Validators.required],
       email: [null, Validators.required],
-      ativo: [false]
+      ativo: [true]
     })
   }
 
