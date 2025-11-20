@@ -86,7 +86,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
     private readonly empresaService: ConfigService,
     private readonly toastr: ToastrService,
     private cepService: BuscarCepService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -102,7 +102,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
     this.formulario = this.fb.group({
       nome: ['', [Validators.required, Validators.maxLength(150)]],
       sobrenome: [''],
-      cnpjEmpresaMatriz: ['', [Validators.required, cnpjValidator]],
+      cnpjEmpresaMatriz: [''],
       inscricaoEstadual: ['', [Validators.maxLength(14)]],
       inscricaoMunicipal: [''],
       endereco: [''],
