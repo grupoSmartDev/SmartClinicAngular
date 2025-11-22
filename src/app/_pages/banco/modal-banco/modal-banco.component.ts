@@ -13,6 +13,21 @@ import { id } from '@swimlane/ngx-charts';
   styleUrl: './modal-banco.component.css'
 })
 export class ModalBancoComponent {
+  private readonly bancoNomePorCodigo = new Map<string, string>([
+    ['001', 'Banco do Brasil S.A.'],
+    ['104', 'Caixa Economica Federal'],
+    ['237', 'Banco Bradesco S.A.'],
+    ['341', 'Banco Itau Unibanco S.A.'],
+    ['033', 'Banco Santander (Brasil) S.A.'],
+    ['077', 'Banco Inter S.A.'],
+    ['212', 'Banco Original S.A.'],
+    ['422', 'Banco Safra S.A.'],
+    ['655', 'Banco Votorantim S.A.'],
+    ['260', 'Nubank'],
+    ['323', 'Mercado Pago'],
+    ['380', 'PicPay'],
+  ]);
+
   constructor(
     private bancoService: BancoService,
     private toast: ToastrService,
@@ -36,6 +51,9 @@ export class ModalBancoComponent {
       numeroContrato: [null],
       codigoTransmissao: [null],
     })
+
+    this.listenCodigoChanges();
+    this.atualizarNomeBanco(this.formulario.get('codigo')?.value);
   }
 
   @ViewChild('modalBanco') modalBanco?: ElementRef;
@@ -126,5 +144,26 @@ export class ModalBancoComponent {
 
   fecharModal() {
     this.formulario.reset();
+  }
+
+  private listenCodigoChanges(): void {
+    this.formulario.get('codigo')?.valueChanges.subscribe((codigo) => {
+      this.atualizarNomeBanco(codigo);
+    });
+  }
+
+  private atualizarNomeBanco(codigo: string | null | undefined): void {
+    const control = this.formulario.get('nomeBanco');
+    if (!control) return;
+
+    if (!codigo) {
+      control.setValue('', { emitEvent: false });
+      return;
+    }
+
+    const nome = this.bancoNomePorCodigo.get(codigo);
+    if (nome) {
+      control.setValue(nome, { emitEvent: false });
+    }
   }
 }

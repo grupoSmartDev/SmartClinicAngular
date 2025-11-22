@@ -102,7 +102,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
     this.formulario = this.fb.group({
       nome: ['', [Validators.required, Validators.maxLength(150)]],
       sobrenome: [''],
-      cnpjEmpresaMatriz: ['', [Validators.required, cnpjValidator]],
+      cnpjEmpresaMatriz: ['', [cnpjValidator]],
       inscricaoEstadual: ['', [Validators.maxLength(14)]],
       inscricaoMunicipal: [''],
       endereco: [''],

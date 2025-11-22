@@ -71,17 +71,7 @@
             [mask]="'00.000.000/0000-00'"
             class="form-control form-control-sm"
             formControlName="cnpjEmpresaMatriz"
-            required
           />
-          <small
-            class="text-danger"
-            *ngIf="
-              formulario.get('cnpjEmpresaMatriz')?.touched &&
-              formulario.get('cnpjEmpresaMatriz')?.hasError('required')
-            "
-          >
-            CNPJ é obrigatório.
-          </small>
         </div>
 
         <div class="col-md-3">
