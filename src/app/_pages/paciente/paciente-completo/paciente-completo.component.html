@@ -1180,7 +1180,10 @@
                   <h3 class="titulo-pequeno">Exercício {{ i + 1 }}</h3>
                   <div class="row">
                     <div class="col-md-4">
-                      <label for="descricao">Exercício</label>
+                      <label for="descricao"
+                        >Exercício
+                        <span class="text-danger">*</span>
+                      </label>
                       <input
                         type="text"
                         class="form-control form-control-sm"
@@ -1243,7 +1246,10 @@
                   <h3 class="titulo-pequeno">Atividade {{ i + 1 }}</h3>
                   <div class="row">
                     <div class="col-md-4">
-                      <label for="titulo">Atividade</label>
+                      <label for="titulo"
+                        >Atividade
+                        <span class="text-danger">*</span>
+                      </label>
                       <input
                         type="text"
                         class="form-control form-control-sm"
@@ -1251,7 +1257,10 @@
                       />
                     </div>
                     <div class="col-md-4">
-                      <label for="descricao">Descrição</label>
+                      <label for="descricao"
+                        >Descrição
+                        <span class="text-danger">*</span>
+                      </label>
                       <input
                         type="text"
                         class="form-control form-control-sm"
@@ -1280,8 +1289,9 @@
               </div>
               <div class="col-12">
                 <label for="progressDescription" class="form-label"
-                  >Descrição</label
-                >
+                  >Descrição
+                  <span class="text-danger">*</span>
+                </label>
                 <textarea
                   cols="30"
                   rows="10"
