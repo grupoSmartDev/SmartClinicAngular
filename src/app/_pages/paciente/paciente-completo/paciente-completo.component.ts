@@ -289,6 +289,7 @@ export class PacienteCompletoComponent implements OnInit {
       if (evolucao.exercicios?.length) {
         evolucao.exercicios.forEach((exercicio: Exercicio) => {
           const exercicioGroup = this.fb.group({
+            id: [exercicio.id],
             obs: [exercicio.obs, Validators.required],
             descricao: [exercicio.descricao, Validators.required],
             tempo: [exercicio.tempo, Validators.required],
@@ -304,6 +305,7 @@ export class PacienteCompletoComponent implements OnInit {
       if (evolucao.atividades?.length) {
         evolucao.atividades.forEach((atividade: Atividade) => {
           const atividadeGroup = this.fb.group({
+            id: [atividade.id],
             titulo: [atividade.titulo, Validators.required],
             descricao: [atividade.descricao, Validators.required],
             tempo: [atividade.tempo, Validators.required],
@@ -332,7 +334,7 @@ export class PacienteCompletoComponent implements OnInit {
 
   // MÉTODOS DE GERENCIAMENTO DE FORMULÁRIO
   adicionarExercicio(): void {
-    debugger
+
     const novoItem = this.fb.group({
       obs: ['', Validators.required],
       descricao: ['', Validators.required],
@@ -365,7 +367,7 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   salvarEvolucao(): void {
-    debugger
+
     this.formEvolucao.patchValue({
       pacienteId: this.Paciente.id,
     });
