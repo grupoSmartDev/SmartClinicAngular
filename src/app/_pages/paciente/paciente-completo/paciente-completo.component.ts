@@ -1800,6 +1800,9 @@ export class PacienteCompletoComponent implements OnInit {
 
 
   onInativePlan(plano: any) {
+    if (!confirm('Tem certeza que deseja inativar o plano?')) {
+      return
+    }
     if (plano && plano.id) {
       this.planoService.InativarPlanoPaciente(plano).subscribe({
         next: (response) => {

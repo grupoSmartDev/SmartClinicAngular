@@ -151,7 +151,7 @@ export class ListarProfissaoComponent {
   Ativar() {
     this.profissaoService.Ativar(this.dataParaExcluir).subscribe({
       next: (response) => {
-        console.log('Profissional ativado com sucesso:', response);
+        console.log('Profissão ativado com sucesso:', response);
         this.toast.success(response.mensagem, 'Ativado');
       },
       error: (err) => {
