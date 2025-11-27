@@ -1338,7 +1338,10 @@
           <!-- Bloco de Plano e Assinatura -->
           <div class="row align-items-end">
             <div class="col-md-3">
-              <label for="planoId" class="form-label">Plano</label>
+              <label for="planoId" class="form-label"
+                >Plano
+                <span class="text-danger">*</span>
+              </label>
               <select
                 class="form-select form-select-sm"
                 formControlName="planoId"
@@ -1361,7 +1364,10 @@
               </div>
             </div>
             <div class="col-md-3">
-              <label for="tipoMes" class="form-label">Tipo de assinatura</label>
+              <label for="tipoMes" class="form-label"
+                >Tipo de assinatura
+                <span class="text-danger">*</span>
+              </label>
               <select
                 class="form-select form-select-sm"
                 formControlName="tipoMes"
@@ -1443,7 +1449,10 @@
               </div>
 
               <div class="col-4">
-                <label for="descricao" class="form-label">Descrição</label>
+                <label for="descricao" class="form-label"
+                  >Descrição
+                  <span class="text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   class="form-control form-control-sm"
@@ -1776,7 +1785,7 @@
               <div class="alert alert-info small mb-3">
                 <i class="bi bi-info-circle-fill me-2"></i>
                 Você pode selecionar até
-                {{ planoSelecionado?.diasSemana || 0 }} dia(s) da semana para
+                {{ limiteDiasSemanaFront || 0 }} dia(s) da semana para
                 agendamento.
               </div>
 

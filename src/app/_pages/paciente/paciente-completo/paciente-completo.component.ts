@@ -149,6 +149,8 @@ export class PacienteCompletoComponent implements OnInit {
   podeRenovar: boolean = false;
   planoSelecionado: any = null;
 
+  limiteDiasSemanaFront: number = 0;
+
   // Pacotes
   listaPacotes: Pacote[] = [];
   pacotesPaciente: PacotePaciente[] = [];
@@ -505,10 +507,14 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   onPlanoSelecionado(): void {
+    debugger
     const idPlano = this.formPlano.get('planoId')?.value;
     if (!idPlano) return;
 
+
     this.planoSelecionado = this.listaPlanos.filter(x => x.id == idPlano);
+
+    this.limiteDiasSemanaFront = this.planoSelecionado[0].diasSemana || 0;
 
     // Atualizar valores se um plano for selecionado
     if (this.planoSelecionado && this.planoSelecionado.length > 0) {
@@ -665,6 +671,7 @@ export class PacienteCompletoComponent implements OnInit {
     const limiteDias = this.planoSelecionado[0].diasSemana || 0;
     let diasSelecionados = 0;
 
+    this.limiteDiasSemanaFront = limiteDias;
     // Contar dias ativos
     this.diasRecorrenciaArray.controls.forEach(control => {
       if (control.get('ativo')?.value === true) {

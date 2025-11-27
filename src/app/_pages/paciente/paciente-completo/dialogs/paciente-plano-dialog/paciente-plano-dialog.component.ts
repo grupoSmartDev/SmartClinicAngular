@@ -35,6 +35,8 @@ export class PacientePlanoDialogComponent {
   // Dados selecionados
   planoSelecionado: any = null;
 
+  planoSelecionadoFront: number = 0;
+
   // Listas para dropdowns
   listaPlanos: Plano[] = [];
   listaTipoPagamento: TipoPagamento[] = [];
@@ -229,8 +231,13 @@ export class PacientePlanoDialogComponent {
 
   // ========== LÓGICA DE AGENDAMENTO ==========
   toggleAgendamentoFields(ativar: boolean): void {
+    const diasSemanasPermitidos = this.patientCalculationService.verificarLimiteDiasSemana(
+      this.formPlano,
+      this.planoSelecionado
+    );
     if (ativar) {
       this.formPlano.get('agendamento')?.enable();
+      this.planoSelecionadoFront = diasSemanasPermitidos.limite;
     } else {
       this.formPlano.get('agendamento')?.disable();
     }
