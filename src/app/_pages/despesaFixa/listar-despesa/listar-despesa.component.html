@@ -130,10 +130,10 @@
               {{ item.descricao }}
             </td>
             <td>
-              {{ item.valor }}
+              {{ item.valor | currencyPtBr }}
             </td>
             <td>
-              {{ item.dataInicio }}
+              {{ item.dataInicio | datePtBr }}
             </td>
             <td>
               {{ item.diaVencimento }}

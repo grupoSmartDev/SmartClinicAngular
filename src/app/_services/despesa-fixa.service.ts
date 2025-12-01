@@ -24,7 +24,7 @@ export class DespesaFixaService {
     planoContasFiltro?: string,
     paginar?: boolean
   ): Observable<ResponseModel<DespesaFixa[]>> {
-
+    debugger
     let params = new HttpParams()
 
     if (page) params = params.set('page', page.toString());
