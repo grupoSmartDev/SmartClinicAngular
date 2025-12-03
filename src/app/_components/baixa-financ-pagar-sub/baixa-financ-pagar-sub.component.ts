@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { SubFinancReceber } from '../../_module/subFinancReceberModule';
 import { SubFinancPagar } from '../../_module/subFinancPagarModule';
 import { ToastrService } from 'ngx-toastr';
 import { FinancPagarService } from '../../_services/financ-pagar.service';
@@ -26,7 +25,7 @@ export class BaixaFinancPagarSubComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['financReceberSub'] && this.financPagarSub && this.financPagarSub.id) {
+    if (changes['financPagarSub'] && this.financPagarSub && this.financPagarSub.id) {
       this.inicializarCampos();
     }
   }
@@ -35,15 +34,11 @@ export class BaixaFinancPagarSubComponent implements OnInit, OnChanges {
     console.log('Inicializando campos com:', this.financPagarSub);
     this.dataPagamento = new Date().toISOString().split('T')[0];
 
-    // Verificando se há valor antes de atribuir
-    if (this.financPagarSub && this.financPagarSub.valor) {
-      this.valorPago = this.financPagarSub.valor;
-    }
+    const valorParcela = this.financPagarSub?.valor;
+    this.valorPago = valorParcela ?? 0;
 
-    // Verificando se há descrição antes de atribuir
-    if (this.financPagarSub && this.financPagarSub.financPagar) {
-      this.observacao = this.financPagarSub.financPagar.descricao || '';
-    }
+    const descricao = this.financPagarSub?.financPagar?.descricao;
+    this.observacao = descricao ?? '';
   }
 
   handleConfirm(): void {

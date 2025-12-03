@@ -78,55 +78,57 @@
           </div>
           <div class="row">
             <div class="col-md-6">
-              <label for="paciente" class="form-label small fw-semibold">
-                Paciente <span class="text-danger">*</span>
+              <label for="fornecedor" class="form-label small fw-semibold">
+                Fornecedor <span class="text-danger">*</span>
               </label>
               <div class="input-group">
                 <input
                   type="text"
                   autocomplete="off"
-                  id="paciente"
+                  id="fornecedor"
                   class="form-control form-control-sm"
                   [(ngModel)]="searchTerm"
                   [ngModelOptions]="{ standalone: true }"
-                  placeholder="Buscar paciente..."
+                  placeholder="Buscar fornecedor..."
                   (input)="onSearch()"
                   [class.is-invalid]="
-                    formulario.get('pacienteId')?.invalid &&
-                    formulario.get('pacienteId')?.touched
+                    formulario.get('fornecedorId')?.invalid &&
+                    formulario.get('fornecedorId')?.touched
                   "
-                  aria-describedby="btnNovoPaciente"
+                  aria-describedby="btnNovoFornecedor"
                 />
                 <button
                   class="btn btn-outline-secondary btn-sm"
                   type="button"
-                  id="btnNovoPaciente"
+                  id="btnNovoFornecedor"
                   data-bs-toggle="offcanvas"
                   data-bs-target="#offcanvasPatient"
-                  aria-label="Adicionar novo paciente"
+                  aria-label="Adicionar novo fornecedor"
                 >
                   <i class="bi bi-person-plus"></i>
                 </button>
               </div>
-              <!-- Lista de Pacientes Sugeridos -->
+              <!-- Lista de Fornecedores Sugeridos -->
               <div class="position-relative">
                 <ul
                   class="list-group list-group-flush shadow-sm mt-1 position-absolute w-100"
                   style="z-index: 1000"
-                  *ngIf="filteredPatients.length > 0"
+                  *ngIf="filteredFornecedores.length > 0"
                 >
                   <li
                     class="list-group-item list-group-item-action py-2 small cursor-pointer"
-                    *ngFor="let patient of filteredPatients"
-                    (click)="selectPatient(patient)"
+                    *ngFor="let fornecedor of filteredFornecedores"
+                    (click)="selectFornecedor(fornecedor)"
                     role="button"
-                    [attr.aria-label]="'Selecionar paciente ' + patient.nome"
+                    [attr.aria-label]="
+                      'Selecionar fornecedor ' + (fornecedor.nome || fornecedor.razao)
+                    "
                   >
                     <div
                       class="d-flex justify-content-between align-items-center"
                     >
-                      <span>{{ patient.nome }}</span>
-                      <small class="text-muted">{{ patient.cpf }}</small>
+                      <span>{{ fornecedor.nome || fornecedor.razao || fornecedor.fantasia }}</span>
+                      <small class="text-muted">{{ fornecedor.cnpj || fornecedor.cpf }}</small>
                     </div>
                   </li>
                 </ul>
