@@ -3,6 +3,7 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -17,6 +18,11 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfigService } from '../../_services/config.service';
 import { Configuracoes } from './../../_module/configuracoesModule';
 import { BuscarCepService } from '../../_services/buscar-cep.service';
+import { AuthService } from '../../_services/auth.service';
+import {
+  AdminUser,
+  UserAdminService,
+} from '../../_services/user-admin.service';
 
 // Validators simples (nível júnior)
 function onlyDigits(value: string | null | undefined): string {
@@ -78,6 +84,19 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
   salvando = false;
   // TODO: obter esse id da rota/estado quando disponível
   empresaId = 1;
+  isAdmin = false;
+
+  usuarios: AdminUser[] = [];
+  usuariosTotal = 0;
+  usuariosPage = 1;
+  usuariosPageSize = 10;
+  usuariosFiltro = '';
+  usuariosCarregando = false;
+  usuariosErro = '';
+  usuarioSelecionado: AdminUser | null = null;
+  usuarioFoto: File | null = null;
+  formUsuario!: FormGroup;
+  salvandoUsuario = false;
 
   private readonly destroy$ = new Subject<void>();
 
@@ -85,12 +104,20 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder,
     private readonly empresaService: ConfigService,
     private readonly toastr: ToastrService,
-    private cepService: BuscarCepService
+    private cepService: BuscarCepService,
+    private readonly authService: AuthService,
+    private readonly userAdminService: UserAdminService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.buildForm();
     this.carregar();
+    this.isAdmin = this.authService.hasRole('Admin');
+    if (this.isAdmin) {
+      this.buildUsuarioForm();
+      this.carregarUsuarios();
+    }
   }
 
   ngOnDestroy(): void {
@@ -118,6 +145,17 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
     });
   }
 
+  private buildUsuarioForm(): void {
+    this.formUsuario = this.fb.group({
+      id: [''],
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: [''],
+      role: ['User', [Validators.required]],
+    });
+  }
+
   private carregar(): void {
     this.carregando = true;
     this.empresaService
@@ -133,6 +171,63 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
           this.toastr.error('Não foi possível carregar os dados.', 'Erro');
         },
       });
+  }
+
+  carregarUsuarios(): void {
+    if (!this.isAdmin) return;
+
+    this.usuariosCarregando = true;
+    this.usuariosErro = '';
+    this.userAdminService
+      .listar(this.usuariosPage, this.usuariosPageSize, this.usuariosFiltro)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.usuariosCarregando = false;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe({
+        next: (res: any) => {
+          const { items, total } = this.mapUsuariosResponse(res);
+          this.usuarios = items;
+          this.usuariosTotal = total;
+          this.cdr.markForCheck();
+        },
+        error: (err: any) => {
+          console.error('Erro ao carregar usuarios', err);
+          this.usuariosErro = 'Nao foi possivel carregar os usuarios.';
+          this.toastr.error('Nao foi possivel carregar os usuarios.', 'Erro');
+          this.cdr.markForCheck();
+        },
+      });
+  }
+
+  private mapUsuariosResponse(res: any): { items: AdminUser[]; total: number } {
+    if (!res) return { items: [], total: 0 };
+
+    const root = res.data ?? res.dados ?? res.result ?? res;
+    const payload = root?.data ?? root;
+    const itemsSource =
+      payload?.items ??
+      payload?.usuarios ??
+      payload?.users ??
+      payload;
+
+    const items = Array.isArray(itemsSource)
+      ? (itemsSource as AdminUser[])
+      : [];
+
+    const totalRaw =
+      payload?.totalCount ??
+      res?.totalCount ??
+      payload?.total ??
+      (Array.isArray(items) ? items.length : 0);
+
+    const total =
+      typeof totalRaw === 'number' ? totalRaw : Array.isArray(items) ? items.length : 0;
+
+    return { items, total };
   }
 
   private patchFromApi(api: Configuracoes): void {
@@ -225,6 +320,96 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
       localStorage.setItem('empresa.telefone', telefone);
       localStorage.setItem('empresa.email', email);
     } catch {}
+  }
+
+  get ultimaPaginaUsuarios(): number {
+    if (!this.usuariosTotal || !this.usuariosPageSize) return 1;
+    return Math.max(1, Math.ceil(this.usuariosTotal / this.usuariosPageSize));
+  }
+
+  aplicarFiltroUsuarios(): void {
+    this.usuariosPage = 1;
+    this.carregarUsuarios();
+  }
+
+  limparFiltroUsuarios(): void {
+    this.usuariosFiltro = '';
+    this.aplicarFiltroUsuarios();
+  }
+
+  mudarPagina(delta: number): void {
+    const alvo = this.usuariosPage + delta;
+    const ultima = this.ultimaPaginaUsuarios;
+    if (alvo < 1 || alvo > ultima) return;
+    this.usuariosPage = alvo;
+    this.carregarUsuarios();
+  }
+
+  abrirUsuario(usuario: AdminUser): void {
+    if (!this.formUsuario) this.buildUsuarioForm();
+    this.usuarioSelecionado = usuario;
+    this.usuarioFoto = null;
+    this.formUsuario.reset({
+      id: usuario.id,
+      firstName: usuario.firstName || '',
+      lastName: usuario.lastName || '',
+      email: usuario.email || '',
+      phoneNumber: usuario.phoneNumber || '',
+      role: usuario.role || 'User',
+    });
+    this.cdr.markForCheck();
+  }
+
+  onUserPictureSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.usuarioFoto = input?.files?.[0] ?? null;
+  }
+
+  salvarUsuarioEdicao(): void {
+    if (!this.usuarioSelecionado) return;
+
+    if (this.formUsuario.invalid) {
+      this.formUsuario.markAllAsTouched();
+      return;
+    }
+
+    const formValue = this.formUsuario.value;
+    const payload: Partial<AdminUser> = {
+      firstName: formValue.firstName,
+      lastName: formValue.lastName,
+      email: formValue.email,
+      phoneNumber: formValue.phoneNumber,
+      role: formValue.role,
+    };
+
+    this.salvandoUsuario = true;
+    this.userAdminService
+      .atualizar(this.usuarioSelecionado.id, payload, this.usuarioFoto)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.salvandoUsuario = false;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.toastr.success('Usuario atualizado.');
+          this.fecharModalUsuario();
+          this.carregarUsuarios();
+        },
+        error: (err: any) => {
+          console.error('Erro ao atualizar usuario', err);
+          this.toastr.error('Erro ao atualizar usuario.', 'Erro');
+        },
+      });
+  }
+
+  private fecharModalUsuario(): void {
+    const closeBtn = document.getElementById(
+      'btn-close-usuario-modal'
+    ) as HTMLButtonElement | null;
+    closeBtn?.click();
   }
 
   salvar(): void {
