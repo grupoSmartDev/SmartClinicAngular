@@ -355,7 +355,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     this.formulario.reset();
     this.eventoEscolhido = event;
 
-    const dataFormatada = event?.data ? new Date(event.data).toISOString().split('T')[0] ? new Date(event.end).toISOString().split('T')[0] : null : null;
+    const dataFormatada = event?.data ? new Date(event.data).toISOString().split('T')[0] : null;
     const horaInicio = event?.horaInicio ? event.horaInicio.toString().substring(0, 5) : null;
     const horaFim = event?.horaFim ? event.horaFim.toString().substring(0, 5) : null;
 
@@ -608,7 +608,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
       }
 
       const action = agendaData.id ? 'atualizado' : 'criado';
-      this.toastr.success(`Agenda ${action} com sucesso!`, 'Sucesso');
+      // this.toastr.success(`Agenda ${action} com sucesso!`, 'Sucesso');
       this.onSave.emit();
       this.fecharModal();
     } catch (error) {
