@@ -46,7 +46,7 @@ export class CalendarioComponent {
   diaSelecionado: number = new Date().getDate();
 
   // Propriedades do modal e eventos
-  public selectedEvent: CalendarEvent | null = null;
+  public selectedEvent: CalendarEvent | Agenda | null = null;
   public selectedDate: string = '';
   public events: CalendarEvent[] = [];
   public agendamentos: Agendamento[] = [];
@@ -412,6 +412,7 @@ export class CalendarioComponent {
         if (matchingAgenda.length > 0) {
           agendaParaModal = matchingAgenda[0]; // Assign the first matching item
           this.eventoParaModal = agendaParaModal;
+          this.selectedEvent = agendaParaModal;
         }
       },
     });

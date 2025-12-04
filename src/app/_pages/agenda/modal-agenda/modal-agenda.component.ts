@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, AbstractControl, NgForm } from '@angular/forms';
 import * as bootstrap from 'bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -42,7 +42,7 @@ interface Patient {
   templateUrl: './modal-agenda.component.html',
   styleUrls: ['./modal-agenda.component.css']
 })
-export class ModalAgendaComponent implements OnInit {
+export class ModalAgendaComponent implements OnInit, OnChanges {
   @Input() selectedEvent: any = null;
   @Input() selectedDate: string = '';
   @Output() onSave = new EventEmitter<Agenda>();
@@ -266,6 +266,12 @@ export class ModalAgendaComponent implements OnInit {
     financReceberGroup.get('tipoPagamentoId')?.updateValueAndValidity();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedEvent']?.currentValue) {
+      this.populateForm(changes['selectedEvent'].currentValue, true);
+    }
+  }
+
   ngOnInit(): void {
     this.loadInitialData();
 
@@ -347,78 +353,54 @@ export class ModalAgendaComponent implements OnInit {
   private populateForm(event: any, eventoExistente: Boolean = false): void {
     // Reset do formulário antes de preencher para evitar estados inconsistentes
     this.formulario.reset();
+    this.eventoEscolhido = event;
 
-    //TERMINAR DE PREENCHER O METODO COM AS INFORMAÇÕES; COLCOAR UMA OPÇÃO DE FINANCEIRO GERADO, E COMEÇAR A TRBALHAR COM O TRATAMENTO DO STATUS DO EVENTO.
-    //VERIFICAR FUNÇÃO DE REAGENDAMENTO PARA CASO O PACIENTE NÃO VENHA.
-    if (eventoExistente) {
-      this.formulario.patchValue({
-        ...this.eventoEscolhido
-      })
+    const dataFormatada = event?.data ? new Date(event.data).toISOString().split('T')[0] ? new Date(event.end).toISOString().split('T')[0] : null : null;
+    const horaInicio = event?.horaInicio ? event.horaInicio.toString().substring(0, 5) : null;
+    const horaFim = event?.horaFim ? event.horaFim.toString().substring(0, 5) : null;
 
-      if (this.eventoEscolhido.avulso) {
-        this.formulario.get('avulso')?.setValue(true);
-        let input = document.getElementById('avulso') as HTMLSelectElement;
+    // Preenchimento dos campos básicos
+    this.formulario.patchValue({
+      ...event,
+      data: dataFormatada ?? event?.data,
+      horaInicio: horaInicio,
+      horaFim: horaFim
+    });
 
-        input.focus()
-
+    // Preenche e mostra o nome do paciente
+    const pacienteNome =
+      event?.paciente?.nome ||
+      this.patients?.find((p: any) => p.id === event?.pacienteId)?.nome ||
+      '';
+    if (pacienteNome) {
+      const inputPaciente = document.getElementById('paciente') as HTMLInputElement;
+      if (inputPaciente) {
+        inputPaciente.value = pacienteNome;
       }
-
-      if (event.financReceber) {
-        const financForm = this.formulario.get('financReceber') as FormGroup;
-        financForm.patchValue({
-          ...event.financReceber
-        });
-
-        // Limpar e recriar o array de subFinancReceber
-        const subFinancArray = financForm.get('subFinancReceber') as FormArray;
-        subFinancArray.clear();
-
-        if (event.financReceber.subFinancReceber?.length) {
-          event.financReceber.subFinancReceber.forEach((subFinanc: any) => {
-            subFinancArray.push(this.createSubFinancForm(subFinanc));
-          });
-        }
-      }
-
-      if (this.eventoEscolhido) {
-
-        this.pacienteService.Listar().subscribe({
-          next: (result) => {
-            this.patients = result.dados;
-          }
-        })
-
-
-        let inputPaciente = document.getElementById('paciente') as HTMLInputElement;
-        inputPaciente.value = this.patients.filter((x: any) => x.id == this.eventoEscolhido.pacienteId)[0].nome ?? '';
-
-      }
-
-
-
+      this.formulario.patchValue({ pacienteId: event?.pacienteId || event?.paciente?.id });
     }
-    else {
-      // Preenchimento dos campos básicos
-      this.formulario.patchValue({
-        ...event
+
+    if (event.avulso) {
+      this.formulario.get('avulso')?.setValue(true);
+      const input = document.getElementById('avulso') as HTMLSelectElement;
+      input?.focus();
+    }
+
+    // Tratamento especial para financReceber se existir
+    if (event.financReceber) {
+      const financForm = this.formulario.get('financReceber') as FormGroup;
+      financForm.patchValue({
+        ...event.financReceber
       });
 
-      // Tratamento especial para financReceber se existir
-      if (event.financReceber) {
-        const financForm = this.formulario.get('financReceber') as FormGroup;
-        financForm.patchValue({
-          ...event.financReceber
+      // Limpar e recriar o array de subFinancReceber
+      const subFinancArray = financForm.get('subFinancReceber') as FormArray;
+      subFinancArray.clear();
+
+      if (event.financReceber.subFinancReceber?.length) {
+        event.financReceber.subFinancReceber.forEach((subFinanc: any) => {
+          subFinancArray.push(this.createSubFinancForm(subFinanc));
         });
-
-        // Limpar e recriar o array de subFinancReceber
-        const subFinancArray = financForm.get('subFinancReceber') as FormArray;
-        subFinancArray.clear();
-
-        if (event.financReceber.subFinancReceber?.length) {
-          event.financReceber.subFinancReceber.forEach((subFinanc: any) => {
-            subFinancArray.push(this.createSubFinancForm(subFinanc));
-          });
-        }
       }
     }
 
@@ -766,6 +748,16 @@ export class ModalAgendaComponent implements OnInit {
 
     // Garantir que avulso seja um booleano
     formData.avulso = formData.avulso === true || formData.avulso === 'true';
+    formData.statusId = formData.statusId ? Number(formData.statusId) : null;
+
+    const formatHora = (hora: any) => {
+      if (!hora) return null;
+      const horaStr = hora.toString();
+      return horaStr.length === 5 ? `${horaStr}:00` : horaStr;
+    };
+
+    formData.horaInicio = formatHora(formData.horaInicio);
+    formData.horaFim = formatHora(formData.horaFim);
 
     formData.pacoteId == '' ? formData.pacoteId = null : formData.pacoteId;
 
