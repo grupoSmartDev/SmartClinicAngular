@@ -35,12 +35,10 @@ export class ListarFinancPagarComponent {
   errorMessage: string = '';
   idParaExcluir!: string;
   dadosParaExcluir!: FinancPagar;
-  mostrarFiltros: boolean = false; // Começa expandido por padrão
-  //paginacao
+  mostrarFiltros: boolean = false;
   totalItems: number = 0;
   pageSize: number = 10;
   currentPage: number = 1;
-  // filtros
   descricaoFiltro?: string = '';
   idFiltro?: string = '';
   pacienteIdFiltro?: string = '';
@@ -73,20 +71,18 @@ export class ListarFinancPagarComponent {
     const allInputs = document.querySelectorAll('input');
 
     allInputs.forEach(input => {
-      // Cria uma função de listener para cada input
       const listener = (event: KeyboardEvent) => {
         if (event.key === 'Enter') {
-          this.onSearch(); // Passa o input para a função filtrar
+          this.onSearch();
         }
       };
       input.addEventListener('keydown', listener);
-      this.inputListeners.set(input, listener); // Armazena para remover depois
+      this.inputListeners.set(input, listener);
     });
   }
 
 
   ngOnDestroy(): void {
-    // Remove os listeners de todos os inputs
     this.inputListeners.forEach((listener, input) => {
       input.removeEventListener('keydown', listener);
     });
@@ -94,7 +90,6 @@ export class ListarFinancPagarComponent {
   }
 
   private getCacheKey(): string {
-    // Cria uma chave única para o cache baseada nos parâmetros atuais
     return `financPagar-list-${this.currentPage}-${this.pageSize}-${this.idFiltro}-${this.paginar}`;
   }
 
@@ -102,7 +97,6 @@ export class ListarFinancPagarComponent {
     return Date.now() - timestamp < this.CACHE_DURATION;
   }
 
-  // Método para invalidar o cache quando necessário
   private invalidateCache(): void {
     const cacheKey = this.getCacheKey();
     this.tabService.setCacheData(cacheKey, null);
@@ -113,7 +107,6 @@ export class ListarFinancPagarComponent {
     const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
 
     if (cachedData && this.isCacheValid(cachedData.timestamp)) {
-      // Se temos dados em cache válidos, use-os
       this.lista = cachedData.cacheList;
       this.totalItems = cachedData.totalItems;
     } else {
@@ -136,7 +129,7 @@ export class ListarFinancPagarComponent {
               this.lista = data.dados;
               this.totalItems = data.totalCount ?? 0;
               console.table(this.lista);
-              // Armazena os dados no cache
+
               this.tabService.setCacheData(cacheKey, {
                 cacheList: this.lista,
                 totalItems: this.totalItems,
@@ -181,10 +174,8 @@ export class ListarFinancPagarComponent {
   }
 
   openModalBaixa(item: SubFinancPagar) {
-    // Importante: primeiro atualize os dados, depois abra o modal
-    this.parcelaSelecionada = { ...item }; // Criando uma cópia para não afetar o objeto original
+    this.parcelaSelecionada = { ...item };
 
-    // Aguarde a próxima iteração do change detection antes de abrir o modal
     setTimeout(() => {
       const modalElement = document.getElementById('modalBaixaParcela');
       if (modalElement) {
@@ -215,7 +206,7 @@ export class ListarFinancPagarComponent {
 
   atualizarLista(): void {
     this.invalidateCache();
-    this.loadData(); // Chama o método para buscar os status novamente
+    this.loadData();
   }
 
   promptDelete(dataParaExcluir: any) {
@@ -232,7 +223,7 @@ export class ListarFinancPagarComponent {
   }
 
   onPageChange(page: number): void {
-    this.currentPage = page; // Bootstrap usa paginação iniciando em 1
+    this.currentPage = page;
     this.loadData();
   }
 
@@ -255,20 +246,17 @@ export class ListarFinancPagarComponent {
     let idConvertido = parseInt(id);
     return this.expandedRows.has(idConvertido);
   }
-  //QUANDO FOR REFATORAR, DEIXAR ISSO EM UM HELPER
+
   isOverdue(dataVencimento: string | Date): boolean {
-    // Converte para Date se for string
     const vencimentoDate =
       typeof dataVencimento === 'string'
         ? new Date(dataVencimento)
         : dataVencimento;
 
-    // Remove o horário da comparação, focando apenas na data
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);
     vencimentoDate.setHours(0, 0, 0, 0);
 
-    // Verifica se a data de vencimento é anterior à data atual
     return vencimentoDate < hoje;
   }
   toggleFiltros() {
@@ -281,7 +269,7 @@ export class ListarFinancPagarComponent {
     this.dataFiltroInicio = this.formatarDataParaInput(new Date());
     this.dataFiltroFim = this.formatarDataParaInput(new Date());
     this.parcelasVencidasFiltro = false;
-    // Opcional: realizar uma busca após limpar
+
     this.onSearch();
   }
 
