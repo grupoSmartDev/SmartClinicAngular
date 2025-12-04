@@ -150,6 +150,8 @@ export class PacienteCompletoComponent implements OnInit {
   podeRenovar: boolean = false;
   planoSelecionado: any = null;
 
+  limiteDiasSemanaFront: number = 0;
+
   // Pacotes
   listaPacotes: Pacote[] = [];
   pacotesPaciente: PacotePaciente[] = [];
@@ -304,6 +306,7 @@ export class PacienteCompletoComponent implements OnInit {
       if (evolucao.exercicios?.length) {
         evolucao.exercicios.forEach((exercicio: Exercicio) => {
           const exercicioGroup = this.fb.group({
+            id: [exercicio.id],
             obs: [exercicio.obs, Validators.required],
             descricao: [exercicio.descricao, Validators.required],
             tempo: [exercicio.tempo, Validators.required],
@@ -319,6 +322,7 @@ export class PacienteCompletoComponent implements OnInit {
       if (evolucao.atividades?.length) {
         evolucao.atividades.forEach((atividade: Atividade) => {
           const atividadeGroup = this.fb.group({
+            id: [atividade.id],
             titulo: [atividade.titulo, Validators.required],
             descricao: [atividade.descricao, Validators.required],
             tempo: [atividade.tempo, Validators.required],
@@ -347,7 +351,7 @@ export class PacienteCompletoComponent implements OnInit {
 
   // MÉTODOS DE GERENCIAMENTO DE FORMULÁRIO
   adicionarExercicio(): void {
-    debugger
+
     const novoItem = this.fb.group({
       obs: ['', Validators.required],
       descricao: ['', Validators.required],
@@ -380,7 +384,7 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   salvarEvolucao(): void {
-    debugger
+
     this.formEvolucao.patchValue({
       pacienteId: this.Paciente.id,
     });
@@ -518,10 +522,14 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   onPlanoSelecionado(): void {
+    debugger
     const idPlano = this.formPlano.get('planoId')?.value;
     if (!idPlano) return;
 
+
     this.planoSelecionado = this.listaPlanos.filter(x => x.id == idPlano);
+
+    this.limiteDiasSemanaFront = this.planoSelecionado[0].diasSemana || 0;
 
     // Atualizar valores se um plano for selecionado
     if (this.planoSelecionado && this.planoSelecionado.length > 0) {
@@ -678,6 +686,7 @@ export class PacienteCompletoComponent implements OnInit {
     const limiteDias = this.planoSelecionado[0].diasSemana || 0;
     let diasSelecionados = 0;
 
+    this.limiteDiasSemanaFront = limiteDias;
     // Contar dias ativos
     this.diasRecorrenciaArray.controls.forEach(control => {
       if (control.get('ativo')?.value === true) {
@@ -1806,6 +1815,9 @@ export class PacienteCompletoComponent implements OnInit {
 
 
   onInativePlan(plano: any) {
+    if (!confirm('Tem certeza que deseja inativar o plano?')) {
+      return
+    }
     if (plano && plano.id) {
       this.planoService.InativarPlanoPaciente(plano).subscribe({
         next: (response) => {

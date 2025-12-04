@@ -8,6 +8,9 @@ import * as bootstrap from 'bootstrap';
 import { TabService } from '../../../_services/tabs.service';
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { PlanoContas } from '../../../_module/planoContasModule';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
+import { PlanoContasService } from '../../../_services/plano-contas.service';
 
 interface CacheData {
   cacheList: DespesaFixa[];
@@ -24,7 +27,10 @@ export class ListarDespesaComponent {
   constructor(
     private despesaService: DespesaFixaService,
     private toast: ToastrService,
-    private tabService: TabService
+    private tabService: TabService,
+    private spinner: NgxSpinnerService,
+    private centroCustoService: CentroDeCustoService,
+    private planoContasService: PlanoContasService
   ) { }
   @ViewChild(ModalDespesaComponent)
   modalDespesaComponent!: ModalDespesaComponent;
@@ -56,6 +62,8 @@ export class ListarDespesaComponent {
 
   ngOnInit(): void {
     this.loadData();
+    this.loadCentroCusto();
+    this.loadPlanoContas();
 
     const allInputs = document.querySelectorAll('input');
 
@@ -94,46 +102,49 @@ export class ListarDespesaComponent {
   }
 
   loadData(): void {
+    debugger
     const cacheKey = this.getCacheKey();
     const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
 
     if (cachedData && this.isCacheValid(cachedData.timestamp)) {
-      // Se temos dados em cache válidos, use-os
       this.lista = cachedData.cacheList;
       this.totalItems = cachedData.totalItems;
-    } else {
-      this.despesaService
-        .Listar(
-          this.currentPage,
-          this.pageSize,
-          this.descricaoFiltro,
-          this.idFiltro,
-          this.diaVencimentoFiltro,
-          this.centroCustoFiltro,
-          this.planoContasFiltro,
-          (this.paginar = true)
-        )
-        .subscribe({
-          next: (data) => {
-            if (data.dados) {
-              this.lista = data.dados;
-              this.totalItems = data.totalCount ?? 0;
-
-              // Armazena os dados no cache
-              this.tabService.setCacheData(cacheKey, {
-                cacheList: this.lista,
-                totalItems: this.totalItems,
-                timestamp: Date.now(),
-              });
-            }
-          },
-          error: (err) => {
-            console.error('Erro ao buscar despesas:', err);
-            this.errorMessage =
-              'Erro ao carregar as despesas. Tente novamente mais tarde.';
-          },
-        });
+      return;
     }
+
+    this.spinner.show();
+    this.despesaService
+      .Listar(
+        this.currentPage,
+        this.pageSize,
+        this.idFiltro,
+        this.descricaoFiltro,
+        this.diaVencimentoFiltro,
+        this.centroCustoFiltro,
+        this.planoContasFiltro,
+        (this.paginar = true)
+      )
+      .subscribe({
+        next: (data) => {
+          if (data.dados) {
+            this.lista = data.dados;
+            this.totalItems = data.totalCount ?? 0;
+
+            // Armazena os dados no cache
+            this.tabService.setCacheData(cacheKey, {
+              cacheList: this.lista,
+              totalItems: this.totalItems,
+              timestamp: Date.now(),
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar despesas:', err);
+          this.errorMessage =
+            'Erro ao carregar as despesas. Tente novamente mais tarde.';
+        },
+      });
+
   }
 
   openModal(despesa: any) {
@@ -208,5 +219,21 @@ export class ListarDespesaComponent {
 
   atualizarDados() {
     this.loadData();
+  }
+
+  loadCentroCusto() {
+    this.centroCustoService.Listar().subscribe({
+      next: (data) => {
+        this.centroCustoLista = data.dados;
+      },
+    });
+  }
+
+  loadPlanoContas() {
+    this.planoContasService.Listar().subscribe({
+      next: (data) => {
+        this.planoDeContasLista = data.dados;
+      },
+    });
   }
 }

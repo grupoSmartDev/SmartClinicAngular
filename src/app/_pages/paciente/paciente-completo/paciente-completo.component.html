@@ -371,6 +371,12 @@
                       <td>Semestral</td>
                       } @case ('a') {
                       <td>Anual</td>
+                      } @case('b'){
+                      <td>Bimestral</td>
+                      }@case ('t'){
+                      <td>Trimestral</td>
+                      } @case ('q') {
+                      <td>Quadrimestral</td>
                       } @default {
                       <td></td>
                       } }
@@ -1196,7 +1202,10 @@
                   <h3 class="titulo-pequeno">Exercício {{ i + 1 }}</h3>
                   <div class="row">
                     <div class="col-md-4">
-                      <label for="descricao">Exercício</label>
+                      <label for="descricao"
+                        >Exercício
+                        <span class="text-danger">*</span>
+                      </label>
                       <input
                         type="text"
                         class="form-control form-control-sm"
@@ -1259,7 +1268,10 @@
                   <h3 class="titulo-pequeno">Atividade {{ i + 1 }}</h3>
                   <div class="row">
                     <div class="col-md-4">
-                      <label for="titulo">Atividade</label>
+                      <label for="titulo"
+                        >Atividade
+                        <span class="text-danger">*</span>
+                      </label>
                       <input
                         type="text"
                         class="form-control form-control-sm"
@@ -1267,7 +1279,10 @@
                       />
                     </div>
                     <div class="col-md-4">
-                      <label for="descricao">Descrição</label>
+                      <label for="descricao"
+                        >Descrição
+                        <span class="text-danger">*</span>
+                      </label>
                       <input
                         type="text"
                         class="form-control form-control-sm"
@@ -1296,8 +1311,9 @@
               </div>
               <div class="col-12">
                 <label for="progressDescription" class="form-label"
-                  >Descrição</label
-                >
+                  >Descrição
+                  <span class="text-danger">*</span>
+                </label>
                 <textarea
                   cols="30"
                   rows="10"
@@ -1344,7 +1360,10 @@
           <!-- Bloco de Plano e Assinatura -->
           <div class="row align-items-end">
             <div class="col-md-3">
-              <label for="planoId" class="form-label">Plano</label>
+              <label for="planoId" class="form-label"
+                >Plano
+                <span class="text-danger">*</span>
+              </label>
               <select
                 class="form-select form-select-sm"
                 formControlName="planoId"
@@ -1367,7 +1386,10 @@
               </div>
             </div>
             <div class="col-md-3">
-              <label for="tipoMes" class="form-label">Tipo de assinatura</label>
+              <label for="tipoMes" class="form-label"
+                >Tipo de assinatura
+                <span class="text-danger">*</span>
+              </label>
               <select
                 class="form-select form-select-sm"
                 formControlName="tipoMes"
@@ -1449,7 +1471,10 @@
               </div>
 
               <div class="col-4">
-                <label for="descricao" class="form-label">Descrição</label>
+                <label for="descricao" class="form-label"
+                  >Descrição
+                  <span class="text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   class="form-control form-control-sm"
@@ -1782,7 +1807,7 @@
               <div class="alert alert-info small mb-3">
                 <i class="bi bi-info-circle-fill me-2"></i>
                 Você pode selecionar até
-                {{ planoSelecionado?.diasSemana || 0 }} dia(s) da semana para
+                {{ limiteDiasSemanaFront || 0 }} dia(s) da semana para
                 agendamento.
               </div>
 
