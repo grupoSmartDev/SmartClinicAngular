@@ -12,6 +12,30 @@
         Dados da Clínica
       </button>
     </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="documentacao-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#documentacao"
+        type="button"
+        role="tab"
+      >
+        Documentação
+      </button>
+    </li>
+    <li class="nav-item" role="presentation" *ngIf="isAdmin">
+      <button
+        class="nav-link"
+        id="usuarios-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#usuarios"
+        type="button"
+        role="tab"
+      >
+        Usuarios
+      </button>
+    </li>
   </ul>
 
   <div class="tab-content pt-3" id="empresaTabsContent">
@@ -60,15 +84,6 @@
             class="form-control form-control-sm"
             formControlName="cnpjEmpresaMatriz"
           />
-          <small
-            class="text-danger"
-            *ngIf="
-              formulario.get('cnpjEmpresaMatriz')?.touched &&
-              formulario.get('cnpjEmpresaMatriz')?.hasError('required')
-            "
-          >
-            CNPJ é obrigatório.
-          </small>
         </div>
 
         <div class="col-md-3">
@@ -208,6 +223,179 @@
         </div>
       </div>
     </div>
+    <div class="tab-pane fade" id="documentacao" role="tabpanel" aria-labelledby="documentacao-tab">
+      <div class="row g-3">
+        <div class="col-12">
+          <h6 class="mb-2">Impressãoo de Prontuário (padrão)</h6>
+          <p class="text-muted mb-2">Escolha o modelo padrão que será usado ao imprimir o prontuário. Você pode alterar quando quiser.</p>
+        </div>
+
+        <div class="col-12">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="modelo-completo"
+              value="completo"
+              formControlName="modeloProntuario"
+              name="modeloProntuario"
+            />
+            <label class="form-check-label" for="modelo-completo">
+              Completo
+            </label>
+            <div class="small text-muted">Inclui dados do paciente, anamnese, evoluções, medicamentos, alergias e anexos.</div>
+          </div>
+
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="modelo-resumido"
+              value="resumido"
+              formControlName="modeloProntuario"
+              name="modeloProntuario"
+            />
+            <label class="form-check-label" for="modelo-resumido">
+              Resumido
+            </label>
+            <div class="small text-muted">Foco em dados essenciais: identificação, queixa principal e condutas.</div>
+          </div>
+
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="modelo-anamnese"
+              value="anamnese"
+              formControlName="modeloProntuario"
+              name="modeloProntuario"
+            />
+            <label class="form-check-label" for="modelo-anamnese">
+              Anamnese
+            </label>
+            <div class="small text-muted">Detalhamento da anamnese e histórico clínico, com evoluções em resumo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="tab-pane fade"
+      id="usuarios"
+      role="tabpanel"
+      aria-labelledby="usuarios-tab"
+      *ngIf="isAdmin"
+    >
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <div class="flex-grow-1">
+          <div class="input-group input-group-sm">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Buscar por nome ou email"
+              [(ngModel)]="usuariosFiltro"
+              [ngModelOptions]="{ standalone: true }"
+              (keyup.enter)="aplicarFiltroUsuarios()"
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              (click)="aplicarFiltroUsuarios()"
+            >
+              <i class="bi bi-search"></i>
+            </button>
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              (click)="limparFiltroUsuarios()"
+              [disabled]="!usuariosFiltro"
+            >
+              Limpar
+            </button>
+          </div>
+        </div>
+        <div>
+          <span class="badge bg-light text-dark border">
+            {{ usuariosTotal || 0 }} usuarios
+          </span>
+        </div>
+      </div>
+
+      <div *ngIf="usuariosCarregando" class="alert alert-info py-2">
+        Carregando usuarios...
+      </div>
+      <div *ngIf="usuariosErro" class="alert alert-danger py-2">
+        {{ usuariosErro }}
+      </div>
+
+      <div class="table-responsive" *ngIf="!usuariosCarregando && usuarios.length">
+        <table class="table table-striped table-centered mb-2 align-middle">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Permissao</th>
+              <th class="text-end"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of usuarios">
+              <td>{{ user.firstName }} {{ user.lastName }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span class="badge bg-light text-dark border">
+                  {{ user.role || 'User' }}
+                </span>
+              </td>
+              <td class="text-end">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modal-admin-usuario"
+                  (click)="abrirUsuario(user)"
+                >
+                  <i class="bi bi-pencil"></i> Editar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        *ngIf="!usuariosCarregando && !usuarios.length && !usuariosErro"
+        class="alert alert-warning py-2"
+      >
+        Nenhum usuario encontrado.
+      </div>
+
+      <div
+        class="d-flex justify-content-between align-items-center mt-2"
+        *ngIf="usuariosTotal > usuariosPageSize"
+      >
+        <div class="small text-muted">
+          Pagina {{ usuariosPage }} de {{ ultimaPaginaUsuarios }}
+        </div>
+        <div class="btn-group btn-group-sm">
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            (click)="mudarPagina(-1)"
+            [disabled]="usuariosPage === 1"
+          >
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            (click)="mudarPagina(1)"
+            [disabled]="usuariosPage >= ultimaPaginaUsuarios"
+          >
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="d-flex gap-2 mt-3">
@@ -227,3 +415,88 @@
     </button>
   </div>
 </form>
+
+<div
+  class="modal fade"
+  id="modal-admin-usuario"
+  tabindex="-1"
+  aria-labelledby="modalAdminUsuarioLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAdminUsuarioLabel">Editar usuario</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body" *ngIf="formUsuario">
+        <form [formGroup]="formUsuario">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nome</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="firstName"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Sobrenome</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                formControlName="lastName"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control form-control-sm"
+                formControlName="email"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Permissao</label>
+              <select
+                class="form-select form-select-sm"
+                formControlName="role"
+              >
+                <option value="User">User</option>
+                <option value="Support">Support</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          data-bs-dismiss="modal"
+          id="btn-close-usuario-modal"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="salvarUsuarioEdicao()"
+          [disabled]="salvandoUsuario"
+        >
+          <span
+            class="spinner-border spinner-border-sm me-1"
+            *ngIf="salvandoUsuario"
+          ></span>
+          <span *ngIf="!salvandoUsuario">Salvar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

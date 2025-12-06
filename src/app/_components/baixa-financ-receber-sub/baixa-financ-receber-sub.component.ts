@@ -35,15 +35,11 @@ export class BaixaFinancReceberSubComponent implements OnInit, OnChanges {
     console.log('Inicializando campos com:', this.financReceberSub);
     this.dataPagamento = new Date().toISOString().split('T')[0];
     
-    // Verificando se há valor antes de atribuir
-    if (this.financReceberSub && this.financReceberSub.valor) {
-      this.valorPago = this.financReceberSub.valor;
-    }
+    const valorParcela = this.financReceberSub?.valor;
+    this.valorPago = valorParcela ?? 0;
     
-    // Verificando se há descrição antes de atribuir
-    if (this.financReceberSub && this.financReceberSub.financReceber) {
-      this.observacao = this.financReceberSub.financReceber.descricao || '';
-    }
+    const descricao = this.financReceberSub?.financReceber?.descricao;
+    this.observacao = descricao ?? '';
   }
 
   handleConfirm(): void {

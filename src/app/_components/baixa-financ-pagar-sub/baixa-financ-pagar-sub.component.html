@@ -13,56 +13,68 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Baixar Conta a pagar</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          Baixar Conta a pagar
+        </h1>
         <button
           type="button"
           class="btn-close"
-          data-bs-dismiss="modal" (click)="fecharModal()" 
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
           aria-label="Close"
         ></button>
       </div>
       <div class="modal-body">
-
-          <div class="row ">
-            <div class="col-md-4 col-12">
-                <div class="form-group">
-                    <label for="dataPagamento" class="form-label">Data de Pagamento</label>
-                    <input
-                      class="form-control form-control-sm"
-                      type="date"
-                      id="dataPagamento"
-                      [(ngModel)]="dataPagamento"
-                      name="dataPagamento"
-                    />
-                  </div>
+        <div class="row">
+          <div class="col-md-4 col-12">
+            <div class="form-group">
+              <label for="dataPagamento" class="form-label"
+                >Data de Pagamento</label
+              >
+              <input
+                class="form-control form-control-sm"
+                type="date"
+                id="dataPagamento"
+                [(ngModel)]="dataPagamento"
+                name="dataPagamento"
+              />
             </div>
-            <div class="col-md-3 col-12">
-                <div class="form-group">
-                    <label for="valorPago" class="form-label">Valor do Pagamento</label>
-                    <input
-                      class="form-control form-control-sm"
-                      type="number"
-                      id="valorPago"
-                      step="0.01"
-                      min="0"
-                      [(ngModel)]="valorPago"
-                      name="valorPago"
-                    />
-                  </div>
-            </div>
-
-            <div class="col-12">
-                  <label for="observacao" class="form-label">Observação</label>
-                  <textarea
-                    class="form-control form-control-sm"
-                    id="observacao"
-                    [(ngModel)]="observacao"
-                    name="observacao"
-                  ></textarea>
-            </div>
-          
           </div>
-         
+          <div class="col-md-3 col-12">
+            <div class="form-group">
+              <label for="valorPago" class="form-label"
+                >Valor do Pagamento</label
+              >
+              <input
+                class="form-control form-control-sm"
+                type="text"
+                id="valorPago"
+                step="0.01"
+                min="0"
+                [(ngModel)]="valorPago"
+                name="valorPago"
+                [currencyMask]="{
+                  prefix: '',
+                  thousands: '.',
+                  decimal: ',',
+                  precision: 2,
+                  allowNegative: false
+                }"
+                inputmode="numeric"
+              />
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label for="observacao" class="form-label">Observação</label>
+            <textarea
+              class="form-control form-control-sm"
+              id="observacao"
+              [(ngModel)]="observacao"
+              name="observacao"
+            ></textarea>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button
@@ -77,9 +89,9 @@
           type="button"
           class="btn btn-danger"
           id="btnCancelar"
-          data-bs-dismiss="modal" (click)="fecharModal()" 
+          data-bs-dismiss="modal"
+          (click)="fecharModal()"
           aria-label="Close"
-          
         >
           <i class="bi bi-x"></i>Cancelar
         </button>

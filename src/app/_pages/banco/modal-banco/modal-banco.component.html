@@ -43,65 +43,31 @@
                     formControlName="id"
                   />
                 </div>
-                <div class="col-md-5 d-none">
-                  <label for="nomeBanco" class="form-label">
-                    <span class="text-danger">*</span> Nome Banco
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    class="form-control form-control-sm"
-                    hidden
-                    formControlName="nomeBanco"
-                    [ngClass]="{
-                      'is-invalid':
-                        formulario.get('nomeBanco')?.invalid &&
-                        formulario.get('nomeBanco')?.touched
-                    }"
-                  />
-                  <div
-                    *ngIf="
-                      formulario.get('nomeBanco')?.invalid &&
-                      formulario.get('nomeBanco')?.touched
-                    "
-                    class="invalid-feedback"
-                  >
-                    O campo nome do banco é obrigatório.
-                  </div>
-                </div>
-                <!-- <div class="col-md-3">
-                  <label for="codigo" class="form-label">
-                    <span class="text-danger">*</span> Código
-                  </label>
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    formControlName="codigo"
-                    onlyNumbers
-                    [ngClass]="{
-                      'is-invalid':
-                        formulario.get('codigo')?.invalid &&
-                        formulario.get('codigo')?.touched
-                    }"
-                  />
+
+                <div class="col-md-8">
+                  <app-select-banco
+                    id="codigoBanco"
+                    [formControlName]="'codigo'"
+                    label="* Banco"
+                  ></app-select-banco>
                   <div
                     *ngIf="
                       formulario.get('codigo')?.invalid &&
                       formulario.get('codigo')?.touched
                     "
-                    class="invalid-feedback"
+                    class="text-danger small mt-1"
                   >
-                    O campo código é obrigatório.
+                    Selecione um banco.
                   </div>
-                </div> -->
-                <app-select-banco
+                </div>
+                <!-- <app-select-banco
                   class="col-md-3"
                   id="banco_comissao"
                   [formControlName]="'codigo'"
                   label="Banco"
                   (bancoSelecionado)="onBancoSelecionado($event)"
                   [required]="true"
-                ></app-select-banco>
+                ></app-select-banco> -->
                 <div class="col-md-2">
                   <label for="ativo" class="form-label d-block">
                     <span class="text-danger">*</span> Ativo

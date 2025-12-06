@@ -143,7 +143,39 @@ export class ModalFinanceiroReceber implements OnInit {
     while (this.subFinancReceber.length !== 0) {
       this.subFinancReceber.removeAt(0);
     }
-    this.formulario.patchValue(this.data);
+
+    const dadosParaCarregar = financReceber || this.data;
+
+    const pacienteAtual =
+      dadosParaCarregar?.paciente ||
+      this.listaPacientes.find((p) => p.id === dadosParaCarregar?.pacienteId);
+
+    if (pacienteAtual) {
+      this.searchTerm = pacienteAtual.nome || '';
+      this.formulario.patchValue({
+        pacienteId: pacienteAtual.id,
+        cpf: pacienteAtual.cpf,
+      });
+    } else {
+      this.searchTerm = '';
+    }
+
+    const valorTotal =
+      dadosParaCarregar?.valor ??
+      dadosParaCarregar?.valorOriginal ??
+      dadosParaCarregar?.subFinancReceber?.reduce(
+        (total: number, sub: any) => total + (sub?.valor || 0),
+        0
+      );
+
+    this.formulario.patchValue({
+      ...dadosParaCarregar,
+      valor: valorTotal,
+      parcela:
+        dadosParaCarregar?.parcela ??
+        dadosParaCarregar?.subFinancReceber?.length ??
+        this.formulario.get('parcela')?.value,
+    });
 
     let dataEmissao = this.formulario.get('dataEmissao')?.value;
     if (dataEmissao) {
@@ -152,8 +184,8 @@ export class ModalFinanceiroReceber implements OnInit {
     }
 
     // Load subFinancReceber if it exists in the data
-    if (this.data.subFinancReceber && this.data.subFinancReceber.length > 0) {
-      this.data.subFinancReceber.forEach((subFinanc) => {
+    if (dadosParaCarregar.subFinancReceber && dadosParaCarregar.subFinancReceber.length > 0) {
+      dadosParaCarregar.subFinancReceber.forEach((subFinanc: any) => {
         let dataVencimento: any = subFinanc.dataVencimento;
         if (dataVencimento) {
           dataVencimento = this.datePipe.formatToHtmlDate(dataVencimento);
@@ -164,17 +196,12 @@ export class ModalFinanceiroReceber implements OnInit {
           dataPagamento = this.datePipe.formatToHtmlDate(dataPagamento);
         }
 
-        // Formata o valor para o formato brasileiro (ex: 1.234,56)
-        const valorFormatado = typeof subFinanc.valor === 'number'
-          ? subFinanc.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-          : subFinanc.valor;
-
         this.subFinancReceber.push(
           this.fb.group({
             id: [subFinanc.id],
             financReceberId: [subFinanc.financReceberId],
             parcela: [subFinanc.parcela],
-            valor: [valorFormatado, [Validators.required, Validators.min(0)]],
+            valor: [subFinanc.valor, [Validators.required, Validators.min(0)]],
             dataVencimento: [dataVencimento],
             dataPagamento: [dataPagamento],
             observacao: [subFinanc.observacao],
@@ -195,6 +222,8 @@ export class ModalFinanceiroReceber implements OnInit {
     let btnCancelar = document.getElementById('btnCancelar') as HTMLElement;
     this.formulario.reset();
     this.subFinancReceber.clear();
+    this.searchTerm = '';
+    this.filteredPatients = [];
     this.formulario
       .get('dataEmissao')
       ?.setValue(this.datePipe.formatToHtmlDate(new Date()));

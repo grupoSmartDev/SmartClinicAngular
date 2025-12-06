@@ -20,13 +20,13 @@ import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
 import { ToastrService } from 'ngx-toastr';
 import { CentroDeCustoService } from '../../../_services/centro-de-custo.service';
 import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
-import { PacienteService } from '../../../_services/paciente.service';
 import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service';
 import { FinancPagarService } from '../../../_services/financ-pagar.service';
 import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
-import { Paciente } from '../../../_module/pacienteModule';
 import { formatDate } from '@angular/common';
 import { InputHelpers } from '../../../_shared/helpers/input-helpers';
+import { FornecedorService } from '../../../_services/fornecedor.service';
+import { Fornecedor } from '../../../_module/fornecedorModule';
 
 @Component({
   selector: 'app-modal-financ-pagar',
@@ -42,14 +42,13 @@ export class ModalFinancPagarComponent {
   isLoading = false;
   formulario!: FormGroup;
 
-  listaPacientes: Paciente[] = [];
+  listaFornecedores: Fornecedor[] = [];
   listaCentroDeCusto!: CentroDeCusto[];
   listaFormaPagamento!: FormaPagamento[];
   listaTipoPagamento!: TipoPagamento[];
 
   searchTerm: string = '';
-  filteredPatients: Paciente[] = [];
-  patients!: Paciente[];
+  filteredFornecedores: Fornecedor[] = [];
 
   myControl = new FormControl();
   options: string[] = ['Cliente 1', 'Cliente 2', 'Cliente 3'];
@@ -63,7 +62,7 @@ export class ModalFinancPagarComponent {
     private fb: FormBuilder,
     private centroCustoService: CentroDeCustoService,
     private formaPagamentoService: FormaPagamentoService,
-    private pacienteService: PacienteService,
+    private fornecedorService: FornecedorService,
     private tipoPagamentoService: TipoPagamentoService,
     private datePipe: DatePtBrPipe
   ) {
@@ -84,7 +83,6 @@ export class ModalFinancPagarComponent {
       descricao: ['', Validators.required],
       classificacao: [null],
       observacao: [''],
-      pacienteId: [null],
       fornecedorId: [null],
       centroCustoId: [null],
       bancoId: [null],
@@ -101,7 +99,7 @@ export class ModalFinancPagarComponent {
     this.buscarCC();
     this.buscarFP();
     this.buscarTP();
-    this.buscarPaciente();
+    this.buscarFornecedor();
   }
 
   filterOptions(): void {
@@ -112,7 +110,7 @@ export class ModalFinancPagarComponent {
   }
 
   selectOption(option: string): void {
-    this.formulario.patchValue({ paciente: option });
+    this.formulario.patchValue({ fornecedor: option });
     this.myControl.setValue(option);
     this.filteredOptions = [];
   }
@@ -123,6 +121,20 @@ export class ModalFinancPagarComponent {
     }
 
     this.formulario.patchValue(this.data);
+
+    const fornecedorAtual =
+      financPagar?.fornecedor ||
+      this.listaFornecedores.find((f) => f.id === financPagar?.fornecedorId);
+
+    if (fornecedorAtual) {
+      this.searchTerm =
+        fornecedorAtual.nome ||
+        fornecedorAtual.razao ||
+        fornecedorAtual.fantasia ||
+        '';
+      this.formulario.patchValue({ fornecedorId: fornecedorAtual.id });
+    }
+
     let dataEmissao = this.formulario.get('dataEmissao')?.value;
 
     if (dataEmissao) {
@@ -163,14 +175,11 @@ export class ModalFinancPagarComponent {
   }
 
   fecharModal() {
-    // this.formulario.reset();
-    // this.formulario
-    //   .get('dataEmissao')
-    //   ?.setValue(this.datePipe.formatToHtmlDate(new Date()));
-
     let btnCancelar = document.getElementById('btnCancelar') as HTMLElement;
     this.formulario.reset();
     this.subFinancPagar.clear();
+    this.searchTerm = '';
+    this.filteredFornecedores = [];
     this.formulario
       .get('dataEmissao')
       ?.setValue(this.datePipe.formatToHtmlDate(new Date()));
@@ -225,10 +234,10 @@ export class ModalFinancPagarComponent {
           this.dadosAtualizado.emit();
           // btnCancelar.click();
           this.isLoading = false;
-          let inputPacientePesquisado = document.getElementById(
-            'paciente'
+          let inputFornecedorPesquisado = document.getElementById(
+            'fornecedor'
           ) as HTMLInputElement;
-          inputPacientePesquisado.value = '';
+          inputFornecedorPesquisado.value = '';
           this.fecharModal();
         },
         error: () => {
@@ -252,7 +261,7 @@ export class ModalFinancPagarComponent {
 
   gerarParcelas(): void {
     this.subFinancPagar.clear();
-    
+
     const valorTotal = this.formulario.get('valor')?.value || 0;
     const quantidadeParcelas = this.formulario.get('parcela')?.value || 1;
     const valorBase = Math.floor((valorTotal / quantidadeParcelas) * 100) / 100;
@@ -374,40 +383,43 @@ export class ModalFinancPagarComponent {
     });
   }
 
-  buscarPaciente(): void {
-    this.pacienteService.Listar().subscribe({
+  buscarFornecedor(): void {
+    this.fornecedorService.Listar().subscribe({
       next: (data) => {
         if (data.dados) {
-          this.listaPacientes = data.dados;
+          this.listaFornecedores = data.dados;
         }
       },
       error: (err) => {
-        console.error('Erro ao buscar pacientes:', err);
+        console.error('Erro ao buscar fornecedores:', err);
         this.errorMessage =
-          'Erro ao carregar os pacientes. Tente novamente mais tarde.';
+          'Erro ao carregar os fornecedores. Tente novamente mais tarde.';
       },
     });
   }
 
-  selectPatient(patient: Paciente): void {
+  selectFornecedor(fornecedor: Fornecedor): void {
     this.formulario.patchValue({
-      pacienteId: patient.id,
-      'financReceber.pacienteId': patient.id,
+      fornecedorId: fornecedor.id,
     });
-    this.searchTerm = patient.nome || '';
-    this.filteredPatients = [];
+    this.searchTerm = fornecedor.nome || fornecedor.razao || fornecedor.fantasia || '';
+    this.filteredFornecedores = [];
   }
 
   onSearch(): void {
     if (this.searchTerm.length >= 3) {
-      this.filteredPatients = this.listaPacientes.filter(
-        (patient) =>
-          patient.nome?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          patient.cpf?.includes(this.searchTerm) ||
-          patient.celular?.includes(this.searchTerm)
+      const term = this.searchTerm.toLowerCase();
+      this.filteredFornecedores = this.listaFornecedores.filter(
+        (fornecedor) =>
+          fornecedor.nome?.toLowerCase().includes(term) ||
+          fornecedor.razao?.toLowerCase().includes(term) ||
+          fornecedor.fantasia?.toLowerCase().includes(term) ||
+          fornecedor.cpf?.includes(this.searchTerm) ||
+          fornecedor.cnpj?.includes(this.searchTerm) ||
+          fornecedor.celular?.includes(this.searchTerm)
       );
     } else {
-      this.filteredPatients = [];
+      this.filteredFornecedores = [];
     }
   }
 }
