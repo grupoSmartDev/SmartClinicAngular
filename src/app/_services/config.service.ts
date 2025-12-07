@@ -7,6 +7,8 @@ import { environment } from '../../environments/environment';
 import { AlterarDadosUsuario } from '../_module/alterarDadosUsuarioModule';
 import { Configuracoes } from '../_module/configuracoesModule';
 
+
+
 @Injectable({
   providedIn: 'root',
 })
@@ -17,7 +19,26 @@ export class ConfigService {
   baseConfigURL: string = environment.apiUrl + 'api/Configuracoes';
 
   alterarDadosUsuario(id: string | undefined, alterarDadosUsuario: AlterarDadosUsuario) {
-    return this.http.put(`${this.baseURL}/Editar/${id}`, alterarDadosUsuario);
+    const formData = new FormData();
+
+    // Adiciona os campos obrigatórios
+    formData.append('firstName', alterarDadosUsuario.firstName || '');
+    formData.append('lastName', alterarDadosUsuario.lastName || '');
+    formData.append('email', alterarDadosUsuario.email || '');
+
+    // Só adiciona campos de senha se estiverem preenchidos
+    if (alterarDadosUsuario.password) {
+      formData.append('password', alterarDadosUsuario.password);
+    }
+    if (alterarDadosUsuario.newPassword) {
+      formData.append('newPassword', alterarDadosUsuario.newPassword);
+    }
+    if (alterarDadosUsuario.confirmNewPassword) {
+      formData.append('confirmNewPassword', alterarDadosUsuario.confirmNewPassword);
+    }
+
+    // NÃO adiciona Content-Type header, o Angular faz automaticamente
+    return this.http.put(`${this.baseURL}/Editar/${id}`, formData);
   }
 
   obterDadosUsuario(id: string) {

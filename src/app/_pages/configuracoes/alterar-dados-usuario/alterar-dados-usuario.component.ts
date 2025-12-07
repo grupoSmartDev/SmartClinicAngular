@@ -8,6 +8,7 @@ import { finalize } from 'rxjs/operators';
 import { ConfigService } from '../../../_services/config.service';
 import { AuthService } from '../../../_services/auth.service';
 import { TabService } from '../../../_services/tabs.service';
+import { AlterarDadosUsuario } from '../../../_module/alterarDadosUsuarioModule';
 
 @Component({
   selector: 'app-alterar-senha',
@@ -21,6 +22,7 @@ export class AlterarDadosUsuarioComponent implements OnInit {
   mostrarSenhaAtual = false;
   mostrarNovaSenha = false;
   mostrarConfirmarSenha = false;
+  isLoading = false;
 
   @Output() DadosAtualizados = new EventEmitter<void>();
 
@@ -92,12 +94,20 @@ export class AlterarDadosUsuarioComponent implements OnInit {
     }
 
     const user = this.authService.currentUserValue;
+
+    // Debug para ver o que tem no user
+    console.log('User completo:', user);
+    console.log('User ID:', user?.id);
+
     if (!user?.id) {
-      this.toast.error('Usuário não identificado.');
+      this.toast.error('Usuário não identificado. Faça login novamente.');
       return;
     }
 
-    const payload = this.montarPayload(parseInt(user.id));
+    const payload = this.montarPayload(user.id);
+
+    // Debug do payload
+    console.log('Payload montado:', payload);
 
     this.spinner.show();
 
@@ -134,21 +144,20 @@ export class AlterarDadosUsuarioComponent implements OnInit {
     return !!(newPassword || confirmNewPassword);
   }
 
-  private montarPayload(userId: number): any {
+  private montarPayload(userId: any): AlterarDadosUsuario {
     const formValues = this.formDadosUsuario.value;
 
-    const payload: any = {
-      id: userId,
-      firstName: formValues.firstName?.trim(),
-      lastName: formValues.lastName?.trim(),
-      email: formValues.email?.trim(),
+    const payload: AlterarDadosUsuario = {
+      firstName: formValues.firstName?.trim() || '',
+      lastName: formValues.lastName?.trim() || '',
+      email: formValues.email?.trim() || '',
     };
 
     // Só inclui campos de senha se estiver alterando
     if (this.isAlterandoSenha()) {
-      payload.password = formValues.password;
-      payload.newPassword = formValues.newPassword;
-      payload.confirmNewPassword = formValues.confirmNewPassword;
+      payload.password = formValues.password || '';
+      payload.newPassword = formValues.newPassword || '';
+      payload.confirmNewPassword = formValues.confirmNewPassword || '';
     }
 
     return payload;
