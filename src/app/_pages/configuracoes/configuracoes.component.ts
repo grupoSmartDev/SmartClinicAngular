@@ -113,7 +113,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.spinner.show();
+
     this.buildForm();
     this.carregar();
     this.isAdmin = this.authService.hasRole('Admin');
@@ -121,7 +121,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
       this.buildUsuarioForm();
       this.carregarUsuarios();
     }
-    this.spinner.hide();
+
   }
 
   ngOnDestroy(): void {
@@ -161,6 +161,8 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
   }
 
   private carregar(): void {
+
+    this.spinner.show();
     this.carregando = true;
     this.empresaService
       .BuscarPorId(this.empresaId)
@@ -174,6 +176,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
           console.error('Erro ao carregar empresa', err);
           this.toastr.error('Não foi possível carregar os dados.', 'Erro');
         },
+        complete: () => this.spinner.hide(),
       });
   }
 

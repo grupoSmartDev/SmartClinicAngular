@@ -4,6 +4,7 @@ import { ConfigService } from '../../../_services/config.service';
 import { AuthService } from '../../../_services/auth.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { TabService } from '../../../_services/tabs.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-alterar-senha',
@@ -18,7 +19,8 @@ export class AlterarDadosUsuarioComponent {
     private alterarSenhaService: ConfigService,
     private authService: AuthService,
     private tabService: TabService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private spinner: NgxSpinnerService
   ) {
     this.formDadosUsuario = this.fb.group({
       firstName: [null, Validators.required],
@@ -28,10 +30,10 @@ export class AlterarDadosUsuarioComponent {
       newPassword: [null],
       confirmNewPassword: [null],
     });
-    
+
   }
   @Output() DadosAtualizados = new EventEmitter<void>();
-  
+
   alterarDadosUsuario(): void {
     const form = this.formDadosUsuario.value;
 
@@ -39,9 +41,9 @@ export class AlterarDadosUsuarioComponent {
       this.toast.error('Verifique os dados preenchidos.');
       return;
     }
-    
+
     const id = this.authService.currentUserValue?.id;
-    
+
     const payload = {
       id: this.authService.currentUserValue?.id,
       firstName: form.firstName,
@@ -51,7 +53,7 @@ export class AlterarDadosUsuarioComponent {
       newPassword: form.newPassword,
       confirmNewPassword: form.confirmNewPassword
     };
-    
+
     this.alterarSenhaService.alterarDadosUsuario(id, payload).subscribe({
       next: (res: any) => {
         if (res.success === false) {
@@ -70,6 +72,7 @@ export class AlterarDadosUsuarioComponent {
   ngOnInit(): void {
     const id = this.authService.currentUserValue?.id;
     if (!id) return;
+    this.spinner.show();
 
     this.alterarSenhaService.obterDadosUsuario(id).subscribe({
       next: (res: any) => {
@@ -80,6 +83,7 @@ export class AlterarDadosUsuarioComponent {
         });
       },
       error: () => this.toast.error('Erro ao carregar dados do usuário.'),
+      complete: () => this.spinner.hide(),
     });
   }
 }
