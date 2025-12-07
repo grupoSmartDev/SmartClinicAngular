@@ -1,47 +1,201 @@
-<form [formGroup]="formDadosUsuario" (ngSubmit)="alterarDadosUsuario()">
-  <div class="row">
-    <div class="col-md-4 mb-3">
-      <label>Nome</label>
-      <input type="text" class="form-control" formControlName="firstName" />
-    </div>
-    <div class="col-md-4 mb-3">
-      <label>Sobrenome</label>
-      <input type="text" class="form-control" formControlName="lastName" />
-    </div>
-    <div class="col-md-4 mb-3">
-      <label>Email</label>
-      <input type="email" class="form-control" formControlName="email" />
-    </div>
+<div class="container-fluid">
+  <div class="page-header">
+    <h4>Meus Dados</h4>
   </div>
 
-  <hr />
-  <h5>Alterar Senha</h5>
+  <form [formGroup]="formDadosUsuario" (ngSubmit)="alterarDadosUsuario()">
+    <!-- Informações Pessoais -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <i class="fas fa-user me-2"></i>
+        <span>Informações Pessoais</span>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label"
+              >Nome <span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              class="form-control"
+              formControlName="firstName"
+              [class.is-invalid]="
+                formDadosUsuario.get('firstName')?.invalid &&
+                formDadosUsuario.get('firstName')?.touched
+              "
+            />
+            <div class="invalid-feedback">Nome é obrigatório</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label"
+              >Sobrenome <span class="text-danger">*</span></label
+            >
+            <input
+              type="text"
+              class="form-control"
+              formControlName="lastName"
+              [class.is-invalid]="
+                formDadosUsuario.get('lastName')?.invalid &&
+                formDadosUsuario.get('lastName')?.touched
+              "
+            />
+            <div class="invalid-feedback">Sobrenome é obrigatório</div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label"
+              >Email <span class="text-danger">*</span></label
+            >
+            <input
+              type="email"
+              class="form-control"
+              formControlName="email"
+              [class.is-invalid]="
+                formDadosUsuario.get('email')?.invalid &&
+                formDadosUsuario.get('email')?.touched
+              "
+            />
+            <div class="invalid-feedback">Email válido é obrigatório</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <div class="row">
-    <div class="col-md-4 mb-3">
-      <label>Senha Atual</label>
-      <input type="password" class="form-control" formControlName="password" />
-    </div>
-    <div class="col-md-4 mb-3">
-      <label>Nova Senha</label>
-      <input
-        type="password"
-        class="form-control"
-        formControlName="newPassword"
-      />
-    </div>
-    <div class="col-md-4 mb-3">
-      <label>Confirmar Nova Senha</label>
-      <input
-        type="password"
-        class="form-control"
-        formControlName="confirmNewPassword"
-      />
-    </div>
-  </div>
+    <!-- Segurança -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <i class="fas fa-lock me-2"></i>
+        <span>Segurança</span>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info" role="alert">
+          <i class="fas fa-info-circle me-2"></i>
+          Preencha os campos abaixo apenas se desejar alterar sua senha
+        </div>
 
-  <button class="btn btn-success">Salvar Alterações</button>
-</form>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Senha Atual</label>
+            <div class="input-group">
+              <input
+                [type]="mostrarSenhaAtual ? 'text' : 'password'"
+                class="form-control"
+                formControlName="password"
+                [class.is-invalid]="
+                  formDadosUsuario.get('password')?.invalid &&
+                  formDadosUsuario.get('password')?.touched
+                "
+              />
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                (click)="mostrarSenhaAtual = !mostrarSenhaAtual"
+              >
+                <i
+                  [class]="
+                    mostrarSenhaAtual ? 'bi bi-eye-slash' : 'bi bi-eye-eye'
+                  "
+                ></i>
+              </button>
+            </div>
+            <div
+              class="invalid-feedback d-block"
+              *ngIf="
+                formDadosUsuario.get('password')?.invalid &&
+                formDadosUsuario.get('password')?.touched
+              "
+            >
+              Senha atual é obrigatória para alteração
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Nova Senha</label>
+            <div class="input-group">
+              <input
+                [type]="mostrarNovaSenha ? 'text' : 'password'"
+                class="form-control"
+                formControlName="newPassword"
+                [class.is-invalid]="
+                  formDadosUsuario.get('newPassword')?.invalid &&
+                  formDadosUsuario.get('newPassword')?.touched
+                "
+              />
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                (click)="mostrarNovaSenha = !mostrarNovaSenha"
+              >
+                <i
+                  [class]="mostrarNovaSenha ? 'bi bi-eye-slash' : 'bi bi-eye'"
+                ></i>
+              </button>
+            </div>
+            <small class="text-muted">Mínimo 6 caracteres</small>
+            <div
+              class="invalid-feedback d-block"
+              *ngIf="
+                formDadosUsuario.get('newPassword')?.invalid &&
+                formDadosUsuario.get('newPassword')?.touched
+              "
+            >
+              Nova senha deve ter no mínimo 6 caracteres
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <label class="form-label">Confirmar Nova Senha</label>
+            <div class="input-group">
+              <input
+                [type]="mostrarConfirmarSenha ? 'text' : 'password'"
+                class="form-control"
+                formControlName="confirmNewPassword"
+                [class.is-invalid]="
+                  formDadosUsuario.get('confirmNewPassword')?.invalid &&
+                  formDadosUsuario.get('confirmNewPassword')?.touched
+                "
+              />
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                (click)="mostrarConfirmarSenha = !mostrarConfirmarSenha"
+              >
+                <i
+                  [class]="
+                    mostrarConfirmarSenha ? 'bi bi-eye-slash' : 'bi bi-eye'
+                  "
+                ></i>
+              </button>
+            </div>
+            <div
+              class="invalid-feedback d-block"
+              *ngIf="
+                formDadosUsuario.get('confirmNewPassword')?.invalid &&
+                formDadosUsuario.get('confirmNewPassword')?.touched
+              "
+            >
+              As senhas não conferem
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        <i class="bi bi-eye me-2"></i>Cancelar
+      </button>
+      <button
+        type="submit"
+        class="btn btn-success"
+        [disabled]="formDadosUsuario.invalid"
+      >
+        <i class="fas fa-check me-2"></i>Salvar Alterações
+      </button>
+    </div>
+  </form>
+</div>
 
 <ngx-spinner
   type="square-jelly-box"
