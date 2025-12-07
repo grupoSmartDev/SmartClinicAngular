@@ -1,441 +1,518 @@
-﻿<form [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
-  <ul class="nav nav-tabs" id="empresaTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link active"
-        id="dados-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#dados"
-        type="button"
-        role="tab"
-      >
-        Dados da Clínica
-      </button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link"
-        id="documentacao-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#documentacao"
-        type="button"
-        role="tab"
-      >
-        Documentação
-      </button>
-    </li>
-    <li class="nav-item" role="presentation" *ngIf="isAdmin">
-      <button
-        class="nav-link"
-        id="usuarios-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#usuarios"
-        type="button"
-        role="tab"
-      >
-        Usuarios
-      </button>
-    </li>
-  </ul>
+﻿<div class="container-fluid">
+  <div class="page-header mb-4">
+    <h4>Configurações da Clínica</h4>
+  </div>
 
-  <div class="tab-content pt-3" id="empresaTabsContent">
-    <div class="tab-pane fade show active" id="dados" role="tabpanel">
-      <div class="row g-3">
-        <div class="col-md-4">
-          <label class="form-label">Nome da Clínica</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            formControlName="nome"
-            required
-          />
-          <small
-            class="text-danger"
-            *ngIf="
-              formulario.get('nome')?.touched &&
-              formulario.get('nome')?.hasError('required')
-            "
-          >
-            Nome é obrigatório.
-          </small>
-          <small
-            class="text-danger"
-            *ngIf="
-              formulario.get('cnpjEmpresaMatriz')?.touched &&
-              formulario.get('cnpjEmpresaMatriz')?.hasError('cnpjInvalido')
-            "
-          >
-            CNPJ inválido.
-          </small>
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Razão Social</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            formControlName="sobrenome"
-          />
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">CNPJ</label>
-          <input
-            type="text"
-            [mask]="'00.000.000/0000-00'"
-            class="form-control form-control-sm"
-            formControlName="cnpjEmpresaMatriz"
-          />
-        </div>
+  <form [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-3" id="empresaTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="dados-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#dados"
+          type="button"
+          role="tab"
+        >
+          <i class="bi bi-building me-2"></i>Dados da Clínica
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="documentacao-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#documentacao"
+          type="button"
+          role="tab"
+        >
+          <i class="bi bi-file-medical me-2"></i>Documentação
+        </button>
+      </li>
+      <li class="nav-item" role="presentation" *ngIf="isAdmin">
+        <button
+          class="nav-link"
+          id="usuarios-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#usuarios"
+          type="button"
+          role="tab"
+        >
+          <i class="bi bi-people me-2"></i>Usuários
+        </button>
+      </li>
+    </ul>
 
-        <div class="col-md-3">
-          <label class="form-label">Inscrição Estadual</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            maxlength="14"
-            formControlName="inscricaoEstadual"
-          />
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Inscrição Municipal</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            formControlName="inscricaoMunicipal"
-          />
-        </div>
-        <div class="col-md-6">
-          <label class="form-label">Endereço</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            formControlName="endereco"
-          />
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">CEP</label>
-          <div class="input-group input-group-sm">
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              formControlName="cep"
-              id="cep"
-              mask="00000-000"
-            />
-            <button
-              class="btn btn-outline-secondary"
-              type="button"
-              (click)="buscarCEP()"
-            >
-              <i class="bi bi-search"></i>
-            </button>
+    <!-- Conteúdo das Tabs -->
+    <div class="tab-content" id="empresaTabsContent">
+      <!-- Tab: Dados da Clínica -->
+      <div class="tab-pane fade show active" id="dados" role="tabpanel">
+        <!-- Informações Básicas -->
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="bi bi-info-circle me-2"></i>
+            <span>Informações Básicas</span>
           </div>
-          <!-- <input
-            type="text"
-            class="form-control form-control-sm"
-            [mask]="'00000-00'"
-            formControlName="cep"
-          /> -->
-          <small
-            class="text-danger"
-            *ngIf="
-              formulario.get('cep')?.touched &&
-              formulario.get('cep')?.hasError('cepInvalido')
-            "
-          >
-            CEP inválido. Use o formato 00000-000.
-          </small>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Cidade</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            formControlName="cidade"
-          />
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Estado</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            maxlength="2"
-            formControlName="estado"
-          />
-        </div>
-
-        <div class="col-md-3">
-          <label class="form-label">Telefone Fixo</label>
-          <input
-            type="text"
-            mask="(00) 0000-0000"
-            class="form-control form-control-sm"
-            formControlName="telefoneFixo"
-          />
-        </div>
-
-        <div class="col-md-3">
-          <label class="form-label">Celular</label>
-          <input
-            type="text"
-            mask="(00) 0 0000-0000"
-            class="form-control form-control-sm"
-            formControlName="celular"
-          />
-          <div class="col-md-12 d-flex align-items-center">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                formControlName="celularComWhatsApp"
-                id="chkCelularWhats"
-              />
-              <label class="form-check-label" for="chkCelularWhats"
-                >Esse número tem WhatsApp?</label
-              >
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <label class="form-label">E-mail</label>
-          <input
-            type="email"
-            class="form-control form-control-sm"
-            formControlName="email"
-          />
-          <small
-            class="text-danger"
-            *ngIf="
-              formulario.get('email')?.touched &&
-              formulario.get('email')?.hasError('email')
-            "
-          >
-            E-mail inválido.
-          </small>
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Site/Redes Sociais</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            formControlName="siteOuRedeSocial"
-          />
-        </div>
-      </div>
-    </div>
-    <div
-      class="tab-pane fade"
-      id="documentacao"
-      role="tabpanel"
-      aria-labelledby="documentacao-tab"
-    >
-      <div class="row g-3">
-        <div class="col-12">
-          <h6 class="mb-2">Impressãoo de Prontuário (padrão)</h6>
-          <p class="text-muted mb-2">
-            Escolha o modelo padrão que será usado ao imprimir o prontuário.
-            Você pode alterar quando quiser.
-          </p>
-        </div>
-
-        <div class="col-12">
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              id="modelo-completo"
-              value="completo"
-              formControlName="modeloProntuario"
-              name="modeloProntuario"
-            />
-            <label class="form-check-label" for="modelo-completo">
-              Completo
-            </label>
-            <div class="small text-muted">
-              Inclui dados do paciente, anamnese, evoluções, medicamentos,
-              alergias e anexos.
-            </div>
-          </div>
-
-          <div class="form-check mt-2">
-            <input
-              class="form-check-input"
-              type="radio"
-              id="modelo-resumido"
-              value="resumido"
-              formControlName="modeloProntuario"
-              name="modeloProntuario"
-            />
-            <label class="form-check-label" for="modelo-resumido">
-              Resumido
-            </label>
-            <div class="small text-muted">
-              Foco em dados essenciais: identificação, queixa principal e
-              condutas.
-            </div>
-          </div>
-
-          <div class="form-check mt-2">
-            <input
-              class="form-check-input"
-              type="radio"
-              id="modelo-anamnese"
-              value="anamnese"
-              formControlName="modeloProntuario"
-              name="modeloProntuario"
-            />
-            <label class="form-check-label" for="modelo-anamnese">
-              Anamnese
-            </label>
-            <div class="small text-muted">
-              Detalhamento da anamnese e histórico clínico, com evoluções em
-              resumo.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="tab-pane fade"
-      id="usuarios"
-      role="tabpanel"
-      aria-labelledby="usuarios-tab"
-      *ngIf="isAdmin"
-    >
-      <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-        <div class="flex-grow-1">
-          <div class="input-group input-group-sm">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Buscar por nome ou email"
-              [(ngModel)]="usuariosFiltro"
-              [ngModelOptions]="{ standalone: true }"
-              (keyup.enter)="aplicarFiltroUsuarios()"
-            />
-            <button
-              class="btn btn-outline-secondary"
-              type="button"
-              (click)="aplicarFiltroUsuarios()"
-            >
-              <i class="bi bi-search"></i>
-            </button>
-            <button
-              class="btn btn-outline-secondary"
-              type="button"
-              (click)="limparFiltroUsuarios()"
-              [disabled]="!usuariosFiltro"
-            >
-              Limpar
-            </button>
-          </div>
-        </div>
-        <div>
-          <span class="badge bg-light text-dark border">
-            {{ usuariosTotal || 0 }} usuarios
-          </span>
-        </div>
-      </div>
-
-      <div *ngIf="usuariosCarregando" class="alert alert-info py-2">
-        Carregando usuarios...
-      </div>
-      <div *ngIf="usuariosErro" class="alert alert-danger py-2">
-        {{ usuariosErro }}
-      </div>
-
-      <div
-        class="table-responsive"
-        *ngIf="!usuariosCarregando && usuarios.length"
-      >
-        <table class="table table-striped table-centered mb-2 align-middle">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>Permissao</th>
-              <th class="text-end"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of usuarios">
-              <td>{{ user.firstName }} {{ user.lastName }}</td>
-              <td>{{ user.email }}</td>
-              <td>
-                <span class="badge bg-light text-dark border">
-                  {{ user.role || "User" }}
-                </span>
-              </td>
-              <td class="text-end">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modal-admin-usuario"
-                  (click)="abrirUsuario(user)"
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label"
+                  >Nome da Clínica <span class="text-danger">*</span></label
                 >
-                  <i class="bi bi-pencil"></i> Editar
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nome"
+                  [class.is-invalid]="
+                    formulario.get('nome')?.touched &&
+                    formulario.get('nome')?.invalid
+                  "
+                />
+                <div class="invalid-feedback">Nome é obrigatório</div>
+              </div>
 
-      <div
-        *ngIf="!usuariosCarregando && !usuarios.length && !usuariosErro"
-        class="alert alert-warning py-2"
-      >
-        Nenhum usuario encontrado.
-      </div>
+              <div class="col-md-4">
+                <label class="form-label">Razão Social</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="sobrenome"
+                />
+              </div>
 
-      <div
-        class="d-flex justify-content-between align-items-center mt-2"
-        *ngIf="usuariosTotal > usuariosPageSize"
-      >
-        <div class="small text-muted">
-          Pagina {{ usuariosPage }} de {{ ultimaPaginaUsuarios }}
+              <div class="col-md-4">
+                <label class="form-label">CNPJ</label>
+                <input
+                  type="text"
+                  [mask]="'00.000.000/0000-00'"
+                  class="form-control"
+                  formControlName="cnpjEmpresaMatriz"
+                  [class.is-invalid]="
+                    formulario.get('cnpjEmpresaMatriz')?.touched &&
+                    formulario
+                      .get('cnpjEmpresaMatriz')
+                      ?.hasError('cnpjInvalido')
+                  "
+                />
+                <div class="invalid-feedback">CNPJ inválido</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Inscrição Estadual</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  maxlength="14"
+                  formControlName="inscricaoEstadual"
+                />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Inscrição Municipal</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="inscricaoMunicipal"
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="btn-group btn-group-sm">
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            (click)="mudarPagina(-1)"
-            [disabled]="usuariosPage === 1"
+
+        <!-- Endereço -->
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="bi bi-geo-alt me-2"></i>
+            <span>Endereço</span>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label">CEP</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="cep"
+                    mask="00000-000"
+                    [class.is-invalid]="
+                      formulario.get('cep')?.touched &&
+                      formulario.get('cep')?.hasError('cepInvalido')
+                    "
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="buscarCEP()"
+                  >
+                    <i class="bi bi-search"></i>
+                  </button>
+                </div>
+                <div
+                  class="invalid-feedback d-block"
+                  *ngIf="
+                    formulario.get('cep')?.touched &&
+                    formulario.get('cep')?.hasError('cepInvalido')
+                  "
+                >
+                  CEP inválido
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Endereço</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="endereco"
+                />
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">Cidade</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="cidade"
+                />
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">Estado</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  maxlength="2"
+                  formControlName="estado"
+                  placeholder="UF"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contato -->
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="bi bi-telephone me-2"></i>
+            <span>Contato</span>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label">Telefone Fixo</label>
+                <input
+                  type="text"
+                  mask="(00) 0000-0000"
+                  class="form-control"
+                  formControlName="telefoneFixo"
+                />
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">Celular</label>
+                <input
+                  type="text"
+                  mask="(00) 0 0000-0000"
+                  class="form-control"
+                  formControlName="celular"
+                />
+                <div class="form-check mt-2">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    formControlName="celularComWhatsApp"
+                    id="chkCelularWhats"
+                  />
+                  <label class="form-check-label" for="chkCelularWhats">
+                    <i class="bi bi-whatsapp text-success"></i> Esse número tem
+                    WhatsApp
+                  </label>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">E-mail</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  formControlName="email"
+                  [class.is-invalid]="
+                    formulario.get('email')?.touched &&
+                    formulario.get('email')?.hasError('email')
+                  "
+                />
+                <div class="invalid-feedback">E-mail inválido</div>
+              </div>
+
+              <div class="col-md-3">
+                <label class="form-label">Site/Redes Sociais</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="siteOuRedeSocial"
+                  placeholder="https://"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Documentação -->
+      <div class="tab-pane fade" id="documentacao" role="tabpanel">
+        <div class="card">
+          <div class="card-header">
+            <i class="bi bi-printer me-2"></i>
+            <span>Impressão de Prontuário</span>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-info mb-3">
+              <i class="bi bi-info-circle me-2"></i>
+              Escolha o modelo padrão que será usado ao imprimir o prontuário.
+              Você pode alterar quando quiser.
+            </div>
+
+            <div class="row g-3">
+              <div class="col-12">
+                <div class="form-check p-3 border rounded mb-2">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="modelo-completo"
+                    value="completo"
+                    formControlName="modeloProntuario"
+                  />
+                  <label class="form-check-label w-100" for="modelo-completo">
+                    <strong>Completo</strong>
+                    <div class="small text-muted mt-1">
+                      Inclui dados do paciente, anamnese, evoluções,
+                      medicamentos, alergias e anexos.
+                    </div>
+                  </label>
+                </div>
+
+                <div class="form-check p-3 border rounded mb-2">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="modelo-resumido"
+                    value="resumido"
+                    formControlName="modeloProntuario"
+                  />
+                  <label class="form-check-label w-100" for="modelo-resumido">
+                    <strong>Resumido</strong>
+                    <div class="small text-muted mt-1">
+                      Foco em dados essenciais: identificação, queixa principal
+                      e condutas.
+                    </div>
+                  </label>
+                </div>
+
+                <div class="form-check p-3 border rounded">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="modelo-anamnese"
+                    value="anamnese"
+                    formControlName="modeloProntuario"
+                  />
+                  <label class="form-check-label w-100" for="modelo-anamnese">
+                    <strong>Anamnese</strong>
+                    <div class="small text-muted mt-1">
+                      Detalhamento da anamnese e histórico clínico, com
+                      evoluções em resumo.
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Usuários -->
+      <div class="tab-pane fade" id="usuarios" role="tabpanel" *ngIf="isAdmin">
+        <div class="card">
+          <div
+            class="card-header d-flex justify-content-between align-items-center"
           >
-            <i class="bi bi-chevron-left"></i>
-          </button>
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            (click)="mudarPagina(1)"
-            [disabled]="usuariosPage >= ultimaPaginaUsuarios"
-          >
-            <i class="bi bi-chevron-right"></i>
-          </button>
+            <div>
+              <i class="bi bi-people me-2"></i>
+              <span>Gerenciar Usuários</span>
+            </div>
+            <span class="badge bg-primary">
+              {{ usuariosTotal || 0 }} usuário(s)
+            </span>
+          </div>
+          <div class="card-body">
+            <!-- Filtro de Busca -->
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <div class="input-group">
+                  <span class="input-group-text"
+                    ><i class="bi bi-search"></i
+                  ></span>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Buscar por nome ou email"
+                    [(ngModel)]="usuariosFiltro"
+                    [ngModelOptions]="{ standalone: true }"
+                    (keyup.enter)="aplicarFiltroUsuarios()"
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="aplicarFiltroUsuarios()"
+                  >
+                    Buscar
+                  </button>
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    (click)="limparFiltroUsuarios()"
+                    [disabled]="!usuariosFiltro"
+                  >
+                    Limpar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Loading State -->
+            <div *ngIf="usuariosCarregando" class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+              </div>
+              <p class="mt-2 text-muted">Carregando usuários...</p>
+            </div>
+
+            <!-- Error State -->
+            <div *ngIf="usuariosErro" class="alert alert-danger">
+              <i class="bi bi-exclamation-triangle me-2"></i>{{ usuariosErro }}
+            </div>
+
+            <!-- Tabela de Usuários -->
+            <div
+              class="table-responsive"
+              *ngIf="!usuariosCarregando && usuarios.length"
+            >
+              <table class="table table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Permissão</th>
+                    <th class="text-end">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of usuarios">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-circle me-2">
+                          {{ user.firstName?.charAt(0)
+                          }}{{ user.lastName?.charAt(0) }}
+                        </div>
+                        <strong
+                          >{{ user.firstName }} {{ user.lastName }}</strong
+                        >
+                      </div>
+                    </td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                      <span
+                        class="badge"
+                        [ngClass]="{
+                          'bg-danger': user.role === 'Admin',
+                          'bg-warning': user.role === 'Support',
+                          'bg-secondary': user.role === 'User' || !user.role
+                        }"
+                      >
+                        {{ user.role || "User" }}
+                      </span>
+                    </td>
+                    <td class="text-end">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal-admin-usuario"
+                        (click)="abrirUsuario(user)"
+                      >
+                        <i class="bi bi-pencil me-1"></i>Editar
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State -->
+            <div
+              *ngIf="!usuariosCarregando && !usuarios.length && !usuariosErro"
+              class="text-center py-5"
+            >
+              <i
+                class="bi bi-people fa-3x text-muted mb-3"
+                style="font-size: 3rem"
+              ></i>
+              <p class="text-muted">Nenhum usuário encontrado</p>
+            </div>
+
+            <!-- Paginação -->
+            <div
+              class="d-flex justify-content-between align-items-center mt-3"
+              *ngIf="usuariosTotal > usuariosPageSize"
+            >
+              <div class="text-muted">
+                Página {{ usuariosPage }} de {{ ultimaPaginaUsuarios }}
+              </div>
+              <div class="btn-group">
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="mudarPagina(-1)"
+                  [disabled]="usuariosPage === 1"
+                >
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  (click)="mudarPagina(1)"
+                  [disabled]="usuariosPage >= ultimaPaginaUsuarios"
+                >
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="d-flex gap-2 mt-3">
-    <button
-      class="btn btn me-1 btn-success"
-      type="submit"
-      [disabled]="formulario.invalid || salvando"
-    >
-      <span
-        class="spinner-border spinner-border-sm me-1"
-        *ngIf="salvando"
-        role="status"
-        aria-hidden="true"
-      ></span>
-      <span *ngIf="!salvando" class="bi bi-check"></span>
-      <span>{{ salvando ? "Salvando..." : "Salvar" }}</span>
-    </button>
-  </div>
-</form>
+    <!-- Botões de Ação -->
+    <div class="d-flex justify-content-end gap-2 mt-4">
+      <button
+        class="btn btn-success"
+        type="submit"
+        [disabled]="formulario.invalid || salvando"
+      >
+        <span
+          class="spinner-border spinner-border-sm me-2"
+          *ngIf="salvando"
+        ></span>
+        <i class="bi bi-check-lg me-2" *ngIf="!salvando"></i>
+        {{ salvando ? "Salvando..." : "Salvar Alterações" }}
+      </button>
+    </div>
+  </form>
+</div>
 
+<!-- Modal Editar Usuário -->
 <div
   class="modal fade"
   id="modal-admin-usuario"
@@ -446,7 +523,9 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalAdminUsuarioLabel">Editar usuario</h5>
+        <h5 class="modal-title" id="modalAdminUsuarioLabel">
+          <i class="bi bi-person-gear me-2"></i>Editar Usuário
+        </h5>
         <button
           type="button"
           class="btn-close"
@@ -458,60 +537,90 @@
         <form [formGroup]="formUsuario">
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label">Nome</label>
+              <label class="form-label"
+                >Nome <span class="text-danger">*</span></label
+              >
               <input
                 type="text"
-                class="form-control form-control-sm"
+                class="form-control"
                 formControlName="firstName"
+                [class.is-invalid]="
+                  formUsuario.get('firstName')?.touched &&
+                  formUsuario.get('firstName')?.invalid
+                "
               />
+              <div class="invalid-feedback">Nome é obrigatório</div>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Sobrenome</label>
+              <label class="form-label"
+                >Sobrenome <span class="text-danger">*</span></label
+              >
               <input
                 type="text"
-                class="form-control form-control-sm"
+                class="form-control"
                 formControlName="lastName"
+                [class.is-invalid]="
+                  formUsuario.get('lastName')?.touched &&
+                  formUsuario.get('lastName')?.invalid
+                "
               />
+              <div class="invalid-feedback">Sobrenome é obrigatório</div>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Email</label>
+              <label class="form-label"
+                >Email <span class="text-danger">*</span></label
+              >
               <input
                 type="email"
-                class="form-control form-control-sm"
+                class="form-control"
                 formControlName="email"
+                [class.is-invalid]="
+                  formUsuario.get('email')?.touched &&
+                  formUsuario.get('email')?.invalid
+                "
               />
+              <div class="invalid-feedback">Email válido é obrigatório</div>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Permissao</label>
-              <select class="form-select form-select-sm" formControlName="role">
-                <option value="User">User</option>
-                <option value="Support">Support</option>
-                <option value="Admin">Admin</option>
+              <label class="form-label"
+                >Permissão <span class="text-danger">*</span></label
+              >
+              <select class="form-select" formControlName="role">
+                <option value="User">User - Acesso Básico</option>
+                <option value="Support">Support - Suporte</option>
+                <option value="Admin">Admin - Administrador</option>
               </select>
             </div>
+          </div>
+
+          <div class="alert alert-info mt-3 mb-0">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Atenção:</strong> Alterações nas permissões entram em vigor
+            no próximo login do usuário.
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button
           type="button"
-          class="btn btn-outline-secondary"
+          class="btn btn-secondary"
           data-bs-dismiss="modal"
           id="btn-close-usuario-modal"
         >
-          Cancelar
+          <i class="bi bi-x-lg me-2"></i>Cancelar
         </button>
         <button
           type="button"
           class="btn btn-success"
           (click)="salvarUsuarioEdicao()"
-          [disabled]="salvandoUsuario"
+          [disabled]="salvandoUsuario || formUsuario?.invalid"
         >
           <span
-            class="spinner-border spinner-border-sm me-1"
+            class="spinner-border spinner-border-sm me-2"
             *ngIf="salvandoUsuario"
           ></span>
-          <span *ngIf="!salvandoUsuario">Salvar</span>
+          <i class="bi bi-check-lg me-2" *ngIf="!salvandoUsuario"></i>
+          {{ salvandoUsuario ? "Salvando..." : "Salvar" }}
         </button>
       </div>
     </div>
