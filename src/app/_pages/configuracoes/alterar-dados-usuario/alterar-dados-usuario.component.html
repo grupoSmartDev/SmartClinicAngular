@@ -24,13 +24,30 @@
     </div>
     <div class="col-md-4 mb-3">
       <label>Nova Senha</label>
-      <input type="password" class="form-control" formControlName="newPassword" />
+      <input
+        type="password"
+        class="form-control"
+        formControlName="newPassword"
+      />
     </div>
     <div class="col-md-4 mb-3">
       <label>Confirmar Nova Senha</label>
-      <input type="password" class="form-control" formControlName="confirmNewPassword" />
+      <input
+        type="password"
+        class="form-control"
+        formControlName="confirmNewPassword"
+      />
     </div>
   </div>
 
   <button class="btn btn-success">Salvar Alterações</button>
 </form>
+
+<ngx-spinner
+  type="square-jelly-box"
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="medium"
+  color="#fff"
+>
+  <p style="color: white">Carregando...</p>
+</ngx-spinner>

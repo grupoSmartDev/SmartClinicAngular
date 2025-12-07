@@ -10,6 +10,7 @@ import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { SubFinancPagar } from '../../../_module/subFinancPagarModule';
 import { Paciente } from '../../../_module/pacienteModule';
 import { TabService } from '../../../_services/tabs.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 interface CacheData {
   cacheList: FinancPagar[];
@@ -58,7 +59,8 @@ export class ListarFinancPagarComponent {
     private financPagarService: FinancPagarService,
     private toast: ToastrService,
     private ccService: CentroDeCustoService,
-    private tabService: TabService
+    private tabService: TabService,
+    private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit(): void {
@@ -106,6 +108,8 @@ export class ListarFinancPagarComponent {
     const cacheKey = this.getCacheKey();
     const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
 
+    this.spinner.show();
+
     if (cachedData && this.isCacheValid(cachedData.timestamp)) {
       this.lista = cachedData.cacheList;
       this.totalItems = cachedData.totalItems;
@@ -141,6 +145,9 @@ export class ListarFinancPagarComponent {
             console.error('Erro ao buscar contas a pagar:', err);
             this.errorMessage =
               'Erro ao carregar as contas a pagar. Tente novamente mais tarde.';
+          },
+          complete: () => {
+            this.spinner.hide();
           },
         });
     }

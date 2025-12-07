@@ -10,6 +10,7 @@ import * as bootstrap from 'bootstrap';
 import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 import { BaixaFinancReceberSubComponent } from '../../../_components/baixa-financ-receber-sub/baixa-financ-receber-sub.component';
 import { TabService } from '../../../_services/tabs.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 interface CacheData {
   cacheList: FinancReceber[];
@@ -59,7 +60,8 @@ export class ListarReceberSinteticoComponent {
     private financReceberService: FinancReceberService,
     private toast: ToastrService,
     private ccService: CentroDeCustoService,
-    private tabService: TabService
+    private tabService: TabService,
+    private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit(): void {
@@ -128,6 +130,8 @@ export class ListarReceberSinteticoComponent {
     const cacheKey = this.getCacheKey();
     const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
 
+    this.spinner.show();
+
     if (cachedData && this.isCacheValid(cachedData.timestamp)) {
       // Se temos dados em cache válidos, use-os
       this.lista = cachedData.cacheList;
@@ -164,6 +168,9 @@ export class ListarReceberSinteticoComponent {
             console.error('Erro ao buscar exercicio:', err);
             this.errorMessage =
               'Erro ao carregar as exercicios. Tente novamente mais tarde.';
+          },
+          complete: () => {
+            this.spinner.hide();
           },
         });
     }

@@ -23,6 +23,7 @@ import {
   AdminUser,
   UserAdminService,
 } from '../../_services/user-admin.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 // Validators simples (nível júnior)
 function onlyDigits(value: string | null | undefined): string {
@@ -107,10 +108,12 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
     private cepService: BuscarCepService,
     private readonly authService: AuthService,
     private readonly userAdminService: UserAdminService,
-    private readonly cdr: ChangeDetectorRef
-  ) {}
+    private readonly cdr: ChangeDetectorRef,
+    private spinner: NgxSpinnerService,
+  ) { }
 
   ngOnInit(): void {
+    this.spinner.show();
     this.buildForm();
     this.carregar();
     this.isAdmin = this.authService.hasRole('Admin');
@@ -118,6 +121,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
       this.buildUsuarioForm();
       this.carregarUsuarios();
     }
+    this.spinner.hide();
   }
 
   ngOnDestroy(): void {
@@ -300,7 +304,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
   private setModeloProntuarioLocal(v: any): void {
     try {
       if (v) localStorage.setItem('modeloProntuario', String(v));
-    } catch {}
+    } catch { }
   }
 
   private setEmpresaBrandLocal(api: Configuracoes): void {
@@ -319,7 +323,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
       localStorage.setItem('empresa.cidadeUf', cidadeUf);
       localStorage.setItem('empresa.telefone', telefone);
       localStorage.setItem('empresa.email', email);
-    } catch {}
+    } catch { }
   }
 
   get ultimaPaginaUsuarios(): number {
