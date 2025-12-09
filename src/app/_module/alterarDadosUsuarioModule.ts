@@ -1,3 +1,8 @@
 export interface AlterarDadosUsuario {
-    //id? : string
+    firstName: string;
+    lastName: string;
+    email: string;
+    password?: string;
+    newPassword?: string;
+    confirmNewPassword?: string;
 }

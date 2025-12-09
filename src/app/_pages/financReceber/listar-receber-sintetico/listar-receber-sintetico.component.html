@@ -4,27 +4,39 @@
 ></app-label-nome>
 
 <div class="card mb-3">
-  <div class="card-header bg-light d-flex justify-content-between align-items-center" 
-       (click)="toggleFiltros()" 
-       style="cursor: pointer;">
+  <div
+    class="card-header bg-light d-flex justify-content-between align-items-center"
+    (click)="toggleFiltros()"
+    style="cursor: pointer"
+  >
     <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros de Pesquisa</h6>
     <button class="btn btn-sm btn-link text-dark p-0">
-      <i class="bi" [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+      <i
+        class="bi"
+        [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"
+      ></i>
     </button>
   </div>
-  <div class="card-body py-3" [ngClass]="{'d-none': !mostrarFiltros}">
-
+  <div class="card-body py-3" [ngClass]="{ 'd-none': !mostrarFiltros }">
     <div class="row mt-3">
       <div class="col-md-12 text-end">
-        <button type="button" class="btn btn-sm btn-primary me-2" (click)="onSearch()">
+        <button
+          type="button"
+          class="btn btn-sm btn-primary me-2"
+          (click)="onSearch()"
+        >
           <i class="bi bi-search me-1"></i> Pesquisar
         </button>
-        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limparFiltros()">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="limparFiltros()"
+        >
           <i class="bi bi-x-circle me-1"></i> Limpar Filtros
         </button>
       </div>
     </div>
-    
+
     <div class="row g-3 align-items-end">
       <div class="col-md-1 col-12">
         <label for="idPaiFiltro" class="form-label small fw-bold">Código</label>
@@ -37,7 +49,9 @@
       </div>
 
       <div class="col-md-2 col-12">
-        <label for="parcelaNumeroFiltro" class="form-label small fw-bold">Número da Parcela</label>
+        <label for="parcelaNumeroFiltro" class="form-label small fw-bold"
+          >Número da Parcela</label
+        >
         <input
           type="number"
           id="parcelaNumeroFiltro"
@@ -52,9 +66,10 @@
             <label class="form-label small fw-bold">Período</label>
           </div>
           <div class="col-md-4">
-            <select 
+            <select
               class="form-select form-select-sm"
-              [(ngModel)]="dataBaseFiltro">
+              [(ngModel)]="dataBaseFiltro"
+            >
               <option value="V">Data de Vencimento</option>
               <option value="E">Data de Emissão</option>
               <option value="P">Data de Pagamento</option>
@@ -84,18 +99,18 @@
       </div>
       <div class="col-md-3">
         <div class="form-check">
-          <input 
-            class="form-check-input" 
-            type="checkbox" 
-            id="parcelasVencidas" 
-            [(ngModel)]="parcelasVencidasFiltro">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="parcelasVencidas"
+            [(ngModel)]="parcelasVencidasFiltro"
+          />
           <label class="form-check-label" for="parcelasVencidas">
             Apenas parcelas vencidas
           </label>
         </div>
       </div>
     </div>
-    
   </div>
 </div>
 
@@ -127,7 +142,7 @@
               {{ item.id }}
             </td>
             <td>
-              {{ item.financReceber?.dataEmissao| datePtBr }}
+              {{ item.financReceber?.dataEmissao | datePtBr }}
             </td>
             <td>
               {{ item.dataVencimento | datePtBr }}
@@ -136,18 +151,18 @@
               {{ item.dataPagamento | datePtBr }}
             </td>
             <td>
-              {{item.financReceber?.descricao}}
+              {{ item.financReceber?.descricao }}
             </td>
             <td>
               {{ item.valor | currencyPtBr }}
-            </td>  
+            </td>
             <td>
               @if (item.dataPagamento) {
-                <span class="span-status-green">Pago</span>
+              <span class="span-status-green">Pago</span>
               } @else if (isOverdue(item.dataVencimento)) {
-                <span class="span-status-red">Vencido</span>
+              <span class="span-status-red">Vencido</span>
               } @else {
-                <span class="span-status-orange">A Vencer</span>
+              <span class="span-status-orange">A Vencer</span>
               }
             </td>
             <td class="text-end">
@@ -204,8 +219,8 @@
 ></app-modal-financ-receber>
 
 <app-baixa-financ-receber-sub
-[financReceberSub]="parcelaSelecionada"
-(confirmarPagamento)="loadData()"
+  [financReceberSub]="parcelaSelecionada"
+  (confirmarPagamento)="loadData()"
 ></app-baixa-financ-receber-sub>
 
 <app-confirm-dialog
@@ -213,3 +228,12 @@
   (onConfirm)="confirmDelete()"
   (onCancel)="cancelDelete()"
 ></app-confirm-dialog>
+
+<ngx-spinner
+  type="square-jelly-box"
+  bdColor="rgba(0, 0, 0, 0.8)"
+  size="medium"
+  color="#fff"
+>
+  <p style="color: white">Carregando...</p>
+</ngx-spinner>

@@ -13,6 +13,7 @@ import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 import { Paciente } from '../../../_module/pacienteModule';
 import { TabService } from '../../../_services/tabs.service';
 import { FormatarDataParaInputService } from '../../../_services/formatar-data-para-input.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 interface CacheData {
   cacheList: FinancReceber[];
@@ -65,7 +66,8 @@ export class ListarFinancReceberComponent {
     private toast: ToastrService,
     private ccService: CentroDeCustoService,
     private tabService: TabService,
-    private formatarDataService: FormatarDataParaInputService
+    private formatarDataService: FormatarDataParaInputService,
+    private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit(): void {
@@ -116,10 +118,12 @@ export class ListarFinancReceberComponent {
     const cacheKey = this.getCacheKey();
     const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
 
+    this.spinner.show();
     if (cachedData && this.isCacheValid(cachedData.timestamp)) {
       // Se temos dados em cache válidos, use-os
       this.lista = cachedData.cacheList;
       this.totalItems = cachedData.totalItems;
+
     } else {
       this.financReceberService
         .ListarAnalitico(
@@ -139,7 +143,7 @@ export class ListarFinancReceberComponent {
             if (data.dados) {
               this.lista = data.dados;
               this.totalItems = data.totalCount ?? 0;
-
+              console.table(this.lista);
               // Armazena os dados no cache
               this.tabService.setCacheData(cacheKey, {
                 cacheList: this.lista,
@@ -152,6 +156,9 @@ export class ListarFinancReceberComponent {
             console.error('Erro ao buscar exercicio:', err);
             this.errorMessage =
               'Erro ao carregar as exercicios. Tente novamente mais tarde.';
+          },
+          complete: () => {
+            this.spinner.hide();
           },
         });
     }

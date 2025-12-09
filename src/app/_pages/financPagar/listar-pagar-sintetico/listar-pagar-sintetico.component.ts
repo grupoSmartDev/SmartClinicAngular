@@ -11,6 +11,7 @@ import { CentroDeCustoService } from '../../../_services/centro-de-custo.service
 
 import * as bootstrap from 'bootstrap';
 import { TabService } from '../../../_services/tabs.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 interface CacheData {
   cacheList: FinancPagar[];
@@ -61,7 +62,8 @@ export class ListarPagarSinteticoComponent {
     private financPagarService: FinancPagarService,
     private toast: ToastrService,
     private ccService: CentroDeCustoService,
-    private tabService: TabService
+    private tabService: TabService,
+    private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit(): void {
@@ -129,6 +131,8 @@ export class ListarPagarSinteticoComponent {
     const cacheKey = this.getCacheKey();
     const cachedData = this.tabService.getCacheData(cacheKey) as CacheData;
 
+    this.spinner.show();
+
     if (cachedData && this.isCacheValid(cachedData.timestamp)) {
       // Se temos dados em cache válidos, use-os
       this.lista = cachedData.cacheList;
@@ -165,6 +169,9 @@ export class ListarPagarSinteticoComponent {
             console.error('Erro ao buscar exercicio:', err);
             this.errorMessage =
               'Erro ao carregar as exercicios. Tente novamente mais tarde.';
+          },
+          complete: () => {
+            this.spinner.hide();
           },
         });
     }

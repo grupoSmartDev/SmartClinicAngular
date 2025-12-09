@@ -143,6 +143,9 @@ export class ListarDespesaComponent {
           this.errorMessage =
             'Erro ao carregar as despesas. Tente novamente mais tarde.';
         },
+        complete: () => {
+          this.spinner.hide();
+        },
       });
 
   }

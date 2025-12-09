@@ -31,6 +31,7 @@ import { Agenda } from '../../../_module/agendaModule';
 import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
 import { PacoteService } from '../../../_services/pacote.service';
 import { Pacote, PacotePaciente, PacoteUso } from '../../../_module/pacoteModule';
+import { SalasService } from '../../../_services/salas.service';
 import { ProntuarioPrintService, ModeloProntuario } from '../../../_services/prontuario-print.service';
 
 // DTOs
@@ -149,6 +150,9 @@ export class PacienteCompletoComponent implements OnInit {
   isRenovacao: boolean = false;
   podeRenovar: boolean = false;
   planoSelecionado: any = null;
+  diasSemanaParaRenovar: number = 0;
+
+  planoId: number = 0;
 
   limiteDiasSemanaFront: number = 0;
 
@@ -177,6 +181,7 @@ export class PacienteCompletoComponent implements OnInit {
     private formaPagamentoService: FormaPagamentoService,
     private datePipe: DatePtBrPipe,
     private pacoteService: PacoteService,
+    private salaService: SalasService,
     private prontuarioPrint: ProntuarioPrintService
   ) { }
 
@@ -523,13 +528,22 @@ export class PacienteCompletoComponent implements OnInit {
 
   onPlanoSelecionado(): void {
     debugger
-    const idPlano = this.formPlano.get('planoId')?.value;
+    let idPlano = 0
+    if (this.isRenovacao) {
+      idPlano = this.formRenovacao?.get('planoId')?.value;
+    } else {
+      idPlano = this.formPlano.get('planoId')?.value;
+    }
     if (!idPlano) return;
 
 
     this.planoSelecionado = this.listaPlanos.filter(x => x.id == idPlano);
 
-    this.limiteDiasSemanaFront = this.planoSelecionado[0].diasSemana || 0;
+    if (this.isRenovacao) {
+      this.limiteDiasSemanaFront = this.diasSemanaParaRenovar
+    } else {
+      this.limiteDiasSemanaFront = this.planoSelecionado[0].diasSemana || 0;
+    }
 
     // Atualizar valores se um plano for selecionado
     if (this.planoSelecionado && this.planoSelecionado.length > 0) {
@@ -538,6 +552,7 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   calcularDataFim(): void {
+
     const dataInicio = this.formPlano.get('dataInicio')?.value;
     const tipoMes = this.formPlano.get('tipoMes')?.value;
 
@@ -680,10 +695,25 @@ export class PacienteCompletoComponent implements OnInit {
     }
   }
 
-  verificarLimiteDiasSemana(): void {
-    if (!this.planoSelecionado || this.planoSelecionado.length === 0) return;
+  verificarLimiteDiasSemana(formRenovacao = false): void {
+    debugger
+    if (formRenovacao) this.isRenovacao = true;
 
-    const limiteDias = this.planoSelecionado[0].diasSemana || 0;
+    this.onPlanoSelecionado()
+    if (formRenovacao) {
+
+    } else if (!this.planoSelecionado || this.planoSelecionado.length === 0) {
+      return;
+    }
+
+    let limiteDias = 0
+    if (formRenovacao) {
+      limiteDias = this.diasSemanaParaRenovar;
+    } else {
+      limiteDias = this.planoSelecionado[0].diasSemana || 0;
+
+    }
+
     let diasSelecionados = 0;
 
     this.limiteDiasSemanaFront = limiteDias;
@@ -1069,7 +1099,7 @@ export class PacienteCompletoComponent implements OnInit {
   getSalas(): void {
     // Implemente o serviço para buscar salas
     // Exemplo:
-    /*
+
     this.salaService.Listar().subscribe({
       next: (response) => {
         if (response.dados) {
@@ -1080,13 +1110,7 @@ export class PacienteCompletoComponent implements OnInit {
         console.error('Erro ao buscar Salas:', e);
       },
     });
-    */
-    // Simulação de dados
-    this.listaSala = [
-      { id: 1, nome: 'Sala 1' },
-      { id: 2, nome: 'Sala 2' },
-      { id: 3, nome: 'Sala 3' }
-    ];
+
   }
 
   getProfissional() {
@@ -1329,6 +1353,8 @@ export class PacienteCompletoComponent implements OnInit {
   // Método para inicializar o formulário de renovação
   initFormRenovacao(plano: any): void {
     // Calcular novas datas com base no tipo de assinatura
+    console.table(plano);
+    this.diasSemanaParaRenovar = plano.diasSemana;
     const hoje = new Date();
     let dataInicio: string;
 
@@ -1349,6 +1375,7 @@ export class PacienteCompletoComponent implements OnInit {
       // Se não tiver data fim, usar a data de hoje
       dataInicio = hoje.toISOString().split('T')[0];
     }
+    debugger
 
     this.formRenovacao = this.fb.group({
       planoId: [plano.id, Validators.required],
@@ -1528,12 +1555,12 @@ export class PacienteCompletoComponent implements OnInit {
     let valor = 0;
 
     switch (tipoMes) {
-      case 'm': valor = planoAtual.valorMensal || 0; break;
-      case 'b': valor = planoAtual.valorBimestral || 0; break;
-      case 't': valor = planoAtual.valorTrimestral || 0; break;
-      case 'q': valor = planoAtual.valorQuadrimestral || 0; break;
-      case 's': valor = planoAtual.valorSemestral || 0; break;
-      case 'a': valor = planoAtual.valorAnual || 0; break;
+      case 'm': valor = planoAtual.valorMensal * 1 || 0; break;
+      case 'b': valor = planoAtual.valorBimestral * 2 || 0; break;
+      case 't': valor = planoAtual.valorTrimestral * 3 || 0; break;
+      case 'q': valor = planoAtual.valorQuadrimestral * 4 || 0; break;
+      case 's': valor = planoAtual.valorSemestral * 6 || 0; break;
+      case 'a': valor = planoAtual.valorAnual * 12 || 0; break;
     }
 
     this.formRenovacao.get('financeiro.valor')?.setValue(valor);
@@ -1561,18 +1588,19 @@ export class PacienteCompletoComponent implements OnInit {
     if (!plano) return 0;
 
     switch (tipoMes) {
-      case 'm': return plano.valorMensal || 0;
-      case 'b': return plano.valorBimestral || 0;
-      case 't': return plano.valorTrimestral || 0;
-      case 'q': return plano.valorQuadrimestral || 0;
-      case 's': return plano.valorSemestral || 0;
-      case 'a': return plano.valorAnual || 0;
+      case 'm': return plano.valorMensal * 1 || 0;
+      case 'b': return plano.valorBimestral * 2 || 0;
+      case 't': return plano.valorTrimestral * 3 || 0;
+      case 'q': return plano.valorQuadrimestral * 4 || 0;
+      case 's': return plano.valorSemestral * 6 || 0;
+      case 'a': return plano.valorAnual * 12 || 0;
       default: return 0;
     }
   }
 
   // Método para gerar parcelas na renovação
   gerarParcelasRenovacao(): void {
+    this.planoId = this.formRenovacao?.get('planoId')?.value;
     const valorTotal = this.formRenovacao?.get('financeiro.valor')?.value || 0;
     const quantidadeParcelas = this.formRenovacao?.get('financeiro.parcela')?.value || 1;
 
