@@ -62,7 +62,7 @@ export class AgendaListarComponent {
   mostrarFiltros: boolean = false; // Começa expandido por padrão
 
   public selectedDate: string = '';
-  public selectedEvent: CalendarEvent | null = null;
+  public selectedEvent: CalendarEvent | Agenda | null = null;
 
   //paginacao
   totalItems: number = 0;
@@ -82,19 +82,20 @@ export class AgendaListarComponent {
   openModal(agenda: Agenda | string) {
     if (this.modalAgenda) {
       if (typeof agenda !== 'string') {
-
-        let agendamento = this.mapApiToAgendamento(agenda);
-
-        this.selectedEvent = {
-          id: agendamento.id,
-          title: agendamento.titulo,
-          start: agendamento.data.toISOString(),
-          end: agendamento.dataFim?.toISOString()
-        };
-
+        // Envie o objeto completo para o modal para preencher todos os campos
+        const agendamento = this.mapApiToAgendamento(agenda);
+        this.selectedEvent = agenda;
+        this.selectedDate = agendamento.data.toISOString();
         this.modalAgenda.selectedDate = this.selectedDate;
-        this.modalAgenda.selectedEvent = this.selectedEvent;
+        this.modalAgenda.selectedEvent = agenda;
         this.modalAgenda.eventoEscolhido = agenda;
+      } else {
+        // Limpa estados ao abrir um novo registro
+        this.selectedEvent = null;
+        this.selectedDate = '';
+        this.modalAgenda.selectedDate = this.selectedDate;
+        this.modalAgenda.selectedEvent = null;
+        this.modalAgenda.eventoEscolhido = {} as Agenda;
       }
       // Atualize diretamente as propriedades do componente filho
       // Chame o método de inicialização de dados
