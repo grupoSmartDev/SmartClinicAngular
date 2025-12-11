@@ -136,44 +136,48 @@ export class ListarReceberSinteticoComponent {
       // Se temos dados em cache válidos, use-os
       this.lista = cachedData.cacheList;
       this.totalItems = cachedData.totalItems;
-    } else {
-      this.financReceberService
-        .ListarSintetico(
-          this.currentPage,
-          this.pageSize,
-          this.idPaiFiltro,
-          this.parcelaNumeroFiltro,
-          this.dataBaseFiltro,
-          this.dataFiltroInicio,
-          this.dataFiltroFim,
-          this.parcelasVencidasFiltro,
-          this.paginar
-        )
-        .subscribe({
-          next: (data) => {
-            if (data.dados) {
-              console.log(data.dados);
-              this.listaSintetico = data.dados;
-              this.totalItems = data.totalCount ?? 0;
-
-              // Armazena os dados no cache
-              this.tabService.setCacheData(cacheKey, {
-                cacheList: this.lista,
-                totalItems: this.totalItems,
-                timestamp: Date.now(),
-              });
-            }
-          },
-          error: (err) => {
-            console.error('Erro ao buscar exercicio:', err);
-            this.errorMessage =
-              'Erro ao carregar as exercicios. Tente novamente mais tarde.';
-          },
-          complete: () => {
-            this.spinner.hide();
-          },
-        });
+      this.spinner.hide();
+      return;
     }
+
+
+    this.financReceberService
+      .ListarSintetico(
+        this.currentPage,
+        this.pageSize,
+        this.idPaiFiltro,
+        this.parcelaNumeroFiltro,
+        this.dataBaseFiltro,
+        this.dataFiltroInicio,
+        this.dataFiltroFim,
+        this.parcelasVencidasFiltro,
+        this.paginar
+      )
+      .subscribe({
+        next: (data) => {
+          if (data.dados) {
+            console.log(data.dados);
+            this.listaSintetico = data.dados;
+            this.totalItems = data.totalCount ?? 0;
+
+            // Armazena os dados no cache
+            this.tabService.setCacheData(cacheKey, {
+              cacheList: this.lista,
+              totalItems: this.totalItems,
+              timestamp: Date.now(),
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar exercicio:', err);
+          this.errorMessage =
+            'Erro ao carregar as exercicios. Tente novamente mais tarde.';
+        },
+        complete: () => {
+          this.spinner.hide();
+        },
+      });
+
   }
 
   loadCC(): void {

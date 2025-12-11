@@ -113,44 +113,48 @@ export class ListarFinancPagarComponent {
     if (cachedData && this.isCacheValid(cachedData.timestamp)) {
       this.lista = cachedData.cacheList;
       this.totalItems = cachedData.totalItems;
-    } else {
-      this.financPagarService
-        .ListarAnalitico(
-          this.currentPage,
-          this.pageSize,
-          this.descricaoFiltro,
-          this.idFiltro,
-          this.ccFiltro,
-          this.pacienteIdFiltro,
-          this.dataBaseFiltro,
-          this.dataFiltroInicio,
-          this.dataFiltroFim,
-          this.paginar
-        )
-        .subscribe({
-          next: (data) => {
-            if (data.dados) {
-              this.lista = data.dados;
-              this.totalItems = data.totalCount ?? 0;
-              console.table(this.lista);
-
-              this.tabService.setCacheData(cacheKey, {
-                cacheList: this.lista,
-                totalItems: this.totalItems,
-                timestamp: Date.now(),
-              });
-            }
-          },
-          error: (err) => {
-            console.error('Erro ao buscar contas a pagar:', err);
-            this.errorMessage =
-              'Erro ao carregar as contas a pagar. Tente novamente mais tarde.';
-          },
-          complete: () => {
-            this.spinner.hide();
-          },
-        });
+      this.spinner.hide();
+      return;
     }
+
+
+    this.financPagarService
+      .ListarAnalitico(
+        this.currentPage,
+        this.pageSize,
+        this.descricaoFiltro,
+        this.idFiltro,
+        this.ccFiltro,
+        this.pacienteIdFiltro,
+        this.dataBaseFiltro,
+        this.dataFiltroInicio,
+        this.dataFiltroFim,
+        this.paginar
+      )
+      .subscribe({
+        next: (data) => {
+          if (data.dados) {
+            this.lista = data.dados;
+            this.totalItems = data.totalCount ?? 0;
+            console.table(this.lista);
+
+            this.tabService.setCacheData(cacheKey, {
+              cacheList: this.lista,
+              totalItems: this.totalItems,
+              timestamp: Date.now(),
+            });
+          }
+        },
+        error: (err) => {
+          console.error('Erro ao buscar contas a pagar:', err);
+          this.errorMessage =
+            'Erro ao carregar as contas a pagar. Tente novamente mais tarde.';
+        },
+        complete: () => {
+          this.spinner.hide();
+        },
+      });
+
   }
 
   loadCC(): void {
