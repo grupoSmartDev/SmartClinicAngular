@@ -232,6 +232,7 @@ export class ListarPagarSinteticoComponent {
   }
 
   atualizarLista(): void {
+    this.invalidateCache();
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
