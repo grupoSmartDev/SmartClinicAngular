@@ -9,14 +9,7 @@
         class="plano-badge text-center d-inline-flex ms-2"
         *ngIf="isExpanded"
       >
-        <span
-          class="badge"
-          [ngClass]="{
-            'bg-secondary': planoAtual === PlanoTipo.Basic,
-            'bg-primary': planoAtual === PlanoTipo.Plus,
-            'bg-gradient': planoAtual === PlanoTipo.Premium
-          }"
-        >
+        <span class="badge bg-gradient">
           <i class=""></i> {{ planoAtual }}
         </span>
       </div>
