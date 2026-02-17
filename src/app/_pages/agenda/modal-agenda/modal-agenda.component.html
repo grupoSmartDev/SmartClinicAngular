@@ -29,14 +29,14 @@
 
       <div class="modal-body p-4">
         <!-- Visualização do Evento -->
-        <!--AQUI EU VOU COLOCAR UM BOTAO, ONDE VAI SERVIR PARA, CONFIRMAR O ATENDIMENTO, CANCELAR O ATENDIMENTO, REAGENDAR, PRECISO TAMBEM DE UM BOTÃO QUE VA LEVAR PARA A TELA DE ATENDIMENTO 
+        <!--AQUI EU VOU COLOCAR UM BOTAO, ONDE VAI SERVIR PARA, CONFIRMAR O ATENDIMENTO, CANCELAR O ATENDIMENTO, REAGENDAR, PRECISO TAMBEM DE UM BOTÃO QUE VA LEVAR PARA A TELA DE ATENDIMENTO
         COMPLETO DO PACIENTE, OU ENTAO, LEVAR PARA A TELA DE EVOLUCAO
         VR COM O PESSOAL SE VAI SER POSSIVEL EDITAR DIRETO PELA AGENDA, OU EU CLICO NO PACIENTE E VOU PARA A TELA DO PACIENTE EM SI. -->
         <ng-container *ngIf="selectedEvent">
           <div class="card shadow-sm mb-4">
             <div class="card-body">
               <div class="row g-3">
-                <div class="col-md-8 d-flex gap-2">
+                <div class="col-md-9 d-flex flex-wrap gap-2">
                   <button
                     class="btn btn-sm btn-secondary"
                     (click)="alterarAgendamento(2)"
@@ -61,8 +61,15 @@
                   >
                     <i class="bi bi-person-vcard"></i> Paciente Completo
                   </button>
+                  <button
+                    *ngIf="podeAbrirModalEvolucao()"
+                    class="btn btn-sm btn-secondary"
+                    (click)="abrirModalEvolucao()"
+                  >
+                    <i class="bi bi-journal-medical"></i> Evolução
+                  </button>
                 </div>
-                <div class="col-md-4"></div>
+                <div class="col-md-3"></div>
               </div>
             </div>
           </div>
@@ -947,6 +954,8 @@
     </div>
   </dialog>
 </div>
+
+<app-paciente-completo #modalPacienteCompletoReuso></app-paciente-completo>
 
 <!-- Offcanvas de Cadastro Rápido -->
 <div

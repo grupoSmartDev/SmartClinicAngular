@@ -463,29 +463,31 @@ export class PacienteCompletoComponent implements OnInit {
   calcularValorTotalReceita(): number {
     let total = 0;
 
-    if (this.Paciente.financReceber) {
-      this.Paciente.financReceber.forEach((item) => {
-        if (item.subFinancReceber) {
-          item.subFinancReceber.forEach((itemSub) => {
-            total += itemSub.valor || 0;
-          });
-        }
+    const registrosFinanceiros = Array.isArray(this.Paciente.financReceber)
+      ? this.Paciente.financReceber.filter(Boolean)
+      : [];
+
+    registrosFinanceiros.forEach((item: any) => {
+      const subRegistros = Array.isArray(item?.subFinancReceber)
+        ? item.subFinancReceber.filter(Boolean)
+        : [];
+
+      subRegistros.forEach((itemSub: any) => {
+        total += Number(itemSub?.valor) || 0;
       });
-    }
+    });
 
     return total;
   }
 
   quantidadeAulasFeitas(): number {
-    let quantidade = 0;
+    const agendamentos = Array.isArray(this.Paciente.agendamentos)
+      ? this.Paciente.agendamentos.filter(Boolean)
+      : [];
 
-    if (this.Paciente.agendamentos) {
-      this.Paciente.agendamentos.forEach((item) => {
-        if (item.dataCancelamento) quantidade++;
-      });
-    }
-
-    return quantidade;
+    return agendamentos.reduce((total: number, item: any) => {
+      return item?.dataCancelamento ? total + 1 : total;
+    }, 0);
   }
 
   // MÉTODOS DE PLANO

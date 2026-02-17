@@ -944,13 +944,13 @@
                         }"
                       >
                         <option value="">Selecione um agendamento</option>
-                        @for (agenda of Paciente.agendamentos; track agenda.id)
-                        {
+                        @for (agenda of Paciente.agendamentos; track $index) {
+                        @if (agenda) {
                         <option [value]="agenda.id">
                           {{ agenda.data | date : "dd/MM/yyyy HH:mm" }} -
                           {{ agenda.profissionalId }}
                         </option>
-                        }
+                        } }
                       </select>
                       <div class="invalid-feedback">
                         Selecione um agendamento

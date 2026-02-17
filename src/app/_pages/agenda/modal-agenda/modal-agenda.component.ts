@@ -28,6 +28,7 @@ import { PacienteService } from '../../../_services/paciente.service';
 import { ResponseModel } from '../../../_module/ResponseModule';
 import { Router } from '@angular/router';
 import { TabService } from '../../../_services/tabs.service';
+import { PacienteCompletoComponent } from '../../paciente/paciente-completo/paciente-completo.component';
 
 interface Patient {
   id?: number;
@@ -48,6 +49,8 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
   @Output() onSave = new EventEmitter<Agenda>();
   @Output() onAlter = new EventEmitter<Agenda>();
   @ViewChild('patientForm') patientForm!: NgForm;
+  @ViewChild('modalPacienteCompletoReuso')
+  modalPacienteCompletoReuso?: PacienteCompletoComponent;
 
   formulario!: FormGroup;
   formReagendamento!: FormGroup;
@@ -647,6 +650,60 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     this.tabService.openTab({ path, title });
   }
 
+  podeAbrirModalEvolucao(): boolean {
+    if (!this.selectedEvent) {
+      return false;
+    }
+
+    const statusNormalizado = this.normalizarTexto(this.obterStatusAtualAgenda());
+    return statusNormalizado === 'em andamento' || statusNormalizado === 'concluido';
+  }
+
+  abrirModalEvolucao(): void {
+    if (!this.podeAbrirModalEvolucao()) {
+      this.toastr.warning('A evolução só pode ser aberta quando o status for "Em andamento" ou "Concluido".', 'Aviso');
+      return;
+    }
+
+    const paciente = this.construirPacienteParaEvolucao();
+    if (!paciente) {
+      this.toastr.error('Não foi possível identificar o paciente deste agendamento.', 'Erro');
+      return;
+    }
+
+    if (!this.modalPacienteCompletoReuso) {
+      this.toastr.error('Nao foi possivel carregar o modal de evolução.', 'Erro');
+      return;
+    }
+
+    this.modalPacienteCompletoReuso.Paciente = {
+      ...paciente,
+      evolucoes: Array.isArray(paciente.evolucoes) ? paciente.evolucoes.filter(Boolean) : [],
+      agendamentos: Array.isArray(paciente.agendamentos) ? paciente.agendamentos.filter(Boolean) : []
+    };
+
+    const modalPacienteElement = document.getElementById('modalPacienteDetalhado');
+    if (!modalPacienteElement) {
+      this.toastr.error('Modal do paciente não encontrado para abrir evolução.', 'Erro');
+      return;
+    }
+
+    const modalAgendaElement = document.getElementById('modalAgenda');
+    const modalAgendaInstance = modalAgendaElement
+      ? bootstrap.Modal.getInstance(modalAgendaElement)
+      : null;
+
+    const openEvolutionDialog = () => {
+      this.modalPacienteCompletoReuso?.openDialog({});
+    };
+
+    modalPacienteElement.addEventListener('shown.bs.modal', openEvolutionDialog, { once: true });
+
+    modalAgendaInstance?.hide();
+    const modalPaciente = bootstrap.Modal.getOrCreateInstance(modalPacienteElement);
+    modalPaciente.show();
+  }
+
   initDiasRecorrencia(): void {
     const diasRecorrenciaArray = this.formulario.get('diasRecorrencia') as FormArray;
 
@@ -1126,5 +1183,80 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  private obterStatusAtualAgenda(): string {
+    const eventoSelecionado = this.eventoEscolhido as any;
+    const statusDireto =
+      eventoSelecionado?.status?.status ||
+      this.selectedEvent?.status?.status;
+
+    if (typeof statusDireto === 'string' && statusDireto.trim()) {
+      return statusDireto;
+    }
+
+    const statusId = this.toNumber(
+      this.formulario.get('statusId')?.value ??
+      eventoSelecionado?.statusId ??
+      this.selectedEvent?.statusId
+    );
+
+    if (statusId === null) {
+      return '';
+    }
+
+    const statusEncontrado = this.listaStatus.find(
+      (item) => this.toNumber(item.id) === statusId
+    );
+
+    return statusEncontrado?.status || '';
+  }
+
+  private construirPacienteParaEvolucao(): Paciente | null {
+    const eventoSelecionado = this.eventoEscolhido as any;
+    const pacienteId = this.toNumber(
+      eventoSelecionado?.paciente?.id ??
+      this.selectedEvent?.paciente?.id ??
+      eventoSelecionado?.pacienteId ??
+      this.formulario.get('pacienteId')?.value
+    );
+
+    if (pacienteId === null) {
+      return null;
+    }
+
+    const pacienteDoEvento = eventoSelecionado?.paciente || this.selectedEvent?.paciente || {};
+    const pacienteDaLista = this.patients?.find((paciente) => paciente.id === pacienteId);
+
+    const profissionalId = this.toNumber(
+      pacienteDoEvento?.profissionalId ??
+      eventoSelecionado?.profissionalId ??
+      this.formulario.get('profissionalId')?.value
+    );
+
+    return {
+      ...pacienteDaLista,
+      ...pacienteDoEvento,
+      id: pacienteId,
+      profissionalId: profissionalId ?? pacienteDaLista?.profissionalId,
+      nome: pacienteDoEvento?.nome || pacienteDaLista?.nome || this.searchTerm || ''
+    } as Paciente;
+  }
+
+  private normalizarTexto(value: string): string {
+    return (value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+      .toLowerCase();
+  }
+
+  private toNumber(value: unknown): number | null {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
   }
 }
