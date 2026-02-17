@@ -29,7 +29,7 @@ export class FinancReceberService {
     
     let params = new HttpParams()
 
-    if (page) params = params.set('page', page.toString());
+    if (page) params = params.set('pageNumber', page.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
     if (idFiltro) params = params.set('idFiltro', idFiltro);
@@ -57,7 +57,7 @@ export class FinancReceberService {
     
     let params = new HttpParams()
 
-    if (page) params = params.set('page', page.toString());
+    if (page) params = params.set('pageNumber', page.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (descricaoFiltro) params = params.set('descricaoFiltro', descricaoFiltro);
     if (idFiltro) params = params.set('idFiltro', idFiltro);

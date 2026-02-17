@@ -13,7 +13,7 @@ import { TabService } from '../../../_services/tabs.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 interface CacheData {
-  cacheList: FinancReceber[];
+  cacheList: SubFinancReceber[];
   totalItems: number;
   timestamp: number;
 }
@@ -134,7 +134,7 @@ export class ListarReceberSinteticoComponent {
 
     if (cachedData && this.isCacheValid(cachedData.timestamp)) {
       // Se temos dados em cache válidos, use-os
-      this.lista = cachedData.cacheList;
+      this.listaSintetico = cachedData.cacheList;
       this.totalItems = cachedData.totalItems;
       this.spinner.hide();
       return;
@@ -162,7 +162,7 @@ export class ListarReceberSinteticoComponent {
 
             // Armazena os dados no cache
             this.tabService.setCacheData(cacheKey, {
-              cacheList: this.lista,
+              cacheList: this.listaSintetico,
               totalItems: this.totalItems,
               timestamp: Date.now(),
             });
@@ -233,6 +233,7 @@ export class ListarReceberSinteticoComponent {
   }
 
   atualizarLista(): void {
+    this.invalidateCache();
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
@@ -250,13 +251,14 @@ export class ListarReceberSinteticoComponent {
   }
 
   onPageChange(page: number): void {
+    this.invalidateCache();
     this.currentPage = page; // Bootstrap usa paginação iniciando em 1
     this.loadData();
   }
 
   onSearch(): void {
-    this.invalidateCache();
     this.currentPage = 1;
+    this.invalidateCache();
     this.loadData();
   }
 
