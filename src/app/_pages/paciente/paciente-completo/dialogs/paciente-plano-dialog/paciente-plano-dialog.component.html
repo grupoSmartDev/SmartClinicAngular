@@ -222,7 +222,7 @@
                   class="form-select form-select-sm"
                   formControlName="centroCustoId"
                 >
-                  <option value="" disabled>Selecione</option>
+                  <option value="">Selecione</option>
                   <option
                     *ngFor="let centro of listaCentroDeCusto"
                     [value]="centro.id"
@@ -241,7 +241,7 @@
                   class="form-select form-select-sm"
                   formControlName="tipoPagamentoId"
                 >
-                  <option value="" disabled>Selecione</option>
+                  <option value="">Selecione</option>
                   <option
                     *ngFor="let tipo of listaTipoPagamento"
                     [value]="tipo.id"
@@ -313,7 +313,7 @@
                         class="form-select form-select-sm"
                         formControlName="formaPagamentoId"
                       >
-                        <option value="" disabled>Selecione</option>
+                        <option value="">Selecione</option>
                         <option
                           *ngFor="let forma of listaFormaPagamento"
                           [value]="forma.id"
