@@ -96,7 +96,7 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
   usuariosErro = '';
   usuarioSelecionado: AdminUser | null = null;
   usuarioFoto: File | null = null;
-  formUsuario!: FormGroup;
+  formUsuario: FormGroup | null = null;
   salvandoUsuario = false;
 
   private readonly destroy$ = new Subject<void>();
@@ -354,9 +354,11 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
 
   abrirUsuario(usuario: AdminUser): void {
     if (!this.formUsuario) this.buildUsuarioForm();
+    const formUsuario = this.formUsuario;
+    if (!formUsuario) return;
     this.usuarioSelecionado = usuario;
     this.usuarioFoto = null;
-    this.formUsuario.reset({
+    formUsuario.reset({
       id: usuario.id,
       firstName: usuario.firstName || '',
       lastName: usuario.lastName || '',
@@ -373,14 +375,16 @@ export class ConfiguracoesComponent implements OnInit, OnDestroy {
   }
 
   salvarUsuarioEdicao(): void {
-    if (!this.usuarioSelecionado) return;
+    if (!this.usuarioSelecionado || !this.formUsuario) return;
 
-    if (this.formUsuario.invalid) {
-      this.formUsuario.markAllAsTouched();
+    const formUsuario = this.formUsuario;
+
+    if (formUsuario.invalid) {
+      formUsuario.markAllAsTouched();
       return;
     }
 
-    const formValue = this.formUsuario.value;
+    const formValue = formUsuario.value;
     const payload: Partial<AdminUser> = {
       firstName: formValue.firstName,
       lastName: formValue.lastName,

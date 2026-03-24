@@ -413,8 +413,8 @@
                     <td>
                       <div class="d-flex align-items-center">
                         <div class="avatar-circle me-2">
-                          {{ user.firstName?.charAt(0)
-                          }}{{ user.lastName?.charAt(0) }}
+                          {{ (user.firstName || '').charAt(0)
+                          }}{{ (user.lastName || '').charAt(0) }}
                         </div>
                         <strong
                           >{{ user.firstName }} {{ user.lastName }}</strong
@@ -613,7 +613,7 @@
           type="button"
           class="btn btn-success"
           (click)="salvarUsuarioEdicao()"
-          [disabled]="salvandoUsuario || formUsuario?.invalid"
+          [disabled]="salvandoUsuario || !formUsuario || formUsuario.invalid"
         >
           <span
             class="spinner-border spinner-border-sm me-2"
