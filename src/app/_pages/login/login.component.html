@@ -1,63 +1,62 @@
 <div class="login-container d-flex flex-column flex-lg-row">
-  <!-- Seção do Logo -->
   <div class="col-lg-6 logo-section">
     <img src="assets/image/logo.png" alt="Logo SmartClinic" class="logo" />
     <a
       class="btn btn-light rounded-pill mt-4 text-white"
       routerLink="/cadastro"
     >
-      Novo Usuario?
+      Novo usuario?
     </a>
   </div>
 
-  <!-- Seção do Formulário -->
   <div
     class="col-lg-6 form-section p-5 d-flex flex-column justify-content-center"
   >
     <h3 class="mb-4 text-center">Bem-vindo!</h3>
+
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <!-- Campo UserKey -->
       <div class="form-group mb-3">
-        <label for="userKey" class="form-label">chave de acesso</label>
+        <label for="userKey" class="form-label">Chave de acesso</label>
         <input
           type="text"
           id="userKey"
           formControlName="userKey"
           class="form-control"
           mask="000.000.000-00"
+          autocomplete="username"
           [ngClass]="{ 'is-invalid': submitted && f.userKey.errors }"
         />
         <div *ngIf="submitted && f.userKey.errors" class="invalid-feedback">
           <div *ngIf="f.userKey.errors.required">
-            Chave de acesso é obrigatória
+            Chave de acesso e obrigatoria
           </div>
         </div>
       </div>
 
-      <!-- Campo Email -->
       <div class="form-group mb-3">
-        <label for="email" class="form-label">seu e-mail</label>
+        <label for="email" class="form-label">Seu e-mail</label>
         <input
           type="email"
           id="email"
           formControlName="email"
           class="form-control"
+          autocomplete="email"
           [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
         />
         <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-          <div *ngIf="f.email.errors.required">Email é obrigatório</div>
-          <div *ngIf="f.email.errors.email">Email inválido</div>
+          <div *ngIf="f.email.errors.required">E-mail e obrigatorio</div>
+          <div *ngIf="f.email.errors.email">Informe um e-mail valido</div>
         </div>
       </div>
 
-      <!-- Updated HTML with password visibility toggle -->
       <div class="form-group mb-4 position-relative">
-        <label for="password" class="form-label">sua senha</label>
+        <label for="password" class="form-label">Sua senha</label>
         <input
           [type]="showPassword ? 'text' : 'password'"
           id="password"
           formControlName="password"
           class="form-control pe-5"
+          autocomplete="current-password"
           [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
         />
         <button
@@ -71,13 +70,11 @@
             [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"
           ></i>
         </button>
-
         <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-          <div *ngIf="f.password.errors.required">Senha é obrigatória</div>
+          <div *ngIf="f.password.errors.required">Senha e obrigatoria</div>
         </div>
       </div>
 
-      <!-- Botão de Submit -->
       <div class="text-center">
         <button
           type="submit"
@@ -92,12 +89,10 @@
         </button>
       </div>
 
-      <!-- Mensagem de Erro -->
       <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
 
-      <!-- Links Auxiliares -->
       <div class="text-center mt-3">
-        <a href="#" class="text-muted">esqueceu sua senha?</a>
+        <a href="#" class="text-muted">Esqueceu sua senha?</a>
       </div>
 
       <div class="text-center mt-3">

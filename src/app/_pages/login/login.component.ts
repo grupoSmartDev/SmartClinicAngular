@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../_services/auth.service';
 
 @Component({
@@ -14,51 +14,62 @@ export class LoginComponent {
   submitted = false;
   error = '';
   showPassword = false;
+  private returnUrl = '/';
 
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private authService: AuthService
-  ) {
-    if (this.authService.currentUserValue) {
-      this.router.navigate(['/login']);
-    }
-  }
+  ) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
       userKey: ['', Validators.required],
-      email: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+
+    this.returnUrl =
+      this.activatedRoute.snapshot.queryParamMap.get('returnUrl') || '/';
+
+    if (this.authService.isAuthenticated()) {
+      this.router.navigateByUrl(this.returnUrl);
+    }
   }
 
-  get f() { return this.loginForm.controls as any }
+  get f() {
+    return this.loginForm.controls as any;
+  }
 
   onSubmit() {
     this.submitted = true;
+    this.error = '';
 
     if (this.loginForm.invalid) {
       return;
     }
 
+    const email = this.f.email.value.trim().toLowerCase();
+    const password = this.f.password.value;
+    const userKey = this.f.userKey.value.trim();
+
     this.loading = true;
-    this.authService.login(
-      this.f.email.value,
-      this.f.password.value,
-      this.f.userKey.value
-    ).subscribe({
+    this.authService.login(email, password, userKey).subscribe({
       next: (response) => {
-        let resposta = response.error;
         if (response.success) {
-          this.router.navigate(['/']);
-        } else {
-          this.error = resposta;
-          this.loading = false;
+          this.router.navigateByUrl(this.returnUrl);
+          return;
         }
+
+        this.error = response.error || 'Nao foi possivel efetuar o login.';
+        this.loading = false;
       },
-      error: error => {
-        this.error = error.error || "Ocorreu um erro ao efetuar o login.";
+      error: (error) => {
+        this.error =
+          error?.error?.error ||
+          error?.error ||
+          'Ocorreu um erro ao efetuar o login.';
         this.loading = false;
       }
     });

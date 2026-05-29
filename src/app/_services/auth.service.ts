@@ -1,30 +1,33 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
-import { AuthResponse, UserLoginRequest, UserToken } from '../_module/authModule';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { AuthResponse, UserLoginRequest, UserToken } from '../_module/authModule';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = environment.apiUrl + 'Auth/login';
+  private readonly API_URL = `${environment.apiUrl}Auth/login`;
   private currentUserSubject: BehaviorSubject<UserToken | null>;
   public currentUser: Observable<UserToken | null>;
   private jwtHelper = new JwtHelperService();
 
-  // 👇 CHAVE SECRETA (mude isso para algo único do seu sistema)
-  private readonly SECRET_KEY = 'ClinicSmart_2024_SecureKey';
-
   constructor(private http: HttpClient) {
+    const currentUser = this.readStoredCurrentUser();
+    const token = this.getStorageItem('token');
+    const hasValidSession = Boolean(
+      token && currentUser && !this.jwtHelper.isTokenExpired(token)
+    );
+
+    if (!hasValidSession && (token || currentUser)) {
+      this.clearStorageData();
+    }
+
     this.currentUserSubject = new BehaviorSubject<UserToken | null>(
-      JSON.parse(
-        sessionStorage.getItem('currentUser') ||
-        localStorage.getItem('currentUser') ||
-        'null'
-      )
+      hasValidSession ? currentUser : null
     );
     this.currentUser = this.currentUserSubject.asObservable();
   }
@@ -34,48 +37,62 @@ export class AuthService {
   }
 
   public get userKey(): string | null {
-    return sessionStorage.getItem('userKey') || localStorage.getItem('userKey');
+    return this.getStorageItem('userKey');
   }
 
   private getToken(): string | null {
-    return sessionStorage.getItem('token') || localStorage.getItem('token');
+    return this.getStorageItem('token');
   }
 
   private getStorageItem(key: string): string | null {
     return sessionStorage.getItem(key) || localStorage.getItem(key);
   }
 
-  // 👇 NOVO: Gera hash de segurança
-  private gerarHash(valor: string): string {
-    return btoa(`${valor}_${this.SECRET_KEY}`);
+  private readStoredCurrentUser(): UserToken | null {
+    const storedCurrentUser =
+      sessionStorage.getItem('currentUser') ||
+      localStorage.getItem('currentUser');
+
+    if (!storedCurrentUser) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(storedCurrentUser) as UserToken;
+    } catch {
+      return null;
+    }
   }
 
-  // 👇 NOVO: Valida se o hash está correto
-  private validarHash(valor: string | null, hash: string | null): boolean {
-    if (!valor || !hash) return false;
-    return hash === this.gerarHash(valor);
-  }
+  private normalizePlano(plano: string | null | undefined): string | null {
+    const normalized = (plano || '').trim().toLowerCase();
 
-  // 👇 NOVO: Obtém o plano validado
-  public getPlano(): string {
-    const plano = this.getStorageItem('plano');
-    const hash = this.getStorageItem('plano_hash');
-
-    // Valida se foi adulterado
-    if (!this.validarHash(plano, hash)) {
-      console.error('⚠️ Plano foi adulterado! Fazendo logout...');
-      this.logout();
+    if (normalized === 'basic') {
       return 'Basic';
     }
 
-    return plano || 'Basic';
+    if (normalized === 'plus') {
+      return 'Plus';
+    }
+
+    if (normalized === 'premium') {
+      return 'Premium';
+    }
+
+    return null;
   }
 
-  // 👇 NOVO: Verifica se tem acesso a uma feature
+  public getPlano(): string {
+    return this.normalizePlano(this.getStorageItem('plano')) || 'Basic';
+  }
+
   public temAcessoFeature(plano: string, feature: string): boolean {
-    // Validação básica - você pode expandir isso
     const featuresBasic = ['GestaoPaciente', 'Agenda', 'FichaAvaliacao'];
-    const featuresPlus = [...featuresBasic, 'RelatoriosFinanceiros', 'ContasPagar'];
+    const featuresPlus = [
+      ...featuresBasic,
+      'RelatoriosFinanceiros',
+      'ContasPagar'
+    ];
 
     if (plano === 'Premium') return true;
     if (plano === 'Plus') return featuresPlus.includes(feature);
@@ -85,53 +102,44 @@ export class AuthService {
   }
 
   login(email: string, password: string, userKey: string): Observable<AuthResponse> {
-    const storedUserKey = localStorage.getItem('userKey');
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUserKey = userKey.trim();
+    const storedUserKey = this.userKey?.trim();
 
-    if (storedUserKey && storedUserKey !== userKey) {
-      console.log('UserKey diferente detectado. Limpando dados antigos...');
+    if (storedUserKey && storedUserKey !== normalizedUserKey) {
       this.clearStorageData();
     }
 
-    const headers = new HttpHeaders().set('UserKey', userKey);
-
+    const headers = new HttpHeaders().set('UserKey', normalizedUserKey);
     const loginRequest: UserLoginRequest = {
-      email,
+      email: normalizedEmail,
       password,
       rememberMe: true
     };
 
-    return this.http.post<AuthResponse>(`${this.API_URL}`, loginRequest, { headers })
-      .pipe(
-        tap(response => {
-          if (response.success && response.data) {
-            // 👇 NOVO: Extrai o plano da resposta
-            const plano = response.data.plano || 'Basic';
-            const planoHash = this.gerarHash(plano);
+    return this.http.post<AuthResponse>(this.API_URL, loginRequest, { headers }).pipe(
+      tap((response) => {
+        if (!response.success || !response.data) {
+          return;
+        }
 
-            console.log('✅ Login bem-sucedido');
-            console.log(`📋 Plano detectado: ${plano}`);
+        const plano = this.normalizePlano(response.data.plano) || 'Basic';
+        const responseUserKey = response.data.key?.trim() || normalizedUserKey;
 
-            // Salva dados em ambos storages
-            localStorage.setItem('currentUser', JSON.stringify(response.data.userToken));
-            localStorage.setItem('token', response.data.accessToken);
-            localStorage.setItem('userKey', response.data.key);
-            localStorage.setItem('plano', plano); // 👈 SALVA O PLANO
-            localStorage.setItem('plano_hash', planoHash); // 👈 SALVA O HASH
+        this.persistStorageItem(
+          'currentUser',
+          JSON.stringify(response.data.userToken)
+        );
+        this.persistStorageItem('token', response.data.accessToken);
+        this.persistStorageItem('userKey', responseUserKey);
+        this.persistStorageItem('plano', plano);
 
-            sessionStorage.setItem('currentUser', JSON.stringify(response.data.userToken));
-            sessionStorage.setItem('token', response.data.accessToken);
-            sessionStorage.setItem('userKey', response.data.key);
-            sessionStorage.setItem('plano', plano); // 👈 SALVA O PLANO
-            sessionStorage.setItem('plano_hash', planoHash); // 👈 SALVA O HASH
-
-            this.currentUserSubject.next(response.data.userToken);
-          }
-        }),
-        catchError(error => {
-          console.error('Erro no login:', error);
-          return throwError(() => error);
-        })
-      );
+        this.currentUserSubject.next(response.data.userToken);
+      }),
+      catchError((error) => {
+        return throwError(() => error);
+      })
+    );
   }
 
   logout(): void {
@@ -139,19 +147,23 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
+  private persistStorageItem(key: string, value: string): void {
+    localStorage.setItem(key, value);
+    sessionStorage.setItem(key, value);
+  }
+
   private clearStorageData(): void {
-    // Remove de ambos storages
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
     localStorage.removeItem('userKey');
-    localStorage.removeItem('plano'); // 👈 REMOVE O PLANO
-    localStorage.removeItem('plano_hash'); // 👈 REMOVE O HASH
+    localStorage.removeItem('plano');
+    localStorage.removeItem('plano_hash');
 
     sessionStorage.removeItem('currentUser');
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('userKey');
-    sessionStorage.removeItem('plano'); // 👈 REMOVE O PLANO
-    sessionStorage.removeItem('plano_hash'); // 👈 REMOVE O HASH
+    sessionStorage.removeItem('plano');
+    sessionStorage.removeItem('plano_hash');
   }
 
   isAuthenticated(): boolean {

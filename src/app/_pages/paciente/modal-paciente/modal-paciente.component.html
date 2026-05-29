@@ -1,4 +1,3 @@
-<!-- Modal Paciente -->
 <div
   #modalPaciente
   class="modal fade"
@@ -10,102 +9,137 @@
   aria-modal="true"
   role="dialog"
 >
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">
-          Dados do Paciente
-        </h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Dados do Paciente</h1>
         <button
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
           (click)="fecharModal()"
-          (click)="fecharModal()"
           aria-label="Close"
         ></button>
       </div>
+
       <div class="modal-body">
-        <form [formGroup]="formulario">
+        <form [formGroup]="formulario" novalidate>
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Informações Pessoais</h5>
             </div>
             <div class="card-body">
-              <div class="row">
+              <div class="row g-3">
                 <div class="col-md-6">
-                  <label for="nome" class="form-label">Nome</label>
+                  <label for="nome" class="form-label">Nome <span class="text-danger">*</span></label>
                   <input
+                    id="nome"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('nome')"
                     formControlName="nome"
+                    placeholder="Nome completo do paciente"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('nome') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-3">
                   <label for="cpf" class="form-label">CPF</label>
                   <input
+                    id="cpf"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('cpf')"
                     formControlName="cpf"
                     mask="000.000.000-00"
+                    placeholder="Somente se informado"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('cpf') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-3">
                   <label for="rg" class="form-label">RG</label>
                   <input
+                    id="rg"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('rg')"
                     formControlName="rg"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('rg') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-3">
-                  <label for="sexo" class="form-label">Sexo</label>
+                  <label for="sexo" class="form-label">Sexo <span class="text-danger">*</span></label>
                   <select
+                    id="sexo"
                     class="form-select form-select-sm"
+                    [class.is-invalid]="isFieldInvalid('sexo')"
                     formControlName="sexo"
                   >
+                    <option value="">Selecione</option>
                     <option value="M">Masculino</option>
                     <option value="F">Feminino</option>
                     <option value="O">Outro</option>
                   </select>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('sexo') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-3">
-                  <label for="dataNascimento" class="form-label"
-                    >Data de Nascimento</label
-                  >
+                  <label for="dataNascimento" class="form-label">
+                    Data de Nascimento <span class="text-danger">*</span>
+                  </label>
                   <input
+                    id="dataNascimento"
                     type="date"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('dataNascimento')"
                     formControlName="dataNascimento"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('dataNascimento') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-3">
-                  <label for="estadoCivil" class="form-label"
-                    >Estado Civil</label
-                  >
+                  <label for="estadoCivil" class="form-label">Estado Civil</label>
                   <select
+                    id="estadoCivil"
                     class="form-select form-select-sm"
+                    [class.is-invalid]="isFieldInvalid('estadoCivil')"
                     formControlName="estadoCivil"
                   >
+                    <option value="">Selecione</option>
                     <option value="S">Solteiro</option>
                     <option value="C">Casado</option>
                     <option value="D">Divorciado</option>
                     <option value="V">Viúvo</option>
                   </select>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('estadoCivil') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-3">
                   <label for="profissao" class="form-label">Profissão</label>
                   <input
+                    id="profissao"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('profissao')"
                     formControlName="profissao"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('profissao') as error">
+                    {{ error }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -116,34 +150,50 @@
               <h5 class="mb-0">Informações de Contato</h5>
             </div>
             <div class="card-body">
-              <div class="row">
+              <div class="row g-3">
                 <div class="col-md-4">
                   <label for="celular" class="form-label">Celular</label>
                   <input
+                    id="celular"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('celular')"
                     formControlName="celular"
                     mask="(00) 00000-0000"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('celular') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-4">
                   <label for="telefone" class="form-label">Telefone</label>
                   <input
+                    id="telefone"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('telefone')"
                     formControlName="telefone"
                     mask="(00) 0000-0000"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('telefone') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-4">
                   <label for="email" class="form-label">E-mail</label>
                   <input
+                    id="email"
                     type="email"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('email')"
                     formControlName="email"
+                    placeholder="email@dominio.com"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('email') as error">
+                    {{ error }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -154,88 +204,125 @@
               <h5 class="mb-0">Endereço</h5>
             </div>
             <div class="card-body">
-              <div class="row">
+              <div class="row g-3">
                 <div class="col-md-3">
                   <label for="cep" class="form-label">CEP</label>
                   <div class="input-group input-group-sm">
                     <input
+                      id="cep"
                       type="text"
                       class="form-control form-control-sm"
+                      [class.is-invalid]="isFieldInvalid('cep')"
                       formControlName="cep"
-                      id="cep"
                       mask="00000-000"
                     />
-                    <button
-                      class="btn btn-outline-secondary"
-                      type="button"
-                      (click)="buscarCEP()"
-                    >
+                    <button class="btn btn-outline-secondary" type="button" (click)="buscarCEP()">
                       <i class="bi bi-search"></i>
                     </button>
+                  </div>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('cep') as error">
+                    {{ error }}
                   </div>
                 </div>
 
                 <div class="col-md-3">
                   <label for="bairro" class="form-label">Bairro</label>
                   <input
+                    id="bairro"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('bairro')"
                     formControlName="bairro"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('bairro') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-3">
                   <label for="cidade" class="form-label">Cidade</label>
                   <input
+                    id="cidade"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('cidade')"
                     formControlName="cidade"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('cidade') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-1 col-6">
                   <label for="uf" class="form-label">UF</label>
                   <input
+                    id="uf"
                     type="text"
-                    class="form-control form-control-sm"
+                    class="form-control form-control-sm text-uppercase"
+                    [class.is-invalid]="isFieldInvalid('uf')"
                     formControlName="uf"
-                    mask="AA"
+                    maxlength="2"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('uf') as error">
+                    {{ error }}
+                  </div>
                 </div>
+
                 <div class="col-md-2 col-6">
                   <label for="pais" class="form-label">País</label>
                   <input
+                    id="pais"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('pais')"
                     formControlName="pais"
+                    placeholder="Brasil"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('pais') as error">
+                    {{ error }}
+                  </div>
                 </div>
+
                 <div class="col-md-3">
                   <label for="numero" class="form-label">Número</label>
                   <input
+                    id="numero"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('numero')"
                     formControlName="numero"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('numero') as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-3">
-                  <label for="complemento" class="form-label"
-                    >Complemento</label
-                  >
+                  <label for="complemento" class="form-label">Complemento</label>
                   <input
+                    id="complemento"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('complemento')"
                     formControlName="complemento"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('complemento') as error">
+                    {{ error }}
+                  </div>
                 </div>
+
                 <div class="col-md-6">
                   <label for="logradouro" class="form-label">Logradouro</label>
                   <input
+                    id="logradouro"
                     type="text"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('logradouro')"
                     formControlName="logradouro"
                   />
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('logradouro') as error">
+                    {{ error }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -243,47 +330,40 @@
 
           <div class="card mb-4">
             <div class="card-header">
-              <h5 class="mb-0">Convênio</h5>
+              <h5 class="mb-0">Convênio e Referência</h5>
             </div>
             <div class="card-body">
-              <div class="row">
+              <div class="row g-3">
                 <div class="col-md-4">
                   <label for="convenioId" class="form-label">Convênio</label>
                   <select
+                    id="convenioId"
                     class="form-select form-select-sm"
                     formControlName="convenioId"
                   >
-                    <option value="null">Selecione...</option>
-                    @for (item of convenios; track $index) {
-                    <option value="{{ item.id }}">{{ item.nome }}</option>
+                    <option [ngValue]="null">Selecione...</option>
+                    @for (item of convenios; track item.id) {
+                      <option [ngValue]="item.id">{{ item.nome }}</option>
                     }
                   </select>
                 </div>
+
                 <div class="col-md-4 d-none">
-                  <label for="comoConheceu" class="form-label">Plano</label>
-                  <select
-                    formControlName="planoId"
-                    class="form-select form-select-sm"
-                    id=""
-                  >
-                    <option value="null">Selecione...</option>
-                    @for (item of planos; track $index) {
-                    <option value="{{ item.id }}">{{ item.descricao }}</option>
+                  <label for="planoId" class="form-label">Plano</label>
+                  <select id="planoId" formControlName="planoId" class="form-select form-select-sm">
+                    <option [ngValue]="null">Selecione...</option>
+                    @for (item of planos; track item.id) {
+                      <option [ngValue]="item.id">{{ item.descricao }}</option>
                     }
                   </select>
                 </div>
+
                 <div class="col-md-4">
-                  <label for="comoConheceu" class="form-label"
-                    >Profissional</label
-                  >
-                  <select
-                    formControlName="profissionalId"
-                    class="form-select form-select-sm"
-                    id=""
-                  >
-                    <option value="null">Selecione...</option>
-                    @for (item of profissionais; track $index) {
-                    <option value="{{ item.id }}">{{ item.nome }}</option>
+                  <label for="profissionalId" class="form-label">Profissional de referência</label>
+                  <select id="profissionalId" formControlName="profissionalId" class="form-select form-select-sm">
+                    <option [ngValue]="null">Selecione...</option>
+                    @for (item of profissionais; track item.id) {
+                      <option [ngValue]="item.id">{{ item.nome }}</option>
                     }
                   </select>
                 </div>
@@ -293,15 +373,14 @@
 
           <div class="card mb-4">
             <div class="card-header">
-              <h5 class="mb-0">Preferencias e como conheceu</h5>
+              <h5 class="mb-0">Preferências e Origem do Contato</h5>
             </div>
             <div class="card-body">
-              <div class="row">
+              <div class="row g-3">
                 <div class="col-md-4">
-                  <label for="preferenciaDeContato" class="form-label"
-                    >Preferência de Contato</label
-                  >
+                  <label for="preferenciaDeContato" class="form-label">Preferência de Contato</label>
                   <select
+                    id="preferenciaDeContato"
                     class="form-select form-select-sm"
                     formControlName="preferenciaDeContato"
                   >
@@ -309,29 +388,34 @@
                     <option value="E">E-mail</option>
                     <option value="W">WhatsApp</option>
                   </select>
+                  <div class="form-text">
+                    A preferência escolhida define qual contato precisa ser preenchido.
+                  </div>
+                  <div class="invalid-feedback d-block" *ngIf="getPreferredContactError() as error">
+                    {{ error }}
+                  </div>
                 </div>
 
                 <div class="col-md-4">
-                  <label for="permitirLembretes" class="form-label"
-                    >Permitir Lembretes</label
-                  >
+                  <label for="permitirLembretes" class="form-label">Permitir Lembretes</label>
                   <select
+                    id="permitirLembretes"
                     class="form-select form-select-sm"
                     formControlName="permitirLembretes"
                   >
-                    <option value="true">Sim</option>
-                    <option value="false">Não</option>
+                    <option [ngValue]="true">Sim</option>
+                    <option [ngValue]="false">Não</option>
                   </select>
                 </div>
+
                 <div class="col-md-4">
-                  <label for="comoConheceu" class="form-label"
-                    >Como Conheceu</label
-                  >
+                  <label for="comoConheceu" class="form-label">Como Conheceu</label>
                   <select
+                    id="comoConheceu"
                     formControlName="comoConheceu"
                     class="form-select form-select-sm"
                   >
-                    <option selected value="">Selecione uma opção</option>
+                    <option value="">Selecione uma opção</option>
                     <option value="1">Facebook</option>
                     <option value="2">Instagram</option>
                     <option value="3">Google</option>
@@ -347,31 +431,40 @@
 
           <div class="card mb-4">
             <div class="card-header">
-              <h5 class="mb-0">Informações Básicas</h5>
+              <h5 class="mb-0">Informações Clínicas Iniciais</h5>
             </div>
             <div class="card-body">
-              <div class="row">
+              <div class="row g-3">
                 <div class="col-md-6">
-                  <label for="breveDiagnostico" class="form-label"
-                    >Breve Diagnostico</label
-                  >
+                  <label for="breveDiagnostico" class="form-label">Queixa inicial / resumo clínico</label>
                   <textarea
-                    type="text"
+                    id="breveDiagnostico"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('breveDiagnostico')"
                     formControlName="breveDiagnostico"
-                  >
-                  </textarea>
+                    rows="4"
+                    placeholder="Ex.: dor lombar, sensibilidade dentária, motivo da procura, hipótese inicial"
+                  ></textarea>
+                  <div class="form-text">Use este campo para resumir a demanda inicial do paciente.</div>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('breveDiagnostico') as error">
+                    {{ error }}
+                  </div>
                 </div>
+
                 <div class="col-md-6">
-                  <label for="medicamento" class="form-label"
-                    >Medicamento</label
-                  >
+                  <label for="medicamento" class="form-label">Medicações em uso</label>
                   <textarea
-                    type="text"
+                    id="medicamento"
                     class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('medicamento')"
                     formControlName="medicamento"
-                  >
-                  </textarea>
+                    rows="4"
+                    placeholder="Informe medicamentos de uso contínuo ou relevantes para o atendimento"
+                  ></textarea>
+                  <div class="form-text">Também pode ser usado para observações medicamentosas relevantes para fisio ou odontologia.</div>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('medicamento') as error">
+                    {{ error }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -384,15 +477,14 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-md-6">
-                  <label for="responsavel" class="form-label"
-                    >Responsável</label
-                  >
+                  <label for="responsavel" class="form-label">Responsável</label>
                   <select
+                    id="responsavel"
                     class="form-select form-select-sm"
                     formControlName="responsavel"
                   >
-                    <option value="true">Sim</option>
-                    <option value="false">Não</option>
+                    <option [ngValue]="true">Sim</option>
+                    <option [ngValue]="false">Não</option>
                   </select>
                 </div>
               </div>
@@ -400,6 +492,7 @@
           </div>
         </form>
       </div>
+
       <div class="modal-footer justify-content-end">
         <app-button-action
           text="Confirmar"

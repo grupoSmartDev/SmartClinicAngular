@@ -52,7 +52,7 @@ export class AgendaService {
     let params = new HttpParams();
     params = params.set('id', id.toString());
     params = params.set('statusNovo', statusNovo.toString());
-    params = params.set('dataNova', novaData.toString());
+    params = params.set('dataNova', this.formatarDataParaAPI(novaData));
     params = params.set('horaInicioNovo', novaHoraInicio.toString());
     params = params.set('horaFimNovo', novaHoraFim.toString());
 
@@ -89,7 +89,7 @@ export class AgendaService {
 
     let params = new HttpParams();
 
-    if (page) params = params.set('page', page.toString());
+    if (page) params = params.set('pageNumber', page.toString());
     if (pageSize) params = params.set('pageSize', pageSize.toString());
     if (pacienteIdFiltro) params = params.set('pacienteIdFiltro', pacienteIdFiltro);
     if (profissionalIdFiltro) params = params.set('profissionalIdFiltro', profissionalIdFiltro);

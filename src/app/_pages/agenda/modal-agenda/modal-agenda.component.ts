@@ -23,10 +23,9 @@ import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service'
 import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
 import { SalasService } from '../../../_services/salas.service';
 import { map } from 'rxjs/operators';
-import { Paciente, PacienteCadastroRapidoDto } from '../../../_module/pacienteModule';
+import { Paciente } from '../../../_module/pacienteModule';
 import { PacienteService } from '../../../_services/paciente.service';
 import { ResponseModel } from '../../../_module/ResponseModule';
-import { Router } from '@angular/router';
 import { TabService } from '../../../_services/tabs.service';
 import { PacienteCompletoComponent } from '../../paciente/paciente-completo/paciente-completo.component';
 
@@ -59,7 +58,6 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
   searchTerm: string = '';
   filteredPatients: Paciente[] = [];
   isLoading = false;
-  pacienteCadastroRapido: PacienteCadastroRapidoDto = {} as PacienteCadastroRapidoDto;
   pacienteCadastroRapidoNovo: Paciente = {} as Paciente;
 
   listaStatus: Status[] = [];
@@ -75,7 +73,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
   recorrenciaAtiva = false;
   dataFimRecorrencia: string = '';
 
-  patients!: Paciente[];
+  patients: Paciente[] = [];
 
   diasDaSemana = [
     { id: 0, nome: 'Domingo' },
@@ -99,7 +97,6 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     private formaPagamentoService: FormaPagamentoService,
     private salaService: SalasService,
     private toastr: ToastrService,
-    private router: Router,
     private tabService: TabService, // Adicione esta linha
   ) {
     this.initializeForm();
@@ -163,7 +160,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
       profissionalId: [null, [Validators.required]],
       convenioId: [null],
       avulso: [false],
-      statusId: [null],
+      statusId: [1, [Validators.required]],
       salaId: [null, [Validators.required]],
       pacoteId: [null],
       financReceberId: [null],
@@ -280,32 +277,18 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
 
     this.initReagendamentoForm();
 
-    console.log(this.selectedEvent, this.selectedDate);
     if (!this.selectedEvent && this.selectedDate) {
       this.formulario.patchValue({
         data: this.selectedDate,
         horaInicio: '08:00',
-        horaFim: '09:00'
+        horaFim: '09:00',
+        statusId: 1
       });
     } else if (this.selectedEvent) {
       this.populateForm(this.selectedEvent);
     }
 
     this.atualizarValidacoesFinanceiras(this.formulario.get('avulso')?.value === true);
-
-    if (this.eventoEscolhido) {
-
-      this.pacienteService.Listar().subscribe({
-        next: (result) => {
-          this.patients = result.dados;
-        }
-      })
-
-
-      let inputPaciente = document.getElementById('paciente') as HTMLInputElement;
-      inputPaciente.value = this.patients.filter((x: any) => x.id == this.eventoEscolhido.pacienteId)[0].nome ?? '';
-
-    }
 
     this.formulario.get('horaInicio')?.valueChanges.subscribe(() => {
       this.updateDiasRecorrenciaDefaults();
@@ -331,7 +314,13 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     console.log('Modal: Inicializando dados com:', this.selectedDate, this.selectedEvent);
 
     // Resetar o formulário antes de qualquer preenchimento
-    this.formulario.reset();
+    this.formulario.reset({
+      avulso: false,
+      recorrencia: false,
+      statusId: 1
+    });
+    this.searchTerm = '';
+    this.filteredPatients = [];
 
     // Aplicar as validações iniciais
     this.atualizarValidacoesFinanceiras(false);
@@ -345,7 +334,8 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
         data: this.selectedDate,
         horaInicio: '08:00',
         horaFim: '09:00',
-        avulso: false
+        avulso: false,
+        statusId: 1
       });
     } else if (this.selectedEvent) {
       eventoExistente = true;
@@ -442,7 +432,8 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
           profissional: this.getProfissional(),
           sala: this.getSala(),
           formaPagamento: this.getFP(),
-          tipoPagamento: this.getTP()
+          tipoPagamento: this.getTP(),
+          pacientes: this.getPacientes()
         }).pipe(
           catchError(error => {
             this.toastr.error('Erro ao carregar dados iniciais', 'Erro');
@@ -453,7 +444,8 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
               profissional: [],
               sala: [],
               formaPagamento: [],
-              tipoPagamento: []
+              tipoPagamento: [],
+              pacientes: []
             });
           })
         )
@@ -466,6 +458,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
       this.listaSala = results.sala;
       this.listaFormaPagamento = results.formaPagamento;
       this.listaTipoPagamento = results.tipoPagamento;
+      this.patients = results.pacientes;
     } catch (error) {
       this.handleError('Erro ao carregar dados iniciais', error);
     } finally {
@@ -478,6 +471,11 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
   }
 
   onSearch(): void {
+    if (!this.patients.length) {
+      this.filteredPatients = [];
+      return;
+    }
+
     if (this.searchTerm.length >= 3) {
       this.filteredPatients = this.patients.filter(patient =>
         patient.nome?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -492,7 +490,10 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
   selectPatient(patient: Paciente): void {
     this.formulario.patchValue({
       pacienteId: patient.id,
-      'financReceber.pacienteId': patient.id
+      financReceber: {
+        ...this.formulario.get('financReceber')?.value,
+        pacienteId: patient.id
+      }
     });
     this.searchTerm = patient.nome || '';
     this.filteredPatients = [];
@@ -568,16 +569,19 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     if (modalElement) {
       const inputClientePesquisa = document.getElementById('patientName') as HTMLInputElement;
       inputClientePesquisa.value = '';
-      this.formulario.reset();
+      this.searchTerm = '';
+      this.filteredPatients = [];
+      this.formulario.reset({
+        avulso: false,
+        recorrencia: false,
+        statusId: 1
+      });
       const bootstrapModal = bootstrap.Modal.getInstance(modalElement);
       bootstrapModal?.hide();
     }
   }
 
   async onSubmit(): Promise<void> {
-
-    console.log('Formulário submetido:', this.formulario.value);
-
     // Validar apenas os campos relevantes com base no status de avulso
     const isAvulso = this.formulario.get('avulso')?.value === true;
 
@@ -602,6 +606,15 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     this.isLoading = true;
     try {
       const agendaData = this.prepararDadosAgenda();
+      const agendaDisponivel = await this.validarDisponibilidadeAgendamento(
+        agendaData,
+        agendaData.id ? Number(agendaData.id) : null
+      );
+
+      if (!agendaDisponivel) {
+        return;
+      }
+
       let result;
 
       if (agendaData.id) {
@@ -644,8 +657,8 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     this.fecharModal(); // Fecha o modal principal
 
     // Abrir nova aba para o paciente usando TabService
-    const path = `/pacientes/listar/${pacienteId}`;
-    const title = `Paciente`;
+    const path = `/paciente/${pacienteId}`;
+    const title = `Paciente #${pacienteId}`;
 
     this.tabService.openTab({ path, title });
   }
@@ -1003,6 +1016,125 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     );
   }
 
+  private getPacientes(): Observable<Paciente[]> {
+    return this.pacienteService.Listar(undefined, undefined, undefined, undefined, undefined, undefined, false).pipe(
+      map(response => response?.dados || []),
+      catchError(error => {
+        console.error('Erro ao buscar pacientes:', error);
+        return of([]);
+      })
+    );
+  }
+
+  private async validarDisponibilidadeAgendamento(
+    agendaData: Partial<Agenda>,
+    agendaIdIgnorar: number | null
+  ): Promise<boolean> {
+    const dataAgendamento = agendaData.data;
+    const horaInicio = agendaData.horaInicio;
+    const horaFim = agendaData.horaFim;
+    const profissionalId = this.toNumber(agendaData.profissionalId);
+    const salaId = this.toNumber(agendaData.salaId);
+
+    if (!dataAgendamento || !horaInicio || !horaFim || (!profissionalId && !salaId)) {
+      return true;
+    }
+
+    try {
+      const response = await firstValueFrom(
+        this.agendaService.ListarGeral(
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          dataAgendamento as Date,
+          dataAgendamento as Date,
+          false
+        )
+      );
+
+      const agendasDoDia = response?.dados || [];
+      const conflito = agendasDoDia.find((agenda) => {
+        if (agendaIdIgnorar !== null && Number(agenda.id) === agendaIdIgnorar) {
+          return false;
+        }
+
+        if (!this.agendaOcupaHorario(agenda.statusId)) {
+          return false;
+        }
+
+        const mesmoProfissional =
+          profissionalId !== null && this.toNumber(agenda.profissionalId) === profissionalId;
+        const mesmaSala = salaId !== null && this.toNumber(agenda.salaId) === salaId;
+
+        if (!mesmoProfissional && !mesmaSala) {
+          return false;
+        }
+
+        return this.horariosConflitam(horaInicio, horaFim, agenda.horaInicio, agenda.horaFim);
+      });
+
+      if (!conflito) {
+        return true;
+      }
+
+      const recursosConflitantes: string[] = [];
+      if (profissionalId !== null && this.toNumber(conflito.profissionalId) === profissionalId) {
+        recursosConflitantes.push('profissional');
+      }
+      if (salaId !== null && this.toNumber(conflito.salaId) === salaId) {
+        recursosConflitantes.push('sala');
+      }
+
+      this.toastr.error(
+        `Já existe agendamento para ${recursosConflitantes.join(' e ')} nesse horário.`,
+        'Conflito de agenda'
+      );
+      return false;
+    } catch (error) {
+      this.handleError('Erro ao validar disponibilidade do agendamento', error);
+      return false;
+    }
+  }
+
+  private agendaOcupaHorario(statusId?: string): boolean {
+    const statusNumero = this.toNumber(statusId);
+    return statusNumero === null || ![5, 6, 8].includes(statusNumero);
+  }
+
+  private horariosConflitam(inicioA: string, fimA: string, inicioB: string, fimB: string): boolean {
+    const inicioPrincipal = this.timeToMinutes(inicioA);
+    const fimPrincipal = this.timeToMinutes(fimA);
+    const inicioComparacao = this.timeToMinutes(inicioB);
+    const fimComparacao = this.timeToMinutes(fimB);
+
+    if (
+      inicioPrincipal === null ||
+      fimPrincipal === null ||
+      inicioComparacao === null ||
+      fimComparacao === null
+    ) {
+      return false;
+    }
+
+    return inicioPrincipal < fimComparacao && fimPrincipal > inicioComparacao;
+  }
+
+  private timeToMinutes(time: string): number | null {
+    if (!time) {
+      return null;
+    }
+
+    const partes = time.substring(0, 5).split(':').map(Number);
+    if (partes.length !== 2 || partes.some(Number.isNaN)) {
+      return null;
+    }
+
+    return partes[0] * 60 + partes[1];
+  }
+
   private handleError(message: string, error: any): void {
     console.error(`${message}:`, error);
     let errorDetail = '';
@@ -1025,20 +1157,24 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
       this.isLoading = true;
 
       // Obter dados do objeto pacienteCadastroRapido que está vinculado ao formulário
-      const dataToSave: PacienteCadastroRapidoDto = this.pacienteCadastroRapido;
       const dataToSaves: Paciente = this.patientForm.value as Paciente;
 
       // Chamar o serviço para cadastrar o paciente
       this.pacienteService.Criar(dataToSaves).subscribe({
-        next: (response: ResponseModel<Paciente>) => {
+        next: async (response: ResponseModel<Paciente>) => {
           let status = response.status;
           if (status) {
             this.toastr.success(response.mensagem, 'Sucesso');
-            this.pacienteService.Listar().subscribe({
-              next: (result) => {
-                this.patients = result.dados;
-              }
-            })
+            this.patients = await firstValueFrom(this.getPacientes());
+            const pacienteCriado = this.patients.find((item) =>
+              item.cpf === dataToSaves.cpf || item.nome === dataToSaves.nome
+            );
+
+            if (pacienteCriado) {
+              this.selectPatient(pacienteCriado);
+            } else {
+              this.searchTerm = dataToSaves.nome || '';
+            }
           }
           else {
             this.toastr.error(response.mensagem, 'Erro');
@@ -1165,11 +1301,27 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
         data: novaData,
         horaInicio: novaHoraInicio,
         horaFim: novaHoraFim,
-        statusId: 3 // Status para "Reagendado" - ajuste conforme seu sistema
+        statusId: '7'
       };
 
-      // Salvar reagendamento
-      await firstValueFrom(this.agendaService.Reagendar(agendaAtualizada.id, parseInt(agendaAtualizada.statusId!), agendaAtualizada.data, agendaAtualizada.horaInicio, agendaAtualizada.horaFim));
+      const agendaDisponivel = await this.validarDisponibilidadeAgendamento(
+        agendaAtualizada,
+        this.toNumber(this.selectedEvent?.id)
+      );
+
+      if (!agendaDisponivel) {
+        return;
+      }
+
+      await firstValueFrom(
+        this.agendaService.Reagendar(
+          agendaAtualizada.id,
+          parseInt(agendaAtualizada.statusId!, 10),
+          agendaAtualizada.data,
+          agendaAtualizada.horaInicio,
+          agendaAtualizada.horaFim
+        )
+      );
 
       // Registrar histórico do reagendamento se necessário
       // Implementação opcional

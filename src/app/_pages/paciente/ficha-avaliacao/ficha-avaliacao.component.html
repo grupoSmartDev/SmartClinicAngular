@@ -1,4 +1,3 @@
-<!-- Modal -->
 <div
   #modalFichaAvaliacao
   class="modal fade"
@@ -13,9 +12,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">
-          Ficha de Avaliação
-        </h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Ficha de Avaliação</h1>
         <button
           type="button"
           class="btn-close"
@@ -24,218 +21,155 @@
           aria-label="Close"
         ></button>
       </div>
+
       <div class="modal-body">
-        <form [formGroup]="fichaForm" class="needs-validation">
-          <!-- Informações Básicas -->
+        <form [formGroup]="fichaForm" class="needs-validation" novalidate>
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Informações Básicas</h5>
             </div>
             <div class="card-body">
-              <div class="row">
-                <div class="col-md-3 mb-3">
+              <div class="row g-3">
+                <div class="col-md-3">
                   <label for="pacienteId" class="form-label">
-                    Cód. Cliente <span class="text-danger">*</span>
+                    Cód. Paciente <span class="text-danger">*</span>
                   </label>
                   <input
+                    id="pacienteId"
                     type="number"
                     class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('pacienteId')?.touched &&
-                      fichaForm.get('pacienteId')?.invalid
-                    "
-                    id="pacienteId"
+                    [class.is-invalid]="isFieldInvalid('pacienteId')"
                     formControlName="pacienteId"
                     readonly
                   />
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('pacienteId')?.errors?.['required']"
-                    >
-                      O código do cliente é obrigatório
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('pacienteId') as error">
+                    {{ error }}
                   </div>
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-3">
                   <label for="dataAvaliacao" class="form-label">
                     Data da Avaliação <span class="text-danger">*</span>
                   </label>
                   <input
+                    id="dataAvaliacao"
                     type="date"
                     class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('dataAvaliacao')?.touched &&
-                      fichaForm.get('dataAvaliacao')?.invalid
-                    "
-                    id="dataAvaliacao"
+                    [class.is-invalid]="isFieldInvalid('dataAvaliacao')"
                     formControlName="dataAvaliacao"
                   />
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('dataAvaliacao')?.errors?.['required']"
-                    >
-                      A data da avaliação é obrigatória
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('dataAvaliacao') as error">
+                    {{ error }}
                   </div>
                 </div>
 
-                <div class="col-md-3 mb-3">
-                  <label for="profissional" class="form-label">
+                <div class="col-md-3">
+                  <label for="profissionalId" class="form-label">
                     Profissional <span class="text-danger">*</span>
                   </label>
                   <select
+                    id="profissionalId"
                     class="form-select form-select-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('profissionalId')?.touched &&
-                      fichaForm.get('profissionalId')?.invalid
-                    "
+                    [class.is-invalid]="isFieldInvalid('profissionalId')"
                     formControlName="profissionalId"
                   >
                     <option value="">Selecione o profissional</option>
                     @for (item of listaProfissional; track item.id) {
-                    <option value="{{ item.id }}">{{ item.nome }}</option>
+                      <option [value]="item.id">{{ item.nome }}</option>
                     }
                   </select>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('profissionalId')?.errors?.['required']"
-                    >
-                      Selecione um profissional
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('profissionalId') as error">
+                    {{ error }}
                   </div>
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-3">
                   <label for="especialidade" class="form-label">
                     Especialidade <span class="text-danger">*</span>
                   </label>
                   <input
+                    id="especialidade"
                     type="text"
                     class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('especialidade')?.touched &&
-                      fichaForm.get('especialidade')?.invalid
-                    "
-                    id="especialidade"
+                    [class.is-invalid]="isFieldInvalid('especialidade')"
                     formControlName="especialidade"
+                    list="especialidadeSugestoes"
+                    placeholder="Ex.: Fisioterapia, Odontologia"
                   />
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('especialidade')?.errors?.['required']"
-                    >
-                      A especialidade é obrigatória
-                    </span>
-                    <span
-                      *ngIf="fichaForm.get('especialidade')?.errors?.['minlength']"
-                    >
-                      A especialidade deve ter pelo menos 2 caracteres
-                    </span>
+                  <datalist id="especialidadeSugestoes">
+                    <option value="Fisioterapia"></option>
+                    <option value="Odontologia"></option>
+                    <option value="Clínica geral"></option>
+                  </datalist>
+                  <div class="form-text">{{ getEspecialidadeHelperText() }}</div>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('especialidade') as error">
+                    {{ error }}
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Informações do Cliente -->
           <div class="card mb-4">
             <div class="card-header">
-              <h5 class="mb-0">Informações do Cliente</h5>
+              <h5 class="mb-0">Dados do Paciente</h5>
             </div>
             <div class="card-body">
-              <div class="row">
-                <div class="col-md-2 mb-3">
-                  <label for="idade" class="form-label">
-                    Idade <span class="text-danger">*</span>
-                  </label>
+              <div class="row g-3">
+                <div class="col-md-2">
+                  <label for="idade" class="form-label">Idade <span class="text-danger">*</span></label>
                   <input
+                    id="idade"
                     type="number"
                     class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('idade')?.touched &&
-                      fichaForm.get('idade')?.invalid
-                    "
-                    id="idade"
+                    [class.is-invalid]="isFieldInvalid('idade')"
                     formControlName="idade"
                   />
-                  <div class="invalid-feedback">
-                    <span *ngIf="fichaForm.get('idade')?.errors?.['required']">
-                      A idade é obrigatória
-                    </span>
-                    <span *ngIf="fichaForm.get('idade')?.errors?.['min']">
-                      A idade deve ser maior que 0
-                    </span>
-                    <span *ngIf="fichaForm.get('idade')?.errors?.['max']">
-                      A idade deve ser menor que 150
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('idade') as error">
+                    {{ error }}
                   </div>
                 </div>
 
-                <div class="col-md-2 mb-3">
+                <div class="col-md-2">
                   <label for="altura" class="form-label">
-                    Altura (cm) <span class="text-danger">*</span>
+                    Altura (cm)
+                    <span class="text-danger" *ngIf="requiresPhysicalMetrics()">*</span>
                   </label>
                   <input
+                    id="altura"
                     type="number"
                     class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('altura')?.touched &&
-                      fichaForm.get('altura')?.invalid
-                    "
-                    id="altura"
+                    [class.is-invalid]="isFieldInvalid('altura')"
                     formControlName="altura"
                   />
-                  <div class="invalid-feedback">
-                    <span *ngIf="fichaForm.get('altura')?.errors?.['required']">
-                      A altura é obrigatória
-                    </span>
-                    <span *ngIf="fichaForm.get('altura')?.errors?.['min']">
-                      A altura deve ser maior que 50cm
-                    </span>
-                    <span *ngIf="fichaForm.get('altura')?.errors?.['max']">
-                      A altura deve ser menor que 250cm
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('altura') as error">
+                    {{ error }}
                   </div>
                 </div>
 
-                <div class="col-md-2 mb-3">
+                <div class="col-md-2">
                   <label for="peso" class="form-label">
-                    Peso (kg) <span class="text-danger">*</span>
+                    Peso (kg)
+                    <span class="text-danger" *ngIf="requiresPhysicalMetrics()">*</span>
                   </label>
                   <input
+                    id="peso"
                     type="number"
                     class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('peso')?.touched &&
-                      fichaForm.get('peso')?.invalid
-                    "
-                    id="peso"
+                    [class.is-invalid]="isFieldInvalid('peso')"
                     formControlName="peso"
                   />
-                  <div class="invalid-feedback">
-                    <span *ngIf="fichaForm.get('peso')?.errors?.['required']">
-                      O peso é obrigatório
-                    </span>
-                    <span *ngIf="fichaForm.get('peso')?.errors?.['min']">
-                      O peso deve ser maior que 1kg
-                    </span>
-                    <span *ngIf="fichaForm.get('peso')?.errors?.['max']">
-                      O peso deve ser menor que 500kg
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('peso') as error">
+                    {{ error }}
                   </div>
                 </div>
 
-                <div class="col-md-3 mb-3">
-                  <label for="sexo" class="form-label">
-                    Sexo <span class="text-danger">*</span>
-                  </label>
+                <div class="col-md-3">
+                  <label for="sexo" class="form-label">Sexo <span class="text-danger">*</span></label>
                   <select
-                    class="form-select form-select-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('sexo')?.touched &&
-                      fichaForm.get('sexo')?.invalid
-                    "
                     id="sexo"
+                    class="form-select form-select-sm"
+                    [class.is-invalid]="isFieldInvalid('sexo')"
                     formControlName="sexo"
                   >
                     <option value="">Selecione</option>
@@ -243,246 +177,161 @@
                     <option value="Feminino">Feminino</option>
                     <option value="Outro">Outro</option>
                   </select>
-                  <div class="invalid-feedback">
-                    <span *ngIf="fichaForm.get('sexo')?.errors?.['required']">
-                      Selecione o sexo
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('sexo') as error">
+                    {{ error }}
                   </div>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end" *ngIf="imcCalculado !== null">
+                  <div class="form-text fw-semibold">IMC calculado: {{ imcCalculado | number : '1.1-2' }}</div>
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-12 mb-3">
-                  <label for="observacoesGerais" class="form-label">
-                    Observações Gerais
-                  </label>
+              <div class="row mt-1">
+                <div class="col-12">
+                  <label for="observacoesGerais" class="form-label">Observações Gerais</label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('observacoesGerais')?.touched &&
-                      fichaForm.get('observacoesGerais')?.invalid
-                    "
                     id="observacoesGerais"
                     rows="3"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('observacoesGerais')"
                     formControlName="observacoesGerais"
+                    [placeholder]="getObservacoesPlaceholder()"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('observacoesGerais')?.errors?.['maxlength']"
-                    >
-                      As observações não podem exceder 500 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('observacoesGerais') as error">
+                    {{ error }}
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Histórico Médico -->
           <div class="card mb-4">
             <div class="card-header">
-              <h5 class="mb-0">Histórico Médico</h5>
+              <h5 class="mb-0">Histórico Clínico</h5>
             </div>
             <div class="card-body">
-              <!-- História Pregressa e Atual -->
-              <div class="row mb-3">
+              <div class="row g-3 mb-1">
                 <div class="col-md-6">
-                  <label for="historiaPregressa" class="form-label">
-                    História Pregressa
-                  </label>
+                  <label for="historiaPregressa" class="form-label">História Pregressa</label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('historiaPregressa')?.touched &&
-                      fichaForm.get('historiaPregressa')?.invalid
-                    "
                     id="historiaPregressa"
                     rows="3"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('historiaPregressa')"
                     formControlName="historiaPregressa"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('historiaPregressa')?.errors?.['maxlength']"
-                    >
-                      A história pregressa não pode exceder 1000 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('historiaPregressa') as error">
+                    {{ error }}
                   </div>
                 </div>
+
                 <div class="col-md-6">
-                  <label for="historiaAtual" class="form-label">
-                    História Atual
-                  </label>
+                  <label for="historiaAtual" class="form-label">História Atual</label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('historiaAtual')?.touched &&
-                      fichaForm.get('historiaAtual')?.invalid
-                    "
                     id="historiaAtual"
                     rows="3"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('historiaAtual')"
                     formControlName="historiaAtual"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('historiaAtual')?.errors?.['maxlength']"
-                    >
-                      A história atual não pode exceder 1000 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('historiaAtual') as error">
+                    {{ error }}
                   </div>
                 </div>
               </div>
 
-              <!-- Tipo de Dor e Sinais Vitais -->
-              <div class="row mb-3">
+              <div class="row g-3 mb-1">
                 <div class="col-md-6">
-                  <label for="tipoDor" class="form-label">Tipo de Dor</label>
+                  <label for="tipoDor" class="form-label">{{ getTipoDorLabel() }}</label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('tipoDor')?.touched &&
-                      fichaForm.get('tipoDor')?.invalid
-                    "
                     id="tipoDor"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('tipoDor')"
                     formControlName="tipoDor"
+                    [placeholder]="getTipoDorPlaceholder()"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('tipoDor')?.errors?.['maxlength']"
-                    >
-                      O tipo de dor não pode exceder 500 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('tipoDor') as error">
+                    {{ error }}
                   </div>
                 </div>
+
                 <div class="col-md-6">
-                  <label for="sinaisVitais" class="form-label">
-                    Sinais Vitais
-                  </label>
+                  <label for="sinaisVitais" class="form-label">Sinais vitais / achados relevantes</label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('sinaisVitais')?.touched &&
-                      fichaForm.get('sinaisVitais')?.invalid
-                    "
                     id="sinaisVitais"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('sinaisVitais')"
                     formControlName="sinaisVitais"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('sinaisVitais')?.errors?.['maxlength']"
-                    >
-                      Os sinais vitais não podem exceder 500 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('sinaisVitais') as error">
+                    {{ error }}
                   </div>
                 </div>
               </div>
 
-              <!-- Doenças Crônicas e Neurodegenerativas -->
-              <div class="row mb-3">
+              <div class="row g-3 mb-1">
                 <div class="col-md-6">
-                  <label for="doencasCronicas" class="form-label">
-                    Doenças Crônicas
-                  </label>
+                  <label for="doencasCronicas" class="form-label">Doenças Crônicas</label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('doencasCronicas')?.touched &&
-                      fichaForm.get('doencasCronicas')?.invalid
-                    "
                     id="doencasCronicas"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('doencasCronicas')"
                     formControlName="doencasCronicas"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('doencasCronicas')?.errors?.['maxlength']"
-                    >
-                      As doenças crônicas não podem exceder 500 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('doencasCronicas') as error">
+                    {{ error }}
                   </div>
                 </div>
+
                 <div class="col-md-6">
-                  <label for="doencaNeurodegenerativa" class="form-label">
-                    Doença Neurodegenerativa
-                  </label>
+                  <label for="doencaNeurodegenerativa" class="form-label">Doença Neurodegenerativa</label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('doencaNeurodegenerativa')?.touched &&
-                      fichaForm.get('doencaNeurodegenerativa')?.invalid
-                    "
                     id="doencaNeurodegenerativa"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('doencaNeurodegenerativa')"
                     formControlName="doencaNeurodegenerativa"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('doencaNeurodegenerativa')?.errors?.['maxlength']"
-                    >
-                      A doença neurodegenerativa não pode exceder 500 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('doencaNeurodegenerativa') as error">
+                    {{ error }}
                   </div>
                 </div>
               </div>
 
-              <!-- Tratamentos e Alergias a Medicamentos -->
-              <div class="row mb-3">
+              <div class="row g-3 mb-3">
                 <div class="col-md-6">
-                  <label for="tratamentosRealizados" class="form-label">
-                    Tratamentos Realizados
-                  </label>
+                  <label for="tratamentosRealizados" class="form-label">Tratamentos Realizados</label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('tratamentosRealizados')?.touched &&
-                      fichaForm.get('tratamentosRealizados')?.invalid
-                    "
                     id="tratamentosRealizados"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('tratamentosRealizados')"
                     formControlName="tratamentosRealizados"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('tratamentosRealizados')?.errors?.['maxlength']"
-                    >
-                      Os tratamentos realizados não podem exceder 1000
-                      caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('tratamentosRealizados') as error">
+                    {{ error }}
                   </div>
                 </div>
+
                 <div class="col-md-6">
-                  <label for="alergiaMedicamentos" class="form-label">
-                    Alergia a Medicamentos
-                  </label>
+                  <label for="alergiaMedicamentos" class="form-label">Alergia a Medicamentos</label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('alergiaMedicamentos')?.touched &&
-                      fichaForm.get('alergiaMedicamentos')?.invalid
-                    "
                     id="alergiaMedicamentos"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('alergiaMedicamentos')"
                     formControlName="alergiaMedicamentos"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('alergiaMedicamentos')?.errors?.['maxlength']"
-                    >
-                      As alergias a medicamentos não podem exceder 500
-                      caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('alergiaMedicamentos') as error">
+                    {{ error }}
                   </div>
                 </div>
               </div>
 
-              <!-- Hábitos -->
-              <div class="row mb-3">
+              <div class="row g-3 mb-3">
                 <div class="col-md-4">
-                  <label for="frequenciaConsumoAlcool" class="form-label">
-                    Frequência de Consumo de Álcool
-                  </label>
+                  <label for="frequenciaConsumoAlcool" class="form-label">Frequência de Consumo de Álcool</label>
                   <select
-                    class="form-select form-select-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('frequenciaConsumoAlcool')?.touched &&
-                      fichaForm.get('frequenciaConsumoAlcool')?.invalid
-                    "
                     id="frequenciaConsumoAlcool"
+                    class="form-select form-select-sm"
                     formControlName="frequenciaConsumoAlcool"
                   >
                     <option value="">Selecione</option>
@@ -492,14 +341,8 @@
                     <option value="Frequentemente">Frequentemente</option>
                     <option value="Diariamente">Diariamente</option>
                   </select>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('frequenciaConsumoAlcool')?.errors?.['required']"
-                    >
-                      Selecione a frequência de consumo de álcool
-                    </span>
-                  </div>
                 </div>
+
                 <div class="col-md-4 d-flex align-items-center">
                   <div class="form-check">
                     <input
@@ -508,11 +351,10 @@
                       id="praticaAtividade"
                       formControlName="praticaAtividade"
                     />
-                    <label class="form-check-label" for="praticaAtividade">
-                      Pratica Atividade Física
-                    </label>
+                    <label class="form-check-label" for="praticaAtividade">Pratica atividade física</label>
                   </div>
                 </div>
+
                 <div class="col-md-4 d-flex align-items-center">
                   <div class="form-check">
                     <input
@@ -521,15 +363,13 @@
                       id="tabagista"
                       formControlName="tabagista"
                     />
-                    <label class="form-check-label" for="tabagista">
-                      Tabagista
-                    </label>
+                    <label class="form-check-label" for="tabagista">Tabagista</label>
                   </div>
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-md-6 mb-3">
+              <div class="row g-3">
+                <div class="col-md-6">
                   <div class="form-check">
                     <input
                       class="form-check-input"
@@ -537,44 +377,25 @@
                       id="historicoDoencas"
                       formControlName="historicoDoencas"
                     />
-                    <label class="form-check-label" for="historicoDoencas">
-                      Possui histórico de doenças?
-                    </label>
+                    <label class="form-check-label" for="historicoDoencas">Possui histórico de doenças?</label>
                   </div>
-                  <div
-                    class="mt-2"
-                    *ngIf="fichaForm.get('historicoDoencas')?.value"
-                  >
+                  <div class="mt-2" *ngIf="fichaForm.get('historicoDoencas')?.value">
                     <label for="doencasPreExistentes" class="form-label">
-                      Detalhe as doenças pré-existentes:
-                      <span class="text-danger">*</span>
+                      Detalhe as doenças pré-existentes <span class="text-danger">*</span>
                     </label>
                     <textarea
-                      class="form-control form-control-sm"
-                      [class.is-invalid]="
-                        fichaForm.get('doencasPreExistentes')?.touched &&
-                        fichaForm.get('doencasPreExistentes')?.invalid
-                      "
                       id="doencasPreExistentes"
+                      class="form-control form-control-sm"
+                      [class.is-invalid]="isFieldInvalid('doencasPreExistentes')"
                       formControlName="doencasPreExistentes"
                     ></textarea>
-                    <div class="invalid-feedback">
-                      <span
-                        *ngIf="fichaForm.get('doencasPreExistentes')?.errors?.['required']"
-                      >
-                        Detalhe as doenças pré-existentes
-                      </span>
-                      <span
-                        *ngIf="fichaForm.get('doencasPreExistentes')?.errors?.['maxlength']"
-                      >
-                        As doenças pré-existentes não podem exceder 1000
-                        caracteres
-                      </span>
+                    <div class="invalid-feedback d-block" *ngIf="getFieldError('doencasPreExistentes') as error">
+                      {{ error }}
                     </div>
                   </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6">
                   <div class="form-check">
                     <input
                       class="form-check-input"
@@ -582,44 +403,27 @@
                       id="medicacaoUsoContinuo"
                       formControlName="medicacaoUsoContinuo"
                     />
-                    <label class="form-check-label" for="medicacaoUsoContinuo">
-                      Faz uso de medicação contínua?
-                    </label>
+                    <label class="form-check-label" for="medicacaoUsoContinuo">Faz uso de medicação contínua?</label>
                   </div>
-                  <div
-                    class="mt-2"
-                    *ngIf="fichaForm.get('medicacaoUsoContinuo')?.value"
-                  >
+                  <div class="mt-2" *ngIf="fichaForm.get('medicacaoUsoContinuo')?.value">
                     <label for="medicacao" class="form-label">
-                      Quais medicações: <span class="text-danger">*</span>
+                      Quais medicações <span class="text-danger">*</span>
                     </label>
                     <textarea
-                      class="form-control form-control-sm"
-                      [class.is-invalid]="
-                        fichaForm.get('medicacao')?.touched &&
-                        fichaForm.get('medicacao')?.invalid
-                      "
                       id="medicacao"
+                      class="form-control form-control-sm"
+                      [class.is-invalid]="isFieldInvalid('medicacao')"
                       formControlName="medicacao"
                     ></textarea>
-                    <div class="invalid-feedback">
-                      <span
-                        *ngIf="fichaForm.get('medicacao')?.errors?.['required']"
-                      >
-                        Informe quais medicações são utilizadas
-                      </span>
-                      <span
-                        *ngIf="fichaForm.get('medicacao')?.errors?.['maxlength']"
-                      >
-                        As medicações não podem exceder 1000 caracteres
-                      </span>
+                    <div class="invalid-feedback d-block" *ngIf="getFieldError('medicacao') as error">
+                      {{ error }}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-md-6 mb-3">
+              <div class="row g-3 mt-1">
+                <div class="col-md-6">
                   <div class="form-check">
                     <input
                       class="form-check-input"
@@ -627,250 +431,158 @@
                       id="cirurgiasPrevias"
                       formControlName="cirurgiasPrevias"
                     />
-                    <label class="form-check-label" for="cirurgiasPrevias">
-                      Possui cirurgias prévias?
-                    </label>
+                    <label class="form-check-label" for="cirurgiasPrevias">Possui cirurgias prévias?</label>
                   </div>
-                  <div
-                    class="mt-2"
-                    *ngIf="fichaForm.get('cirurgiasPrevias')?.value"
-                  >
+                  <div class="mt-2" *ngIf="fichaForm.get('cirurgiasPrevias')?.value">
                     <label for="detalheCirurgias" class="form-label">
-                      Detalhe as cirurgias: <span class="text-danger">*</span>
+                      Detalhe as cirurgias <span class="text-danger">*</span>
                     </label>
                     <textarea
-                      class="form-control form-control-sm"
-                      [class.is-invalid]="
-                        fichaForm.get('detalheCirurgias')?.touched &&
-                        fichaForm.get('detalheCirurgias')?.invalid
-                      "
                       id="detalheCirurgias"
+                      class="form-control form-control-sm"
+                      [class.is-invalid]="isFieldInvalid('detalheCirurgias')"
                       formControlName="detalheCirurgias"
                     ></textarea>
-                    <div class="invalid-feedback">
-                      <span
-                        *ngIf="fichaForm.get('detalheCirurgias')?.errors?.['required']"
-                      >
-                        Detalhe as cirurgias realizadas
-                      </span>
-                      <span
-                        *ngIf="fichaForm.get('detalheCirurgias')?.errors?.['maxlength']"
-                      >
-                        O detalhe das cirurgias não pode exceder 1000 caracteres
-                      </span>
+                    <div class="invalid-feedback d-block" *ngIf="getFieldError('detalheCirurgias') as error">
+                      {{ error }}
                     </div>
                   </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6">
                   <label for="alergias" class="form-label">Alergias</label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('alergias')?.touched &&
-                      fichaForm.get('alergias')?.invalid
-                    "
                     id="alergias"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('alergias')"
                     formControlName="alergias"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('alergias')?.errors?.['maxlength']"
-                    >
-                      As alergias não podem exceder 500 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('alergias') as error">
+                    {{ error }}
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Queixa Principal e Objetivos -->
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Queixa Principal e Objetivos</h5>
             </div>
             <div class="card-body">
-              <div class="row">
-                <div class="col-md-6 mb-3">
+              <div class="row g-3">
+                <div class="col-md-6">
                   <label for="queixaPrincipal" class="form-label">
-                    Queixa Principal
+                    {{ getQueixaLabel() }} <span class="text-danger">*</span>
                   </label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('queixaPrincipal')?.touched &&
-                      fichaForm.get('queixaPrincipal')?.invalid
-                    "
                     id="queixaPrincipal"
                     rows="3"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('queixaPrincipal')"
                     formControlName="queixaPrincipal"
+                    [placeholder]="getQueixaPlaceholder()"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('queixaPrincipal')?.errors?.['required']"
-                    >
-                      A queixa principal é obrigatória
-                    </span>
-                    <span
-                      *ngIf="fichaForm.get('queixaPrincipal')?.errors?.['maxlength']"
-                    >
-                      A queixa principal não pode exceder 1000 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('queixaPrincipal') as error">
+                    {{ error }}
                   </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6">
                   <label for="objetivosDoTratamento" class="form-label">
-                    Objetivos do Tratamento
+                    Objetivos do Tratamento <span class="text-danger">*</span>
                   </label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('objetivosDoTratamento')?.touched &&
-                      fichaForm.get('objetivosDoTratamento')?.invalid
-                    "
                     id="objetivosDoTratamento"
                     rows="3"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('objetivosDoTratamento')"
                     formControlName="objetivosDoTratamento"
+                    [placeholder]="getObjetivosPlaceholder()"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('objetivosDoTratamento')?.errors?.['required']"
-                    >
-                      Os objetivos do tratamento são obrigatórios
-                    </span>
-                    <span
-                      *ngIf="fichaForm.get('objetivosDoTratamento')?.errors?.['maxlength']"
-                    >
-                      Os objetivos do tratamento não podem exceder 1000
-                      caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('objetivosDoTratamento') as error">
+                    {{ error }}
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Avaliações Específicas -->
           <div class="card mb-4">
             <div class="card-header">
               <h5 class="mb-0">Avaliações Específicas</h5>
             </div>
             <div class="card-body">
-              <div class="row">
-                <div class="col-md-6 mb-3">
+              <div class="form-text mb-3" *ngIf="requiresSpecificAssessment()">
+                Estes campos são obrigatórios quando a especialidade for fisioterapia.
+              </div>
+
+              <div class="row g-3">
+                <div class="col-md-6">
                   <label for="avaliacaoPostural" class="form-label">
-                    Avaliação Postural
+                    {{ getAvaliacaoPosturalLabel() }}
+                    <span class="text-danger" *ngIf="requiresSpecificAssessment()">*</span>
                   </label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('avaliacaoPostural')?.touched &&
-                      fichaForm.get('avaliacaoPostural')?.invalid
-                    "
                     id="avaliacaoPostural"
                     rows="3"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('avaliacaoPostural')"
                     formControlName="avaliacaoPostural"
+                    [placeholder]="getAvaliacaoPosturalPlaceholder()"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('avaliacaoPostural')?.errors?.['required']"
-                    >
-                      A avaliação postural é obrigatória
-                    </span>
-                    <span
-                      *ngIf="fichaForm.get('avaliacaoPostural')?.errors?.['maxlength']"
-                    >
-                      A avaliação postural não pode exceder 1000 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('avaliacaoPostural') as error">
+                    {{ error }}
                   </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6">
                   <label for="amplitudeMovimento" class="form-label">
-                    Amplitude de Movimento
+                    {{ getAmplitudeMovimentoLabel() }}
+                    <span class="text-danger" *ngIf="requiresSpecificAssessment()">*</span>
                   </label>
                   <textarea
-                    class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('amplitudeMovimento')?.touched &&
-                      fichaForm.get('amplitudeMovimento')?.invalid
-                    "
                     id="amplitudeMovimento"
                     rows="3"
+                    class="form-control form-control-sm"
+                    [class.is-invalid]="isFieldInvalid('amplitudeMovimento')"
                     formControlName="amplitudeMovimento"
+                    [placeholder]="getAmplitudeMovimentoPlaceholder()"
                   ></textarea>
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('amplitudeMovimento')?.errors?.['required']"
-                    >
-                      A amplitude de movimento é obrigatória
-                    </span>
-                    <span
-                      *ngIf="fichaForm.get('amplitudeMovimento')?.errors?.['maxlength']"
-                    >
-                      A amplitude de movimento não pode exceder 1000 caracteres
-                    </span>
+                  <div class="invalid-feedback d-block" *ngIf="getFieldError('amplitudeMovimento') as error">
+                    {{ error }}
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Assinaturas -->
           <div class="card mb-4 d-none">
             <div class="card-header">
               <h5 class="mb-0">Assinaturas</h5>
             </div>
             <div class="card-body">
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="assinaturaProfissional" class="form-label">
-                    Assinatura do Profissional
-                  </label>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="assinaturaProfissional" class="form-label">Assinatura do Profissional</label>
                   <input
+                    id="assinaturaProfissional"
                     type="file"
                     class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('assinaturaProfissional')?.touched &&
-                      fichaForm.get('assinaturaProfissional')?.invalid
-                    "
-                    id="assinaturaProfissional"
                     formControlName="assinaturaProfissional"
                     accept="image/*,.pdf"
                   />
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('assinaturaProfissional')?.errors?.['required']"
-                    >
-                      A assinatura do profissional é obrigatória
-                    </span>
-                  </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                  <label for="assinaturaCliente" class="form-label">
-                    Assinatura do Cliente
-                  </label>
+                <div class="col-md-6">
+                  <label for="assinaturaCliente" class="form-label">Assinatura do Paciente</label>
                   <input
+                    id="assinaturaCliente"
                     type="file"
                     class="form-control form-control-sm"
-                    [class.is-invalid]="
-                      fichaForm.get('assinaturaCliente')?.touched &&
-                      fichaForm.get('assinaturaCliente')?.invalid
-                    "
-                    id="assinaturaCliente"
                     formControlName="assinaturaCliente"
                     accept="image/*,.pdf"
                   />
-                  <div class="invalid-feedback">
-                    <span
-                      *ngIf="fichaForm.get('assinaturaCliente')?.errors?.['required']"
-                    >
-                      A assinatura do cliente é obrigatória
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>

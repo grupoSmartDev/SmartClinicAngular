@@ -12,17 +12,19 @@
               <div class="step"></div>
             </div>
           </div>
+
           <h2 class="mb-2">
-            Comece seu <span class="text-success">teste grátis!</span>
+            Comece seu <span class="text-success">teste gratis!</span>
           </h2>
           <p class="text-muted">
-            Você está a um passo de ter o ClinicSmart como aliado do crescimento
-            do seu negócio.
+            Voce esta a um passo de ter o ClinicSmart como aliado do crescimento
+            do seu negocio.
           </p>
 
           <div *ngIf="selectedPlanData" class="alert alert-info mt-3">
             <strong>Plano selecionado:</strong>
-            {{ selectedPlanData.plan | titlecase }} - <strong>Período:</strong>
+            {{ selectedPlanData.plan | titlecase }} -
+            <strong>Periodo:</strong>
             {{
               selectedPlanData.billing === "monthly" ? "Mensal" : "Semestral"
             }}
@@ -45,7 +47,7 @@
                     }"
                     (click)="onSelectOption('trial')"
                   >
-                    Teste Grátis (7 dias)
+                    Teste gratis (7 dias)
                   </button>
                   <button
                     type="button"
@@ -56,7 +58,7 @@
                     }"
                     (click)="onSelectOption('plan')"
                   >
-                    Assinar Plano
+                    Assinar plano
                   </button>
                 </div>
               </div>
@@ -69,16 +71,26 @@
                 class="form-control form-control-sm"
                 formControlName="Email"
                 id="email"
+                autocomplete="email"
                 placeholder="Insira seu e-mail profissional"
               />
               <div
                 *ngIf="
-                  signupForm.get('Email')!.invalid &&
+                  signupForm.get('Email')!.errors?.['required'] &&
                   signupForm.get('Email')!.touched
                 "
                 class="text-danger small mt-1"
               >
-                E-mail válido é obrigatório
+                E-mail e obrigatorio
+              </div>
+              <div
+                *ngIf="
+                  signupForm.get('Email')!.errors?.['email'] &&
+                  signupForm.get('Email')!.touched
+                "
+                class="text-danger small mt-1"
+              >
+                Informe um e-mail valido
               </div>
             </div>
 
@@ -99,9 +111,10 @@
                   "
                   class="text-danger small mt-1"
                 >
-                  Nome é obrigatório
+                  Nome e obrigatorio
                 </div>
               </div>
+
               <div class="col-md-6 mb-3">
                 <label for="sobrenome" class="form-label">Sobrenome</label>
                 <input
@@ -109,7 +122,7 @@
                   class="form-control form-control-sm"
                   formControlName="Sobrenome"
                   id="sobrenome"
-                  placeholder="Digite seu Sobrenome"
+                  placeholder="Digite seu sobrenome"
                 />
                 <div
                   *ngIf="
@@ -118,14 +131,14 @@
                   "
                   class="text-danger small mt-1"
                 >
-                  Sobrenome é obrigatório
+                  Sobrenome e obrigatorio
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="cpf" class="form-label">CPF do Titular</label>
+                <label for="cpf" class="form-label">CPF do titular</label>
                 <input
                   type="text"
                   class="form-control form-control-sm"
@@ -141,13 +154,12 @@
                   "
                   class="text-danger small mt-1"
                 >
-                  CPF é obrigatório
+                  CPF e obrigatorio
                 </div>
               </div>
+
               <div class="col-md-6 mb-3">
-                <label for="cnpj" class="form-label"
-                  >CNPJ da Empresa Matriz</label
-                >
+                <label for="cnpj" class="form-label">CNPJ da empresa</label>
                 <input
                   type="text"
                   class="form-control form-control-sm"
@@ -168,7 +180,7 @@
                   formControlName="Celular"
                   id="celular"
                   mask="(00) 0 0000-0000"
-                  placeholder="Digite seu Celular"
+                  placeholder="Digite seu celular"
                 />
                 <div
                   *ngIf="
@@ -177,9 +189,10 @@
                   "
                   class="text-danger small mt-1"
                 >
-                  Celular é obrigatório
+                  Celular e obrigatorio
                 </div>
               </div>
+
               <div class="col-md-6 mb-3">
                 <label for="telefone" class="form-label">Telefone</label>
                 <input
@@ -188,7 +201,7 @@
                   formControlName="TelefoneFixo"
                   id="telefone"
                   mask="(00) 0000-0000"
-                  placeholder="Digite seu Telefone"
+                  placeholder="Digite seu telefone"
                 />
               </div>
             </div>
@@ -204,8 +217,8 @@
                   id="especialidade"
                 >
                   <option value="" selected disabled>Selecione</option>
-                  <option value="5">Médico</option>
-                  <option value="2">Psicólogo</option>
+                  <option value="5">Medico</option>
+                  <option value="2">Psicologo</option>
                   <option value="4">Dentista</option>
                   <option value="3">Fisioterapeuta</option>
                   <option value="1">Outros</option>
@@ -217,12 +230,13 @@
                   "
                   class="text-danger small mt-1"
                 >
-                  Especialidade é obrigatória
+                  Especialidade e obrigatoria
                 </div>
               </div>
+
               <div class="col-md-6 mb-3">
                 <label for="dataNascimento" class="form-label"
-                  >Data de Nascimento</label
+                  >Data de nascimento</label
                 >
                 <input
                   type="date"
@@ -237,14 +251,14 @@
                   "
                   class="text-danger small mt-1"
                 >
-                  Data de nascimento é obrigatório
+                  Data de nascimento e obrigatoria
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="plano" class="form-label">Plano Escolhido</label>
+                <label for="plano" class="form-label">Plano escolhido</label>
                 <select
                   class="form-select"
                   formControlName="PlanoEscolhido"
@@ -262,13 +276,13 @@
                   "
                   class="text-danger small mt-1"
                 >
-                  Plano é obrigatório
+                  Plano e obrigatorio
                 </div>
               </div>
 
               <div class="col-md-6 mb-3" *ngIf="selectedOption === 'plan'">
                 <label for="periodo" class="form-label"
-                  >Período de Cobrança</label
+                  >Periodo de cobranca</label
                 >
                 <select
                   class="form-select"
@@ -287,12 +301,11 @@
                   "
                   class="text-danger small mt-1"
                 >
-                  Período de cobrança é obrigatório
+                  Periodo de cobranca e obrigatorio
                 </div>
               </div>
             </div>
 
-            <!-- ALERTA DE PREÇO -->
             <div
               *ngIf="
                 selectedOption === 'plan' &&
@@ -303,14 +316,14 @@
             >
               <div *ngIf="isMensal()">
                 <strong>Valor do plano:</strong> R$
-                {{ getCurrentPrice() | number : "1.2-2" }} /mês
+                {{ getCurrentPrice() | number : "1.2-2" }} /mes
                 <br />
                 <small class="text-muted">Pagamento mensal recorrente</small>
               </div>
 
               <div *ngIf="isSemestral()">
                 <strong>Valor mensal:</strong> R$
-                {{ getCurrentPrice() | number : "1.2-2" }} /mês
+                {{ getCurrentPrice() | number : "1.2-2" }} /mes
                 <br />
                 <strong>Valor total (6 meses):</strong> R$
                 {{ getValorTotal() | number : "1.2-2" }}
@@ -322,9 +335,7 @@
             </div>
 
             <div class="mb-3" *ngIf="selectedOption === 'plan'">
-              <label for="pagamento" class="form-label"
-                >Forma de Pagamento</label
-              >
+              <label for="pagamento" class="form-label">Forma de pagamento</label>
               <select
                 class="form-select"
                 formControlName="TipoPagamentoId"
@@ -332,7 +343,7 @@
                 (change)="onPaymentMethodChange()"
               >
                 <option value="" selected disabled>Selecione</option>
-                <option value="1">Cartão de Crédito</option>
+                <option value="1">Cartao de credito</option>
                 <option value="2">Boleto</option>
                 <option value="3">PIX</option>
               </select>
@@ -344,320 +355,17 @@
                 "
                 class="text-danger small mt-1"
               >
-                Forma de pagamento é obrigatória
+                Forma de pagamento e obrigatoria
               </div>
             </div>
 
-            <!-- CAMPOS DO CARTÃO -->
             <div
-              *ngIf="shouldShowCardFields()"
-              class="card mb-4 border-success"
+              *ngIf="shouldShowPaymentNotice()"
+              class="alert alert-light border mb-4"
             >
-              <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Dados do Cartão de Crédito</h5>
-              </div>
-              <div class="card-body">
-                <!-- PREVIEW DO CARTÃO -->
-                <div class="card-preview-container">
-                  <div class="credit-card" [class.flipped]="cardFlipped">
-                    <!-- FRENTE DO CARTÃO -->
-                    <div class="card-face card-front">
-                      <div>
-                        <div class="card-chip"></div>
-                        <div class="card-brand">{{ detectedBrand }}</div>
-                      </div>
-
-                      <div
-                        class="card-number"
-                        [class.card-number-placeholder]="
-                          !signupForm.get('CardNumber')?.value
-                        "
-                      >
-                        {{ getCardNumber() }}
-                      </div>
-
-                      <div class="card-info">
-                        <div class="card-holder-section">
-                          <div class="card-label">Titular do Cartão</div>
-                          <div
-                            class="card-holder"
-                            [class.card-name-placeholder]="
-                              !signupForm.get('HolderName')?.value
-                            "
-                          >
-                            {{ getCardHolder() }}
-                          </div>
-                        </div>
-                        <div class="card-expiry-section">
-                          <div class="card-label">Validade</div>
-                          <div
-                            class="card-expiry"
-                            [class.card-date-placeholder]="
-                              !signupForm.get('ExpiryMonth')?.value
-                            "
-                          >
-                            {{ getCardExpiry() }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- VERSO DO CARTÃO -->
-                    <div class="card-face card-back">
-                      <div class="magnetic-strip"></div>
-                      <div class="signature-strip">
-                        <div class="cvv-display">{{ getCardCvv() }}</div>
-                      </div>
-                      <div class="card-back-info">
-                        Este código de segurança está na parte de trás do seu
-                        cartão
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- FORMULÁRIO DO CARTÃO -->
-                <div class="mb-3">
-                  <label for="holderName" class="form-label"
-                    >Nome impresso no cartão</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    formControlName="HolderName"
-                    id="holderName"
-                    placeholder="NOME SOBRENOME (como está no cartão)"
-                    style="text-transform: uppercase"
-                  />
-                  <div
-                    *ngIf="
-                      signupForm.get('HolderName')!.invalid &&
-                      signupForm.get('HolderName')!.touched
-                    "
-                    class="text-danger small mt-1"
-                  >
-                    Nome no cartão é obrigatório
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <label for="cardNumber" class="form-label"
-                    >Número do cartão</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    formControlName="CardNumber"
-                    id="cardNumber"
-                    [mask]="'0000 0000 0000 0000'"
-                    placeholder="0000 0000 0000 0000"
-                    (input)="onCardNumberChange()"
-                  />
-                  <div
-                    *ngIf="
-                      signupForm.get('CardNumber')!.invalid &&
-                      signupForm.get('CardNumber')!.touched
-                    "
-                    class="text-danger small mt-1"
-                  >
-                    Número do cartão é obrigatório
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-4 mb-3">
-                    <label for="expiryMonth" class="form-label">Mês</label>
-                    <select
-                      class="form-select"
-                      formControlName="ExpiryMonth"
-                      id="expiryMonth"
-                    >
-                      <option value="" selected disabled>Mês</option>
-                      <option value="01">01</option>
-                      <option value="02">02</option>
-                      <option value="03">03</option>
-                      <option value="04">04</option>
-                      <option value="05">05</option>
-                      <option value="06">06</option>
-                      <option value="07">07</option>
-                      <option value="08">08</option>
-                      <option value="09">09</option>
-                      <option value="10">10</option>
-                      <option value="11">11</option>
-                      <option value="12">12</option>
-                    </select>
-                    <div
-                      *ngIf="
-                        signupForm.get('ExpiryMonth')!.invalid &&
-                        signupForm.get('ExpiryMonth')!.touched
-                      "
-                      class="text-danger small mt-1"
-                    >
-                      Obrigatório
-                    </div>
-                  </div>
-
-                  <div class="col-md-4 mb-3">
-                    <label for="expiryYear" class="form-label">Ano</label>
-                    <select
-                      class="form-select"
-                      formControlName="ExpiryYear"
-                      id="expiryYear"
-                    >
-                      <option value="" selected disabled>Ano</option>
-                      <option value="2025">2025</option>
-                      <option value="2026">2026</option>
-                      <option value="2027">2027</option>
-                      <option value="2028">2028</option>
-                      <option value="2029">2029</option>
-                      <option value="2030">2030</option>
-                      <option value="2031">2031</option>
-                      <option value="2032">2032</option>
-                      <option value="2033">2033</option>
-                      <option value="2034">2034</option>
-                      <option value="2035">2035</option>
-                    </select>
-                    <div
-                      *ngIf="
-                        signupForm.get('ExpiryYear')!.invalid &&
-                        signupForm.get('ExpiryYear')!.touched
-                      "
-                      class="text-danger small mt-1"
-                    >
-                      Obrigatório
-                    </div>
-                  </div>
-
-                  <div class="col-md-4 mb-3">
-                    <label for="ccv" class="form-label">CVV</label>
-                    <input
-                      type="text"
-                      class="form-control form-control-sm"
-                      formControlName="Ccv"
-                      id="ccv"
-                      [mask]="'000'"
-                      placeholder="123"
-                      maxlength="3"
-                      (focus)="onCvvFocus()"
-                      (blur)="onCvvBlur()"
-                    />
-                    <div
-                      *ngIf="
-                        signupForm.get('Ccv')!.invalid &&
-                        signupForm.get('Ccv')!.touched
-                      "
-                      class="text-danger small mt-1"
-                    >
-                      CVV obrigatório
-                    </div>
-                  </div>
-                </div>
-
-                <!-- PARCELAS - Só aparece se for semestral -->
-                <div class="mb-3" *ngIf="isSemestral()">
-                  <label for="parcelas" class="form-label"
-                    >Número de Parcelas</label
-                  >
-                  <select
-                    class="form-select"
-                    formControlName="QtdeParcelas"
-                    id="parcelas"
-                  >
-                    <option value="1">
-                      1x de R$ {{ getValorTotal() | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                    <option value="2">
-                      2x de R$ {{ getValorTotal() / 2 | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                    <option value="3">
-                      3x de R$ {{ getValorTotal() / 3 | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                    <option value="4">
-                      4x de R$ {{ getValorTotal() / 4 | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                    <option value="5">
-                      5x de R$ {{ getValorTotal() / 5 | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                    <option value="6">
-                      6x de R$ {{ getValorTotal() / 6 | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                  </select>
-                  <small class="text-muted"
-                    >Parcelamento disponível apenas para pagamento
-                    semestral</small
-                  >
-                </div>
-
-                <!-- Aviso quando for mensal -->
-                <div class="alert alert-info mb-3" *ngIf="isMensal()">
-                  <strong>Pagamento à vista:</strong> Planos mensais são
-                  cobrados em parcela única todos os meses.
-                </div>
-
-                <hr class="my-3" />
-                <h6 class="mb-3">Endereço de Cobrança</h6>
-
-                <div class="row">
-                  <div class="col-md-8 mb-3">
-                    <label for="postalCode" class="form-label">CEP</label>
-                    <input
-                      type="text"
-                      class="form-control form-control-sm"
-                      formControlName="PostalCode"
-                      id="postalCode"
-                      [mask]="'00000-000'"
-                      placeholder="00000-000"
-                    />
-                    <div
-                      *ngIf="
-                        signupForm.get('PostalCode')!.invalid &&
-                        signupForm.get('PostalCode')!.touched
-                      "
-                      class="text-danger small mt-1"
-                    >
-                      CEP é obrigatório
-                    </div>
-                  </div>
-
-                  <div class="col-md-4 mb-3">
-                    <label for="addressNumber" class="form-label">Número</label>
-                    <input
-                      type="text"
-                      class="form-control form-control-sm"
-                      formControlName="AddressNumber"
-                      id="addressNumber"
-                      placeholder="123"
-                    />
-                    <div
-                      *ngIf="
-                        signupForm.get('AddressNumber')!.invalid &&
-                        signupForm.get('AddressNumber')!.touched
-                      "
-                      class="text-danger small mt-1"
-                    >
-                      Número é obrigatório
-                    </div>
-                  </div>
-                </div>
-
-                <div class="mb-3">
-                  <label for="addressComplement" class="form-label"
-                    >Complemento (opcional)</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    formControlName="AddressComplement"
-                    id="addressComplement"
-                    placeholder="Apto, Bloco, etc."
-                  />
-                </div>
+              <strong>{{ getSelectedPaymentMethodLabel() }}</strong>
+              <div class="small text-muted mt-1">
+                {{ getPaymentMethodMessage() }}
               </div>
             </div>
 
@@ -684,16 +392,15 @@
                   id="notificacoes"
                 />
                 <label class="form-check-label" for="notificacoes">
-                  Receber notificações
+                  Receber notificacoes
                 </label>
               </div>
             </div>
 
             <div class="d-grid">
               <button
-                type="button"
+                type="submit"
                 class="btn btn-success btn-lg"
-                (click)="onSubmit()"
                 [disabled]="loading"
               >
                 <span
@@ -703,6 +410,7 @@
                 {{ loading ? "Carregando..." : "Cadastrar" }}
               </button>
             </div>
+
             <div class="d-grid mt-2">
               <a routerLink="/lp" type="button" class="btn btn-primary btn-lg">
                 Voltar

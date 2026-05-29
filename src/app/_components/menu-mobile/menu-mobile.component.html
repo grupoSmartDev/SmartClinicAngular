@@ -233,21 +233,75 @@
       </li>
       <li class="sidebar-item">
         <a
-          class="sidebar-link"
-          (click)="openTab('/financPagar/listar', 'Pagar')"
+          href="#"
+          class="sidebar-link collapsed has-dropdown"
+          (click)="toggleSubmenu('contasAPagar')"
+          data-bs-toggle="collapse"
         >
           <i class="bi bi-cash-stack"></i>
           <span>Contas a pagar</span>
         </a>
+        <ul
+          [ngClass]="{
+            'sidebar-dropdown': true,
+            collapse: !isMenuOpen['contasAPagar'],
+            show: isMenuOpen['contasAPagar']
+          }"
+          id="contasAPagar"
+        >
+          <li class="sidebar-item">
+            <a
+              class="sidebar-link"
+              (click)="openTab('/FinancPagar/listarAnalitico', 'Pagar Analitico')"
+              >Analitico</a
+            >
+          </li>
+          <li class="sidebar-item">
+            <a
+              class="sidebar-link"
+              (click)="openTab('/FinancPagar/listarSintetico', 'Pagar Sintetico')"
+              >Sintetico</a
+            >
+          </li>
+        </ul>
       </li>
       <li class="sidebar-item">
         <a
-          class="sidebar-link"
-          (click)="openTab('/FinancReceber/listar', 'Receber')"
+          href="#"
+          class="sidebar-link collapsed has-dropdown"
+          (click)="toggleSubmenu('contasAReceber')"
+          data-bs-toggle="collapse"
         >
           <i class="bi bi-cash-stack"></i>
           <span>Contas a receber</span>
         </a>
+        <ul
+          [ngClass]="{
+            'sidebar-dropdown': true,
+            collapse: !isMenuOpen['contasAReceber'],
+            show: isMenuOpen['contasAReceber']
+          }"
+          id="contasAReceber"
+        >
+          <li class="sidebar-item">
+            <a
+              class="sidebar-link"
+              (click)="
+                openTab('/FinancReceber/listarAnalitico', 'Receber Analitico')
+              "
+              >Analitico</a
+            >
+          </li>
+          <li class="sidebar-item">
+            <a
+              class="sidebar-link"
+              (click)="
+                openTab('/FinancReceber/listarSintetico', 'Receber Sintetico')
+              "
+              >Sintetico</a
+            >
+          </li>
+        </ul>
       </li>
 
       <!-- <li class="sidebar-item">

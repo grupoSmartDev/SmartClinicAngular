@@ -111,7 +111,6 @@
                     id="titulo"
                     class="form-control form-control-sm"
                     formControlName="titulo"
-                    [readonly]="selectedEvent"
                     placeholder="Digite o título do agendamento"
                     [class.is-invalid]="
                       formulario.get('titulo')?.invalid &&
@@ -178,7 +177,6 @@
                       [(ngModel)]="searchTerm"
                       [ngModelOptions]="{ standalone: true }"
                       placeholder="Buscar paciente..."
-                      [readonly]="selectedEvent"
                       (input)="onSearch()"
                       [class.is-invalid]="
                         formulario.get('pacienteId')?.invalid &&
@@ -234,7 +232,6 @@
                     id="horaInicio"
                     class="form-control form-control-sm"
                     formControlName="horaInicio"
-                    [readonly]="selectedEvent"
                     [class.is-invalid]="(formulario.get('horaInicio')?.invalid || formulario.errors?.['invalidTimeRange']) && formulario.get('horaInicio')?.touched"
                   />
                   <div
@@ -260,7 +257,6 @@
                     id="horaFim"
                     class="form-control form-control-sm"
                     formControlName="horaFim"
-                    [readonly]="selectedEvent"
                     [class.is-invalid]="(formulario.get('horaFim')?.invalid || formulario.errors?.['invalidTimeRange']) && formulario.get('horaFim')?.touched"
                   />
                   <div
@@ -1046,7 +1042,7 @@
             ><i class="bi bi-person-vcard"></i
           ></span>
           <input
-            type="text"
+            type="email"
             id="patientCpf"
             class="form-control"
             [(ngModel)]="pacienteCadastroRapidoNovo.cpf"
