@@ -1,4 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { environment } from '../environments/environment';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -289,8 +290,11 @@ import { ModalPacoteComponent } from './_pages/pacote/modal-pacote/modal-pacote.
     JwtModule.forRoot({
       config: {
         tokenGetter: () => localStorage.getItem('token'),
-        allowedDomains: ['localhost:44308'], // domínio onde sua API está rodando
-        disallowedRoutes: ['localhost:44308/Auth/login', 'localhost:44308/CadastroCliente/Criar', 'localhost:4200/CadastroCliente/Criar', 'http://localhost:4200/cadastro'] // rota de login que não precisa do token
+        allowedDomains: [new URL(environment.apiUrl).host],
+        disallowedRoutes: [
+          `${new URL(environment.apiUrl).host}/Auth/login`,
+          `${new URL(environment.apiUrl).host}/CadastroCliente/Criar`
+        ]
       }
     }),
     NgxSpinnerModule.forRoot({ type: 'square-jelly-box' })

@@ -62,6 +62,7 @@ export class ListarPacienteComponent implements OnInit, OnDestroy {
   };
 
   // Cache
+  private readonly CACHE_PREFIX = 'paciente-list-';
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
   constructor(
@@ -102,7 +103,7 @@ export class ListarPacienteComponent implements OnInit, OnDestroy {
    */
   private getCacheKey(): string {
     const { nome, id, cpf, celular } = this.filtros;
-    return `paciente-list-${this.currentPage}-${this.pageSize}-${nome}-${id}-${cpf}-${celular}-${this.paginar}`;
+    return `${this.CACHE_PREFIX}${this.currentPage}-${this.pageSize}-${nome}-${id}-${cpf}-${celular}-${this.paginar}`;
   }
 
   /**
@@ -118,6 +119,13 @@ export class ListarPacienteComponent implements OnInit, OnDestroy {
   private invalidateCache(): void {
     const cacheKey = this.getCacheKey();
     this.tabService.setCacheData(cacheKey, null);
+  }
+
+  /**
+   * Invalida todas as páginas e variações de filtros dos pacientes
+   */
+  private invalidatePatientCache(): void {
+    this.tabService.clearCacheByPrefix(this.CACHE_PREFIX);
   }
 
   /**
@@ -264,9 +272,9 @@ export class ListarPacienteComponent implements OnInit, OnDestroy {
 
     this.pacienteService.Deletar(paciente.id.toString()).subscribe({
       next: () => {
-        this.lista = this.lista.filter(p => p.id !== paciente.id);
         this.toast.success('Paciente excluído com sucesso!', 'Sucesso');
-        this.invalidateCache();
+        this.invalidatePatientCache();
+        this.loadData();
       },
       error: (error) => {
         console.error('Erro ao excluir paciente:', error);
@@ -291,7 +299,7 @@ export class ListarPacienteComponent implements OnInit, OnDestroy {
    * Atualiza a lista recarregando os dados
    */
   atualizarLista(): void {
-    this.invalidateCache();
+    this.invalidatePatientCache();
     this.loadData();
   }
 

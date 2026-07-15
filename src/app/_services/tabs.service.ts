@@ -92,6 +92,15 @@ export class TabService {
     return this.cache.get(path);
   }
 
+  // Remove todas as entradas que pertencem ao mesmo grupo de cache
+  clearCacheByPrefix(prefix: string): void {
+    for (const key of this.cache.keys()) {
+      if (key.startsWith(prefix)) {
+        this.cache.delete(key);
+      }
+    }
+  }
+
   // Método para verificar se existem dados em cache
   hasCacheData(path: string): boolean {
     return this.cache.has(path);

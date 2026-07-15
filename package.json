@@ -1,6 +1,9 @@
 {
   "name": "smart-clinic-angular",
   "version": "0.0.0",
+  "engines": {
+    "node": ">=20.11 <23"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
