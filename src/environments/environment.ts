@@ -1,5 +1,6 @@
 // environment.ts (desenvolvimento)
 export const environment = {
     production: false,
-    apiUrl: 'https://localhost:44308/' // sua URL de desenvolvimento
+    apiUrl: 'https://localhost:7036/',
+    defaultUserKey: '00000000000'
 };

@@ -4,7 +4,28 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Pré-requisitos: Node.js 22 e o backend `WebApiSmartClinic` em execução no perfil HTTPS.
+
+```bash
+npm ci
+npm start
+```
+
+Abra `http://localhost:4200/`. A configuração de desenvolvimento usa a API em `https://localhost:7036/`.
+
+Credenciais do ambiente local:
+
+```text
+Chave de acesso: 000.000.000-00
+E-mail: dev@smartclinic.local
+Senha: LocalDev#2026
+```
+
+No VS Code, pressione `F5` e escolha `ng serve` para iniciar o servidor e o depurador do navegador.
+
+Para depurar frontend e backend juntos, abra
+`../SmartClinic.code-workspace` e execute a configuração
+`SmartClinic: Backend + Frontend`.
 
 ## Code scaffolding
 
