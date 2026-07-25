@@ -1806,10 +1806,19 @@ export class PacienteCompletoComponent implements OnInit {
 
   // Método para atualizar os dados do paciente após renovação
   atualizarPacientePlano(): void {
-    // Buscar dados atualizados do paciente
-    if (this.Paciente && this.Paciente.id) {
+    if (!this.Paciente || !this.Paciente.id) return;
 
-    }
+    this.pacienteService.BuscarPorId(this.Paciente.id).subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.Paciente = response.dados;
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao atualizar dados do paciente:', error);
+        this.toastr.error('Erro ao atualizar dados do paciente', 'Erro');
+      }
+    });
   }
 
   // Método para verificar se o plano atual pode ser renovado

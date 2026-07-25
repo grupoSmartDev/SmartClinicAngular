@@ -196,10 +196,10 @@ export class PacienteDetailsComponent {
 
     this.isLoading = true;
 
-    this.pacienteService.Listar().subscribe({
+    this.pacienteService.BuscarPorId(this.paciente.id).subscribe({
       next: (response) => {
         if (response.dados) {
-          this.paciente = response.dados.filter((p) => p.id === this.paciente.id)[0];
+          this.paciente = response.dados;
         }
         this.isLoading = false;
       },
