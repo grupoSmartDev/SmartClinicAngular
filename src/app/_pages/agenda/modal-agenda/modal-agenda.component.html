@@ -581,7 +581,7 @@
                   >
                     <option value="" disabled>Selecione um pacote</option>
                     <option *ngFor="let item of listaPacote" [value]="item.id">
-                      {{ item.descricao }}
+                      {{ item.pacote?.descricao }} ({{ item.quantidadeDisponivel }} sessões disponíveis)
                     </option>
                   </select>
                 </div>

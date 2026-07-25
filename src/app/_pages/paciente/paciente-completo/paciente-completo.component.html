@@ -505,7 +505,7 @@
                             <small class="text-muted">Procedimento:</small>
                             <p class="mb-0 fw-semibold">
                               {{
-                                pacote.pacote?.procedimento?.descricao || "-"
+                                pacote.pacote?.procedimento?.nome || "-"
                               }}
                             </p>
                           </div>
@@ -1022,8 +1022,9 @@
                     <table class="table table-sm table-hover">
                       <thead class="table-light">
                         <tr>
-                          <th>Data</th>
+                          <th>Data do Uso</th>
                           <th>Agendamento</th>
+                          <th>Profissional</th>
                           <th>Observação</th>
                           <th class="text-end">Ações</th>
                         </tr>
@@ -1033,10 +1034,11 @@
                         <tr>
                           <td>{{ uso.dataUso | date : "dd/MM/yyyy HH:mm" }}</td>
                           <td>
-                            @if (uso.agenda) {
-                            {{ uso.agenda.data | date : "dd/MM/yyyy HH:mm" }}
-                            } @else { - }
+                            @if (uso.agendaData) {
+                            {{ uso.agendaData | date : "dd/MM/yyyy HH:mm" }}
+                            } @else { #{{ uso.agendaId }} }
                           </td>
+                          <td>{{ uso.profissionalNome || "-" }}</td>
                           <td>{{ uso.observacao || "-" }}</td>
                           <td class="text-end">
                             <button

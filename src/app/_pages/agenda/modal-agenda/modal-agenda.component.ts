@@ -25,6 +25,8 @@ import { SalasService } from '../../../_services/salas.service';
 import { map } from 'rxjs/operators';
 import { Paciente, PacienteCadastroRapidoDto } from '../../../_module/pacienteModule';
 import { PacienteService } from '../../../_services/paciente.service';
+import { PacotePaciente } from '../../../_module/pacoteModule';
+import { PacoteService } from '../../../_services/pacote.service';
 import { ResponseModel } from '../../../_module/ResponseModule';
 import { Router } from '@angular/router';
 import { TabService } from '../../../_services/tabs.service';
@@ -68,7 +70,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
   listaSala: Sala[] = [];
   listaFormaPagamento: FormaPagamento[] = [];
   listaTipoPagamento: TipoPagamento[] = [];
-  listaPacote: any[] = [];
+  listaPacote: PacotePaciente[] = [];
   listaUsuario: any[] = [];
   eventoEscolhido: Agenda = {} as Agenda;
 
@@ -94,6 +96,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     private profissionalService: ProfissionalService,
     private financReceberService: FinancReceberService,
     private pacienteService: PacienteService,
+    private pacoteService: PacoteService,
     private agendaService: AgendaService,
     private tipoPagamentoService: TipoPagamentoService,
     private formaPagamentoService: FormaPagamentoService,
@@ -214,6 +217,16 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     // Monitorar mudanças no campo avulso para atualizar as validações
     this.formulario.get('avulso')?.valueChanges.subscribe(value => {
       this.atualizarValidacoesFinanceiras(value);
+    });
+
+    // Recarregar os pacotes disponíveis sempre que o paciente do formulário mudar
+    // (cobre seleção manual via selectPatient() e o preenchimento inicial em populateForm())
+    this.formulario.get('pacienteId')?.valueChanges.subscribe((pacienteId: number | null) => {
+      if (pacienteId) {
+        this.carregarPacotesPaciente(pacienteId);
+      } else {
+        this.listaPacote = [];
+      }
     });
 
     this.formulario.get('recorrencia')?.valueChanges.subscribe(value => {
@@ -1001,6 +1014,22 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
         return of([]);
       })
     );
+  }
+
+  // Carrega os pacotes do paciente com saldo disponível para exibir no select de agendamento
+  carregarPacotesPaciente(pacienteId: number): void {
+    this.pacoteService.ListarPacotesPaciente(pacienteId).subscribe({
+      next: (response) => {
+        const pacotes = response?.dados || [];
+        this.listaPacote = pacotes.filter(
+          (p) => p.quantidadeDisponivel > 0 && p.status === 'Ativo'
+        );
+      },
+      error: (error) => {
+        console.error('Erro ao buscar pacotes do paciente:', error);
+        this.listaPacote = [];
+      }
+    });
   }
 
   private handleError(message: string, error: any): void {

@@ -39,3 +39,14 @@ export interface PacoteUso {
   dataUso: Date;
   observacao?: string;
 }
+
+// Projeção retornada por ListarHistoricoUso (PacoteUsoHistoricoDto no backend) - não é o
+// PacoteUsoModel completo, é achatada de propósito para não trazer o ProfissionalModel inteiro.
+export interface PacoteUsoHistorico {
+  id: number;
+  dataUso: Date;
+  agendaId: number;
+  agendaData?: Date | null;
+  profissionalNome?: string;
+  observacao?: string;
+}

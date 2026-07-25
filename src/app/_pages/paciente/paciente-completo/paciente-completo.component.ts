@@ -30,7 +30,7 @@ import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 import { Agenda } from '../../../_module/agendaModule';
 import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
 import { PacoteService } from '../../../_services/pacote.service';
-import { Pacote, PacotePaciente, PacoteUso } from '../../../_module/pacoteModule';
+import { Pacote, PacotePaciente, PacoteUso, PacoteUsoHistorico } from '../../../_module/pacoteModule';
 import { SalasService } from '../../../_services/salas.service';
 import { ProntuarioPrintService, ModeloProntuario } from '../../../_services/prontuario-print.service';
 
@@ -134,7 +134,22 @@ export class PacienteCompletoComponent implements OnInit {
   ];
 
   // Propriedades da classe
-  Paciente: Paciente = {} as Paciente;
+  // Paciente é acessado via getter/setter (não um campo simples) porque este componente é
+  // reutilizado entre pacientes diferentes via @ViewChild (listar-paciente.component.ts,
+  // modal-agenda.component.ts) sem ser destruído/recriado - `Paciente` não é @Input(), então
+  // reatribuí-lo de fora nunca disparava ngOnChanges/ngOnInit, e dados carregados sob demanda
+  // (ex.: pacotesPaciente) ficavam presos no paciente anterior. O setter garante que toda troca
+  // de paciente limpe e recarregue esses dados, não importa quem faça a atribuição.
+  private _paciente: Paciente = {} as Paciente;
+
+  get Paciente(): Paciente {
+    return this._paciente;
+  }
+
+  set Paciente(value: Paciente) {
+    this._paciente = value || ({} as Paciente);
+    this.onPacienteAlterado();
+  }
   listaProfissional: Profissional[] = [];
   listaTipoPagamento: TipoPagamento[] = [];
   listaSala: any[] = [];
@@ -160,7 +175,7 @@ export class PacienteCompletoComponent implements OnInit {
   listaPacotes: Pacote[] = [];
   pacotesPaciente: PacotePaciente[] = [];
   pacoteSelecionado: PacotePaciente | null = null;
-  historicoUsoPacote: PacoteUso[] = [];
+  historicoUsoPacote: PacoteUsoHistorico[] = [];
   formVendaPacote!: FormGroup;
   formConsumoSessao!: FormGroup;
 
@@ -195,6 +210,20 @@ export class PacienteCompletoComponent implements OnInit {
     this.carregarPacotesPaciente();
     this.inicializarFormVendaPacote();
     this.inicializarFormConsumoSessao();
+  }
+
+  // Chamado pelo setter de `Paciente` toda vez que o componente passa a exibir um paciente
+  // diferente (troca feita de fora via @ViewChild, sem destruir/recriar o componente).
+  private onPacienteAlterado(): void {
+    // Limpa ANTES de recarregar para nunca mostrar, nem que seja por um instante, os pacotes
+    // do paciente anterior enquanto a nova requisição está em andamento.
+    this.pacotesPaciente = [];
+    this.pacoteSelecionado = null;
+    this.historicoUsoPacote = [];
+
+    if (this._paciente?.id) {
+      this.carregarPacotesPaciente();
+    }
   }
 
   // Métodos básicos de UI
