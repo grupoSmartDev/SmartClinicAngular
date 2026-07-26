@@ -369,14 +369,14 @@ export class CalendarioComponent {
       return;
     }
 
-    // Criar data ISO para manter compatibilidade
-    let dataClick = new Date(dia.ano, dia.mes, dia.numero);
-    if (hora !== undefined) {
-      dataClick.setHours(hora);
-    }
+    // input[type=date] exige "yyyy-MM-dd" puro - toISOString() manda um timestamp
+    // completo e converte para UTC, o que pode inclusive mudar o dia exibido
+    // dependendo do fuso horário do navegador.
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const dataClick = `${dia.ano}-${pad(dia.mes + 1)}-${pad(dia.numero)}`;
 
     this.selectedEvent = null;
-    this.selectedDate = dataClick.toISOString();
+    this.selectedDate = dataClick;
     this.diaSelecionado = dia.numero;
 
     // Garantir que o modal foi atualizado antes de abrir

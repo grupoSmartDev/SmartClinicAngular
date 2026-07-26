@@ -83,7 +83,6 @@
           novalidate
         >
           <!-- Cabeçalho do Agendamento -->
-          <input type="date" name="data" id="" formControlName="data" hidden />
           <div class="card shadow-sm mb-4">
             <div class="card-body">
               <div class="row g-3">
@@ -165,7 +164,7 @@
             <div class="card-body">
               <div class="row g-3">
                 <!-- Campo Paciente -->
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <label for="paciente" class="form-label small fw-semibold">
                     Paciente <span class="text-danger">*</span>
                   </label>
@@ -221,6 +220,30 @@
                         </div>
                       </li>
                     </ul>
+                  </div>
+                </div>
+
+                <!-- Campo Data -->
+                <div class="col-md-2">
+                  <label for="data" class="form-label small fw-semibold">
+                    Data <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="data"
+                    class="form-control form-control-sm"
+                    formControlName="data"
+                    [readonly]="selectedEvent"
+                    [class.is-invalid]="
+                      formulario.get('data')?.invalid &&
+                      formulario.get('data')?.touched
+                    "
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="formulario.get('data')?.errors?.['required']"
+                  >
+                    A data é obrigatória
                   </div>
                 </div>
 

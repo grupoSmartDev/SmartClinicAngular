@@ -623,8 +623,17 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
         result = await firstValueFrom(this.agendaService.Criar(agendaData));
       }
 
-      const action = agendaData.id ? 'atualizado' : 'criado';
-      // this.toastr.success(`Agenda ${action} com sucesso!`, 'Sucesso');
+      // O backend retorna HTTP 200 mesmo em falhas de regra de negócio (data
+      // ausente, hora inválida, financeiro incompleto etc.), sinalizando o erro
+      // via status:false. Sem essa checagem o modal fechava como se tivesse
+      // salvo, mesmo quando nada foi persistido.
+      if (!result?.status) {
+        this.toastr.error(result?.mensagem || 'Não foi possível salvar o agendamento.', 'Erro');
+        return;
+      }
+
+      // O toast de sucesso é exibido pelo componente pai (CalendarioComponent),
+      // que escuta este evento e também fecha o modal.
       this.onSave.emit();
       this.fecharModal();
     } catch (error) {
