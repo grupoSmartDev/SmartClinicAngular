@@ -47,6 +47,7 @@ interface FinanceiroDto {
 
 interface PlanoRenovacaoDto {
   planoId: number;
+  planoModeloId: number;
   descricao: string;
   tipoMes: string;
   dataInicio: string;
@@ -1411,6 +1412,9 @@ export class PacienteCompletoComponent implements OnInit {
 
     this.formRenovacao = this.fb.group({
       planoId: [plano.id, Validators.required],
+      // Plano-template escolhido para a renovação - começa vazio (não pré-selecionado), pois
+      // o plano em uso não guarda referência a partir de qual template foi criado.
+      planoModeloId: ['', Validators.required],
       descricao: [plano.descricao, Validators.required],
       tipoMes: [plano.tipoMes, Validators.required],
       dataInicio: [dataInicio, Validators.required],
@@ -1439,6 +1443,10 @@ export class PacienteCompletoComponent implements OnInit {
     this.calcularDataFimRenovacao();
 
     // Adicionar listeners para controles
+    this.formRenovacao.get('planoModeloId')?.valueChanges.subscribe(() => {
+      this.onPlanoModeloRenovacaoSelecionado();
+    });
+
     this.formRenovacao.get('tipoMes')?.valueChanges.subscribe(() => {
       this.calcularDataFimRenovacao();
       this.atualizarValorPlanoRenovacao();
@@ -1578,41 +1586,44 @@ export class PacienteCompletoComponent implements OnInit {
     });
   }
 
+  // Chamado quando o usuário troca o plano-template no formulário de renovação: preenche
+  // descrição/limite de dias a partir do plano escolhido e recalcula o valor financeiro.
+  onPlanoModeloRenovacaoSelecionado(): void {
+    const planoModelo = this.getPlanoModeloSelecionadoRenovacao();
+    if (!planoModelo) return;
+
+    this.diasSemanaParaRenovar = planoModelo.diasSemana || 0;
+    this.formRenovacao.patchValue({ descricao: planoModelo.descricao });
+    this.atualizarValorPlanoRenovacao();
+  }
+
   // Método para atualizar o valor do plano renovado com base no tipo de assinatura
   atualizarValorPlanoRenovacao(): void {
-    const planoAtual = this.getPlanoAtual();
-    if (!planoAtual) return;
+    const planoModelo = this.getPlanoModeloSelecionadoRenovacao();
+    if (!planoModelo) return;
 
     const tipoMes = this.formRenovacao.get('tipoMes')?.value;
     let valor = 0;
 
     switch (tipoMes) {
-      case 'm': valor = planoAtual.valorMensal * 1 || 0; break;
-      case 'b': valor = planoAtual.valorBimestral * 2 || 0; break;
-      case 't': valor = planoAtual.valorTrimestral * 3 || 0; break;
-      case 'q': valor = planoAtual.valorQuadrimestral * 4 || 0; break;
-      case 's': valor = planoAtual.valorSemestral * 6 || 0; break;
-      case 'a': valor = planoAtual.valorAnual * 12 || 0; break;
+      case 'm': valor = planoModelo.valorMensal * 1 || 0; break;
+      case 'b': valor = planoModelo.valorBimestral * 2 || 0; break;
+      case 't': valor = planoModelo.valorTrimestral * 3 || 0; break;
+      case 'q': valor = planoModelo.valorQuadrimestral * 4 || 0; break;
+      case 's': valor = planoModelo.valorSemestral * 6 || 0; break;
+      case 'a': valor = planoModelo.valorAnual * 12 || 0; break;
     }
 
     this.formRenovacao.get('financeiro.valor')?.setValue(valor);
     this.gerarParcelasRenovacao();
   }
 
-  // Método para obter o plano atual para renovação
-  getPlanoAtual(): any {
-    // Se você está renovando o plano existente do paciente:
-    if (this.Paciente && this.Paciente.plano) {
-      return this.Paciente.plano;
-    }
-
-    // Alternativamente, você pode buscar o plano pelo ID selecionado:
-    const planoId = this.formRenovacao?.get('planoId')?.value;
-    if (planoId && this.listaPlanos) {
-      return this.listaPlanos.find(p => p.id === planoId) || null;
-    }
-
-    return null;
+  // Método para obter o plano-template escolhido no dropdown de renovação (listaPlanos, os
+  // mesmos templates usados em "Adicionar Plano" - carregados uma vez em getPlanos()).
+  getPlanoModeloSelecionadoRenovacao(): any {
+    const planoModeloId = this.formRenovacao?.get('planoModeloId')?.value;
+    if (!planoModeloId || !this.listaPlanos) return null;
+    return this.listaPlanos.find(p => p.id === +planoModeloId) || null;
   }
 
   // Método para calcular o valor do plano com base no tipo de assinatura
@@ -1711,6 +1722,7 @@ export class PacienteCompletoComponent implements OnInit {
     // Montar objeto para envio
     const planoRenovacao: PlanoRenovacaoDto = {
       planoId: Number(this.formRenovacao.get('planoId')?.value),
+      planoModeloId: Number(this.formRenovacao.get('planoModeloId')?.value),
       descricao: this.formRenovacao.get('descricao')?.value,
       tipoMes: this.formRenovacao.get('tipoMes')?.value,
       dataInicio: this.formRenovacao.get('dataInicio')?.value,

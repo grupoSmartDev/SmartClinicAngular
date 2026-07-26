@@ -2096,7 +2096,36 @@
                 </div>
                 <div class="card-body">
                   <div class="row mb-3">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
+                      <label
+                        for="planoModeloIdRenovacao"
+                        class="form-label small fw-semibold"
+                      >
+                        Plano <span class="text-danger">*</span>
+                      </label>
+                      <select
+                        id="planoModeloIdRenovacao"
+                        class="form-select form-select-sm"
+                        formControlName="planoModeloId"
+                        [class.is-invalid]="
+                          formRenovacao.get('planoModeloId')?.invalid &&
+                          formRenovacao.get('planoModeloId')?.touched
+                        "
+                      >
+                        <option value="">Selecione o plano</option>
+                        @for (item of listaPlanos; track item.id) {
+                        <option [value]="item.id">{{ item.descricao }}</option>
+                        }
+                      </select>
+                      <div
+                        class="invalid-feedback"
+                        *ngIf="formRenovacao.get('planoModeloId')?.errors?.['required']"
+                      >
+                        Selecione um plano
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
                       <label
                         for="descricao"
                         class="form-label small fw-semibold"
