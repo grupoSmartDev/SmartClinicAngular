@@ -738,7 +738,6 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   verificarLimiteDiasSemana(formRenovacao = false): void {
-    debugger
     if (formRenovacao) this.isRenovacao = true;
 
     this.onPlanoSelecionado()
@@ -759,8 +758,13 @@ export class PacienteCompletoComponent implements OnInit {
     let diasSelecionados = 0;
 
     this.limiteDiasSemanaFront = limiteDias;
+
+    // Em renovação, os dias marcados estão no FormArray de formRenovacao,
+    // não no de formPlano - usar o array correto conforme o formulário ativo.
+    const diasArray = formRenovacao ? this.diasRecorrenciaRenovacaoArray : this.diasRecorrenciaArray;
+
     // Contar dias ativos
-    this.diasRecorrenciaArray.controls.forEach(control => {
+    diasArray.controls.forEach(control => {
       if (control.get('ativo')?.value === true) {
         diasSelecionados++;
       }
@@ -777,8 +781,8 @@ export class PacienteCompletoComponent implements OnInit {
       }
 
       // Desmarcar o último dia selecionado
-      for (let i = this.diasRecorrenciaArray.controls.length - 1; i >= 0; i--) {
-        const control = this.diasRecorrenciaArray.controls[i];
+      for (let i = diasArray.controls.length - 1; i >= 0; i--) {
+        const control = diasArray.controls[i];
         if (control.get('ativo')?.value === true) {
           control.get('ativo')?.setValue(false);
           break;
@@ -1611,6 +1615,9 @@ export class PacienteCompletoComponent implements OnInit {
     this.diasSemanaParaRenovar = planoModelo.diasSemana || 0;
     this.formRenovacao.patchValue({ descricao: planoModelo.descricao });
     this.atualizarValorPlanoRenovacao();
+    // Atualiza a mensagem de limite e desmarca dias excedentes caso o novo
+    // plano permita menos dias da semana do que os já selecionados.
+    this.verificarLimiteDiasSemana(true);
   }
 
   // Método para atualizar o valor do plano renovado com base no tipo de assinatura
