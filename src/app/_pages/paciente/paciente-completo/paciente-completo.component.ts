@@ -1992,7 +1992,8 @@ export class PacienteCompletoComponent implements OnInit {
   inicializarFormConsumoSessao(): void {
     this.formConsumoSessao = this.fb.group({
       pacotePacienteId: ['', Validators.required],
-      agendaId: ['', Validators.required],
+      // Agendamento é opcional (sessão avulsa, sem vínculo com um agendamento específico).
+      agendaId: [''],
       pacienteUtilizadoId: [this.Paciente?.id || '', Validators.required],
       observacao: ['']
     });
@@ -2104,7 +2105,13 @@ export class PacienteCompletoComponent implements OnInit {
     }
 
     this.isLoading = true;
-    const dados = this.formConsumoSessao.value;
+    const dados = { ...this.formConsumoSessao.value };
+
+    // agendaId é opcional no formulário, mas PacoteUsoDto.AgendaId no backend continua um int
+    // não anulável (não alteramos o schema) - mandar '' ou null quebraria a desserialização do
+    // JSON com um 400 genérico. Mandamos 0 quando nada for selecionado: o backend já trata isso
+    // com a mensagem limpa "Agendamento não encontrado" (nenhuma Agenda tem Id 0).
+    dados.agendaId = dados.agendaId ? +dados.agendaId : 0;
 
     this.pacoteService.ConsumirSessao(dados).subscribe({
       next: (response) => {

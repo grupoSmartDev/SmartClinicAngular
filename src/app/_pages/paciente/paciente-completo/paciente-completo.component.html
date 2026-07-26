@@ -931,19 +931,11 @@
 
                   <form [formGroup]="formConsumoSessao">
                     <div class="mb-3">
-                      <label class="form-label fw-semibold"
-                        >Agendamento *</label
-                      >
-                      <select
-                        class="form-select"
-                        formControlName="agendaId"
-                        [ngClass]="{
-                          'is-invalid':
-                            formConsumoSessao.get('agendaId')?.invalid &&
-                            formConsumoSessao.get('agendaId')?.touched
-                        }"
-                      >
-                        <option value="">Selecione um agendamento</option>
+                      <label class="form-label fw-semibold">Agendamento</label>
+                      <select class="form-select" formControlName="agendaId">
+                        <option value="">
+                          Nenhum (sessão avulsa, sem agendamento vinculado)
+                        </option>
                         @for (agenda of Paciente.agendamentos; track $index) {
                         @if (agenda) {
                         <option [value]="agenda.id">
@@ -952,9 +944,7 @@
                         </option>
                         } }
                       </select>
-                      <div class="invalid-feedback">
-                        Selecione um agendamento
-                      </div>
+                      <small class="text-muted">Opcional.</small>
                     </div>
 
                     <div class="mb-3">
@@ -1034,9 +1024,12 @@
                         <tr>
                           <td>{{ uso.dataUso | date : "dd/MM/yyyy HH:mm" }}</td>
                           <td>
+                            #{{ uso.agendaId }}
                             @if (uso.agendaData) {
-                            {{ uso.agendaData | date : "dd/MM/yyyy HH:mm" }}
-                            } @else { #{{ uso.agendaId }} }
+                            <br /><small class="text-muted">{{
+                              uso.agendaData | date : "dd/MM/yyyy HH:mm"
+                            }}</small>
+                            }
                           </td>
                           <td>{{ uso.profissionalNome || "-" }}</td>
                           <td>{{ uso.observacao || "-" }}</td>
