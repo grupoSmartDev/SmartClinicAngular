@@ -164,6 +164,33 @@ export class AuthService {
     return currentUser?.role === role;
   }
 
+  // Rótulo/cor de exibição por role (Admin/Support/User, ver Helpers/Perfis.cs no backend)
+  private readonly ROLE_LABELS: Record<string, string> = {
+    Admin: 'Administrador',
+    Support: 'Suporte',
+    User: 'Usuário'
+  };
+
+  private readonly ROLE_BADGE_CLASSES: Record<string, string> = {
+    Admin: 'bg-success',
+    Support: 'bg-warning',
+    User: 'bg-primary'
+  };
+
+  public getUserRole(): string | null {
+    return this.currentUserValue?.role || null;
+  }
+
+  public getRoleLabel(role?: string | null): string {
+    const roleKey = role || this.getUserRole();
+    return (roleKey && this.ROLE_LABELS[roleKey]) || 'Usuário';
+  }
+
+  public getRoleBadgeClass(role?: string | null): string {
+    const roleKey = role || this.getUserRole();
+    return (roleKey && this.ROLE_BADGE_CLASSES[roleKey]) || 'bg-secondary';
+  }
+
   isAdminOrSupport(): boolean {
     const currentUser = this.currentUserValue;
     return currentUser?.role === 'Admin' || currentUser?.role === 'Support';
