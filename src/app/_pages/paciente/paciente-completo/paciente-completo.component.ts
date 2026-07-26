@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import * as bootstrap from 'bootstrap';
 import { Paciente } from '../../../_module/pacienteModule';
 import { Profissional } from '../../../_module/profissionalModule';
 import { Router } from '@angular/router';
@@ -2001,64 +2002,64 @@ export class PacienteCompletoComponent implements OnInit {
 
   // ---------- DIÁLOGOS ----------
   openDialogVendaPacote(): void {
-    const dialog = document.getElementById('dialogVendaPacote') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogVendaPacote');
+    if (modalElement) {
       this.formVendaPacote.patchValue({
         pacienteId: this.Paciente?.id
       });
-      dialog.showModal();
+      bootstrap.Modal.getOrCreateInstance(modalElement).show();
     }
   }
 
   closeDialogVendaPacote(): void {
-    const dialog = document.getElementById('dialogVendaPacote') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogVendaPacote');
+    if (modalElement) {
       this.formVendaPacote.reset({
         pacienteId: this.Paciente?.id,
         gerarFinanceiro: true
       });
-      dialog.close();
+      bootstrap.Modal.getInstance(modalElement)?.hide();
     }
   }
 
   openDialogConsumoSessao(pacotePaciente: PacotePaciente): void {
-    const dialog = document.getElementById('dialogConsumoSessao') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogConsumoSessao');
+    if (modalElement) {
       this.pacoteSelecionado = pacotePaciente;
       this.formConsumoSessao.patchValue({
         pacotePacienteId: pacotePaciente.id,
         pacienteUtilizadoId: this.Paciente?.id
       });
-      dialog.showModal();
+      bootstrap.Modal.getOrCreateInstance(modalElement).show();
     }
   }
 
   closeDialogConsumoSessao(): void {
-    const dialog = document.getElementById('dialogConsumoSessao') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogConsumoSessao');
+    if (modalElement) {
       this.formConsumoSessao.reset({
         pacienteUtilizadoId: this.Paciente?.id
       });
       this.pacoteSelecionado = null;
-      dialog.close();
+      bootstrap.Modal.getInstance(modalElement)?.hide();
     }
   }
 
   openDialogHistoricoUso(pacotePaciente: PacotePaciente): void {
-    const dialog = document.getElementById('dialogHistoricoUso') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogHistoricoUso');
+    if (modalElement) {
       this.pacoteSelecionado = pacotePaciente;
       this.carregarHistoricoUso(pacotePaciente.id);
-      dialog.showModal();
+      bootstrap.Modal.getOrCreateInstance(modalElement).show();
     }
   }
 
   closeDialogHistoricoUso(): void {
-    const dialog = document.getElementById('dialogHistoricoUso') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogHistoricoUso');
+    if (modalElement) {
       this.pacoteSelecionado = null;
       this.historicoUsoPacote = [];
-      dialog.close();
+      bootstrap.Modal.getInstance(modalElement)?.hide();
     }
   }
 

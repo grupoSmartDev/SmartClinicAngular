@@ -607,102 +607,124 @@
             <!-- ============================================ -->
             <!-- DIÁLOGO: VENDER PACOTE -->
             <!-- ============================================ -->
-            <dialog id="dialogVendaPacote">
-              <div class="card">
-                <div class="card-header bg-primary text-white">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <h5 class="mb-0">Vender Pacote</h5>
+            <div
+              #modalVendaPacote
+              class="modal fade"
+              id="dialogVendaPacote"
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              tabindex="-1"
+              aria-labelledby="dialogVendaPacoteLabel"
+              aria-modal="true"
+              role="dialog"
+            >
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="dialogVendaPacoteLabel">
+                      Vender Pacote
+                    </h1>
                     <button
                       type="button"
-                      class="btn-close btn-close-white"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
                       (click)="closeDialogVendaPacote()"
+                      aria-label="Close"
                     ></button>
                   </div>
-                </div>
-                <div
-                  class="card-body"
-                  style="max-height: 70vh; overflow-y: auto"
-                >
-                  <form [formGroup]="formVendaPacote">
-                    <!-- Seleção do Pacote -->
-                    <div class="row mb-3">
-                      <div class="col-12">
-                        <label class="form-label fw-semibold">Pacote *</label>
-                        <select
-                          class="form-select"
-                          formControlName="pacoteId"
-                          [ngClass]="{
-                            'is-invalid':
-                              formVendaPacote.get('pacoteId')?.invalid &&
-                              formVendaPacote.get('pacoteId')?.touched
-                          }"
-                        >
-                          <option value="">Selecione um pacote</option>
-                          @for (pacote of listaPacotes; track pacote.id) {
-                          <option [value]="pacote.id">
-                            {{ pacote.descricao }} -
-                            {{ pacote.quantidadeSessoes }} sessões -
-                            {{ pacote.valor | currency : "BRL" }}
-                          </option>
-                          }
-                        </select>
-                        <div class="invalid-feedback">Selecione um pacote</div>
-                      </div>
-                    </div>
-
-                    <!-- Observação -->
-                    <div class="row mb-3">
-                      <div class="col-12">
-                        <label class="form-label">Observação</label>
-                        <textarea
-                          class="form-control"
-                          formControlName="observacao"
-                          rows="2"
-                          placeholder="Observações sobre a venda..."
-                        ></textarea>
-                      </div>
-                    </div>
-
-                    <!-- Gerar Financeiro -->
-                    <div class="row mb-3">
-                      <div class="col-12">
-                        <div class="form-check form-switch">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            formControlName="gerarFinanceiro"
-                            id="gerarFinanceiroVenda"
-                            (change)="toggleFinanceiroVendaPacote()"
-                          />
-                          <label
-                            class="form-check-label"
-                            for="gerarFinanceiroVenda"
-                          >
-                            Gerar Financeiro
-                          </label>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Seção Financeiro -->
-                    <div
-                      *ngIf="formVendaPacote.get('gerarFinanceiro')?.value"
-                      [@fadeInOut]
-                      formGroupName="financeiro"
-                    >
-                      <div class="card mb-3">
-                        <div class="card-header bg-light">
-                          <h6 class="mb-0">Informações Financeiras</h6>
+                  <div class="modal-body">
+                    <form [formGroup]="formVendaPacote">
+                      <div class="card mb-4">
+                        <div class="card-header">
+                          <h5 class="mb-0">Informações do Pacote</h5>
                         </div>
                         <div class="card-body">
-                          <div class="row mb-3">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label for="pacoteIdVenda" class="form-label"
+                                >Pacote *</label
+                              >
+                              <select
+                                id="pacoteIdVenda"
+                                class="form-select form-select-sm"
+                                formControlName="pacoteId"
+                                [ngClass]="{
+                                  'is-invalid':
+                                    formVendaPacote.get('pacoteId')?.invalid &&
+                                    formVendaPacote.get('pacoteId')?.touched
+                                }"
+                              >
+                                <option value="">Selecione um pacote</option>
+                                @for (pacote of listaPacotes; track pacote.id) {
+                                <option [value]="pacote.id">
+                                  {{ pacote.descricao }} -
+                                  {{ pacote.quantidadeSessoes }} sessões -
+                                  {{ pacote.valor | currency : "BRL" }}
+                                </option>
+                                }
+                              </select>
+                              <div
+                                *ngIf="
+                                  formVendaPacote.get('pacoteId')?.invalid &&
+                                  formVendaPacote.get('pacoteId')?.touched
+                                "
+                                class="invalid-feedback"
+                              >
+                                Selecione um pacote.
+                              </div>
+                            </div>
+
+                            <div class="col-md-12">
+                              <label for="observacaoVenda" class="form-label"
+                                >Observação</label
+                              >
+                              <textarea
+                                id="observacaoVenda"
+                                class="form-control form-control-sm"
+                                formControlName="observacao"
+                                rows="2"
+                                placeholder="Observações sobre a venda..."
+                              ></textarea>
+                            </div>
+
+                            <div class="col-md-12">
+                              <div class="form-check form-switch">
+                                <input
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  formControlName="gerarFinanceiro"
+                                  id="gerarFinanceiroVenda"
+                                  (change)="toggleFinanceiroVendaPacote()"
+                                />
+                                <label
+                                  class="form-check-label"
+                                  for="gerarFinanceiroVenda"
+                                >
+                                  Gerar Financeiro
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Seção Financeiro -->
+                      <div
+                        class="card mb-4"
+                        *ngIf="formVendaPacote.get('gerarFinanceiro')?.value"
+                        [@fadeInOut]
+                        formGroupName="financeiro"
+                      >
+                        <div class="card-header">
+                          <h5 class="mb-0">Informações Financeiras</h5>
+                        </div>
+                        <div class="card-body">
+                          <div class="row">
                             <div class="col-md-4">
                               <label class="form-label">Valor *</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="form-control form-control-sm"
                                 formControlName="valor"
                                 [currencyMask]="{
                                   prefix: 'R$ ',
@@ -717,7 +739,7 @@
                             <div class="col-md-4">
                               <label class="form-label">Tipo Pagamento *</label>
                               <select
-                                class="form-select"
+                                class="form-select form-select-sm"
                                 formControlName="tipoPagamentoId"
                               >
                                 <option value="">Selecione</option>
@@ -734,18 +756,16 @@
                               <label class="form-label">Nº Parcelas *</label>
                               <input
                                 type="number"
-                                class="form-control"
+                                class="form-control form-control-sm"
                                 formControlName="parcela"
                                 min="1"
                               />
                             </div>
-                          </div>
 
-                          <div class="row mb-3">
                             <div class="col-md-6">
                               <label class="form-label">Centro de Custo</label>
                               <select
-                                class="form-select"
+                                class="form-select form-select-sm"
                                 formControlName="centroCustoId"
                               >
                                 <option value="">Selecione</option>
@@ -761,16 +781,13 @@
                               <label class="form-label">Observação</label>
                               <input
                                 type="text"
-                                class="form-control"
+                                class="form-control form-control-sm"
                                 formControlName="observacao"
                                 placeholder="Observação financeira"
                               />
                             </div>
-                          </div>
 
-                          <!-- Botão Gerar Parcelas -->
-                          <div class="row mb-3">
-                            <div class="col-12">
+                            <div class="col-12 mt-2">
                               <button
                                 type="button"
                                 class="btn btn-outline-primary btn-sm"
@@ -779,295 +796,348 @@
                                 <i class="bi bi-calculator"></i> Gerar Parcelas
                               </button>
                             </div>
-                          </div>
 
-                          <!-- Tabela de Parcelas -->
-                          <div
-                            class="table-responsive"
-                            formArrayName="subFinancReceber"
-                          >
-                            <table class="table table-sm table-bordered">
-                              <thead class="table-light">
-                                <tr>
-                                  <th style="width: 60px">#</th>
-                                  <th>Valor</th>
-                                  <th>Vencimento</th>
-                                  <th>Tipo Pag.</th>
-                                  <th>Forma Pag.</th>
-                                  <th style="width: 50px"></th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                @for (parcela of
-                                subFinancReceberVendaPacote.controls; track
-                                $index; let i = $index) {
-                                <tr [formGroupName]="i">
-                                  <td class="text-center">{{ i + 1 }}</td>
-                                  <td>
-                                    <input
-                                      type="text"
-                                      class="form-control form-control-sm"
-                                      formControlName="valor"
-                                      [currencyMask]="{
-                                        prefix: 'R$ ',
-                                        thousands: '.',
-                                        decimal: ',',
-                                        precision: 2,
-                                        allowNegative: false
-                                      }"
-                                    />
-                                  </td>
-                                  <td>
-                                    <input
-                                      type="date"
-                                      class="form-control form-control-sm"
-                                      formControlName="dataVencimento"
-                                    />
-                                  </td>
-                                  <td>
-                                    <select
-                                      class="form-select form-select-sm"
-                                      formControlName="tipoPagamentoId"
+                            <div
+                              class="col-12 mt-3 table-responsive"
+                              formArrayName="subFinancReceber"
+                            >
+                              <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                  <tr>
+                                    <th style="width: 60px">#</th>
+                                    <th>Valor</th>
+                                    <th>Vencimento</th>
+                                    <th>Tipo Pag.</th>
+                                    <th>Forma Pag.</th>
+                                    <th style="width: 50px"></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  @for (parcela of
+                                  subFinancReceberVendaPacote.controls; track
+                                  $index; let i = $index) {
+                                  <tr [formGroupName]="i">
+                                    <td class="text-center">{{ i + 1 }}</td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        class="form-control form-control-sm"
+                                        formControlName="valor"
+                                        [currencyMask]="{
+                                          prefix: 'R$ ',
+                                          thousands: '.',
+                                          decimal: ',',
+                                          precision: 2,
+                                          allowNegative: false
+                                        }"
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="date"
+                                        class="form-control form-control-sm"
+                                        formControlName="dataVencimento"
+                                      />
+                                    </td>
+                                    <td>
+                                      <select
+                                        class="form-select form-select-sm"
+                                        formControlName="tipoPagamentoId"
+                                      >
+                                        <option value="">Selecione</option>
+                                        @for (tipo of listaTipoPagamento; track
+                                        tipo.id) {
+                                        <option [value]="tipo.id">
+                                          {{ tipo.descricao }}
+                                        </option>
+                                        }
+                                      </select>
+                                    </td>
+                                    <td>
+                                      <select
+                                        class="form-select form-select-sm"
+                                        formControlName="formaPagamentoId"
+                                      >
+                                        <option value="">Selecione</option>
+                                        @for (forma of listaFormaPagamento;
+                                        track forma.id) {
+                                        <option [value]="forma.id">
+                                          {{ forma.descricao }}
+                                        </option>
+                                        }
+                                      </select>
+                                    </td>
+                                    <td class="text-center">
+                                      <button
+                                        type="button"
+                                        class="btn btn-sm btn-outline-danger"
+                                        (click)="removerParcelaVendaPacote(i)"
+                                      >
+                                        <i class="bi bi-trash"></i>
+                                      </button>
+                                    </td>
+                                  </tr>
+                                  } @if
+                                  (subFinancReceberVendaPacote.length === 0) {
+                                  <tr>
+                                    <td
+                                      colspan="6"
+                                      class="text-center text-muted"
                                     >
-                                      <option value="">Selecione</option>
-                                      @for (tipo of listaTipoPagamento; track
-                                      tipo.id) {
-                                      <option [value]="tipo.id">
-                                        {{ tipo.descricao }}
-                                      </option>
-                                      }
-                                    </select>
-                                  </td>
-                                  <td>
-                                    <select
-                                      class="form-select form-select-sm"
-                                      formControlName="formaPagamentoId"
-                                    >
-                                      <option value="">Selecione</option>
-                                      @for (forma of listaFormaPagamento; track
-                                      forma.id) {
-                                      <option [value]="forma.id">
-                                        {{ forma.descricao }}
-                                      </option>
-                                      }
-                                    </select>
-                                  </td>
-                                  <td class="text-center">
-                                    <button
-                                      type="button"
-                                      class="btn btn-sm btn-outline-danger"
-                                      (click)="removerParcelaVendaPacote(i)"
-                                    >
-                                      <i class="bi bi-trash"></i>
-                                    </button>
-                                  </td>
-                                </tr>
-                                } @if (subFinancReceberVendaPacote.length === 0)
-                                {
-                                <tr>
-                                  <td
-                                    colspan="6"
-                                    class="text-center text-muted"
-                                  >
-                                    Clique em "Gerar Parcelas" para criar as
-                                    parcelas
-                                  </td>
-                                </tr>
-                                }
-                              </tbody>
-                            </table>
+                                      Clique em "Gerar Parcelas" para criar as
+                                      parcelas
+                                    </td>
+                                  </tr>
+                                  }
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </form>
-                </div>
-                <div class="card-footer text-end">
-                  <button
-                    type="button"
-                    class="btn btn-secondary me-2"
-                    (click)="closeDialogVendaPacote()"
-                  >
-                    Cancelar
-                  </button>
-                  <app-button-action
-                    text="Confirmar Venda"
-                    loadingText="Vendendo..."
-                    [loading]="isLoading"
-                    variant="success"
-                    (clicked)="venderPacote()"
-                    [type]="'button'"
-                  ></app-button-action>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <app-button-action
+                      text="Confirmar Venda"
+                      loadingText="Vendendo..."
+                      [loading]="isLoading"
+                      variant="success"
+                      id="btn_confirmar_venda_pacote"
+                      (clicked)="venderPacote()"
+                      [type]="'button'"
+                    ></app-button-action>
+                    <button
+                      type="button"
+                      class="btn btn-danger"
+                      data-bs-dismiss="modal"
+                      (click)="closeDialogVendaPacote()"
+                      aria-label="Close"
+                    >
+                      <i class="bi bi-x"></i>Cancelar
+                    </button>
+                  </div>
                 </div>
               </div>
-            </dialog>
+            </div>
 
             <!-- ============================================ -->
             <!-- DIÁLOGO: CONSUMIR SESSÃO -->
             <!-- ============================================ -->
-            <dialog id="dialogConsumoSessao">
-              <div class="card" style="width: 500px">
-                <div class="card-header bg-success text-white">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <h5 class="mb-0">Consumir Sessão</h5>
+            <div
+              #modalConsumoSessao
+              class="modal fade"
+              id="dialogConsumoSessao"
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              tabindex="-1"
+              aria-labelledby="dialogConsumoSessaoLabel"
+              aria-modal="true"
+              role="dialog"
+            >
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="dialogConsumoSessaoLabel">
+                      Consumir Sessão
+                    </h1>
                     <button
                       type="button"
-                      class="btn-close btn-close-white"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
                       (click)="closeDialogConsumoSessao()"
+                      aria-label="Close"
                     ></button>
                   </div>
-                </div>
-                <div class="card-body">
-                  @if (pacoteSelecionado) {
-                  <div class="alert alert-info mb-3">
-                    <strong>Pacote:</strong>
-                    {{ pacoteSelecionado.pacote?.descricao }}<br />
-                    <strong>Sessões disponíveis:</strong>
-                    {{ pacoteSelecionado.quantidadeDisponivel }}
+                  <div class="modal-body">
+                    @if (pacoteSelecionado) {
+                    <div class="alert alert-info mb-3">
+                      <strong>Pacote:</strong>
+                      {{ pacoteSelecionado.pacote?.descricao }}<br />
+                      <strong>Sessões disponíveis:</strong>
+                      {{ pacoteSelecionado.quantidadeDisponivel }}
+                    </div>
+                    }
+
+                    <form [formGroup]="formConsumoSessao">
+                      <div class="card mb-4">
+                        <div class="card-header">
+                          <h5 class="mb-0">Dados do Uso</h5>
+                        </div>
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label for="agendaIdConsumo" class="form-label"
+                                >Agendamento</label
+                              >
+                              <select
+                                id="agendaIdConsumo"
+                                class="form-select form-select-sm"
+                                formControlName="agendaId"
+                              >
+                                <option value="">
+                                  Nenhum (sessão avulsa, sem agendamento
+                                  vinculado)
+                                </option>
+                                @for (agenda of Paciente.agendamentos; track
+                                $index) { @if (agenda) {
+                                <option [value]="agenda.id">
+                                  {{ agenda.data | date : "dd/MM/yyyy HH:mm" }}
+                                  - {{ agenda.profissionalId }}
+                                </option>
+                                } }
+                              </select>
+                              <small class="text-muted">Opcional.</small>
+                            </div>
+
+                            <div class="col-md-12">
+                              <label
+                                for="observacaoConsumo"
+                                class="form-label"
+                                >Observação</label
+                              >
+                              <textarea
+                                id="observacaoConsumo"
+                                class="form-control form-control-sm"
+                                formControlName="observacao"
+                                rows="3"
+                                placeholder="Observações sobre o uso..."
+                              ></textarea>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
                   </div>
-                  }
-
-                  <form [formGroup]="formConsumoSessao">
-                    <div class="mb-3">
-                      <label class="form-label fw-semibold">Agendamento</label>
-                      <select class="form-select" formControlName="agendaId">
-                        <option value="">
-                          Nenhum (sessão avulsa, sem agendamento vinculado)
-                        </option>
-                        @for (agenda of Paciente.agendamentos; track $index) {
-                        @if (agenda) {
-                        <option [value]="agenda.id">
-                          {{ agenda.data | date : "dd/MM/yyyy HH:mm" }} -
-                          {{ agenda.profissionalId }}
-                        </option>
-                        } }
-                      </select>
-                      <small class="text-muted">Opcional.</small>
-                    </div>
-
-                    <div class="mb-3">
-                      <label class="form-label">Observação</label>
-                      <textarea
-                        class="form-control"
-                        formControlName="observacao"
-                        rows="3"
-                        placeholder="Observações sobre o uso..."
-                      ></textarea>
-                    </div>
-                  </form>
-                </div>
-                <div class="card-footer text-end">
-                  <button
-                    type="button"
-                    class="btn btn-secondary me-2"
-                    (click)="closeDialogConsumoSessao()"
-                  >
-                    Cancelar
-                  </button>
-                  <app-button-action
-                    text="Consumir"
-                    loadingText="Consumindo..."
-                    [loading]="isLoading"
-                    variant="success"
-                    (clicked)="consumirSessao()"
-                    [type]="'button'"
-                  ></app-button-action>
+                  <div class="modal-footer">
+                    <app-button-action
+                      text="Consumir"
+                      loadingText="Consumindo..."
+                      [loading]="isLoading"
+                      variant="success"
+                      id="btn_confirmar_consumo_sessao"
+                      (clicked)="consumirSessao()"
+                      [type]="'button'"
+                    ></app-button-action>
+                    <button
+                      type="button"
+                      class="btn btn-danger"
+                      data-bs-dismiss="modal"
+                      (click)="closeDialogConsumoSessao()"
+                      aria-label="Close"
+                    >
+                      <i class="bi bi-x"></i>Cancelar
+                    </button>
+                  </div>
                 </div>
               </div>
-            </dialog>
+            </div>
 
             <!-- ============================================ -->
             <!-- DIÁLOGO: HISTÓRICO DE USO -->
             <!-- ============================================ -->
-            <dialog id="dialogHistoricoUso">
-              <div class="card" style="width: 700px">
-                <div class="card-header bg-primary text-white">
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <h5 class="mb-0">Histórico de Uso</h5>
+            <div
+              #modalHistoricoUso
+              class="modal fade"
+              id="dialogHistoricoUso"
+              data-bs-backdrop="static"
+              data-bs-keyboard="false"
+              tabindex="-1"
+              aria-labelledby="dialogHistoricoUsoLabel"
+              aria-modal="true"
+              role="dialog"
+            >
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="dialogHistoricoUsoLabel">
+                      Histórico de Uso
+                    </h1>
                     <button
                       type="button"
-                      class="btn-close btn-close-white"
+                      class="btn-close"
+                      data-bs-dismiss="modal"
                       (click)="closeDialogHistoricoUso()"
+                      aria-label="Close"
                     ></button>
                   </div>
-                </div>
-                <div
-                  class="card-body"
-                  style="max-height: 60vh; overflow-y: auto"
-                >
-                  @if (pacoteSelecionado) {
-                  <div class="alert alert-info mb-3">
-                    <strong>Pacote:</strong>
-                    {{ pacoteSelecionado.pacote?.descricao }}<br />
-                    <strong>Total de usos:</strong>
-                    {{ pacoteSelecionado.quantidadeUsada }} de
-                    {{ pacoteSelecionado.quantidadeTotal }}
+                  <div class="modal-body">
+                    @if (pacoteSelecionado) {
+                    <div class="alert alert-info mb-3">
+                      <strong>Pacote:</strong>
+                      {{ pacoteSelecionado.pacote?.descricao }}<br />
+                      <strong>Total de usos:</strong>
+                      {{ pacoteSelecionado.quantidadeUsada }} de
+                      {{ pacoteSelecionado.quantidadeTotal }}
+                    </div>
+                    }
+
+                    <div
+                      class="alert alert-info"
+                      *ngIf="historicoUsoPacote.length === 0"
+                    >
+                      <i class="bi bi-info-circle me-2"></i>
+                      Nenhum uso registrado.
+                    </div>
+
+                    <div
+                      class="table-responsive"
+                      *ngIf="historicoUsoPacote.length > 0"
+                    >
+                      <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                          <tr>
+                            <th>Data do Uso</th>
+                            <th>Agendamento</th>
+                            <th>Observação</th>
+                            <th class="text-end">Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (uso of historicoUsoPacote; track uso.id) {
+                          <tr>
+                            <td>
+                              {{ uso.dataUso | date : "dd/MM/yyyy HH:mm" }}
+                            </td>
+                            <td>
+                              #{{ uso.agendaId }}
+                              @if (uso.agendaData) {
+                              <br /><small class="text-muted">{{
+                                uso.agendaData | date : "dd/MM/yyyy HH:mm"
+                              }}</small>
+                              }
+                            </td>
+                            <td>{{ uso.observacao || "-" }}</td>
+                            <td class="text-end">
+                              <button
+                                type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                (click)="estornarUso(uso.id)"
+                                title="Estornar uso"
+                              >
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                  } @if (historicoUsoPacote.length > 0) {
-                  <div class="table-responsive">
-                    <table class="table table-sm table-hover">
-                      <thead class="table-light">
-                        <tr>
-                          <th>Data do Uso</th>
-                          <th>Agendamento</th>
-                          <th>Profissional</th>
-                          <th>Observação</th>
-                          <th class="text-end">Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @for (uso of historicoUsoPacote; track uso.id) {
-                        <tr>
-                          <td>{{ uso.dataUso | date : "dd/MM/yyyy HH:mm" }}</td>
-                          <td>
-                            #{{ uso.agendaId }}
-                            @if (uso.agendaData) {
-                            <br /><small class="text-muted">{{
-                              uso.agendaData | date : "dd/MM/yyyy HH:mm"
-                            }}</small>
-                            }
-                          </td>
-                          <td>{{ uso.profissionalNome || "-" }}</td>
-                          <td>{{ uso.observacao || "-" }}</td>
-                          <td class="text-end">
-                            <button
-                              type="button"
-                              class="btn btn-sm btn-outline-danger"
-                              (click)="estornarUso(uso.id)"
-                              title="Estornar uso"
-                            >
-                              <i class="bi bi-arrow-counterclockwise"></i>
-                            </button>
-                          </td>
-                        </tr>
-                        }
-                      </tbody>
-                    </table>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                      (click)="closeDialogHistoricoUso()"
+                      aria-label="Close"
+                    >
+                      <i class="bi bi-x"></i>Fechar
+                    </button>
                   </div>
-                  } @else {
-                  <div class="alert alert-warning text-center">
-                    <i class="bi bi-inbox"></i>
-                    <p class="mb-0 mt-2">
-                      Nenhum uso registrado para este pacote
-                    </p>
-                  </div>
-                  }
-                </div>
-                <div class="card-footer text-end">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    (click)="closeDialogHistoricoUso()"
-                  >
-                    Fechar
-                  </button>
                 </div>
               </div>
-            </dialog>
+            </div>
           </div>
         </div>
 
