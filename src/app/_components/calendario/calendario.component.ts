@@ -403,16 +403,11 @@ export class CalendarioComponent {
       end: agendamento.dataFim?.toISOString()
     };
 
-    let agendaParaModal: Agenda | null = null;
-
-    this.agendaService.Listar().subscribe({
+    this.agendaService.BuscarPorId(agendamento.id).subscribe({
       next: (response) => {
-        // Find the matching agenda item and assign it
-        const matchingAgenda = response.dados.filter(agenda => agenda.id.toString() === agendamento.id);
-        if (matchingAgenda.length > 0) {
-          agendaParaModal = matchingAgenda[0]; // Assign the first matching item
-          this.eventoParaModal = agendaParaModal;
-          this.selectedEvent = agendaParaModal;
+        if (response.dados) {
+          this.eventoParaModal = response.dados;
+          this.selectedEvent = response.dados;
         }
       },
     });

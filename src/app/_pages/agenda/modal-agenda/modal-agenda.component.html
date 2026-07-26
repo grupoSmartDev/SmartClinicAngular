@@ -371,12 +371,11 @@
                   <label for="valorTotal" class="form-label small fw-semibold">
                     Valor Total <span class="text-danger">*</span>
                   </label>
-                  <div class="input-group input-group-sm">
+                  <div class="input-group input-group-sm" *ngIf="!selectedEvent">
                     <span class="input-group-text">R$</span>
                     <input
                       type="number"
                       id="valorTotal"
-                      [readonly]="selectedEvent"
                       class="form-control"
                       formControlName="valor"
                       (change)="onValorTotalChange()"
@@ -388,6 +387,10 @@
                         formulario.get('financReceber.valor')?.touched
                       "
                     />
+                  </div>
+                  <div class="input-group input-group-sm" *ngIf="selectedEvent">
+                    <span class="input-group-text">R$</span>
+                    <span class="form-control bg-light" id="valorTotal">{{ formulario.get('financReceber.valor')?.value | currencyPtBr }}</span>
                   </div>
                   <div
                     class="invalid-feedback"
@@ -525,12 +528,7 @@
                       <td>
                         <div class="input-group input-group-sm">
                           <span class="input-group-text">R$</span>
-                          <input
-                            type="number"
-                            class="form-control"
-                            formControlName="valor"
-                            readonly
-                          />
+                          <span class="form-control bg-light">{{ parcela.get('valor')?.value | currencyPtBr }}</span>
                         </div>
                       </td>
                       <td>
@@ -602,7 +600,7 @@
                     class="form-select form-select-sm"
                     formControlName="pacoteId"
                   >
-                    <option value="" disabled>Selecione um pacote</option>
+                    <option value="" selected>Nenhum pacote</option>
                     <option *ngFor="let item of listaPacote" [value]="item.id">
                       {{ item.pacote?.descricao }} ({{ item.quantidadeDisponivel }} sessões disponíveis)
                     </option>
