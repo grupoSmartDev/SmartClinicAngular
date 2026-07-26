@@ -17,6 +17,10 @@ export interface Plano {
     dataInicio?: Date;
     dataFim?: Date;
     ativo: boolean;
+    // Calculado pelo backend (PlanoModel.Status): "Ativo" | "Vencido" | "Inativo".
+    // Não confiar em `ativo` sozinho para exibir status - um plano vencido continua ativo=true
+    // até ser explicitamente inativado/renovado.
+    status?: string;
     pacienteId?: number; //id do paciente
     financeiroId?: number;
     tipoMes: TipoMes;

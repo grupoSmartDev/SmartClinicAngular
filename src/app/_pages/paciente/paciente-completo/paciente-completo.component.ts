@@ -166,6 +166,9 @@ export class PacienteCompletoComponent implements OnInit {
   camposFinancReceber = false;
   isRenovacao: boolean = false;
   podeRenovar: boolean = false;
+  // Mensagem de erro exibida DENTRO do modal de renovação (acima dos botões), em vez de só um
+  // toastr - usada tanto para validação de campos obrigatórios quanto para o limite de dias.
+  erroRenovacao: string | null = null;
   planoSelecionado: any = null;
   diasSemanaParaRenovar: number = 0;
 
@@ -226,6 +229,12 @@ export class PacienteCompletoComponent implements OnInit {
     if (this._paciente?.id) {
       this.carregarPacotesPaciente();
     }
+
+    // Recalcula podeRenovar/isRenovacao para o paciente novo. Sem isso, ficam presos no valor
+    // calculado na primeira vez que ngOnInit rodou (com Paciente ainda vazio, antes de qualquer
+    // paciente real ser carregado) - o componente é reutilizado entre pacientes via @ViewChild
+    // e nunca é recriado, então ngOnInit nunca roda de novo para recalcular isso.
+    this.verificarRenovacao();
   }
 
   // Métodos básicos de UI
@@ -758,10 +767,14 @@ export class PacienteCompletoComponent implements OnInit {
     });
 
     if (diasSelecionados > limiteDias) {
-      this.toastr.warning(
-        `O plano permite selecionar apenas ${limiteDias} dia(s) da semana`,
-        'Aviso'
-      );
+      const mensagem = `O plano permite selecionar apenas ${limiteDias} dia(s) da semana`;
+
+      if (formRenovacao) {
+        // Dialog de renovação usa alerta interno (ver Bug 2) em vez de só toastr
+        this.erroRenovacao = mensagem;
+      } else {
+        this.toastr.warning(mensagem, 'Aviso');
+      }
 
       // Desmarcar o último dia selecionado
       for (let i = this.diasRecorrenciaArray.controls.length - 1; i >= 0; i--) {
@@ -771,6 +784,8 @@ export class PacienteCompletoComponent implements OnInit {
           break;
         }
       }
+    } else if (formRenovacao) {
+      this.erroRenovacao = null;
     }
   }
 
@@ -1364,12 +1379,13 @@ export class PacienteCompletoComponent implements OnInit {
       return;
     }
 
-    const dialogRenovarPlano = document.getElementById('dialog_renovar_plano') as HTMLDialogElement;
-    if (dialogRenovarPlano) {
+    const modalElement = document.getElementById('dialog_renovar_plano');
+    if (modalElement) {
+      this.erroRenovacao = null;
       // Inicializar formulário de renovação
       this.initFormRenovacao(plano);
       // Mostrar o diálogo
-      dialogRenovarPlano.showModal();
+      bootstrap.Modal.getOrCreateInstance(modalElement).show();
     }
   }
 
@@ -1713,11 +1729,12 @@ export class PacienteCompletoComponent implements OnInit {
     }
 
     if (this.formRenovacao.invalid) {
-      this.toastr.error('Existem campos inválidos no formulário', 'Erro');
+      this.erroRenovacao = 'Existem campos obrigatórios não preenchidos. Revise o formulário.';
       this.mostrarCamposInvalidos(this.formRenovacao);
       return;
     }
 
+    this.erroRenovacao = null;
     this.isLoading = true;
     // Montar objeto para envio
     const planoRenovacao: PlanoRenovacaoDto = {
@@ -1819,7 +1836,9 @@ export class PacienteCompletoComponent implements OnInit {
           this.atualizarPacientePlano();
         } else {
           this.isLoading = false;
-          this.toastr.error(response.mensagem || 'Erro ao renovar plano', 'Erro');
+          const mensagem = response.mensagem || 'Erro ao renovar plano';
+          this.erroRenovacao = mensagem;
+          this.toastr.error(mensagem, 'Erro');
         }
       },
       error: (error) => {
@@ -1833,6 +1852,7 @@ export class PacienteCompletoComponent implements OnInit {
           mensagemErro += ' ' + error.message;
         }
 
+        this.erroRenovacao = mensagemErro;
         this.toastr.error(mensagemErro, 'Erro');
       }
     });
@@ -1840,9 +1860,10 @@ export class PacienteCompletoComponent implements OnInit {
 
   // Método para fechar o diálogo de renovação
   closeDialogRenovacaoPlano(): void {
-    const dialog = document.getElementById('dialog_renovar_plano') as HTMLDialogElement;
-    if (dialog) {
-      dialog.close();
+    const modalElement = document.getElementById('dialog_renovar_plano');
+    if (modalElement) {
+      this.erroRenovacao = null;
+      bootstrap.Modal.getInstance(modalElement)?.hide();
     }
   }
 
@@ -1869,28 +1890,24 @@ export class PacienteCompletoComponent implements OnInit {
       const plano = this.Paciente.plano;
       this.isRenovacao = true;
 
-      // Verificar se dataFim é válida
-      if (plano.dataFim) {
+      // Só permite renovar quando o plano já está Vencido - usa o status calculado pelo
+      // backend (fonte única de verdade, ver PlanoModel.Status) quando disponível.
+      if (plano.status) {
+        this.podeRenovar = plano.status === 'Vencido';
+      } else if (plano.dataFim) {
         try {
-          const dataFim = new Date(plano.dataFim);
-          const hoje = new Date();
-
-          // Permite renovar se a data de fim já passou ou está a menos de 30 dias de vencer
-          const umMesAntesDoFim = new Date(dataFim);
-          umMesAntesDoFim.setMonth(umMesAntesDoFim.getMonth() - 1);
-
-          this.podeRenovar = hoje >= umMesAntesDoFim;
+          this.podeRenovar = new Date(plano.dataFim) < new Date();
         } catch (error) {
           console.error('Erro ao processar data de fim do plano:', error);
-          this.podeRenovar = true; // Por padrão, permite renovar
+          this.podeRenovar = false;
         }
       } else {
-        // Se não houver data fim, permite renovar
-        this.podeRenovar = true;
+        // Sem data fim definida, trata como ainda vigente (mesma regra do backend)
+        this.podeRenovar = false;
       }
     } else {
       this.isRenovacao = false;
-      this.podeRenovar = true;
+      this.podeRenovar = false;
     }
   }
 

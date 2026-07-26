@@ -372,6 +372,12 @@
               } @else if (Paciente.plano?.id ) {
               <button
                 class="btn btn-success mb-2"
+                [disabled]="!podeRenovar"
+                [title]="
+                  podeRenovar
+                    ? 'Renovar plano'
+                    : 'Só é possível renovar quando o plano estiver vencido'
+                "
                 (click)="openModalRenovarPlano(Paciente.plano)"
               >
                 <i class="bi bi-arrow-repeat"></i> Renovar plano
@@ -421,10 +427,11 @@
                       <td>
                         <span
                           class="badge"
-                          [class.bg-success]="Paciente.plano.ativo"
-                          [class.bg-warning]="!Paciente.plano.ativo"
+                          [class.bg-success]="Paciente.plano.status === 'Ativo'"
+                          [class.bg-danger]="Paciente.plano.status === 'Vencido'"
+                          [class.bg-warning]="Paciente.plano.status === 'Inativo'"
                         >
-                          {{ Paciente.plano.ativo ? "Ativo" : "Inativo" }}
+                          {{ Paciente.plano.status }}
                         </span>
                       </td>
 
@@ -2073,15 +2080,29 @@
   </dialog>
 
   <!-- Modal de Renovação de Plano -->
-  <!-- Modal de Renovação de Plano -->
-  <dialog id="dialog_renovar_plano" class="modal-dialog modal-lg">
+  <div
+    #modalRenovarPlano
+    class="modal fade"
+    id="dialog_renovar_plano"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+    aria-labelledby="dialogRenovarPlanoLabel"
+    aria-modal="true"
+    role="dialog"
+  >
+   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Renovar Plano - {{ Paciente.nome }}</h5>
+        <h1 class="modal-title fs-5" id="dialogRenovarPlanoLabel">
+          Renovar Plano - {{ Paciente.nome }}
+        </h1>
         <button
           type="button"
-          class="btn-close btn-close-white"
+          class="btn-close"
+          data-bs-dismiss="modal"
           (click)="closeDialogRenovacaoPlano()"
+          aria-label="Close"
         ></button>
       </div>
 
@@ -2601,27 +2622,37 @@
               </div>
             </div>
           </div>
-
-          <!-- Botões de ação -->
-          <div class="text-end mt-4">
-            <button
-              type="button"
-              class="btn btn-outline-secondary me-2"
-              (click)="closeDialogRenovacaoPlano()"
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              [disabled]="formRenovacao.invalid"
-              (click)="salvarRenovacaoPlano()"
-            >
-              <i class="bi bi-check-circle"></i> Renovar Plano
-            </button>
-          </div>
         </form>
+
+        <!-- Erro exibido DENTRO do modal (acima dos botões) - validação de campos
+             obrigatórios, limite de dias da semana ou erro retornado pelo backend -->
+        @if (erroRenovacao) {
+        <div class="alert alert-danger mt-3 mb-0" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          {{ erroRenovacao }}
+        </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-success"
+          [disabled]="!formRenovacao || formRenovacao.invalid"
+          (click)="salvarRenovacaoPlano()"
+        >
+          <i class="bi bi-check-circle"></i> Renovar Plano
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          (click)="closeDialogRenovacaoPlano()"
+          aria-label="Close"
+        >
+          <i class="bi bi-x"></i>Cancelar
+        </button>
       </div>
     </div>
-  </dialog>
+   </div>
+  </div>
 </div>
