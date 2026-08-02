@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Pacote, PacotePaciente, PacoteUso } from '../_module/pacoteModule';
+import { Pacote, PacotePaciente, PacoteUso, PacoteUsoHistorico } from '../_module/pacoteModule';
 import { ResponseModel } from '../_module/ResponseModule';
 
 @Injectable({
@@ -116,8 +116,8 @@ export class PacoteService {
   }
 
   // Método para listar histórico de uso
-  ListarHistoricoUso(pacotePacienteId: number): Observable<ResponseModel<PacoteUso[]>> {
-    return this.http.get<ResponseModel<PacoteUso[]>>(
+  ListarHistoricoUso(pacotePacienteId: number): Observable<ResponseModel<PacoteUsoHistorico[]>> {
+    return this.http.get<ResponseModel<PacoteUsoHistorico[]>>(
       `${this.baseURL}ListarHistoricoUso/${pacotePacienteId}`
     );
   }

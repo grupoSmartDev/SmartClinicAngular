@@ -37,6 +37,10 @@ export class PacienteService {
     return this.http.get<ResponseModel<Paciente[]>>(`${this.baseURL}Listar`, { params });
   }
 
+  BuscarPorId(id: number): Observable<ResponseModel<Paciente>> {
+    return this.http.get<ResponseModel<Paciente>>(`${this.baseURL}BuscarPorId/${id}`);
+  }
+
   Criar(paciente: Paciente): Observable<ResponseModel<Paciente>> {
 
     return this.http.post<ResponseModel<Paciente>>(`${this.baseURL}Criar`, paciente);

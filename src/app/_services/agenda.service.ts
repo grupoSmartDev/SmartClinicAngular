@@ -19,6 +19,10 @@ export class AgendaService {
     return this.http.get<ResponseModel<Agenda[]>>(`${this.baseURL}Listar`);
   }
 
+  BuscarPorId(id: string | number): Observable<ResponseModel<Agenda>> {
+    return this.http.get<ResponseModel<Agenda>>(`${this.baseURL}BuscarPorId/${id}`);
+  }
+
   Criar(agenda: Agenda): Observable<ResponseModel<Agenda>> {
     return this.http.post<ResponseModel<Agenda>>(`${this.baseURL}Criar`, agenda);
   }

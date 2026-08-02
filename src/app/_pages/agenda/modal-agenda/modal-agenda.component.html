@@ -83,7 +83,6 @@
           novalidate
         >
           <!-- Cabeçalho do Agendamento -->
-          <input type="date" name="data" id="" formControlName="data" hidden />
           <div class="card shadow-sm mb-4">
             <div class="card-body">
               <div class="row g-3">
@@ -164,7 +163,7 @@
             <div class="card-body">
               <div class="row g-3">
                 <!-- Campo Paciente -->
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <label for="paciente" class="form-label small fw-semibold">
                     Paciente <span class="text-danger">*</span>
                   </label>
@@ -219,6 +218,30 @@
                         </div>
                       </li>
                     </ul>
+                  </div>
+                </div>
+
+                <!-- Campo Data -->
+                <div class="col-md-2">
+                  <label for="data" class="form-label small fw-semibold">
+                    Data <span class="text-danger">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="data"
+                    class="form-control form-control-sm"
+                    formControlName="data"
+                    [readonly]="selectedEvent"
+                    [class.is-invalid]="
+                      formulario.get('data')?.invalid &&
+                      formulario.get('data')?.touched
+                    "
+                  />
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="formulario.get('data')?.errors?.['required']"
+                  >
+                    A data é obrigatória
                   </div>
                 </div>
 
@@ -344,23 +367,32 @@
                   <label for="valorTotal" class="form-label small fw-semibold">
                     Valor Total <span class="text-danger">*</span>
                   </label>
-                  <div class="input-group input-group-sm">
+                  <div class="input-group input-group-sm" *ngIf="!selectedEvent">
                     <span class="input-group-text">R$</span>
                     <input
-                      type="number"
+                      type="text"
                       id="valorTotal"
-                      [readonly]="selectedEvent"
                       class="form-control"
                       formControlName="valor"
                       (change)="onValorTotalChange()"
                       placeholder="0,00"
-                      step="0.01"
-                      min="0.01"
+                      inputmode="numeric"
+                      [currencyMask]="{
+                        prefix: '',
+                        thousands: '.',
+                        decimal: ',',
+                        precision: 2,
+                        allowNegative: false
+                      }"
                       [class.is-invalid]="
                         formulario.get('financReceber.valor')?.invalid &&
                         formulario.get('financReceber.valor')?.touched
                       "
                     />
+                  </div>
+                  <div class="input-group input-group-sm" *ngIf="selectedEvent">
+                    <span class="input-group-text">R$</span>
+                    <span class="form-control bg-light" id="valorTotal">{{ formulario.get('financReceber.valor')?.value | currencyPtBr }}</span>
                   </div>
                   <div
                     class="invalid-feedback"
@@ -498,12 +530,7 @@
                       <td>
                         <div class="input-group input-group-sm">
                           <span class="input-group-text">R$</span>
-                          <input
-                            type="number"
-                            class="form-control"
-                            formControlName="valor"
-                            readonly
-                          />
+                          <span class="form-control bg-light">{{ parcela.get('valor')?.value | currencyPtBr }}</span>
                         </div>
                       </td>
                       <td>
@@ -575,9 +602,9 @@
                     class="form-select form-select-sm"
                     formControlName="pacoteId"
                   >
-                    <option value="" disabled>Selecione um pacote</option>
+                    <option value="" selected>Nenhum pacote</option>
                     <option *ngFor="let item of listaPacote" [value]="item.id">
-                      {{ item.descricao }}
+                      {{ item.pacote?.descricao }} ({{ item.quantidadeDisponivel }} sessões disponíveis)
                     </option>
                   </select>
                 </div>

@@ -58,7 +58,9 @@ export class ModalProfissionalComponent {
       // Data de cadastro
       dataCadastro: [null],
       tipoComissao: [null],
-      valorComissao: ['0,00', Validators.required],
+      // Comissão é opcional - profissionais sem comissão configurada não devem
+      // ser bloqueados no submit nem enviar valor inválido ao backend.
+      valorComissao: [0],
     })
   }
 
@@ -90,6 +92,7 @@ export class ModalProfissionalComponent {
 
     this.isLoading = true;
     const dataToSave = this.formulario.value as Profissional;
+    dataToSave.valorComissao = this.normalizarValorComissao(dataToSave.valorComissao);
 
     const saveOperation = dataToSave.id ? this.profissionalService.Atualizar(dataToSave) : this.profissionalService.Criar(dataToSave);
 
@@ -116,6 +119,16 @@ export class ModalProfissionalComponent {
     });
   }
 
+
+  // O ngx-currency só reformata o valor quando o usuário interage com o campo;
+  // se a comissão nunca for preenchida, o valor inicial pode chegar aqui como
+  // string ("0,00") e quebrar a deserialização do decimal no backend.
+  private normalizarValorComissao(valor: unknown): number {
+    if (valor === null || valor === undefined || valor === '') return 0;
+    if (typeof valor === 'number') return valor;
+    const numero = parseFloat(String(valor).replace(/\./g, '').replace(',', '.'));
+    return isNaN(numero) ? 0 : numero;
+  }
 
   criarUsuarioParaProfissional(profissional: Profissional): void {
     // Login será o email e senha serão os 6 primeiros dígitos do CPF

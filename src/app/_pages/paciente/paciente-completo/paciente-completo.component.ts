@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import * as bootstrap from 'bootstrap';
 import { Paciente } from '../../../_module/pacienteModule';
 import { Profissional } from '../../../_module/profissionalModule';
 import { Router } from '@angular/router';
@@ -30,7 +31,7 @@ import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 import { Agenda } from '../../../_module/agendaModule';
 import { FormaPagamentoService } from '../../../_services/forma-pagamento.service';
 import { PacoteService } from '../../../_services/pacote.service';
-import { Pacote, PacotePaciente, PacoteUso } from '../../../_module/pacoteModule';
+import { Pacote, PacotePaciente, PacoteUso, PacoteUsoHistorico } from '../../../_module/pacoteModule';
 import { SalasService } from '../../../_services/salas.service';
 import { ProntuarioPrintService, ModeloProntuario } from '../../../_services/prontuario-print.service';
 
@@ -46,6 +47,7 @@ interface FinanceiroDto {
 
 interface PlanoRenovacaoDto {
   planoId: number;
+  planoModeloId: number;
   descricao: string;
   tipoMes: string;
   dataInicio: string;
@@ -134,7 +136,22 @@ export class PacienteCompletoComponent implements OnInit {
   ];
 
   // Propriedades da classe
-  Paciente: Paciente = {} as Paciente;
+  // Paciente é acessado via getter/setter (não um campo simples) porque este componente é
+  // reutilizado entre pacientes diferentes via @ViewChild (listar-paciente.component.ts,
+  // modal-agenda.component.ts) sem ser destruído/recriado - `Paciente` não é @Input(), então
+  // reatribuí-lo de fora nunca disparava ngOnChanges/ngOnInit, e dados carregados sob demanda
+  // (ex.: pacotesPaciente) ficavam presos no paciente anterior. O setter garante que toda troca
+  // de paciente limpe e recarregue esses dados, não importa quem faça a atribuição.
+  private _paciente: Paciente = {} as Paciente;
+
+  get Paciente(): Paciente {
+    return this._paciente;
+  }
+
+  set Paciente(value: Paciente) {
+    this._paciente = value || ({} as Paciente);
+    this.onPacienteAlterado();
+  }
   listaProfissional: Profissional[] = [];
   listaTipoPagamento: TipoPagamento[] = [];
   listaSala: any[] = [];
@@ -149,6 +166,9 @@ export class PacienteCompletoComponent implements OnInit {
   camposFinancReceber = false;
   isRenovacao: boolean = false;
   podeRenovar: boolean = false;
+  // Mensagem de erro exibida DENTRO do modal de renovação (acima dos botões), em vez de só um
+  // toastr - usada tanto para validação de campos obrigatórios quanto para o limite de dias.
+  erroRenovacao: string | null = null;
   planoSelecionado: any = null;
   diasSemanaParaRenovar: number = 0;
 
@@ -160,7 +180,7 @@ export class PacienteCompletoComponent implements OnInit {
   listaPacotes: Pacote[] = [];
   pacotesPaciente: PacotePaciente[] = [];
   pacoteSelecionado: PacotePaciente | null = null;
-  historicoUsoPacote: PacoteUso[] = [];
+  historicoUsoPacote: PacoteUsoHistorico[] = [];
   formVendaPacote!: FormGroup;
   formConsumoSessao!: FormGroup;
 
@@ -195,6 +215,26 @@ export class PacienteCompletoComponent implements OnInit {
     this.carregarPacotesPaciente();
     this.inicializarFormVendaPacote();
     this.inicializarFormConsumoSessao();
+  }
+
+  // Chamado pelo setter de `Paciente` toda vez que o componente passa a exibir um paciente
+  // diferente (troca feita de fora via @ViewChild, sem destruir/recriar o componente).
+  private onPacienteAlterado(): void {
+    // Limpa ANTES de recarregar para nunca mostrar, nem que seja por um instante, os pacotes
+    // do paciente anterior enquanto a nova requisição está em andamento.
+    this.pacotesPaciente = [];
+    this.pacoteSelecionado = null;
+    this.historicoUsoPacote = [];
+
+    if (this._paciente?.id) {
+      this.carregarPacotesPaciente();
+    }
+
+    // Recalcula podeRenovar/isRenovacao para o paciente novo. Sem isso, ficam presos no valor
+    // calculado na primeira vez que ngOnInit rodou (com Paciente ainda vazio, antes de qualquer
+    // paciente real ser carregado) - o componente é reutilizado entre pacientes via @ViewChild
+    // e nunca é recriado, então ngOnInit nunca roda de novo para recalcular isso.
+    this.verificarRenovacao();
   }
 
   // Métodos básicos de UI
@@ -698,7 +738,6 @@ export class PacienteCompletoComponent implements OnInit {
   }
 
   verificarLimiteDiasSemana(formRenovacao = false): void {
-    debugger
     if (formRenovacao) this.isRenovacao = true;
 
     this.onPlanoSelecionado()
@@ -719,27 +758,38 @@ export class PacienteCompletoComponent implements OnInit {
     let diasSelecionados = 0;
 
     this.limiteDiasSemanaFront = limiteDias;
+
+    // Em renovação, os dias marcados estão no FormArray de formRenovacao,
+    // não no de formPlano - usar o array correto conforme o formulário ativo.
+    const diasArray = formRenovacao ? this.diasRecorrenciaRenovacaoArray : this.diasRecorrenciaArray;
+
     // Contar dias ativos
-    this.diasRecorrenciaArray.controls.forEach(control => {
+    diasArray.controls.forEach(control => {
       if (control.get('ativo')?.value === true) {
         diasSelecionados++;
       }
     });
 
     if (diasSelecionados > limiteDias) {
-      this.toastr.warning(
-        `O plano permite selecionar apenas ${limiteDias} dia(s) da semana`,
-        'Aviso'
-      );
+      const mensagem = `O plano permite selecionar apenas ${limiteDias} dia(s) da semana`;
+
+      if (formRenovacao) {
+        // Dialog de renovação usa alerta interno (ver Bug 2) em vez de só toastr
+        this.erroRenovacao = mensagem;
+      } else {
+        this.toastr.warning(mensagem, 'Aviso');
+      }
 
       // Desmarcar o último dia selecionado
-      for (let i = this.diasRecorrenciaArray.controls.length - 1; i >= 0; i--) {
-        const control = this.diasRecorrenciaArray.controls[i];
+      for (let i = diasArray.controls.length - 1; i >= 0; i--) {
+        const control = diasArray.controls[i];
         if (control.get('ativo')?.value === true) {
           control.get('ativo')?.setValue(false);
           break;
         }
       }
+    } else if (formRenovacao) {
+      this.erroRenovacao = null;
     }
   }
 
@@ -1333,12 +1383,13 @@ export class PacienteCompletoComponent implements OnInit {
       return;
     }
 
-    const dialogRenovarPlano = document.getElementById('dialog_renovar_plano') as HTMLDialogElement;
-    if (dialogRenovarPlano) {
+    const modalElement = document.getElementById('dialog_renovar_plano');
+    if (modalElement) {
+      this.erroRenovacao = null;
       // Inicializar formulário de renovação
       this.initFormRenovacao(plano);
       // Mostrar o diálogo
-      dialogRenovarPlano.showModal();
+      bootstrap.Modal.getOrCreateInstance(modalElement).show();
     }
   }
 
@@ -1381,6 +1432,9 @@ export class PacienteCompletoComponent implements OnInit {
 
     this.formRenovacao = this.fb.group({
       planoId: [plano.id, Validators.required],
+      // Plano-template escolhido para a renovação - começa vazio (não pré-selecionado), pois
+      // o plano em uso não guarda referência a partir de qual template foi criado.
+      planoModeloId: ['', Validators.required],
       descricao: [plano.descricao, Validators.required],
       tipoMes: [plano.tipoMes, Validators.required],
       dataInicio: [dataInicio, Validators.required],
@@ -1409,6 +1463,10 @@ export class PacienteCompletoComponent implements OnInit {
     this.calcularDataFimRenovacao();
 
     // Adicionar listeners para controles
+    this.formRenovacao.get('planoModeloId')?.valueChanges.subscribe(() => {
+      this.onPlanoModeloRenovacaoSelecionado();
+    });
+
     this.formRenovacao.get('tipoMes')?.valueChanges.subscribe(() => {
       this.calcularDataFimRenovacao();
       this.atualizarValorPlanoRenovacao();
@@ -1548,41 +1606,47 @@ export class PacienteCompletoComponent implements OnInit {
     });
   }
 
+  // Chamado quando o usuário troca o plano-template no formulário de renovação: preenche
+  // descrição/limite de dias a partir do plano escolhido e recalcula o valor financeiro.
+  onPlanoModeloRenovacaoSelecionado(): void {
+    const planoModelo = this.getPlanoModeloSelecionadoRenovacao();
+    if (!planoModelo) return;
+
+    this.diasSemanaParaRenovar = planoModelo.diasSemana || 0;
+    this.formRenovacao.patchValue({ descricao: planoModelo.descricao });
+    this.atualizarValorPlanoRenovacao();
+    // Atualiza a mensagem de limite e desmarca dias excedentes caso o novo
+    // plano permita menos dias da semana do que os já selecionados.
+    this.verificarLimiteDiasSemana(true);
+  }
+
   // Método para atualizar o valor do plano renovado com base no tipo de assinatura
   atualizarValorPlanoRenovacao(): void {
-    const planoAtual = this.getPlanoAtual();
-    if (!planoAtual) return;
+    const planoModelo = this.getPlanoModeloSelecionadoRenovacao();
+    if (!planoModelo) return;
 
     const tipoMes = this.formRenovacao.get('tipoMes')?.value;
     let valor = 0;
 
     switch (tipoMes) {
-      case 'm': valor = planoAtual.valorMensal * 1 || 0; break;
-      case 'b': valor = planoAtual.valorBimestral * 2 || 0; break;
-      case 't': valor = planoAtual.valorTrimestral * 3 || 0; break;
-      case 'q': valor = planoAtual.valorQuadrimestral * 4 || 0; break;
-      case 's': valor = planoAtual.valorSemestral * 6 || 0; break;
-      case 'a': valor = planoAtual.valorAnual * 12 || 0; break;
+      case 'm': valor = planoModelo.valorMensal * 1 || 0; break;
+      case 'b': valor = planoModelo.valorBimestral * 2 || 0; break;
+      case 't': valor = planoModelo.valorTrimestral * 3 || 0; break;
+      case 'q': valor = planoModelo.valorQuadrimestral * 4 || 0; break;
+      case 's': valor = planoModelo.valorSemestral * 6 || 0; break;
+      case 'a': valor = planoModelo.valorAnual * 12 || 0; break;
     }
 
     this.formRenovacao.get('financeiro.valor')?.setValue(valor);
     this.gerarParcelasRenovacao();
   }
 
-  // Método para obter o plano atual para renovação
-  getPlanoAtual(): any {
-    // Se você está renovando o plano existente do paciente:
-    if (this.Paciente && this.Paciente.plano) {
-      return this.Paciente.plano;
-    }
-
-    // Alternativamente, você pode buscar o plano pelo ID selecionado:
-    const planoId = this.formRenovacao?.get('planoId')?.value;
-    if (planoId && this.listaPlanos) {
-      return this.listaPlanos.find(p => p.id === planoId) || null;
-    }
-
-    return null;
+  // Método para obter o plano-template escolhido no dropdown de renovação (listaPlanos, os
+  // mesmos templates usados em "Adicionar Plano" - carregados uma vez em getPlanos()).
+  getPlanoModeloSelecionadoRenovacao(): any {
+    const planoModeloId = this.formRenovacao?.get('planoModeloId')?.value;
+    if (!planoModeloId || !this.listaPlanos) return null;
+    return this.listaPlanos.find(p => p.id === +planoModeloId) || null;
   }
 
   // Método para calcular o valor do plano com base no tipo de assinatura
@@ -1672,15 +1736,17 @@ export class PacienteCompletoComponent implements OnInit {
     }
 
     if (this.formRenovacao.invalid) {
-      this.toastr.error('Existem campos inválidos no formulário', 'Erro');
+      this.erroRenovacao = 'Existem campos obrigatórios não preenchidos. Revise o formulário.';
       this.mostrarCamposInvalidos(this.formRenovacao);
       return;
     }
 
+    this.erroRenovacao = null;
     this.isLoading = true;
     // Montar objeto para envio
     const planoRenovacao: PlanoRenovacaoDto = {
       planoId: Number(this.formRenovacao.get('planoId')?.value),
+      planoModeloId: Number(this.formRenovacao.get('planoModeloId')?.value),
       descricao: this.formRenovacao.get('descricao')?.value,
       tipoMes: this.formRenovacao.get('tipoMes')?.value,
       dataInicio: this.formRenovacao.get('dataInicio')?.value,
@@ -1777,7 +1843,9 @@ export class PacienteCompletoComponent implements OnInit {
           this.atualizarPacientePlano();
         } else {
           this.isLoading = false;
-          this.toastr.error(response.mensagem || 'Erro ao renovar plano', 'Erro');
+          const mensagem = response.mensagem || 'Erro ao renovar plano';
+          this.erroRenovacao = mensagem;
+          this.toastr.error(mensagem, 'Erro');
         }
       },
       error: (error) => {
@@ -1791,6 +1859,7 @@ export class PacienteCompletoComponent implements OnInit {
           mensagemErro += ' ' + error.message;
         }
 
+        this.erroRenovacao = mensagemErro;
         this.toastr.error(mensagemErro, 'Erro');
       }
     });
@@ -1798,18 +1867,28 @@ export class PacienteCompletoComponent implements OnInit {
 
   // Método para fechar o diálogo de renovação
   closeDialogRenovacaoPlano(): void {
-    const dialog = document.getElementById('dialog_renovar_plano') as HTMLDialogElement;
-    if (dialog) {
-      dialog.close();
+    const modalElement = document.getElementById('dialog_renovar_plano');
+    if (modalElement) {
+      this.erroRenovacao = null;
+      bootstrap.Modal.getInstance(modalElement)?.hide();
     }
   }
 
   // Método para atualizar os dados do paciente após renovação
   atualizarPacientePlano(): void {
-    // Buscar dados atualizados do paciente
-    if (this.Paciente && this.Paciente.id) {
+    if (!this.Paciente || !this.Paciente.id) return;
 
-    }
+    this.pacienteService.BuscarPorId(this.Paciente.id).subscribe({
+      next: (response) => {
+        if (response.dados) {
+          this.Paciente = response.dados;
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao atualizar dados do paciente:', error);
+        this.toastr.error('Erro ao atualizar dados do paciente', 'Erro');
+      }
+    });
   }
 
   // Método para verificar se o plano atual pode ser renovado
@@ -1818,28 +1897,24 @@ export class PacienteCompletoComponent implements OnInit {
       const plano = this.Paciente.plano;
       this.isRenovacao = true;
 
-      // Verificar se dataFim é válida
-      if (plano.dataFim) {
+      // Só permite renovar quando o plano já está Vencido - usa o status calculado pelo
+      // backend (fonte única de verdade, ver PlanoModel.Status) quando disponível.
+      if (plano.status) {
+        this.podeRenovar = plano.status === 'Vencido';
+      } else if (plano.dataFim) {
         try {
-          const dataFim = new Date(plano.dataFim);
-          const hoje = new Date();
-
-          // Permite renovar se a data de fim já passou ou está a menos de 30 dias de vencer
-          const umMesAntesDoFim = new Date(dataFim);
-          umMesAntesDoFim.setMonth(umMesAntesDoFim.getMonth() - 1);
-
-          this.podeRenovar = hoje >= umMesAntesDoFim;
+          this.podeRenovar = new Date(plano.dataFim) < new Date();
         } catch (error) {
           console.error('Erro ao processar data de fim do plano:', error);
-          this.podeRenovar = true; // Por padrão, permite renovar
+          this.podeRenovar = false;
         }
       } else {
-        // Se não houver data fim, permite renovar
-        this.podeRenovar = true;
+        // Sem data fim definida, trata como ainda vigente (mesma regra do backend)
+        this.podeRenovar = false;
       }
     } else {
       this.isRenovacao = false;
-      this.podeRenovar = true;
+      this.podeRenovar = false;
     }
   }
 
@@ -1954,7 +2029,8 @@ export class PacienteCompletoComponent implements OnInit {
   inicializarFormConsumoSessao(): void {
     this.formConsumoSessao = this.fb.group({
       pacotePacienteId: ['', Validators.required],
-      agendaId: ['', Validators.required],
+      // Agendamento é opcional (sessão avulsa, sem vínculo com um agendamento específico).
+      agendaId: [''],
       pacienteUtilizadoId: [this.Paciente?.id || '', Validators.required],
       observacao: ['']
     });
@@ -1962,64 +2038,64 @@ export class PacienteCompletoComponent implements OnInit {
 
   // ---------- DIÁLOGOS ----------
   openDialogVendaPacote(): void {
-    const dialog = document.getElementById('dialogVendaPacote') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogVendaPacote');
+    if (modalElement) {
       this.formVendaPacote.patchValue({
         pacienteId: this.Paciente?.id
       });
-      dialog.showModal();
+      bootstrap.Modal.getOrCreateInstance(modalElement).show();
     }
   }
 
   closeDialogVendaPacote(): void {
-    const dialog = document.getElementById('dialogVendaPacote') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogVendaPacote');
+    if (modalElement) {
       this.formVendaPacote.reset({
         pacienteId: this.Paciente?.id,
         gerarFinanceiro: true
       });
-      dialog.close();
+      bootstrap.Modal.getInstance(modalElement)?.hide();
     }
   }
 
   openDialogConsumoSessao(pacotePaciente: PacotePaciente): void {
-    const dialog = document.getElementById('dialogConsumoSessao') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogConsumoSessao');
+    if (modalElement) {
       this.pacoteSelecionado = pacotePaciente;
       this.formConsumoSessao.patchValue({
         pacotePacienteId: pacotePaciente.id,
         pacienteUtilizadoId: this.Paciente?.id
       });
-      dialog.showModal();
+      bootstrap.Modal.getOrCreateInstance(modalElement).show();
     }
   }
 
   closeDialogConsumoSessao(): void {
-    const dialog = document.getElementById('dialogConsumoSessao') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogConsumoSessao');
+    if (modalElement) {
       this.formConsumoSessao.reset({
         pacienteUtilizadoId: this.Paciente?.id
       });
       this.pacoteSelecionado = null;
-      dialog.close();
+      bootstrap.Modal.getInstance(modalElement)?.hide();
     }
   }
 
   openDialogHistoricoUso(pacotePaciente: PacotePaciente): void {
-    const dialog = document.getElementById('dialogHistoricoUso') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogHistoricoUso');
+    if (modalElement) {
       this.pacoteSelecionado = pacotePaciente;
       this.carregarHistoricoUso(pacotePaciente.id);
-      dialog.showModal();
+      bootstrap.Modal.getOrCreateInstance(modalElement).show();
     }
   }
 
   closeDialogHistoricoUso(): void {
-    const dialog = document.getElementById('dialogHistoricoUso') as HTMLDialogElement;
-    if (dialog) {
+    const modalElement = document.getElementById('dialogHistoricoUso');
+    if (modalElement) {
       this.pacoteSelecionado = null;
       this.historicoUsoPacote = [];
-      dialog.close();
+      bootstrap.Modal.getInstance(modalElement)?.hide();
     }
   }
 
@@ -2066,7 +2142,13 @@ export class PacienteCompletoComponent implements OnInit {
     }
 
     this.isLoading = true;
-    const dados = this.formConsumoSessao.value;
+    const dados = { ...this.formConsumoSessao.value };
+
+    // agendaId é opcional no formulário, mas PacoteUsoDto.AgendaId no backend continua um int
+    // não anulável (não alteramos o schema) - mandar '' ou null quebraria a desserialização do
+    // JSON com um 400 genérico. Mandamos 0 quando nada for selecionado: o backend já trata isso
+    // com a mensagem limpa "Agendamento não encontrado" (nenhuma Agenda tem Id 0).
+    dados.agendaId = dados.agendaId ? +dados.agendaId : 0;
 
     this.pacoteService.ConsumirSessao(dados).subscribe({
       next: (response) => {

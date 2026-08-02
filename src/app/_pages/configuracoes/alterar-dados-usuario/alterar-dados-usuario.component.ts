@@ -24,6 +24,9 @@ export class AlterarDadosUsuarioComponent implements OnInit {
   mostrarConfirmarSenha = false;
   isLoading = false;
 
+  perfilLabel = '';
+  perfilBadgeClass = 'bg-secondary';
+
   @Output() DadosAtualizados = new EventEmitter<void>();
 
   constructor(
@@ -76,6 +79,10 @@ export class AlterarDadosUsuarioComponent implements OnInit {
             lastName: res.lastName,
             email: res.email,
           });
+
+          const role = res.role || this.authService.getUserRole();
+          this.perfilLabel = this.authService.getRoleLabel(role);
+          this.perfilBadgeClass = this.authService.getRoleBadgeClass(role);
         },
         error: (err) => {
           console.error('Erro ao carregar dados:', err);

@@ -25,6 +25,8 @@ import { SalasService } from '../../../_services/salas.service';
 import { map } from 'rxjs/operators';
 import { Paciente } from '../../../_module/pacienteModule';
 import { PacienteService } from '../../../_services/paciente.service';
+import { PacotePaciente } from '../../../_module/pacoteModule';
+import { PacoteService } from '../../../_services/pacote.service';
 import { ResponseModel } from '../../../_module/ResponseModule';
 import { TabService } from '../../../_services/tabs.service';
 import { PacienteCompletoComponent } from '../../paciente/paciente-completo/paciente-completo.component';
@@ -66,7 +68,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
   listaSala: Sala[] = [];
   listaFormaPagamento: FormaPagamento[] = [];
   listaTipoPagamento: TipoPagamento[] = [];
-  listaPacote: any[] = [];
+  listaPacote: PacotePaciente[] = [];
   listaUsuario: any[] = [];
   eventoEscolhido: Agenda = {} as Agenda;
 
@@ -92,6 +94,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     private profissionalService: ProfissionalService,
     private financReceberService: FinancReceberService,
     private pacienteService: PacienteService,
+    private pacoteService: PacoteService,
     private agendaService: AgendaService,
     private tipoPagamentoService: TipoPagamentoService,
     private formaPagamentoService: FormaPagamentoService,
@@ -211,6 +214,16 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     // Monitorar mudanças no campo avulso para atualizar as validações
     this.formulario.get('avulso')?.valueChanges.subscribe(value => {
       this.atualizarValidacoesFinanceiras(value);
+    });
+
+    // Recarregar os pacotes disponíveis sempre que o paciente do formulário mudar
+    // (cobre seleção manual via selectPatient() e o preenchimento inicial em populateForm())
+    this.formulario.get('pacienteId')?.valueChanges.subscribe((pacienteId: number | null) => {
+      if (pacienteId) {
+        this.carregarPacotesPaciente(pacienteId);
+      } else {
+        this.listaPacote = [];
+      }
     });
 
     this.formulario.get('recorrencia')?.valueChanges.subscribe(value => {
@@ -623,8 +636,17 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
         result = await firstValueFrom(this.agendaService.Criar(agendaData));
       }
 
-      const action = agendaData.id ? 'atualizado' : 'criado';
-      // this.toastr.success(`Agenda ${action} com sucesso!`, 'Sucesso');
+      // O backend retorna HTTP 200 mesmo em falhas de regra de negócio (data
+      // ausente, hora inválida, financeiro incompleto etc.), sinalizando o erro
+      // via status:false. Sem essa checagem o modal fechava como se tivesse
+      // salvo, mesmo quando nada foi persistido.
+      if (!result?.status) {
+        this.toastr.error(result?.mensagem || 'Não foi possível salvar o agendamento.', 'Erro');
+        return;
+      }
+
+      // O toast de sucesso é exibido pelo componente pai (CalendarioComponent),
+      // que escuta este evento e também fecha o modal.
       this.onSave.emit();
       this.fecharModal();
     } catch (error) {
@@ -1016,123 +1038,20 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     );
   }
 
-  private getPacientes(): Observable<Paciente[]> {
-    return this.pacienteService.Listar(undefined, undefined, undefined, undefined, undefined, undefined, false).pipe(
-      map(response => response?.dados || []),
-      catchError(error => {
-        console.error('Erro ao buscar pacientes:', error);
-        return of([]);
-      })
-    );
-  }
-
-  private async validarDisponibilidadeAgendamento(
-    agendaData: Partial<Agenda>,
-    agendaIdIgnorar: number | null
-  ): Promise<boolean> {
-    const dataAgendamento = agendaData.data;
-    const horaInicio = agendaData.horaInicio;
-    const horaFim = agendaData.horaFim;
-    const profissionalId = this.toNumber(agendaData.profissionalId);
-    const salaId = this.toNumber(agendaData.salaId);
-
-    if (!dataAgendamento || !horaInicio || !horaFim || (!profissionalId && !salaId)) {
-      return true;
-    }
-
-    try {
-      const response = await firstValueFrom(
-        this.agendaService.ListarGeral(
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          dataAgendamento as Date,
-          dataAgendamento as Date,
-          false
-        )
-      );
-
-      const agendasDoDia = response?.dados || [];
-      const conflito = agendasDoDia.find((agenda) => {
-        if (agendaIdIgnorar !== null && Number(agenda.id) === agendaIdIgnorar) {
-          return false;
-        }
-
-        if (!this.agendaOcupaHorario(agenda.statusId)) {
-          return false;
-        }
-
-        const mesmoProfissional =
-          profissionalId !== null && this.toNumber(agenda.profissionalId) === profissionalId;
-        const mesmaSala = salaId !== null && this.toNumber(agenda.salaId) === salaId;
-
-        if (!mesmoProfissional && !mesmaSala) {
-          return false;
-        }
-
-        return this.horariosConflitam(horaInicio, horaFim, agenda.horaInicio, agenda.horaFim);
-      });
-
-      if (!conflito) {
-        return true;
+  // Carrega os pacotes do paciente com saldo disponível para exibir no select de agendamento
+  carregarPacotesPaciente(pacienteId: number): void {
+    this.pacoteService.ListarPacotesPaciente(pacienteId).subscribe({
+      next: (response) => {
+        const pacotes = response?.dados || [];
+        this.listaPacote = pacotes.filter(
+          (p) => p.quantidadeDisponivel > 0 && p.status === 'Ativo'
+        );
+      },
+      error: (error) => {
+        console.error('Erro ao buscar pacotes do paciente:', error);
+        this.listaPacote = [];
       }
-
-      const recursosConflitantes: string[] = [];
-      if (profissionalId !== null && this.toNumber(conflito.profissionalId) === profissionalId) {
-        recursosConflitantes.push('profissional');
-      }
-      if (salaId !== null && this.toNumber(conflito.salaId) === salaId) {
-        recursosConflitantes.push('sala');
-      }
-
-      this.toastr.error(
-        `Já existe agendamento para ${recursosConflitantes.join(' e ')} nesse horário.`,
-        'Conflito de agenda'
-      );
-      return false;
-    } catch (error) {
-      this.handleError('Erro ao validar disponibilidade do agendamento', error);
-      return false;
-    }
-  }
-
-  private agendaOcupaHorario(statusId?: string): boolean {
-    const statusNumero = this.toNumber(statusId);
-    return statusNumero === null || ![5, 6, 8].includes(statusNumero);
-  }
-
-  private horariosConflitam(inicioA: string, fimA: string, inicioB: string, fimB: string): boolean {
-    const inicioPrincipal = this.timeToMinutes(inicioA);
-    const fimPrincipal = this.timeToMinutes(fimA);
-    const inicioComparacao = this.timeToMinutes(inicioB);
-    const fimComparacao = this.timeToMinutes(fimB);
-
-    if (
-      inicioPrincipal === null ||
-      fimPrincipal === null ||
-      inicioComparacao === null ||
-      fimComparacao === null
-    ) {
-      return false;
-    }
-
-    return inicioPrincipal < fimComparacao && fimPrincipal > inicioComparacao;
-  }
-
-  private timeToMinutes(time: string): number | null {
-    if (!time) {
-      return null;
-    }
-
-    const partes = time.substring(0, 5).split(':').map(Number);
-    if (partes.length !== 2 || partes.some(Number.isNaN)) {
-      return null;
-    }
-
-    return partes[0] * 60 + partes[1];
+    });
   }
 
   private handleError(message: string, error: any): void {

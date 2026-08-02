@@ -369,14 +369,14 @@ export class CalendarioComponent {
       return;
     }
 
-    // Criar data ISO para manter compatibilidade
-    let dataClick = new Date(dia.ano, dia.mes, dia.numero);
-    if (hora !== undefined) {
-      dataClick.setHours(hora);
-    }
+    // input[type=date] exige "yyyy-MM-dd" puro - toISOString() manda um timestamp
+    // completo e converte para UTC, o que pode inclusive mudar o dia exibido
+    // dependendo do fuso horário do navegador.
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const dataClick = `${dia.ano}-${pad(dia.mes + 1)}-${pad(dia.numero)}`;
 
     this.selectedEvent = null;
-    this.selectedDate = dataClick.toISOString();
+    this.selectedDate = dataClick;
     this.diaSelecionado = dia.numero;
 
     // Garantir que o modal foi atualizado antes de abrir
@@ -403,16 +403,11 @@ export class CalendarioComponent {
       end: agendamento.dataFim?.toISOString()
     };
 
-    let agendaParaModal: Agenda | null = null;
-
-    this.agendaService.Listar().subscribe({
+    this.agendaService.BuscarPorId(agendamento.id).subscribe({
       next: (response) => {
-        // Find the matching agenda item and assign it
-        const matchingAgenda = response.dados.filter(agenda => agenda.id.toString() === agendamento.id);
-        if (matchingAgenda.length > 0) {
-          agendaParaModal = matchingAgenda[0]; // Assign the first matching item
-          this.eventoParaModal = agendaParaModal;
-          this.selectedEvent = agendaParaModal;
+        if (response.dados) {
+          this.eventoParaModal = response.dados;
+          this.selectedEvent = response.dados;
         }
       },
     });
