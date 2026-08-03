@@ -434,13 +434,15 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
         data?.dataVencimento || new Date().toISOString().split('T')[0],
         [Validators.required]
       ],
-      dataPagamento: [data?.dataPagamento || ''],
+      // null (não '') - o backend espera DateTime? e "" quebra a desserialização do JSON
+      dataPagamento: [data?.dataPagamento || null],
       observacao: [data?.observacao || '', [Validators.maxLength(200)]],
       desconto: [data?.desconto || 0, [Validators.min(0)]],
       juros: [data?.juros || 0, [Validators.min(0)]],
       multa: [data?.multa || 0, [Validators.min(0)]],
-      formaPagamentoId: [data?.formaPagamentoId || ''],
-      tipoPagamentoId: [data?.tipoPagamentoId || '']
+      formaPagamentoId: [data?.formaPagamentoId || null],
+      // null (não '') - o backend espera int? e "" quebra a desserialização do JSON
+      tipoPagamentoId: [data?.tipoPagamentoId || null]
     });
   }
 
@@ -878,6 +880,13 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
             parcela.desconto = Number(parcela.desconto || 0);
             parcela.juros = Number(parcela.juros || 0);
             parcela.multa = Number(parcela.multa || 0);
+
+            // Backend espera DateTime?/int? - "" não desserializa (JsonException).
+            // Normaliza qualquer valor vazio/inválido para null antes de enviar.
+            parcela.dataPagamento = parcela.dataPagamento || null;
+            parcela.tipoPagamentoId = parcela.tipoPagamentoId || null;
+            parcela.dataVencimento = parcela.dataVencimento || null;
+            parcela.formaPagamentoId = parcela.formaPagamentoId || null;
           });
         }
       }
