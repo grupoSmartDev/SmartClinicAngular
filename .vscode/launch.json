@@ -16,5 +16,21 @@
       "preLaunchTask": "npm: test",
       "url": "http://localhost:9876/debug.html"
     }
+  ],
+  "compounds": [
+    {
+      "name": "SmartClinic: Frontend + Backend",
+      "configurations": [
+        {
+          "folder": "SmartClinicAngular",
+          "name": "ng serve"
+        },
+        {
+          "folder": "WebApiSmartClinic",
+          "name": "WebApiSmartClinic (HTTPS)"
+        }
+      ],
+      "stopAll": true
+    }
   ]
 }
