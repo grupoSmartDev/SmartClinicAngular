@@ -271,14 +271,18 @@ export class ListarPacienteComponent implements OnInit, OnDestroy {
     }
 
     this.pacienteService.Deletar(paciente.id.toString()).subscribe({
-      next: () => {
+      next: (response) => {
+        if (response && response.status === false) {
+          this.toast.error(response.mensagem || 'Não foi possível excluir o paciente.', 'Erro');
+          return;
+        }
         this.toast.success('Paciente excluído com sucesso!', 'Sucesso');
         this.invalidatePatientCache();
         this.loadData();
       },
       error: (error) => {
         console.error('Erro ao excluir paciente:', error);
-        this.toast.error('Erro ao excluir paciente. Tente novamente ou fale com o suporte.', 'Erro');
+        this.toast.error(error.error?.mensagem || 'Erro ao excluir paciente. Tente novamente ou fale com o suporte.', 'Erro');
       },
     });
   }
@@ -309,6 +313,11 @@ export class ListarPacienteComponent implements OnInit, OnDestroy {
   promptDelete(paciente: Paciente): void {
     this.dataParaExcluir = paciente;
     this.confirmDialog.openDialog();
+  }
+
+  get mensagemConfirmacaoExclusao(): string {
+    const nome = this.dataParaExcluir?.nome ?? 'este paciente';
+    return `Tem certeza que deseja excluir o paciente ${nome}? Esta ação não pode ser desfeita e removerá todos os dados do paciente.`;
   }
 
   /**

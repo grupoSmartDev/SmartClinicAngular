@@ -144,7 +144,7 @@
 
               <a
                 href="javascript:void(0);"
-                (click)="excluirPaciente(item)"
+                (click)="promptDelete(item)"
                 class="action-icon btn-tooltip"
               >
                 <i class="bi bi-trash3 text-danger"></i>
@@ -190,6 +190,7 @@
 
 <app-confirm-dialog
   #confirmDialog
+  [message]="mensagemConfirmacaoExclusao"
   (onConfirm)="confirmDelete()"
   (onCancel)="cancelDelete()"
 >
