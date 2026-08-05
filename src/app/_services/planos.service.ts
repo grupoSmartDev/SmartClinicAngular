@@ -30,7 +30,8 @@ export class PlanosService {
       'Profissional',
       'Profissao',
       'Status',
-      'Sala'
+      'Sala',
+      'Fornecedor'
     ];
 
     const featuresPlus = [
