@@ -44,25 +44,32 @@ export class BaixaFinancReceberSubComponent implements OnInit, OnChanges {
 
   handleConfirm(): void {
     if (this.financReceberSub && this.financReceberSub.id) {
+      if (this.valorPago > this.financReceberSub.valor) {
+        this.toast.error(
+          `Valor informado (R$ ${this.valorPago}) é maior que o saldo da parcela (R$ ${this.financReceberSub.valor}).`,
+          'Valor inválido'
+        );
+        return;
+      }
+
       // Criando um novo objeto para não alterar o original por referência
       const parcelaAtualizada = { ...this.financReceberSub };
       parcelaAtualizada.dataPagamento = new Date(this.dataPagamento);
       parcelaAtualizada.valorPago = this.valorPago;
       parcelaAtualizada.observacao = this.observacao;
-      
-      // if(parcelaAtualizada.valorPago != this.financReceberSub.valor){
-      //   alert("Erro ao tentar baixar a parcela, verifique os valores a serem pagos");
-      //   return;
-      // }
 
       this.financReceberService.BaixarParcela(parcelaAtualizada).subscribe({
         next: (response) => {
-          this.toast.success(`Parcela baixada com sucesso!`, 'Parabéns');
-          this.confirmarPagamento.emit(parcelaAtualizada);
-          this.fecharModal();
+          if (response && response.status) {
+            this.toast.success(response.mensagem || 'Parcela baixada com sucesso!', 'Parabéns');
+            this.confirmarPagamento.emit(parcelaAtualizada);
+            this.fecharModal();
+          } else {
+            this.toast.error(response?.mensagem || 'Erro ao baixar parcela.', 'Erro');
+          }
         },
         error: (err) => {
-          this.toast.error('Ocorreu um erro ao baixar. Tente novamente.', 'Erro');
+          this.toast.error(err.error?.mensagem || 'Ocorreu um erro ao baixar. Tente novamente.', 'Erro');
         }
       });
     }
