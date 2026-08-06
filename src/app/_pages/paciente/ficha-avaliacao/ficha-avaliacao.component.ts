@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FichaAvaliacaoService } from '../../../_services/ficha-avaliacao.service';
 import { FichaAvaliacao } from '../../../_module/fichaAvaliacaoModule';
 import * as bootstrap from 'bootstrap';
+import { DateHelper } from '../../../_shared/helpers/date-helper';
 
 @Component({
   selector: 'app-ficha-avaliacao',
@@ -234,7 +235,7 @@ export class FichaAvaliacaoComponent {
         if (!this.fichaAvaliacao) {
           this.fichaForm.patchValue({
             pacienteId: pacienteId,
-            dataAvaliacao: new Date().toISOString().split('T')[0]
+            dataAvaliacao: DateHelper.formatDateLocal(new Date())
           });
         }
       }

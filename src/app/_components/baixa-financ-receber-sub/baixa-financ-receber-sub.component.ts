@@ -4,6 +4,7 @@ import { SubFinancReceber } from '../../_module/subFinancReceberModule';
 import * as bootstrap from 'bootstrap';
 import { FinancReceberService } from '../../_services/financ-receber.service';
 import { ToastrService } from 'ngx-toastr';
+import { DateHelper } from '../../_shared/helpers/date-helper';
 
 @Component({
   selector: 'app-baixa-financ-receber-sub',
@@ -33,7 +34,7 @@ export class BaixaFinancReceberSubComponent implements OnInit, OnChanges {
 
   private inicializarCampos(): void {
     console.log('Inicializando campos com:', this.financReceberSub);
-    this.dataPagamento = new Date().toISOString().split('T')[0];
+    this.dataPagamento = DateHelper.formatDateLocal(new Date()) || '';
     
     const valorParcela = this.financReceberSub?.valor;
     this.valorPago = valorParcela ?? 0;

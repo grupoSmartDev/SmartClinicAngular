@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DatePtBrPipe } from '../../../../../_shared/pipes/date-pt-br.pipe';
 import { Profissional } from '../../../../../_module/profissionalModule';
 import { Paciente } from '../../../../../_module/pacienteModule';
+import { DateHelper } from '../../../../../_shared/helpers/date-helper';
 
 @Component({
   selector: 'app-paciente-evolucao-dialog',
@@ -141,7 +142,7 @@ export class PacienteEvolucaoDialogComponent {
       pacienteId: this.paciente.id,
       profissionalId: this.paciente.profissionalId || '',
       observacao: '',
-      dataEvolucao: new Date().toISOString().split('T')[0]
+      dataEvolucao: DateHelper.formatDateLocal(new Date())
     });
   }
 

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CadastroUsuarioService } from '../../_services/cadastro-usuario.service';
 import { ToastrService } from 'ngx-toastr';
+import { DateHelper } from '../../_shared/helpers/date-helper';
 
 @Component({
   selector: 'app-pagina-cadastro',
@@ -59,9 +60,11 @@ export class PaginaCadastroComponent {
   }
 
   initForm(): void {
-    const today = new Date();
-    const endDate = new Date(today);
-    endDate.setDate(today.getDate() + 7);
+    const todayDate = new Date();
+    const endDateDate = new Date(todayDate);
+    endDateDate.setDate(todayDate.getDate() + 7);
+    const today = DateHelper.formatDateLocal(todayDate);
+    const endDate = DateHelper.formatDateLocal(endDateDate);
 
     this.signupForm = this.fb.group({
       Nome: ['', Validators.required],

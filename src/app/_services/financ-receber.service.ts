@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { FinancReceber } from '../_module/financReceberModule';
 import { environment } from '../../environments/environment';
 import { SubFinancReceber } from '../_module/subFinancReceberModule';
+import { DateHelper } from '../_shared/helpers/date-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -162,12 +163,12 @@ export class FinancReceberService {
         return data;
       }
       // Tenta converter para Date se for outro formato de string
-      return new Date(data).toISOString().split('T')[0];
+      return DateHelper.toBackendDate(data) || '';
     }
-    
+
     // Verifica se é um objeto Date válido
     if (data instanceof Date && !isNaN(data.getTime())) {
-      return data.toISOString().split('T')[0];
+      return DateHelper.formatDateLocal(data) || '';
     }
     
     // Caso não seja possível converter, retorna string vazia

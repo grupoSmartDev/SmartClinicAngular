@@ -5,6 +5,7 @@ import { ResponseModel } from '../_module/ResponseModule';
 import { FinancPagar } from '../_module/financPagarModule';
 import { environment } from '../../environments/environment';
 import { SubFinancPagar } from '../_module/subFinancPagarModule';
+import { DateHelper } from '../_shared/helpers/date-helper';
 
 @Injectable({
   providedIn: 'root',
@@ -178,12 +179,12 @@ export class FinancPagarService {
         return data;
       }
       // Tenta converter para Date se for outro formato de string
-      return new Date(data).toISOString().split('T')[0];
+      return DateHelper.toBackendDate(data) || '';
     }
 
     // Verifica se é um objeto Date válido
     if (data instanceof Date && !isNaN(data.getTime())) {
-      return data.toISOString().split('T')[0];
+      return DateHelper.formatDateLocal(data) || '';
     }
 
     // Caso não seja possível converter, retorna string vazia

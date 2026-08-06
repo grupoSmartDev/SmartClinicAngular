@@ -14,6 +14,7 @@ import { AgendaService } from '../../../_services/agenda.service';
 import { ModalAgendaComponent } from '../modal-agenda/modal-agenda.component';
 import * as bootstrap from 'bootstrap';
 import { CalendarEvent } from '../../../_module/calendarModule';
+import { DateHelper } from '../../../_shared/helpers/date-helper';
 
 interface CacheData {
   cacheList: Agenda[];
@@ -85,7 +86,7 @@ export class AgendaListarComponent {
         // Envie o objeto completo para o modal para preencher todos os campos
         const agendamento = this.mapApiToAgendamento(agenda);
         this.selectedEvent = agenda;
-        this.selectedDate = agendamento.data.toISOString();
+        this.selectedDate = DateHelper.formatDateLocal(agendamento.data) || '';
         this.modalAgenda.selectedDate = this.selectedDate;
         this.modalAgenda.selectedEvent = agenda;
         this.modalAgenda.eventoEscolhido = agenda;
@@ -258,8 +259,9 @@ export class AgendaListarComponent {
 
   private criarDataComHora(dataString: string, horaString?: string): Date {
     try {
-      // Criar uma nova data a partir da string de data
-      const data = new Date(dataString);
+      // Parse local (sem shift de timezone) — new Date(dataString) interpretaria
+      // uma string 'YYYY-MM-DD...' como meia-noite UTC, exibindo o dia anterior no Brasil.
+      const data = DateHelper.parseDateLocal(dataString) || new Date();
 
       if (horaString) {
         const [horas, minutos, segundos] = horaString.split(':').map(Number);

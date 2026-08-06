@@ -31,6 +31,7 @@ import { ResponseModel } from '../../../_module/ResponseModule';
 import { Router } from '@angular/router';
 import { TabService } from '../../../_services/tabs.service';
 import { PacienteCompletoComponent } from '../../paciente/paciente-completo/paciente-completo.component';
+import { DateHelper } from '../../../_shared/helpers/date-helper';
 
 interface Patient {
   id?: number;
@@ -110,7 +111,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
 
   private initReagendamentoForm(): void {
     this.formReagendamento = this.fb.group({
-      dataReagendamento: [new Date().toISOString().split('T')[0], Validators.required],
+      dataReagendamento: [DateHelper.formatDateLocal(new Date()), Validators.required],
       horaInicioReagendamento: [this.formulario.get('horaInicio')?.value || '08:00', [Validators.required, this.timeValidator]],
       horaFimReagendamento: [this.formulario.get('horaFim')?.value || '09:00', [Validators.required, this.timeValidator]]
     }, { validators: this.validateReagendamentoTimeRange });
@@ -371,7 +372,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     this.formulario.reset();
     this.eventoEscolhido = event;
 
-    const dataFormatada = event?.data ? new Date(event.data).toISOString().split('T')[0] : null;
+    const dataFormatada = event?.data ? DateHelper.toBackendDate(event.data) : null;
     const horaInicio = event?.horaInicio ? event.horaInicio.toString().substring(0, 5) : null;
     const horaFim = event?.horaFim ? event.horaFim.toString().substring(0, 5) : null;
 
@@ -431,7 +432,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
       parcela: [data?.parcela || 1, [Validators.required, Validators.min(1)]],
       valor: [data?.valor || 0, [Validators.required, Validators.min(0.01)]],
       dataVencimento: [
-        data?.dataVencimento || new Date().toISOString().split('T')[0],
+        data?.dataVencimento || DateHelper.formatDateLocal(new Date()),
         [Validators.required]
       ],
       // null (não '') - o backend espera DateTime? e "" quebra a desserialização do JSON
@@ -560,7 +561,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
         financReceberId: [null],
         parcela: [i + 1],
         valor: [valorAjustado, [Validators.required, Validators.min(0.01)]],
-        dataVencimento: [dataVencimento.toISOString().split('T')[0], [Validators.required]],
+        dataVencimento: [DateHelper.formatDateLocal(dataVencimento), [Validators.required]],
         dataPagamento: [null],
         observacao: [''],
         desconto: [0],
@@ -1170,7 +1171,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
     if (dialog) {
       // Reset e preenchimento do formulário com dados atuais
       this.formReagendamento.reset({
-        dataReagendamento: new Date().toISOString().split('T')[0],
+        dataReagendamento: DateHelper.formatDateLocal(new Date()),
         horaInicioReagendamento: this.formulario.get('horaInicio')?.value,
         horaFimReagendamento: this.formulario.get('horaFim')?.value
       });

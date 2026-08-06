@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DIAS_DA_SEMANA } from '../../_module/pacienteCompletoDto';
+import { DateHelper } from '../../_shared/helpers/date-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -64,7 +65,7 @@ export class PacienteFormServiceService {
       tipoMes: ['', Validators.required],
       descricao: ['', Validators.required],
       valor: [0, Validators.required],
-      dataInicio: [new Date().toISOString().split('T')[0], Validators.required],
+      dataInicio: [DateHelper.formatDateLocal(new Date()), Validators.required],
       dataFim: ['', Validators.required],
       gerarFinanceiro: [false],
       gerarAgendamento: [false],
@@ -90,16 +91,16 @@ export class PacienteFormServiceService {
     let dataInicio: string;
 
     if (planData.dataFim) {
-      const dataFimAtual = new Date(planData.dataFim);
-      if (dataFimAtual > hoje) {
+      const dataFimAtual = DateHelper.parseDateLocal(planData.dataFim);
+      if (dataFimAtual && dataFimAtual > hoje) {
         const novaDataInicio = new Date(dataFimAtual);
         novaDataInicio.setDate(novaDataInicio.getDate() + 1);
-        dataInicio = novaDataInicio.toISOString().split('T')[0];
+        dataInicio = DateHelper.formatDateLocal(novaDataInicio) || '';
       } else {
-        dataInicio = hoje.toISOString().split('T')[0];
+        dataInicio = DateHelper.formatDateLocal(hoje) || '';
       }
     } else {
-      dataInicio = hoje.toISOString().split('T')[0];
+      dataInicio = DateHelper.formatDateLocal(hoje) || '';
     }
 
     return this.fb.group({
@@ -201,7 +202,7 @@ export class PacienteFormServiceService {
         financReceberId: [null],
         parcela: [i + 1],
         valor: [valorAjustado, [Validators.required, Validators.min(0.01)]],
-        dataVencimento: [dataVencimento.toISOString().split('T')[0], [Validators.required]],
+        dataVencimento: [DateHelper.formatDateLocal(dataVencimento), [Validators.required]],
         dataPagamento: [null],
         observacao: [''],
         desconto: [0],

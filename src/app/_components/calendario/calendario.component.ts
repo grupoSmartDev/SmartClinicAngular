@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import * as bootstrap from 'bootstrap';
 import { CalendarEvent } from '../../_module/calendarModule';
+import { DateHelper } from '../../_shared/helpers/date-helper';
 
 
 
@@ -412,7 +413,7 @@ export class CalendarioComponent {
       },
     });
 
-    this.selectedDate = agendamento.data.toISOString();
+    this.selectedDate = DateHelper.formatDateLocal(agendamento.data) || '';
     this.diaSelecionado = agendamento.data.getDate();
 
     console.log('Evento selecionado:', this.selectedEvent);

@@ -23,6 +23,7 @@ import { FormaPagamentoService } from '../../../_services/forma-pagamento.servic
 import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service';
 import { FinancPagarService } from '../../../_services/financ-pagar.service';
 import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
+import { DateHelper } from '../../../_shared/helpers/date-helper';
 import { formatDate } from '@angular/common';
 import { InputHelpers } from '../../../_shared/helpers/input-helpers';
 import { FornecedorService } from '../../../_services/fornecedor.service';
@@ -281,7 +282,7 @@ export class ModalFinancPagarComponent {
           parcela: [i + 1],
           valor: [valor, [Validators.required, Validators.min(0)]],
           dataVencimento: [
-            dataVencimento.toISOString().split('T')[0],
+            DateHelper.formatDateLocal(dataVencimento),
             Validators.required,
           ],
           dataPagamento: [null],

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Paciente } from '../../_module/pacienteModule';
 import { TIPOS_MES } from '../../_module/pacienteCompletoDto';
+import { DateHelper } from '../../_shared/helpers/date-helper';
 
 @Injectable({
   providedIn: 'root'
@@ -54,7 +55,8 @@ export class PacienteCalculationServiceService {
   calcularDataFimPlano(dataInicio: string, tipoMes: string): string {
     if (!dataInicio || !tipoMes) return '';
 
-    const inicio = new Date(dataInicio);
+    const inicio = DateHelper.parseDateLocal(dataInicio);
+    if (!inicio) return '';
     let dataFim = new Date(inicio);
 
     switch (tipoMes) {
@@ -81,7 +83,7 @@ export class PacienteCalculationServiceService {
     // Subtrair 1 dia para não contar o último dia
     dataFim.setDate(dataFim.getDate() - 1);
 
-    return dataFim.toISOString().split('T')[0];
+    return DateHelper.formatDateLocal(dataFim) || '';
   }
 
   /**
@@ -154,7 +156,8 @@ export class PacienteCalculationServiceService {
     }
 
     try {
-      const dataFim = new Date(plano.dataFim);
+      const dataFim = DateHelper.parseDateLocal(plano.dataFim);
+      if (!dataFim) return true;
       const hoje = new Date();
 
       // Permite renovar se a data de fim já passou ou está a menos de 30 dias de vencer

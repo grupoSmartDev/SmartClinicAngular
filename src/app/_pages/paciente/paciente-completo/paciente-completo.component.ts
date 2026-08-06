@@ -34,6 +34,7 @@ import { PacoteService } from '../../../_services/pacote.service';
 import { Pacote, PacotePaciente, PacoteUso, PacoteUsoHistorico } from '../../../_module/pacoteModule';
 import { SalasService } from '../../../_services/salas.service';
 import { ProntuarioPrintService, ModeloProntuario } from '../../../_services/prontuario-print.service';
+import { DateHelper } from '../../../_shared/helpers/date-helper';
 
 // DTOs
 interface FinanceiroDto {
@@ -551,7 +552,7 @@ export class PacienteCompletoComponent implements OnInit {
           id: '',
           tipoMes: plano.tipoMes,
           descricao: plano.descricao,
-          dataInicio: new Date().toISOString().split('T')[0],
+          dataInicio: DateHelper.formatDateLocal(new Date()),
         });
         this.calcularDataFim();
       } else {
@@ -600,7 +601,8 @@ export class PacienteCompletoComponent implements OnInit {
 
     if (!dataInicio || !tipoMes) return;
 
-    const inicio = new Date(dataInicio);
+    const inicio = DateHelper.parseDateLocal(dataInicio);
+    if (!inicio) return;
     let dataFim = new Date(inicio);
 
     switch (tipoMes) {
@@ -616,7 +618,7 @@ export class PacienteCompletoComponent implements OnInit {
     dataFim.setDate(dataFim.getDate() - 1);
 
     this.formPlano.patchValue({
-      dataFim: dataFim.toISOString().split('T')[0],
+      dataFim: DateHelper.formatDateLocal(dataFim),
     });
 
     // Atualizar valor do plano baseado no tipo de assinatura
@@ -1197,7 +1199,7 @@ export class PacienteCompletoComponent implements OnInit {
       tipoMes: ['', Validators.required],
       descricao: ['', Validators.required],
       valor: [0, Validators.required],
-      dataInicio: [new Date().toISOString().split('T')[0], Validators.required],
+      dataInicio: [DateHelper.formatDateLocal(new Date()), Validators.required],
       dataFim: ['', Validators.required],
       gerarFinanceiro: [false],
       gerarAgendamento: [false],
@@ -1275,7 +1277,7 @@ export class PacienteCompletoComponent implements OnInit {
         financReceberId: [null],
         parcela: [i + 1],
         valor: [valorAjustado, [Validators.required, Validators.min(0.01)]],
-        dataVencimento: [dataVencimento.toISOString().split('T')[0], [Validators.required]],
+        dataVencimento: [DateHelper.formatDateLocal(dataVencimento), [Validators.required]],
         dataPagamento: [''],
         observacao: [''],
         desconto: [0],
@@ -1414,19 +1416,19 @@ export class PacienteCompletoComponent implements OnInit {
     // Se o plano atual já terminou, usar a data de hoje
     // Se não, usar a data logo após o fim do plano atual
     if (plano.dataFim) {
-      const dataFimAtual = new Date(plano.dataFim);
-      if (dataFimAtual > hoje) {
+      const dataFimAtual = DateHelper.parseDateLocal(plano.dataFim);
+      if (dataFimAtual && dataFimAtual > hoje) {
         // O plano ainda não acabou, usar a data após o término
         const novaDataInicio = new Date(dataFimAtual);
         novaDataInicio.setDate(novaDataInicio.getDate() + 1);
-        dataInicio = novaDataInicio.toISOString().split('T')[0];
+        dataInicio = DateHelper.formatDateLocal(novaDataInicio) || '';
       } else {
         // O plano já acabou, usar a data de hoje
-        dataInicio = hoje.toISOString().split('T')[0];
+        dataInicio = DateHelper.formatDateLocal(hoje) || '';
       }
     } else {
       // Se não tiver data fim, usar a data de hoje
-      dataInicio = hoje.toISOString().split('T')[0];
+      dataInicio = DateHelper.formatDateLocal(hoje) || '';
     }
     debugger
 
@@ -1512,7 +1514,8 @@ export class PacienteCompletoComponent implements OnInit {
 
       planoAtual.agendamentos.forEach((agendamento: any) => {
         if (agendamento.data) {
-          const data = new Date(agendamento.data);
+          const data = DateHelper.parseDateLocal(agendamento.data);
+          if (!data) return;
           const diaSemana = data.getDay(); // 0 = Domingo, 1 = Segunda, etc.
 
           // Só registrar um agendamento por dia da semana (o primeiro encontrado)
@@ -1586,7 +1589,8 @@ export class PacienteCompletoComponent implements OnInit {
 
     if (!dataInicio || !tipoMes) return;
 
-    const inicio = new Date(dataInicio);
+    const inicio = DateHelper.parseDateLocal(dataInicio);
+    if (!inicio) return;
     let dataFim = new Date(inicio);
 
     switch (tipoMes) {
@@ -1602,7 +1606,7 @@ export class PacienteCompletoComponent implements OnInit {
     dataFim.setDate(dataFim.getDate() - 1);
 
     this.formRenovacao.patchValue({
-      dataFim: dataFim.toISOString().split('T')[0],
+      dataFim: DateHelper.formatDateLocal(dataFim),
     });
   }
 
@@ -1694,7 +1698,7 @@ export class PacienteCompletoComponent implements OnInit {
     let valorRestante = Number((valorTotal - (valorParcela * quantidadeParcelas)).toFixed(2));
 
     // Gerar novas parcelas
-    const dataInicio = new Date(this.formRenovacao?.get('dataInicio')?.value);
+    const dataInicio = DateHelper.parseDateLocal(this.formRenovacao?.get('dataInicio')?.value) || new Date();
 
     for (let i = 0; i < quantidadeParcelas; i++) {
       const dataVencimento = new Date(dataInicio);
@@ -1710,7 +1714,7 @@ export class PacienteCompletoComponent implements OnInit {
         financReceberId: [null],
         parcela: [i + 1],
         valor: [valorAjustado, [Validators.required, Validators.min(0.01)]],
-        dataVencimento: [dataVencimento.toISOString().split('T')[0], [Validators.required]],
+        dataVencimento: [DateHelper.formatDateLocal(dataVencimento), [Validators.required]],
         dataPagamento: [null],
         observacao: [''],
         desconto: [0],
@@ -1903,7 +1907,8 @@ export class PacienteCompletoComponent implements OnInit {
         this.podeRenovar = plano.status === 'Vencido';
       } else if (plano.dataFim) {
         try {
-          this.podeRenovar = new Date(plano.dataFim) < new Date();
+          const dataFim = DateHelper.parseDateLocal(plano.dataFim);
+          this.podeRenovar = !!dataFim && dataFim < new Date();
         } catch (error) {
           console.error('Erro ao processar data de fim do plano:', error);
           this.podeRenovar = false;
@@ -2255,7 +2260,7 @@ export class PacienteCompletoComponent implements OnInit {
         desconto: [0],
         juros: [0],
         multa: [0],
-        dataVencimento: [dataVencimento.toISOString().split('T')[0], Validators.required],
+        dataVencimento: [DateHelper.formatDateLocal(dataVencimento), Validators.required],
         observacao: ['']
       });
 

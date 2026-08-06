@@ -27,6 +27,7 @@ import { TipoPagamentoService } from '../../../_services/tipo-pagamento.service'
 import { TipoPagamento } from '../../../_module/tipoPagamentoModule';
 import * as bootstrap from 'bootstrap';
 import { Paciente } from '../../../_module/pacienteModule';
+import { DateHelper } from '../../../_shared/helpers/date-helper';
 import { DatePtBrPipe } from '../../../_shared/pipes/date-pt-br.pipe';
 import { formatDate } from '@angular/common';
 import { InputHelpers } from '../../../_shared/helpers/input-helpers';
@@ -303,7 +304,7 @@ export class ModalFinanceiroReceber implements OnInit {
           parcela: [i + 1],
           valor: [valor, [Validators.required, Validators.min(0)]],
           dataVencimento: [
-            dataVencimento.toISOString().split('T')[0],
+            DateHelper.formatDateLocal(dataVencimento),
             Validators.required,
           ],
           dataPagamento: [null],

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProfissionalService } from '../../../_services/profissional.service';
 import { ToastrService } from 'ngx-toastr';
 import { Profissional } from '../../../_module/profissionalModule';
+import { DateHelper } from '../../../_shared/helpers/date-helper';
 
 @Component({
   selector: 'app-listar-comissoes',
@@ -51,8 +52,8 @@ export class ListarComissoesComponent {
     const primeiroDiaDoMes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
 
     this.filtroForm.patchValue({
-      dataInicio: primeiroDiaDoMes.toISOString().split('T')[0],
-      dataFim: hoje.toISOString().split('T')[0]
+      dataInicio: DateHelper.formatDateLocal(primeiroDiaDoMes),
+      dataFim: DateHelper.formatDateLocal(hoje)
     });
 
     // Buscar automaticamente
