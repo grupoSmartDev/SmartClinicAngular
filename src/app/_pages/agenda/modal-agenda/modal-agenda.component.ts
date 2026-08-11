@@ -73,12 +73,12 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
   listaTipoPagamento: TipoPagamento[] = [];
   listaPacote: PacotePaciente[] = [];
   listaUsuario: any[] = [];
-  eventoEscolhido: Agenda = {} as Agenda;
+  eventoEscolhido: Agenda | null = null;
 
   recorrenciaAtiva = false;
   dataFimRecorrencia: string = '';
 
-  patients!: Paciente[];
+  patients: Paciente[] = [];
 
   diasDaSemana = [
     { id: 0, nome: 'Domingo' },
@@ -311,13 +311,15 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
 
       this.pacienteService.Listar().subscribe({
         next: (result) => {
-          this.patients = result.dados;
+          this.patients = result.dados || [];
+
+          const inputPaciente = document.getElementById('paciente') as HTMLInputElement;
+          const pacienteEncontrado = this.patients.find((x: any) => x.id == this.eventoEscolhido?.pacienteId);
+          if (inputPaciente) {
+            inputPaciente.value = pacienteEncontrado?.nome ?? '';
+          }
         }
-      })
-
-
-      let inputPaciente = document.getElementById('paciente') as HTMLInputElement;
-      inputPaciente.value = this.patients.filter((x: any) => x.id == this.eventoEscolhido.pacienteId)[0].nome ?? '';
+      });
 
     }
 
@@ -495,7 +497,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
 
   onSearch(): void {
     if (this.searchTerm.length >= 3) {
-      this.filteredPatients = this.patients.filter(patient =>
+      this.filteredPatients = (this.patients || []).filter(patient =>
         patient.nome?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         patient.cpf?.includes(this.searchTerm) ||
         patient.celular?.includes(this.searchTerm)
@@ -648,6 +650,10 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
 
   async alterarAgendamento(statusNovo: number): Promise<void> {
     try {
+      if (!this.eventoEscolhido) {
+        this.toastr.error('Nenhum agendamento selecionado', 'Erro');
+        return;
+      }
       const agendaData = this.prepararDadosAgenda();
       await firstValueFrom(this.agendaService.AtualizarStatus(this.eventoEscolhido.id, statusNovo));
       this.toastr.success('Agenda alterada com sucesso!', 'Sucesso');

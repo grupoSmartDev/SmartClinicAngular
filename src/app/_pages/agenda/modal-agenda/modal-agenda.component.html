@@ -57,7 +57,7 @@
                   </button>
                   <button
                     class="btn btn-sm btn-secondary"
-                    (click)="gerenciarPaciente(eventoEscolhido.pacienteId!)"
+                    (click)="gerenciarPaciente(eventoEscolhido?.pacienteId ?? '')"
                   >
                     <i class="bi bi-person-vcard"></i> Paciente Completo
                   </button>
