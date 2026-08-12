@@ -655,8 +655,21 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
         return;
       }
       const agendaData = this.prepararDadosAgenda();
-      await firstValueFrom(this.agendaService.AtualizarStatus(this.eventoEscolhido.id, statusNovo));
-      this.toastr.success('Agenda alterada com sucesso!', 'Sucesso');
+      const result = await firstValueFrom(this.agendaService.AtualizarStatus(this.eventoEscolhido.id, statusNovo));
+
+      // Backend retorna HTTP 200 mesmo em falha de regra de negócio — sem essa
+      // checagem o toast de sucesso e o fechamento do modal disparavam mesmo
+      // quando o status não era alterado de fato.
+      if (!result?.status) {
+        this.toastr.error(result?.mensagem || 'Não foi possível alterar o agendamento.', 'Erro');
+        return;
+      }
+
+      const novoStatusLabel = this.listaStatus.find(s => s.id === statusNovo.toString())?.status;
+      this.toastr.success(
+        novoStatusLabel ? `Status alterado para "${novoStatusLabel}"!` : 'Agenda alterada com sucesso!',
+        'Sucesso'
+      );
       this.onAlter.emit();
       this.fecharModal();
     } catch (error) {
@@ -1231,7 +1244,15 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
       };
 
       // Salvar reagendamento
-      await firstValueFrom(this.agendaService.Reagendar(agendaAtualizada.id, parseInt(agendaAtualizada.statusId!), agendaAtualizada.data, agendaAtualizada.horaInicio, agendaAtualizada.horaFim));
+      const result = await firstValueFrom(this.agendaService.Reagendar(agendaAtualizada.id, parseInt(agendaAtualizada.statusId!), agendaAtualizada.data, agendaAtualizada.horaInicio, agendaAtualizada.horaFim));
+
+      // Backend retorna HTTP 200 mesmo em falha de regra de negócio — sem essa
+      // checagem o modal fechava e o diálogo de reagendamento sumia como se
+      // tivesse salvo, mesmo quando nada foi persistido.
+      if (!result?.status) {
+        this.toastr.error(result?.mensagem || 'Não foi possível reagendar a consulta.', 'Erro');
+        return;
+      }
 
       // Registrar histórico do reagendamento se necessário
       // Implementação opcional

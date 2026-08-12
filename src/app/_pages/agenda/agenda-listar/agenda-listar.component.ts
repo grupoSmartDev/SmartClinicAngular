@@ -195,6 +195,21 @@ export class AgendaListarComponent {
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
+  // <app-modal-agenda> não mostra toast de sucesso ao criar/editar (é responsabilidade
+  // do componente pai, por convenção do próprio modal) e este componente não escutava
+  // (onSave)/(onAlter) — a lista/cache nunca era atualizada após salvar, alterar status
+  // ou reagendar pelo modal.
+  handleAgendamentoSave(): void {
+    this.toast.success('Agendamento salvo com sucesso!', 'Sucesso');
+    this.atualizarLista();
+  }
+
+  handleAgendamentoAlterar(): void {
+    // Alterar status/reagendar já mostram seu próprio toast dentro do modal — aqui só
+    // precisamos atualizar a lista, sem duplicar a mensagem de sucesso.
+    this.atualizarLista();
+  }
+
   Excluir(agenda: Agenda): void {
     this.agendaService.Deletar(agenda.id.toString()).subscribe({
       next: (response) => {

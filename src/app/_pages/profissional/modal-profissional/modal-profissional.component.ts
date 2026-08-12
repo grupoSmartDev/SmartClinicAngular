@@ -98,17 +98,18 @@ export class ModalProfissionalComponent {
 
     saveOperation.subscribe({
       next: (response) => {
-        let mensagem = response.mensagem;
+        this.isLoading = false;
         const action = dataToSave.id ? 'atualizado' : 'criado';
 
-        if (response.status) {
-          this.toast.success(`Profissional ${action} com sucesso!`, 'Parabéns');
+        // Backend retorna HTTP 200 mesmo em falha de regra de negócio (ex.: CPF
+        // duplicado) — sem essa checagem o modal fechava e a grade era recarregada
+        // como se tivesse salvo, mesmo com o toast de erro correto na tela.
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
 
-        }
-        else {
-          this.toast.error(mensagem, 'Erro');
-        }
-        this.isLoading = false;
+        this.toast.success(`Profissional ${action} com sucesso!`, 'Parabéns');
         this.dataAtualizado.emit();
         this.fecharModal();
       },

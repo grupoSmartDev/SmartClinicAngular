@@ -189,7 +189,11 @@
   </div>
 </div>
 
-<app-modal-agenda #modalAgenda></app-modal-agenda>
+<app-modal-agenda
+  #modalAgenda
+  (onSave)="handleAgendamentoSave()"
+  (onAlter)="handleAgendamentoAlterar()"
+></app-modal-agenda>
 
 <app-confirm-dialog
   #confirmDialog
