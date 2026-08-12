@@ -337,3 +337,52 @@
     margin-right: 5px;
   }
 }
+
+/* Responsividade mobile */
+@media (max-width: 768px) {
+  .calendario-container {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .titulo-mes {
+    font-size: 1.1rem;
+  }
+
+  .btn-visualizacao {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* Mês: colunas com largura mínima legível — o overflow-x: auto de
+     .visualizacao-mes passa a rolar horizontalmente em vez de espremer
+     os 7 dias até ficarem ilegíveis */
+  .cabecalho-semana,
+  .grade-mes {
+    grid-template-columns: repeat(7, minmax(70px, 1fr));
+  }
+
+  .celula-dia {
+    min-height: 60px;
+    padding: 3px;
+  }
+
+  .numero-dia {
+    font-size: 0.75rem;
+  }
+
+  .agendamento-item {
+    font-size: 0.65rem;
+    padding: 2px 3px;
+  }
+
+  /* Semana: mesma lógica — .visualizacao-semana já tem overflow-x: auto */
+  .cabecalho-semana-detalhado,
+  .linha-hora {
+    grid-template-columns: 45px repeat(7, minmax(60px, 1fr));
+  }
+
+  .linha-hora-dia {
+    grid-template-columns: 45px 1fr;
+  }
+}

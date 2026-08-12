@@ -66,7 +66,13 @@ export class CalendarioComponent {
   constructor(
     private agendaService: AgendaService,
     private toastr: ToastrService
-  ) { }
+  ) {
+    // Grade de mês (7 colunas) fica ilegível em telas estreitas — inicia em
+    // visualização de dia (coluna única) quando aberto no mobile.
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      this.visualizacaoAtual = 'dia';
+    }
+  }
 
   ngOnInit(): void {
     this.loadEvents();

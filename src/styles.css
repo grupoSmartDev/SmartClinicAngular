@@ -432,6 +432,7 @@ input[type="checkbox"]:checked {
 }
 
 /* Adiciona um ícone de check quando estiver marcado */
+html,
 body {
   overflow-x: hidden !important;
 }
