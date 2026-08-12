@@ -59,7 +59,7 @@ export class AgendaListarComponent {
   listaStatus: Status[] = [];
   errorMessage: string = '';
   idParaExcluir!: string;
-  agendaParaExcluir!: Agenda;
+  agendaParaExcluir: Agenda | null = null;
   mostrarFiltros: boolean = false; // Começa expandido por padrão
 
   public selectedDate: string = '';
@@ -195,7 +195,21 @@ export class AgendaListarComponent {
     this.loadData(); // Chama o método para buscar os status novamente
   }
 
-  Excluir(agenda: Agenda) { }
+  Excluir(agenda: Agenda): void {
+    this.agendaService.Deletar(agenda.id.toString()).subscribe({
+      next: (response) => {
+        if (response && response.status === false) {
+          this.toast.error(response.mensagem || 'Não foi possível excluir o agendamento.', 'Erro');
+          return;
+        }
+        this.toast.success('Agendamento removido com sucesso!', 'Sucesso');
+        this.atualizarLista();
+      },
+      error: (err) => {
+        this.toast.error(err.error?.mensagem || 'Erro ao excluir. Tente novamente.', 'Erro');
+      }
+    });
+  }
 
   promptDelete(dataParaExcluir: any) {
     this.agendaParaExcluir = dataParaExcluir
@@ -203,11 +217,14 @@ export class AgendaListarComponent {
   }
 
   confirmDelete() {
-    this.Excluir(this.agendaParaExcluir);
+    if (this.agendaParaExcluir) {
+      this.Excluir(this.agendaParaExcluir);
+      this.agendaParaExcluir = null;
+    }
   }
 
   cancelDelete() {
-    this.idParaExcluir = '';
+    this.agendaParaExcluir = null;
   }
 
   onPageChange(page: number): void {
