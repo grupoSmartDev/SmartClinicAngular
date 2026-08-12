@@ -1212,6 +1212,14 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
       // Verificar disponibilidade (opcional - implementar se necessário)
       // Você pode adicionar uma chamada para verificar a disponibilidade do profissional/sala
 
+      // Busca o Id de "Remarcado" na lista de status carregada (evita hardcode); 7 é o
+      // Id confirmado no banco (SELECT "Id","Status" FROM public."Status") caso a lista
+      // ainda não tenha carregado.
+      const statusRemarcado = this.listaStatus.find(s =>
+        s.status?.toLowerCase().includes('remarc')
+      );
+      const statusIdRemarcado = statusRemarcado?.id ?? '7';
+
       // Atualizar agenda com novos dados
       const agendaAtualizada: Agenda = {
         ...this.formulario.value,
@@ -1219,7 +1227,7 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
         data: novaData,
         horaInicio: novaHoraInicio,
         horaFim: novaHoraFim,
-        statusId: 3 // Status para "Reagendado" - ajuste conforme seu sistema
+        statusId: statusIdRemarcado
       };
 
       // Salvar reagendamento
