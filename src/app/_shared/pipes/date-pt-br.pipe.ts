@@ -10,15 +10,35 @@ export class DatePtBrPipe implements PipeTransform {
   ): string {
     if (!value) return '';
 
-    let dateStr = value.toString();
+    let year: string, month: string, day: string;
+    let hour = '00', minute = '00';
 
-    // Extrai componentes da data manualmente
-    const match = dateStr.match(/(\d{4})-(\d{2})-(\d{2})/);
-    if (!match) return '';
+    if (value instanceof Date) {
+      // Já é um objeto Date: lê os campos locais diretamente. Não reconstruir via
+      // toISOString()/getTime() aqui — isso desloca o dia/ano pelo fuso horário.
+      if (isNaN(value.getTime())) return '';
+      year = String(value.getFullYear()).padStart(4, '0');
+      month = String(value.getMonth() + 1).padStart(2, '0');
+      day = String(value.getDate()).padStart(2, '0');
+      hour = String(value.getHours()).padStart(2, '0');
+      minute = String(value.getMinutes()).padStart(2, '0');
+    } else {
+      // String vinda do backend (ex.: "2026-08-12T00:00:00Z") — extrai os componentes
+      // direto do texto. Nunca passar por new Date() aqui: isso é o que causa o bug do
+      // ano/dia errado quando o valor já representa uma data local.
+      const match = value.toString().match(/(\d{4})-(\d{2})-(\d{2})(?:[T ](\d{2}):(\d{2}))?/);
+      if (!match) return '';
+      year = match[1];
+      month = match[2];
+      day = match[3];
+      if (match[4] && match[5]) {
+        hour = match[4];
+        minute = match[5];
+      }
+    }
 
-    const [, year, month, day] = match;
-
-    // Retorna formatado direto
+    if (format === 'time') return `${hour}:${minute}`;
+    if (format === 'datetime') return `${day}/${month}/${year} ${hour}:${minute}`;
     return `${day}/${month}/${year}`;
   }
 

@@ -208,7 +208,7 @@
                             <p class="descricao-grande">
                               {{ quantidadeAulasFeitas() }}
                             </p>
-                            <p class="descricao-medio">Cancelamentos</p>
+                            <p class="descricao-medio">Concluídos</p>
                             <hr />
                           </div>
                         </div>
@@ -348,6 +348,30 @@
                         </button>
                       </td>
                     </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+
+              <h5 class="mt-4">Agendamentos</h5>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Horário</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (agenda of Paciente.agendamentos; track agenda.id) {
+                    @if (agenda) {
+                    <tr>
+                      <td>{{ agenda.data | datePtBr }}</td>
+                      <td>{{ agenda.horaInicio }} - {{ agenda.horaFim }}</td>
+                      <td>{{ getStatusLabel(agenda.statusId) }}</td>
+                    </tr>
+                    }
                     }
                   </tbody>
                 </table>
@@ -989,7 +1013,7 @@
                                 @for (agenda of Paciente.agendamentos; track
                                 $index) { @if (agenda) {
                                 <option [value]="agenda.id">
-                                  {{ agenda.data | date : "dd/MM/yyyy HH:mm" }}
+                                  {{ agenda.data | datePtBr : "datetime" }}
                                   - {{ agenda.profissionalId }}
                                 </option>
                                 } }

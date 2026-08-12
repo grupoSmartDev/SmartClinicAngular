@@ -229,6 +229,7 @@ export class PacienteCompletoComponent implements OnInit {
 
     if (this._paciente?.id) {
       this.carregarPacotesPaciente();
+      this.recarregarPacienteCompleto();
     }
 
     // Recalcula podeRenovar/isRenovacao para o paciente novo. Sem isso, ficam presos no valor
@@ -236,6 +237,28 @@ export class PacienteCompletoComponent implements OnInit {
     // paciente real ser carregado) - o componente é reutilizado entre pacientes via @ViewChild
     // e nunca é recriado, então ngOnInit nunca roda de novo para recalcular isso.
     this.verificarRenovacao();
+  }
+
+  // Quem abre este componente (ex.: ListarPacienteComponent.openModalDetalhado) costuma passar
+  // direto a linha da grade de listagem — e PacienteService.Listar() no backend não inclui
+  // Agendamentos (só Evolucoes/Plano/FinancReceber). Sem recarregar aqui, Paciente.agendamentos
+  // fica undefined e os contadores de "Agendamentos"/"Concluídos" ficam sempre em 0, mesmo
+  // quando o paciente tem agendamentos de verdade. BuscarPorId inclui Agendamentos.
+  private recarregarPacienteCompleto(): void {
+    const idSolicitado = this._paciente.id;
+    this.pacienteService.BuscarPorId(idSolicitado).subscribe({
+      next: (response) => {
+        // Descarta a resposta se, enquanto ela estava a caminho, o usuário já trocou de
+        // paciente (o componente é reutilizado, não recriado) — evita sobrescrever o
+        // paciente atual com dados de um paciente que não é mais o exibido.
+        if (response.dados && this._paciente.id === idSolicitado) {
+          this._paciente = response.dados;
+        }
+      },
+      error: (error) => {
+        console.error('Erro ao carregar agendamentos do paciente:', error);
+      }
+    });
   }
 
   // Métodos básicos de UI
@@ -527,8 +550,24 @@ export class PacienteCompletoComponent implements OnInit {
       : [];
 
     return agendamentos.reduce((total: number, item: any) => {
-      return item?.dataCancelamento ? total + 1 : total;
+      return Number(item?.statusId) === 4 ? total + 1 : total;
     }, 0);
+  }
+
+  // Rótulos de StatusId — ver seed de StatusModel em AppDbContext (1 a 8 são os status padrão do sistema)
+  private readonly statusLabels: { [key: string]: string } = {
+    '1': 'Agendado',
+    '2': 'Confirmado',
+    '3': 'Em atendimento',
+    '4': 'Concluído',
+    '5': 'Cancelado pelo paciente',
+    '6': 'Cancelado pela clínica',
+    '7': 'Remarcado',
+    '8': 'Não compareceu'
+  };
+
+  getStatusLabel(statusId: any): string {
+    return this.statusLabels[String(statusId)] || 'Desconhecido';
   }
 
   // MÉTODOS DE PLANO
