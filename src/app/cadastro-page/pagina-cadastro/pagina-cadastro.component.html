@@ -63,7 +63,9 @@
             </div>
 
             <div class="mb-3">
-              <label for="email" class="form-label">E-mail</label>
+              <label for="email" class="form-label"
+                >E-mail <span class="text-danger">*</span></label
+              >
               <input
                 type="email"
                 class="form-control form-control-sm"
@@ -74,7 +76,8 @@
               <div
                 *ngIf="
                   signupForm.get('Email')!.invalid &&
-                  signupForm.get('Email')!.touched
+                  (signupForm.get('Email')!.touched ||
+                    signupForm.get('Email')!.dirty)
                 "
                 class="text-danger small mt-1"
               >
@@ -84,7 +87,9 @@
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="nome" class="form-label">Nome</label>
+                <label for="nome" class="form-label"
+                  >Nome <span class="text-danger">*</span></label
+                >
                 <input
                   type="text"
                   class="form-control form-control-sm"
@@ -95,7 +100,8 @@
                 <div
                   *ngIf="
                     signupForm.get('Nome')!.invalid &&
-                    signupForm.get('Nome')!.touched
+                    (signupForm.get('Nome')!.touched ||
+                      signupForm.get('Nome')!.dirty)
                   "
                   class="text-danger small mt-1"
                 >
@@ -103,7 +109,9 @@
                 </div>
               </div>
               <div class="col-md-6 mb-3">
-                <label for="sobrenome" class="form-label">Sobrenome</label>
+                <label for="sobrenome" class="form-label"
+                  >Sobrenome <span class="text-danger">*</span></label
+                >
                 <input
                   type="text"
                   class="form-control form-control-sm"
@@ -114,7 +122,8 @@
                 <div
                   *ngIf="
                     signupForm.get('Sobrenome')!.invalid &&
-                    signupForm.get('Sobrenome')!.touched
+                    (signupForm.get('Sobrenome')!.touched ||
+                      signupForm.get('Sobrenome')!.dirty)
                   "
                   class="text-danger small mt-1"
                 >
@@ -125,7 +134,9 @@
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="cpf" class="form-label">CPF do Titular</label>
+                <label for="cpf" class="form-label"
+                  >CPF do Titular <span class="text-danger">*</span></label
+                >
                 <input
                   type="text"
                   class="form-control form-control-sm"
@@ -137,11 +148,17 @@
                 <div
                   *ngIf="
                     signupForm.get('TitularCPF')!.invalid &&
-                    signupForm.get('TitularCPF')!.touched
+                    (signupForm.get('TitularCPF')!.touched ||
+                      signupForm.get('TitularCPF')!.dirty)
                   "
                   class="text-danger small mt-1"
                 >
-                  CPF é obrigatório
+                  <div *ngIf="signupForm.get('TitularCPF')!.errors?.['required']">
+                    CPF é obrigatório
+                  </div>
+                  <div *ngIf="signupForm.get('TitularCPF')!.errors?.['cpfInvalido']">
+                    CPF inválido
+                  </div>
                 </div>
               </div>
               <div class="col-md-6 mb-3">
@@ -161,7 +178,9 @@
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="celular" class="form-label">Celular</label>
+                <label for="celular" class="form-label"
+                  >Celular <span class="text-danger">*</span></label
+                >
                 <input
                   type="tel"
                   class="form-control form-control-sm"
@@ -173,11 +192,17 @@
                 <div
                   *ngIf="
                     signupForm.get('Celular')!.invalid &&
-                    signupForm.get('Celular')!.touched
+                    (signupForm.get('Celular')!.touched ||
+                      signupForm.get('Celular')!.dirty)
                   "
                   class="text-danger small mt-1"
                 >
-                  Celular é obrigatório
+                  <div *ngIf="signupForm.get('Celular')!.errors?.['required']">
+                    Celular é obrigatório
+                  </div>
+                  <div *ngIf="signupForm.get('Celular')!.errors?.['celularInvalido']">
+                    Celular inválido — informe DDD + número (10 ou 11 dígitos)
+                  </div>
                 </div>
               </div>
               <div class="col-md-6 mb-3">
@@ -196,7 +221,7 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="especialidade" class="form-label"
-                  >Especialidade</label
+                  >Especialidade <span class="text-danger">*</span></label
                 >
                 <select
                   class="form-select"
@@ -213,7 +238,8 @@
                 <div
                   *ngIf="
                     signupForm.get('Especialidade')!.invalid &&
-                    signupForm.get('Especialidade')!.touched
+                    (signupForm.get('Especialidade')!.touched ||
+                      signupForm.get('Especialidade')!.dirty)
                   "
                   class="text-danger small mt-1"
                 >
@@ -222,7 +248,7 @@
               </div>
               <div class="col-md-6 mb-3">
                 <label for="dataNascimento" class="form-label"
-                  >Data de Nascimento</label
+                  >Data de Nascimento <span class="text-danger">*</span></label
                 >
                 <input
                   type="date"
@@ -233,18 +259,26 @@
                 <div
                   *ngIf="
                     signupForm.get('DataNascimentoTitular')!.invalid &&
-                    signupForm.get('DataNascimentoTitular')!.touched
+                    (signupForm.get('DataNascimentoTitular')!.touched ||
+                      signupForm.get('DataNascimentoTitular')!.dirty)
                   "
                   class="text-danger small mt-1"
                 >
-                  Data de nascimento é obrigatório
+                  <div *ngIf="signupForm.get('DataNascimentoTitular')!.errors?.['required']">
+                    Data de nascimento é obrigatória
+                  </div>
+                  <div *ngIf="signupForm.get('DataNascimentoTitular')!.errors?.['dataFutura']">
+                    Data de nascimento não pode ser futura
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="plano" class="form-label">Plano Escolhido</label>
+                <label for="plano" class="form-label"
+                  >Plano Escolhido <span class="text-danger">*</span></label
+                >
                 <select
                   class="form-select"
                   formControlName="PlanoEscolhido"
@@ -258,7 +292,8 @@
                 <div
                   *ngIf="
                     signupForm.get('PlanoEscolhido')!.invalid &&
-                    signupForm.get('PlanoEscolhido')!.touched
+                    (signupForm.get('PlanoEscolhido')!.touched ||
+                      signupForm.get('PlanoEscolhido')!.dirty)
                   "
                   class="text-danger small mt-1"
                 >
@@ -268,7 +303,7 @@
 
               <div class="col-md-6 mb-3" *ngIf="selectedOption === 'plan'">
                 <label for="periodo" class="form-label"
-                  >Período de Cobrança</label
+                  >Período de Cobrança <span class="text-danger">*</span></label
                 >
                 <select
                   class="form-select"
@@ -282,7 +317,8 @@
                 <div
                   *ngIf="
                     signupForm.get('PeriodoCobranca')!.invalid &&
-                    signupForm.get('PeriodoCobranca')!.touched &&
+                    (signupForm.get('PeriodoCobranca')!.touched ||
+                      signupForm.get('PeriodoCobranca')!.dirty) &&
                     selectedOption === 'plan'
                   "
                   class="text-danger small mt-1"
@@ -323,7 +359,7 @@
 
             <div class="mb-3" *ngIf="selectedOption === 'plan'">
               <label for="pagamento" class="form-label"
-                >Forma de Pagamento</label
+                >Forma de Pagamento <span class="text-danger">*</span></label
               >
               <select
                 class="form-select"
@@ -339,7 +375,8 @@
               <div
                 *ngIf="
                   signupForm.get('TipoPagamentoId')!.invalid &&
-                  signupForm.get('TipoPagamentoId')!.touched &&
+                  (signupForm.get('TipoPagamentoId')!.touched ||
+                    signupForm.get('TipoPagamentoId')!.dirty) &&
                   selectedOption === 'plan'
                 "
                 class="text-danger small mt-1"
@@ -419,7 +456,8 @@
                 <!-- FORMULÁRIO DO CARTÃO -->
                 <div class="mb-3">
                   <label for="holderName" class="form-label"
-                    >Nome impresso no cartão</label
+                    >Nome impresso no cartão
+                    <span class="text-danger">*</span></label
                   >
                   <input
                     type="text"
@@ -432,7 +470,8 @@
                   <div
                     *ngIf="
                       signupForm.get('HolderName')!.invalid &&
-                      signupForm.get('HolderName')!.touched
+                      (signupForm.get('HolderName')!.touched ||
+                        signupForm.get('HolderName')!.dirty)
                     "
                     class="text-danger small mt-1"
                   >
@@ -442,7 +481,7 @@
 
                 <div class="mb-3">
                   <label for="cardNumber" class="form-label"
-                    >Número do cartão</label
+                    >Número do cartão <span class="text-danger">*</span></label
                   >
                   <input
                     type="text"
@@ -456,7 +495,8 @@
                   <div
                     *ngIf="
                       signupForm.get('CardNumber')!.invalid &&
-                      signupForm.get('CardNumber')!.touched
+                      (signupForm.get('CardNumber')!.touched ||
+                        signupForm.get('CardNumber')!.dirty)
                     "
                     class="text-danger small mt-1"
                   >
@@ -466,7 +506,9 @@
 
                 <div class="row">
                   <div class="col-md-4 mb-3">
-                    <label for="expiryMonth" class="form-label">Mês</label>
+                    <label for="expiryMonth" class="form-label"
+                      >Mês <span class="text-danger">*</span></label
+                    >
                     <select
                       class="form-select"
                       formControlName="ExpiryMonth"
@@ -489,7 +531,8 @@
                     <div
                       *ngIf="
                         signupForm.get('ExpiryMonth')!.invalid &&
-                        signupForm.get('ExpiryMonth')!.touched
+                        (signupForm.get('ExpiryMonth')!.touched ||
+                          signupForm.get('ExpiryMonth')!.dirty)
                       "
                       class="text-danger small mt-1"
                     >
@@ -498,7 +541,9 @@
                   </div>
 
                   <div class="col-md-4 mb-3">
-                    <label for="expiryYear" class="form-label">Ano</label>
+                    <label for="expiryYear" class="form-label"
+                      >Ano <span class="text-danger">*</span></label
+                    >
                     <select
                       class="form-select"
                       formControlName="ExpiryYear"
@@ -520,7 +565,8 @@
                     <div
                       *ngIf="
                         signupForm.get('ExpiryYear')!.invalid &&
-                        signupForm.get('ExpiryYear')!.touched
+                        (signupForm.get('ExpiryYear')!.touched ||
+                          signupForm.get('ExpiryYear')!.dirty)
                       "
                       class="text-danger small mt-1"
                     >
@@ -529,7 +575,9 @@
                   </div>
 
                   <div class="col-md-4 mb-3">
-                    <label for="ccv" class="form-label">CVV</label>
+                    <label for="ccv" class="form-label"
+                      >CVV <span class="text-danger">*</span></label
+                    >
                     <input
                       type="text"
                       class="form-control form-control-sm"
@@ -544,7 +592,8 @@
                     <div
                       *ngIf="
                         signupForm.get('Ccv')!.invalid &&
-                        signupForm.get('Ccv')!.touched
+                        (signupForm.get('Ccv')!.touched ||
+                          signupForm.get('Ccv')!.dirty)
                       "
                       class="text-danger small mt-1"
                     >
@@ -605,7 +654,9 @@
 
                 <div class="row">
                   <div class="col-md-8 mb-3">
-                    <label for="postalCode" class="form-label">CEP</label>
+                    <label for="postalCode" class="form-label"
+                      >CEP <span class="text-danger">*</span></label
+                    >
                     <input
                       type="text"
                       class="form-control form-control-sm"
@@ -617,7 +668,8 @@
                     <div
                       *ngIf="
                         signupForm.get('PostalCode')!.invalid &&
-                        signupForm.get('PostalCode')!.touched
+                        (signupForm.get('PostalCode')!.touched ||
+                          signupForm.get('PostalCode')!.dirty)
                       "
                       class="text-danger small mt-1"
                     >
@@ -626,7 +678,9 @@
                   </div>
 
                   <div class="col-md-4 mb-3">
-                    <label for="addressNumber" class="form-label">Número</label>
+                    <label for="addressNumber" class="form-label"
+                      >Número <span class="text-danger">*</span></label
+                    >
                     <input
                       type="text"
                       class="form-control form-control-sm"
@@ -637,7 +691,8 @@
                     <div
                       *ngIf="
                         signupForm.get('AddressNumber')!.invalid &&
-                        signupForm.get('AddressNumber')!.touched
+                        (signupForm.get('AddressNumber')!.touched ||
+                          signupForm.get('AddressNumber')!.dirty)
                       "
                       class="text-danger small mt-1"
                     >

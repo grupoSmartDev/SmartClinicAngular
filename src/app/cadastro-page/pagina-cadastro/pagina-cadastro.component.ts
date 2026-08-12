@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CadastroUsuarioService } from '../../_services/cadastro-usuario.service';
 import { ToastrService } from 'ngx-toastr';
 import { DateHelper } from '../../_shared/helpers/date-helper';
+import { ValidatorsHelper } from '../../_shared/helpers/validators-helper';
 
 @Component({
   selector: 'app-pagina-cadastro',
@@ -69,10 +70,10 @@ export class PaginaCadastroComponent {
     this.signupForm = this.fb.group({
       Nome: ['', Validators.required],
       Sobrenome: ['', Validators.required],
-      TitularCPF: ['', Validators.required],
+      TitularCPF: ['', [Validators.required, ValidatorsHelper.cpf]],
       CNPJEmpresaMatriz: [''],
       Email: ['', [Validators.required, Validators.email]],
-      Celular: ['', Validators.required],
+      Celular: ['', [Validators.required, ValidatorsHelper.celular]],
       Especialidade: ['', Validators.required],
       PlanoEscolhido: ['', Validators.required],
       PeriodoCobranca: [''],
@@ -86,7 +87,7 @@ export class PaginaCadastroComponent {
       QtdeLicencaUsuarioPermitida: [1],
       QtdeLicencaEmpresaUtilizada: [0],
       QtdeLicencaUsuarioUtilizada: [0],
-      DataNascimentoTitular: ['', Validators.required],
+      DataNascimentoTitular: ['', [Validators.required, ValidatorsHelper.dataPassado]],
       _DataNascimentoTitular: [''],
       DataInicioTeste: [today],
       _DataInicioTeste: [today],
