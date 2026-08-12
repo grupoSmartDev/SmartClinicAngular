@@ -29,7 +29,7 @@ export class LoginComponent {
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
       userKey: [environment.defaultUserKey, Validators.required],
-      email: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
@@ -58,8 +58,16 @@ export class LoginComponent {
           this.loading = false;
         }
       },
-      error: error => {
-        this.error = error.error || "Ocorreu um erro ao efetuar o login.";
+      error: err => {
+        if (err.error?.mensagem) {
+          this.error = err.error.mensagem;
+        } else if (err.status === 0) {
+          this.error = 'Não foi possível conectar ao servidor. Verifique sua conexão.';
+        } else if (err.status === 401) {
+          this.error = 'E-mail ou senha inválidos.';
+        } else {
+          this.error = 'Erro ao realizar login. Tente novamente.';
+        }
         this.loading = false;
       }
     });
