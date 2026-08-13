@@ -51,10 +51,16 @@ export class ModalTipoPagamentoComponent {
     //trabalhamos com o subscribe depois de ver se vai criar ou editar
 
     saveOperation.subscribe({
-      next: () => {
-        const action = dataToSave.id ? 'atualizado' : 'criado';
-        this.toast.success(`Tipo de pagamento ${action} com sucesso!`, 'Parabéns');
+      next: (response) => {
         this.isLoading = false;
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
+        this.toast.success(`Tipo de pagamento ${action} com sucesso!`, 'Parabéns');
         this.tipoDePagamentoAtualizado.emit();
         this.fecharModal();
       },

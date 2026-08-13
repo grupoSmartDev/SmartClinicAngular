@@ -1098,20 +1098,17 @@ export class ModalAgendaComponent implements OnInit, OnChanges {
       // Chamar o serviço para cadastrar o paciente
       this.pacienteService.Criar(dataToSaves).subscribe({
         next: (response: ResponseModel<Paciente>) => {
-          let status = response.status;
-          if (status) {
-            this.toastr.success(response.mensagem, 'Sucesso');
-            this.pacienteService.Listar().subscribe({
-              next: (result) => {
-                this.patients = result.dados;
-              }
-            })
-          }
-          else {
+          if (!response.status) {
             this.toastr.error(response.mensagem, 'Erro');
+            return;
           }
 
-
+          this.toastr.success(response.mensagem, 'Sucesso');
+          this.pacienteService.Listar().subscribe({
+            next: (result) => {
+              this.patients = result.dados;
+            }
+          });
 
           // Fechar o offcanvas usando a API do Bootstrap
           const offcanvas = document.getElementById('offcanvasPatient');

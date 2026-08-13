@@ -63,7 +63,11 @@ export class ModalUsuarioComponent {
       if (usuarioToSave.id) {
         this.service.Atualizar(usuarioToSave).subscribe({
           next: (response: ResponseModel<Usuario>) => {
-            this.toast.success('Usuário atualizado com Sucesso', 'Parabéns');
+            if (!response.status) {
+              this.toast.error(response.mensagem, 'Erro');
+              return;
+            }
+            this.toast.success('Usuário atualizado com sucesso!', 'Parabéns');
             this.tipoDePagamentoAtualizado.emit(); // Emita o evento após a atualização
             btnCacelar.click();
             this.fecharModal();
@@ -75,7 +79,11 @@ export class ModalUsuarioComponent {
       } else {
         this.service.Criar(usuarioToSave).subscribe({
           next: (response: ResponseModel<Usuario>) => {
-            this.toast.success('Usuário Criado com sucesso', 'Parabéns');
+            if (!response.status) {
+              this.toast.error(response.mensagem, 'Erro');
+              return;
+            }
+            this.toast.success('Usuário criado com sucesso!', 'Parabéns');
             this.tipoDePagamentoAtualizado.emit(); // Emita o evento após a criação
             btnCacelar.click();
             this.fecharModal();

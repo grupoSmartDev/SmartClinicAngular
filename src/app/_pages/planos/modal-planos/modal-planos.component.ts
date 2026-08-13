@@ -91,13 +91,18 @@ export class ModalPlanosComponent {
       : this.planoService.Criar(dataToSave);
 
     saveOperation.subscribe({
-      next: () => {
-        const action = dataToSave.id ? 'atualizado' : 'criado';
-        this.toast.success(`Plano ${action} com sucesso!`, 'Parabéns');
+      next: (response) => {
         this.isLoading = false;
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
+        this.toast.success(`Plano ${action} com sucesso!`, 'Parabéns');
         this.dadosAtualizados.emit();
         this.fecharModal();
-
       },
       error: () => {
         this.isLoading = false;

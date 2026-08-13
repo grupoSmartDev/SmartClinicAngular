@@ -67,10 +67,16 @@ export class ModalCentroDeCustoComponent {
       : this.centroDeCustoService.Criar(centroDeCustoToSave);
 
     saveOperation.subscribe({
-      next: () => {
-        const action = centroDeCustoToSave.id ? 'atualizado' : 'criado';
-        this.toast.success(`Centro de custo ${action} com sucesso!`, 'Parabéns');
+      next: (response) => {
         this.isLoading = false;
+        const action = centroDeCustoToSave.id ? 'atualizado' : 'criado';
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
+        this.toast.success(`Centro de custo ${action} com sucesso!`, 'Parabéns');
         this.dataAtualizado.emit();
         this.fecharModal();
       },

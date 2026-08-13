@@ -64,15 +64,15 @@ export class ModalPacoteComponent {
 
     saveOperation.subscribe({
       next: (response) => {
-        let mensagem = response.mensagem;
+        this.isLoading = false;
         const action = dataToSave.id ? 'atualizado' : 'criado';
 
-        if (response.status) {
-          this.toast.success(`Pacote ${action} com sucesso!`, 'Parabéns');
-        } else {
-          this.toast.error(mensagem, 'Erro');
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
         }
-        this.isLoading = false;
+
+        this.toast.success(`Pacote ${action} com sucesso!`, 'Parabéns');
         this.dataAtualizado.emit();
         this.fecharModal();
       },

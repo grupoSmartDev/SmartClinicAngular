@@ -44,10 +44,16 @@ export class ModalFormaPagamentoComponent {
       : this.formaPagamentoService.Criar(formaPagamentoToSave);
 
     saveOperation.subscribe({
-      next: () => {
-        const action = formaPagamentoToSave.id ? 'atualizado' : 'criado';
-        this.toast.success(`Forma de pagamento ${action} com sucesso!`, 'Parabéns');
+      next: (response) => {
         this.isLoading = false;
+        const action = formaPagamentoToSave.id ? 'atualizado' : 'criado';
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
+        this.toast.success(`Forma de pagamento ${action} com sucesso!`, 'Parabéns');
         this.formaPagamentoAtualizado.emit();
         this.fecharModal();
       },

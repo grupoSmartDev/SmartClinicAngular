@@ -251,12 +251,23 @@ export class ModalSalasComponent {
 
     this.isLoading = true;
     this.salaService.salvarSala(payload).subscribe({
-      next: () => {
+      next: (response) => {
+        this.isLoading = false;
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
+        this.toast.success('Sala salva com sucesso!', 'Parabéns');
         this.fecharModal();
         this.dataAtualizado.emit();
       },
-      error: (err) => console.error(err),
-      complete: () => (this.isLoading = false),
+      error: (err) => {
+        this.isLoading = false;
+        console.error(err);
+        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
+      },
     });
   }
 }

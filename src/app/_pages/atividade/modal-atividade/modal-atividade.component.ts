@@ -56,13 +56,18 @@ export class ModalAtividadeComponent {
       : this.atividadeService.Criar(dataToSave);
 
     saveOperation.subscribe({
-      next: () => {
+      next: (response) => {
+        this.isLoading = false;
         const action = dataToSave.id ? 'atualizado' : 'criado';
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
         this.toast.success(`Atividade ${action} com sucesso!`, 'Parabéns');
         this.dadosAtualizados.emit();
         this.fecharModal();
-        this.isLoading = false;
-
       },
       error: () => {
         this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');

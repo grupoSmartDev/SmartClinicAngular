@@ -255,14 +255,20 @@ export class ModalFinanceiroReceber implements OnInit {
       : this.financReceberService.Criar(dataToSave);
 
     saveOperation.subscribe({
-      next: () => {
+      next: (response) => {
+        this.isLoading = false;
         const action = dataToSave.id ? 'atualizado' : 'criado';
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
         this.toast.success(
           `Contas a receber ${action} com sucesso!`,
           'Parabéns'
         );
         this.dadosAtualizado.emit();
-        this.isLoading = false;
         let inputPacientePesquisado = document.getElementById(
           'paciente'
         ) as HTMLInputElement;

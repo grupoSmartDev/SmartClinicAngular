@@ -204,8 +204,14 @@ export class ModalFinancPagarComponent {
       : this.financPagarService.Criar(dataToSave);
 
     saveOperation.subscribe({
-      next: () => {
+      next: (response) => {
         const action = dataToSave.id ? 'atualizado' : 'criado';
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
         this.toast.success(`Contas a pagar ${action} com sucesso!`, 'Parabéns');
         this.dadosAtualizado.emit();
         this.fecharModal();
@@ -226,15 +232,21 @@ export class ModalFinancPagarComponent {
         ? this.financPagarService.Atualizar(dadosToSave)
         : this.financPagarService.Criar(dadosToSave);
       saveOperation.subscribe({
-        next: () => {
+        next: (response) => {
+          this.isLoading = false;
           const action = dadosToSave.id ? 'atualizada' : 'criada';
+
+          if (!response.status) {
+            this.toast.error(response.mensagem, 'Erro');
+            return;
+          }
+
           this.toast.success(
             `Conta a pagar ${action} com sucesso!`,
             'Parabéns'
           );
           this.dadosAtualizado.emit();
           // btnCancelar.click();
-          this.isLoading = false;
           let inputFornecedorPesquisado = document.getElementById(
             'fornecedor'
           ) as HTMLInputElement;

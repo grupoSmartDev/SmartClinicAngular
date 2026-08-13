@@ -156,41 +156,49 @@ export class ModalFornecedorComponent implements OnInit {
       this.isLoading = true;
       const fornecedorToSave: Fornecedor = this.formulario.value as Fornecedor;
 
-      const callback = () => {
+      const onSuccess = () => {
         this.fornecedorAtualizado.emit();
-        this.isLoading = false;
         btnCancelar.click();
         this.fecharModal();
       };
 
       if (fornecedorToSave.id) {
         this.fornecedorService.Atualizar(fornecedorToSave).subscribe({
-          next: () =>
-            this.toast.success('Fornecedor atualizado com sucesso', 'Parabéns'),
-          error: () =>
+          next: (response) => {
+            this.isLoading = false;
+            if (!response.status) {
+              this.toast.error(response.mensagem, 'Erro');
+              return;
+            }
+            this.toast.success(response.mensagem || 'Fornecedor atualizado com sucesso!', 'Parabéns');
+            onSuccess();
+          },
+          error: () => {
+            this.isLoading = false;
             this.toast.error(
               'Erro ao atualizar Fornecedor',
               'Tente novamente ou fale com o suporte'
-            ),
-          complete: callback,
+            );
+          },
         });
       } else {
         this.fornecedorService.Criar(fornecedorToSave).subscribe({
           next: (response) => {
-            let message = response.mensagem;
-            let status = response.status;
-            if (status) {
-              this.toast.success(message, 'Parabéns');
-            } else {
-              this.toast.error(message, 'Erro');
+            this.isLoading = false;
+            if (!response.status) {
+              this.toast.error(response.mensagem, 'Erro');
+              return;
             }
+            this.toast.success(response.mensagem || 'Fornecedor criado com sucesso!', 'Parabéns');
+            onSuccess();
           },
-          error: () =>
+          error: () => {
+            this.isLoading = false;
             this.toast.error(
               'Erro ao criar Fornecedor',
               'Tente novamente ou fale com o suporte'
-            ),
-          complete: callback,
+            );
+          },
         });
       }
     } else {

@@ -78,12 +78,17 @@ export class ModalBancoComponent {
       : this.bancoService.Criar(dataToSave);
 
     saveOperation.subscribe({
-      next: () => {
+      next: (response) => {
+        this.isLoading = false;
         const action = dataToSave.id ? 'atualizado' : 'criado';
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
         this.toast.success(`Banco ${action} com sucesso!`, 'Parabéns');
         this.bancoAtualizado.emit();
-
-        this.isLoading = false;
         this.fecharModal();
       },
       error: () => {
@@ -104,11 +109,14 @@ export class ModalBancoComponent {
       if (bancoToSave.id) {
         this.bancoService.Atualizar(bancoToSave).subscribe({
           next: (response: ResponseModel<Banco>) => {
-            this.toast.success('Banco atualizado com Sucesso', 'Parabéns');
+            this.isLoading = false;
+            if (!response.status) {
+              this.toast.error(response.mensagem, 'Erro');
+              return;
+            }
+            this.toast.success('Banco atualizado com sucesso!', 'Parabéns');
             this.bancoAtualizado.emit(); // Emita o evento após a atualização
             btnCacelar.click();
-
-            this.isLoading = false;
             this.fecharModal();
           },
           error: (err) => {
@@ -120,10 +128,14 @@ export class ModalBancoComponent {
       } else {
         this.bancoService.Criar(bancoToSave).subscribe({
           next: (response: ResponseModel<Banco>) => {
-            this.toast.success('Banco Criado com sucesso', 'Parabéns');
+            this.isLoading = false;
+            if (!response.status) {
+              this.toast.error(response.mensagem, 'Erro');
+              return;
+            }
+            this.toast.success('Banco criado com sucesso!', 'Parabéns');
             this.bancoAtualizado.emit(); // Emita o evento após a criação
             btnCacelar.click();
-            this.isLoading = false;
             this.fecharModal();
           },
           error: (err) => {

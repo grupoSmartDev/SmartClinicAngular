@@ -42,11 +42,17 @@ export class ModalCategoriaComponent {
     const saveOperation = dataToSave.id ? this.categoriaService.Atualizar(dataToSave) : this.categoriaService.Criar(dataToSave);
 
     saveOperation.subscribe({
-      next: () => {
+      next: (response) => {
+        this.isLoading = false;
         const action = dataToSave.id ? 'atualizado' : 'criado';
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
         this.toast.success(`Categoria ${action} com sucesso!`, 'Parabéns');
         this.DadosAtualizados.emit();
-        this.isLoading = false;
         this.fecharModal();
       },
       error: () => {

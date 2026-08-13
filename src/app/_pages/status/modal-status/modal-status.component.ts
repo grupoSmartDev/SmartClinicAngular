@@ -49,10 +49,16 @@ export class ModalStatusComponent {
       : this.statusService.Criar(dataToSave);
 
     saveOperation.subscribe({
-      next: () => {
-        const action = dataToSave.id ? 'atualizado' : 'criado';
-        this.toast.success(`Status ${action} com sucesso!`, 'Parabéns');
+      next: (response) => {
         this.isLoading = false;
+        const action = dataToSave.id ? 'atualizado' : 'criado';
+
+        if (!response.status) {
+          this.toast.error(response.mensagem, 'Erro');
+          return;
+        }
+
+        this.toast.success(`Status ${action} com sucesso!`, 'Parabéns');
         this.statusAtualizado.emit();
         btnFechar.click();
         this.fecharModal();
