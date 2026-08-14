@@ -336,24 +336,44 @@ export class CalendarioComponent {
       hoje.getFullYear() === ano;
   }
 
-  // Navegar para o mês anterior
+  // Navega para o período anterior — um mês inteiro na visualização "mes", ou
+  // 7/1 dias nas visualizações "semana"/"dia" (antes sempre voltava um mês
+  // inteiro, mesmo com semana ou dia selecionados).
   mesAnterior(): void {
-    if (this.mesAtual === 0) {
-      this.mesAtual = 11;
-      this.anoAtual--;
+    if (this.visualizacaoAtual === 'mes') {
+      if (this.mesAtual === 0) {
+        this.mesAtual = 11;
+        this.anoAtual--;
+      } else {
+        this.mesAtual--;
+      }
     } else {
-      this.mesAtual--;
+      const dias = this.visualizacaoAtual === 'semana' ? 7 : 1;
+      const data = new Date(this.anoAtual, this.mesAtual, this.diaSelecionado);
+      data.setDate(data.getDate() - dias);
+      this.anoAtual = data.getFullYear();
+      this.mesAtual = data.getMonth();
+      this.diaSelecionado = data.getDate();
     }
     this.loadEvents();
   }
 
-  // Navegar para o próximo mês
+  // Navega para o próximo período — mesma lógica de mesAnterior(), na direção oposta.
   proximoMes(): void {
-    if (this.mesAtual === 11) {
-      this.mesAtual = 0;
-      this.anoAtual++;
+    if (this.visualizacaoAtual === 'mes') {
+      if (this.mesAtual === 11) {
+        this.mesAtual = 0;
+        this.anoAtual++;
+      } else {
+        this.mesAtual++;
+      }
     } else {
-      this.mesAtual++;
+      const dias = this.visualizacaoAtual === 'semana' ? 7 : 1;
+      const data = new Date(this.anoAtual, this.mesAtual, this.diaSelecionado);
+      data.setDate(data.getDate() + dias);
+      this.anoAtual = data.getFullYear();
+      this.mesAtual = data.getMonth();
+      this.diaSelecionado = data.getDate();
     }
     this.loadEvents();
   }

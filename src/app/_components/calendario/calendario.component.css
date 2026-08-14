@@ -345,6 +345,22 @@
     font-size: 12px;
   }
 
+  /* Cabeçalho (navegação + título + botões de visualização) empilhado, em vez
+     de espremer tudo numa linha só */
+  .cabecalho-calendario {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .controles-navegacao {
+    justify-content: center;
+  }
+
+  .controles-visualizacao {
+    justify-content: center;
+  }
+
   .titulo-mes {
     font-size: 1.1rem;
   }
@@ -384,5 +400,22 @@
 
   .linha-hora-dia {
     grid-template-columns: 45px 1fr;
+  }
+
+  /* Altura mínima das linhas de horário — semana e dia */
+  .celula-agendamento {
+    min-height: 40px;
+    padding: 3px;
+  }
+
+  .slot-vazio {
+    height: 30px;
+    font-size: 0.75rem;
+  }
+
+  .celula-hora,
+  .hora-dia {
+    font-size: 0.75rem;
+    padding: 4px;
   }
 }
