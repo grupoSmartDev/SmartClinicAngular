@@ -5,6 +5,7 @@ import { navbarData } from '../side-bar/nav-data';
 import { Router } from '@angular/router';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 import { AuthService } from '../../_services/auth.service';
+import { PlanoTipo, PlanosService } from '../../_services/planos.service';
 interface SideNavToggle {
   screenWidth: number;
   collapsed: boolean;
@@ -38,8 +39,16 @@ export class MenuMobileComponent implements OnInit {
   isExpanded = true;
   isMenuOpen: { [key: string]: boolean } = {};
 
+  // Mesmo controle de plano/feature do desktop (side-bar) — ver temAcesso/openTab abaixo.
+  planoAtual: PlanoTipo = PlanoTipo.Basic;
+  PlanoTipo = PlanoTipo;
 
-  constructor(private tabService: TabService, public router: Router, private authService: AuthService) { }
+  constructor(
+    private tabService: TabService,
+    public router: Router,
+    private authService: AuthService,
+    private planoService: PlanosService
+  ) { }
 
   ngOnInit(): void {
     // Inicialização dos estados dos submenus
@@ -47,6 +56,8 @@ export class MenuMobileComponent implements OnInit {
       cadastro: false,
       relatorios: false
     };
+
+    this.planoAtual = this.planoService.getPlanoAtual();
   }
 
   // toggleSubmenu(menu: string): void {
@@ -90,8 +101,53 @@ export class MenuMobileComponent implements OnInit {
   toggleSubmenu(menu: string): void {
     this.isMenuOpen[menu] = !this.isMenuOpen[menu];
   }
-  // Abre a aba utilizando o TabService
-  openTab(path: string, title: string) {
+
+  // Verifica se tem acesso a uma feature — mesma lógica do desktop (side-bar).
+  temAcesso(feature: string): boolean {
+    return this.planoService.temAcesso(feature);
+  }
+
+  // Mostra modal de upgrade — mesma lógica do desktop (side-bar).
+  mostrarModalUpgrade(feature: string, nomeFeature: string): void {
+    const planoNecessario = this.getPlanoNecessario(feature);
+
+    const mensagem = `🔒 Recurso Bloqueado\n\n` +
+      `O recurso "${nomeFeature}" está disponível apenas no plano ${planoNecessario}.\n\n` +
+      `Seu plano atual: ${this.planoAtual}\n\n` +
+      `Deseja fazer upgrade?\n\n` +
+      `Entre em contato com o nosso suporte.`;
+
+    if (confirm(mensagem)) {
+      this.router.navigate(['/upgrade'], {
+        queryParams: { plano: planoNecessario }
+      });
+    }
+  }
+
+  // Retorna qual plano é necessário — mesma lógica do desktop (side-bar).
+  getPlanoNecessario(feature: string): string {
+    const mapa: { [key: string]: string } = {
+      'ContasPagar': 'Plus',
+      'ContasReceber': 'Plus',
+      'TipoPagamento': 'Plus',
+      'FormaPagamento': 'Plus',
+      'CentroCusto': 'Plus',
+      'PlanoContas': 'Plus',
+      'DespesasFixas': 'Plus',
+      'Comissoes': 'Plus',
+      'RelatoriosFinanceiros': 'Plus'
+    };
+
+    return mapa[feature] || 'Premium';
+  }
+
+  // Abre a aba utilizando o TabService, verificando acesso por plano (igual ao desktop);
+  // depois de abrir com sucesso, fecha o offcanvas — comportamento específico do mobile.
+  openTab(path: string, title: string, requiredFeature?: string) {
+    if (requiredFeature && !this.temAcesso(requiredFeature)) {
+      this.mostrarModalUpgrade(requiredFeature, title);
+      return;
+    }
 
     this.tabService.openTab({ path, title });
     const button = document.querySelector('#offcanvasMenuButton') as HTMLElement;

@@ -35,6 +35,7 @@
 
   <div class="offcanvas-body">
     <ul class="sidebar-nav" id="menuSideBar">
+      <!-- CADASTRO -->
       <li class="sidebar-item">
         <a
           href="#"
@@ -58,35 +59,30 @@
           <li class="sidebar-item">
             <a
               class="sidebar-link"
-              (click)="openTab('/usuario/listar', 'Usuário')"
-              >Usuário</a
-            >
-          </li>
-          <li class="sidebar-item">
-            <a
-              class="sidebar-link"
-              (click)="openTab('/profissional/listar', 'Profissional')"
+              (click)="
+                openTab('/profissional/listar', 'Profissional', 'Profissional')
+              "
               >Profissional</a
             >
           </li>
           <li class="sidebar-item">
             <a
               class="sidebar-link"
-              (click)="openTab('/profissao/listar', 'Profissão')"
+              (click)="openTab('/profissao/listar', 'Profissão', 'Profissao')"
               >Profissão</a
             >
           </li>
-          <li class="sidebar-item">
+          <li class="sidebar-item" [class.item-bloqueado]="!temAcesso('Fornecedor')">
             <a
               class="sidebar-link"
-              (click)="openTab('/fornecedor/listar', 'Fornecedor')"
+              (click)="openTab('/fornecedor/listar', 'Fornecedor', 'Fornecedor')"
               >Fornecedor</a
             >
           </li>
           <li class="sidebar-item">
             <a
               class="sidebar-link"
-              (click)="openTab('/status/listar', 'Status')"
+              (click)="openTab('/status/listar', 'Status', 'Status')"
               >Status</a
             >
           </li>
@@ -105,7 +101,7 @@
             >
           </li>
           <li class="sidebar-item">
-            <a class="sidebar-link" (click)="openTab('/sala/listar', 'Sala')"
+            <a class="sidebar-link" (click)="openTab('/sala/listar', 'Sala', 'Sala')"
               >Sala</a
             >
           </li>
@@ -141,6 +137,11 @@
             >
           </li>
           <li class="sidebar-item">
+            <a class="sidebar-link" (click)="openTab('/pacote/listar', 'Pacote')"
+              >Pacote</a
+            >
+          </li>
+          <li class="sidebar-item">
             <a
               class="sidebar-link"
               (click)="openTab('/categoria/listar', 'Categoria')"
@@ -150,7 +151,8 @@
         </ul>
       </li>
 
-      <li class="sidebar-item">
+      <!-- FINANCEIRO -->
+      <li class="sidebar-item" [class.menu-bloqueado]="!temAcesso('TipoPagamento')">
         <a
           href="#"
           class="sidebar-link collapsed has-dropdown"
@@ -171,21 +173,27 @@
           <li class="sidebar-item">
             <a
               class="sidebar-link"
-              (click)="openTab('/tipoPagamento/listar', 'Tipo de pagamento')"
+              (click)="
+                openTab('/tipoPagamento/listar', 'Tipo de pagamento', 'TipoPagamento')
+              "
               >Tipo de pagamento</a
             >
           </li>
           <li class="sidebar-item">
             <a
               class="sidebar-link"
-              (click)="openTab('/formaPagamento/listar', 'Forma de pagamento')"
+              (click)="
+                openTab('/formaPagamento/listar', 'Forma de pagamento', 'FormaPagamento')
+              "
               >Forma de pagamento</a
             >
           </li>
           <li class="sidebar-item">
             <a
               class="sidebar-link"
-              (click)="openTab('/centroDeCusto/listar', 'Centro de Custo')"
+              (click)="
+                openTab('/centroDeCusto/listar', 'Centro de Custo', 'CentroCusto')
+              "
               >Centro de Custo</a
             >
           </li>
@@ -193,116 +201,130 @@
             <a
               class="sidebar-link"
               (click)="
-                openTab('/SubcentroDeCusto/listar', 'Sub Centro de Custo')
+                openTab('/planoContas/listar', 'Plano de Contas', 'PlanoContas')
               "
-              >Sub Centro de Custo</a
-            >
-          </li>
-          <li class="sidebar-item">
-            <a
-              class="sidebar-link"
-              (click)="openTab('/planoContas/listar', 'Plano de Contas')"
               >Plano de Contas</a
-            >
-          </li>
-          <li class="sidebar-item">
-            <a
-              class="sidebar-link"
-              (click)="openTab('/planoContaSub/listar', 'Plano de contas Sub')"
-              >Plano de Contas sub</a
             >
           </li>
         </ul>
       </li>
 
+      <!-- PACIENTES (sempre liberado) -->
       <li class="sidebar-item">
         <a
           class="sidebar-link"
-          (click)="openTab('/pacientes/listar', 'Pacientes')"
+          (click)="openTab('/pacientes/listar', 'Pacientes', 'GestaoPaciente')"
         >
           <i class="bi bi-person"></i>
           <span>Pacientes</span>
         </a>
       </li>
 
+      <!-- AGENDA (sempre liberado) -->
       <li class="sidebar-item">
-        <a class="sidebar-link" (click)="openTab('/agenda/listar', 'Agenda')">
+        <a class="sidebar-link" (click)="openTab('/agenda/listar', 'Agenda', 'Agenda')">
           <i class="lni lni-calendar"></i>
           <span>Agenda</span>
         </a>
       </li>
-      <li class="sidebar-item">
-        <a
-          class="sidebar-link"
-          (click)="openTab('/financPagar/listar', 'Pagar')"
-        >
-          <i class="bi bi-cash-stack"></i>
-          <span>Contas a pagar</span>
-        </a>
-      </li>
-      <li class="sidebar-item">
-        <a
-          class="sidebar-link"
-          (click)="openTab('/FinancReceber/listar', 'Receber')"
-        >
-          <i class="bi bi-cash-stack"></i>
-          <span>Contas a receber</span>
-        </a>
-      </li>
 
-      <!-- <li class="sidebar-item">
+      <!-- CONTAS A PAGAR (bloqueado para Basic) -->
+      <li class="sidebar-item" [class.menu-bloqueado]="!temAcesso('ContasPagar')">
         <a
           href="#"
           class="sidebar-link collapsed has-dropdown"
-          (click)="toggleSubmenu('auth')"
+          (click)="toggleSubmenu('contasAPagar')"
           data-bs-toggle="collapse"
         >
-          <i class="lni lni-files"></i>
-          <span>Relatórios</span>
+          <i class="bi bi-cash"></i>
+          <span>Contas a Pagar</span>
         </a>
         <ul
           [ngClass]="{
             'sidebar-dropdown': true,
-            collapse: !isMenuOpen['auth'],
-            show: isMenuOpen['auth']
+            collapse: !isMenuOpen['contasAPagar'],
+            show: isMenuOpen['contasAPagar']
           }"
-          id="auth"
+          id="contasAPagar"
         >
           <li class="sidebar-item">
             <a
               class="sidebar-link"
               (click)="
-                openTab('/relatorios/pacientes', 'Relatório de Pacientes')
+                openTab('/DespesasFixa/ListarDespesa', 'Despesas Fixas', 'DespesasFixas')
               "
-              >Pacientes</a
-            >
-          </li>
-          <li class="sidebar-item">
-            <a
-              class="sidebar-link"
-              (click)="openTab('/relatorios/contasPagar', 'Contas a Pagar')"
-              >Contas a Pagar</a
-            >
-          </li>
-          <li class="sidebar-item">
-            <a
-              class="sidebar-link"
-              (click)="openTab('/relatorios/contasReceber', 'Contas a Receber')"
-              >Contas a Receber</a
+              >Despesas Fixas</a
             >
           </li>
           <li class="sidebar-item">
             <a
               class="sidebar-link"
               (click)="
-                openTab('/relatorios/tipoPagamento', 'Tipo de Pagamento')
+                openTab('/FinancPagar/listarAnalitico', 'Pagar Analítico', 'ContasPagar')
               "
-              >Tipo de Pagamento</a
+              >Analítico</a
+            >
+          </li>
+          <li class="sidebar-item">
+            <a
+              class="sidebar-link"
+              (click)="
+                openTab('/FinancPagar/listarSintetico', 'Pagar Sintético', 'ContasPagar')
+              "
+              >Sintético</a
+            >
+          </li>
+          <li class="sidebar-item">
+            <a
+              class="sidebar-link"
+              (click)="openTab('/Comissoes/Listar', 'Comissões', 'Comissoes')"
+              >Comissões</a
             >
           </li>
         </ul>
-      </li> -->
+      </li>
 
+      <!-- CONTAS A RECEBER (bloqueado para Basic) -->
+      <li class="sidebar-item" [class.menu-bloqueado]="!temAcesso('ContasReceber')">
+        <a
+          href="#"
+          class="sidebar-link collapsed has-dropdown"
+          (click)="toggleSubmenu('contasAReceber')"
+          data-bs-toggle="collapse"
+        >
+          <i class="bi bi-cash"></i>
+          <span>Contas a Receber</span>
+        </a>
+        <ul
+          [ngClass]="{
+            'sidebar-dropdown': true,
+            collapse: !isMenuOpen['contasAReceber'],
+            show: isMenuOpen['contasAReceber']
+          }"
+          id="contasAReceber"
+        >
+          <li class="sidebar-item">
+            <a
+              class="sidebar-link"
+              (click)="
+                openTab('/FinancReceber/listarAnalitico', 'Receber Analítico', 'ContasReceber')
+              "
+              >Analítico</a
+            >
+          </li>
+          <li class="sidebar-item">
+            <a
+              class="sidebar-link"
+              (click)="
+                openTab('/FinancReceber/listarSintetico', 'Receber Sintético', 'ContasReceber')
+              "
+              >Sintético</a
+            >
+          </li>
+        </ul>
+      </li>
+
+      <!-- LOG -->
       <li class="sidebar-item">
         <a class="sidebar-link" (click)="openTab('/log/listar', 'Log')">
           <i class="bi bi-person-lines-fill"></i>
@@ -310,18 +332,43 @@
         </a>
       </li>
 
-      <!-- <li class="sidebar-item">
-        <a class="sidebar-link" (click)="openTab('/teste', 'testes')">
-          <i class="bi bi-person-lines-fill"></i>
-          <span>testes</span>
-        </a>
-      </li>
+      <!-- CONFIGURAÇÕES -->
       <li class="sidebar-item">
-        <a class="sidebar-link" (click)="openTab('/testeComponents', 'testeComponents')">
-          <i class="bi bi-person-lines-fill"></i>
-          <span>testeComponents</span>
+        <a
+          href="#"
+          class="sidebar-link collapsed has-dropdown"
+          (click)="toggleSubmenu('configuracoes')"
+          data-bs-toggle="collapse"
+        >
+          <i class="bi bi-gear"></i>
+          <span>Configurações</span>
         </a>
-      </li> -->
+        <ul
+          [ngClass]="{
+            'sidebar-dropdown': true,
+            collapse: !isMenuOpen['configuracoes'],
+            show: isMenuOpen['configuracoes']
+          }"
+          id="configuracoes"
+        >
+          <li class="sidebar-item">
+            <a
+              class="sidebar-link"
+              (click)="
+                openTab('/Configuracoes/alterarDadosUsuario', 'Dados do Usuário')
+              "
+              >Dados do Usuário</a
+            >
+          </li>
+          <li class="sidebar-item">
+            <a
+              class="sidebar-link"
+              (click)="openTab('/Configuracoes/BuscarPorId', 'Sistema')"
+              >Sistema</a
+            >
+          </li>
+        </ul>
+      </li>
     </ul>
     <div class="sidebar-footer">
       <a class="sidebar-link" (click)="logout()">
