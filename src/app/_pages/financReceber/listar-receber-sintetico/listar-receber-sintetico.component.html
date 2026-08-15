@@ -171,8 +171,13 @@
                 (click)="openModalBaixa(item)"
                 class="action-icon btn-tooltip"
               >
+                @if (item.dataPagamento) {
+                <i class="bi bi-arrow-counterclockwise text-warning"></i>
+                <span class="tooltip-text">Estornar parcela</span>
+                } @else {
                 <i class="bi bi-cash-stack text-warning"></i>
-                <span class="tooltip-text">Baixa</span>
+                <span class="tooltip-text">Baixar parcela</span>
+                }
               </a>
               <!-- <a
                 href="javascript:void(0);"
@@ -220,7 +225,9 @@
 
 <app-baixa-financ-receber-sub
   [financReceberSub]="parcelaSelecionada"
-  (confirmarPagamento)="loadData()"
+  [pacienteNome]="pacienteNomeSelecionado"
+  [pacienteCpf]="pacienteCpfSelecionado"
+  (confirmarPagamento)="atualizarLista()"
 ></app-baixa-financ-receber-sub>
 
 <app-confirm-dialog

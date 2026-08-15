@@ -7,6 +7,19 @@ import { environment } from '../../environments/environment';
 import { SubFinancReceber } from '../_module/subFinancReceberModule';
 import { DateHelper } from '../_shared/helpers/date-helper';
 
+// Payload enxuto para BaixarParcela — de propósito NÃO é um SubFinancReceber completo:
+// enviar o objeto inteiro (com financReceber/paciente aninhados, vindos de listagens como
+// o Sintético) fazia o backend validar campos do paciente que não têm nada a ver com a baixa.
+export interface BaixarParcelaPayload {
+  id: number;
+  valorPago: number;
+  dataPagamento: Date | string;
+  observacao?: string;
+  formaPagamentoId?: number;
+  tipoPagamentoId?: number;
+  dataVencimentoResidual?: Date | string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -150,10 +163,17 @@ export class FinancReceberService {
     return this.http.get<any[]>(`https://api.example.com/clientes?nome=${query}`);
   }
 
-  BaixarParcela(subFinancReceber : SubFinancReceber) : Observable<ResponseModel<SubFinancReceber>>{
-    return this.http.put<ResponseModel<SubFinancReceber>>(`${this.baseURL}BaixarParcela`,subFinancReceber)
+  BaixarParcela(payload: BaixarParcelaPayload) : Observable<ResponseModel<SubFinancReceber>>{
+    return this.http.put<ResponseModel<SubFinancReceber>>(`${this.baseURL}BaixarParcela`, payload)
   }
-  
+
+  EstornarParcela(idSub: number): Observable<ResponseModel<string>> {
+    return this.http.post<ResponseModel<string>>(
+      `${this.baseURL}EstornarParcela/${idSub}`, {}
+    );
+  }
+
+
 
   private formatarDataParaAPI(data: any): string {
     // Verifica se o valor é uma string (formato do input date HTML)

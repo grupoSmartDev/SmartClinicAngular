@@ -51,6 +51,8 @@ export class ListarReceberSinteticoComponent {
 
   dataAtualFiltro: Date = new Date();
   parcelaSelecionada: SubFinancReceber = {} as SubFinancReceber;
+  pacienteNomeSelecionado: string = '';
+  pacienteCpfSelecionado: string = '';
 
   private readonly CACHE_DURATION = 5 * 60 * 1000;
 
@@ -289,6 +291,8 @@ export class ListarReceberSinteticoComponent {
   openModalBaixa(item: SubFinancReceber) {
     // Importante: primeiro atualize os dados, depois abra o modal
     this.parcelaSelecionada = { ...item }; // Criando uma cópia para não afetar o objeto original
+    this.pacienteNomeSelecionado = item.financReceber?.paciente?.nome || '';
+    this.pacienteCpfSelecionado = item.financReceber?.paciente?.cpf || '';
 
     // Aguarde a próxima iteração do change detection antes de abrir o modal
     setTimeout(() => {

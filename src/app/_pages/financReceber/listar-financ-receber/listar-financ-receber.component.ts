@@ -11,6 +11,7 @@ import { CentroDeCustoService } from '../../../_services/centro-de-custo.service
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { SubFinancReceber } from '../../../_module/subFinancReceberModule';
 import { Paciente } from '../../../_module/pacienteModule';
+import { PacienteService } from '../../../_services/paciente.service';
 import { TabService } from '../../../_services/tabs.service';
 import { FormatarDataParaInputService } from '../../../_services/formatar-data-para-input.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -56,6 +57,8 @@ export class ListarFinancReceberComponent {
   paginar: boolean = true;
 
   parcelaSelecionada: SubFinancReceber = {} as SubFinancReceber;
+  pacienteNomeSelecionado: string = '';
+  pacienteCpfSelecionado: string = '';
 
   private readonly CACHE_DURATION = 5 * 60 * 1000;
 
@@ -65,6 +68,7 @@ export class ListarFinancReceberComponent {
     private financReceberService: FinancReceberService,
     private toast: ToastrService,
     private ccService: CentroDeCustoService,
+    private pacienteService: PacienteService,
     private tabService: TabService,
     private formatarDataService: FormatarDataParaInputService,
     private spinner: NgxSpinnerService,
@@ -72,6 +76,7 @@ export class ListarFinancReceberComponent {
 
   ngOnInit(): void {
     this.loadData();
+    this.carregarPacientes();
 
     this.dataFiltroInicio = this.formatarDataService.formatarDataParaInput(new Date());
     this.dataFiltroFim = this.formatarDataService.formatarDataParaInput(new Date());
@@ -181,6 +186,21 @@ export class ListarFinancReceberComponent {
     });
   }
 
+  carregarPacientes(): void {
+    // paginar=false é o 7º parâmetro de Listar() — traz a lista inteira, sem paginação,
+    // para popular o <select> de filtro (não é o 1º parâmetro, que é a página).
+    this.pacienteService
+      .Listar(undefined, undefined, undefined, undefined, undefined, undefined, false)
+      .subscribe({
+        next: (response) => {
+          this.pacienteLista = response.dados || [];
+        },
+        error: (err) => {
+          console.error('Erro ao buscar pacientes:', err);
+        },
+      });
+  }
+
   openModal(financReceber: any) {
     if (financReceber.id) {
       this.modalComponent.data = financReceber;
@@ -193,9 +213,11 @@ export class ListarFinancReceberComponent {
     }
   }
 
-  openModalBaixa(item: SubFinancReceber) {
+  openModalBaixa(item: SubFinancReceber, financReceberPai?: FinancReceber) {
     // Importante: primeiro atualize os dados, depois abra o modal
     this.parcelaSelecionada = { ...item }; // Criando uma cópia para não afetar o objeto original
+    this.pacienteNomeSelecionado = financReceberPai?.paciente?.nome || '';
+    this.pacienteCpfSelecionado = financReceberPai?.paciente?.cpf || '';
 
     // Aguarde a próxima iteração do change detection antes de abrir o modal
     setTimeout(() => {

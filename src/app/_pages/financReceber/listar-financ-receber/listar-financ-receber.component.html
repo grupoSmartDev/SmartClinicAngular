@@ -112,7 +112,8 @@
             <th>Data Emissão</th>
             <th>Descrição</th>
             <th>Valor</th>
-            <th></th>
+            <th>Paciente</th>
+            <th>Tipo de Pagamento</th>
             <th class="text-end"></th>
           </tr>
         </thead>
@@ -139,7 +140,8 @@
             <td>{{ item.dataEmissao | datePtBr }}</td>
             <td>{{ item.descricao }}</td>
             <td>{{ item.valor | currencyPtBr }}</td>
-            <td></td>
+            <td>{{ item.paciente?.nome || "-" }}</td>
+            <td>{{ item.tipoPagamento?.descricao || "-" }}</td>
             <td class="text-end">
               <a
                 href="javascript:void(0);"
@@ -170,6 +172,7 @@
             <td><strong>Detalhes</strong></td>
             <td><strong>Valor Parcela</strong></td>
             <td><strong>Status</strong></td>
+            <td></td>
             <td><strong></strong></td>
           </tr>
 
@@ -200,14 +203,20 @@
               <span class="span-status-orange">A Vencer</span>
               }
             </td>
+            <td></td>
             <td class="text-end">
               <a
                 href="javascript:void(0);"
-                (click)="openModalBaixa(subItem)"
+                (click)="openModalBaixa(subItem, item)"
                 class="action-icon btn-tooltip"
               >
+                @if (subItem.dataPagamento) {
+                <i class="bi bi-arrow-counterclockwise text-warning"></i>
+                <span class="tooltip-text">Estornar parcela</span>
+                } @else {
                 <i class="bi bi-cash-stack text-warning"></i>
                 <span class="tooltip-text">Baixar parcela</span>
+                }
               </a>
             </td>
           </tr>
@@ -248,6 +257,8 @@
 
 <app-baixa-financ-receber-sub
   [financReceberSub]="parcelaSelecionada"
+  [pacienteNome]="pacienteNomeSelecionado"
+  [pacienteCpf]="pacienteCpfSelecionado"
   (confirmarPagamento)="atualizarLista()"
 ></app-baixa-financ-receber-sub>
 
