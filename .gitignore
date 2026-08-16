@@ -54,3 +54,9 @@ Thumbs.db
 
 # History and backup files
 .history/
+.agents/skills/smartclinic-frontend-workflow/agents/openai.yaml
+.agents/skills/smartclinic-frontend-workflow/references/four-lens-checklists.md
+.agents/skills/smartclinic-frontend-workflow/references/project-baseline.md
+.agents/skills/smartclinic-frontend-workflow/SKILL.md
+AGENTS.md
+README.md
