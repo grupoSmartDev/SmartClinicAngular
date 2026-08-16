@@ -106,10 +106,17 @@ export class ModalPacienteComponent {
 
       dataToSave.responsavel == "false" ? dataToSave.responsavel = false : dataToSave.responsavel = true;
       dataToSave.permitirLembretes == "false" ? dataToSave.permitirLembretes = false : dataToSave.permitirLembretes = true;
-      dataToSave.profissionalId == 0 ? null : dataToSave.profissionalId;
-      dataToSave.profissionalId == undefined ? null : dataToSave.profissionalId;
-      dataToSave.convenioId == 0 ? null : dataToSave.convenioId;
-      dataToSave.planoId == 0 ? null : dataToSave.planoId;
+      dataToSave.profissionalId = (dataToSave.profissionalId == 0 ||
+                                   dataToSave.profissionalId == undefined)
+                                   ? null : dataToSave.profissionalId;
+
+      dataToSave.convenioId = (dataToSave.convenioId == 0 ||
+                               dataToSave.convenioId == undefined)
+                               ? null : dataToSave.convenioId;
+
+      dataToSave.planoId = (dataToSave.planoId == 0 ||
+                            dataToSave.planoId == undefined)
+                            ? null : dataToSave.planoId;
 
       if (dataToSave.id) {
         this.pacienteService.Atualizar(dataToSave).subscribe({

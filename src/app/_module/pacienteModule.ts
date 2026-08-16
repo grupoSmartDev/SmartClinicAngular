@@ -23,7 +23,7 @@ export interface Paciente {
   estadoCivil?: string;
   logradouro?: string;
   medicamento?: string;
-  profissionalId?: number;
+  profissionalId?: number | null;
   nome?: string;
   numero?: string;
   pais?: string;
