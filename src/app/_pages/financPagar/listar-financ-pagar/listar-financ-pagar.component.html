@@ -63,12 +63,22 @@
         </select>
       </div>
 
+      <div class="col-md-2 col-12">
+        <label class="form-label small fw-bold">Status</label>
+        <select class="form-select form-select-sm" [(ngModel)]="statusFiltro">
+          <option value="">Todos</option>
+          <option value="Pendente">Pendente</option>
+          <option value="Parcial">Parcial</option>
+          <option value="Pago">Pago</option>
+        </select>
+      </div>
+
       <div class="col-md-3">
         <label class="form-label small fw-bold">Período</label>
         <select class="form-select form-select-sm" [(ngModel)]="dataBaseFiltro">
           <option value="E">Data de Emissão</option>
-          <!-- <option value="V">Data de Vencimento</option>
-          <option value="P">Data de Pagamento</option> -->
+          <option value="V">Data de Vencimento</option>
+          <option value="P">Data de Pagamento</option>
         </select>
       </div>
 

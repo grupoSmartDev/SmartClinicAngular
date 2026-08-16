@@ -14,7 +14,11 @@
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">
-          Baixar Conta a pagar
+          {{
+            financPagarSub.dataPagamento
+              ? "Estornar Conta a Pagar"
+              : "Baixar Conta a Pagar"
+          }}
         </h1>
         <button
           type="button"
@@ -25,6 +29,7 @@
         ></button>
       </div>
       <div class="modal-body">
+        @if (!financPagarSub.dataPagamento) {
         <div class="row">
           <div class="col-md-4 col-12">
             <div class="form-group">
@@ -74,9 +79,59 @@
               name="observacao"
             ></textarea>
           </div>
+
+          <div class="col-md-6 col-12 mt-2">
+            <div class="form-group">
+              <label for="formaPagamentoId" class="form-label"
+                >Forma de Pagamento</label
+              >
+              <select
+                class="form-select form-select-sm"
+                id="formaPagamentoId"
+                [(ngModel)]="formaPagamentoId"
+                name="formaPagamentoId"
+              >
+                <option value="">Selecione</option>
+                @for (fp of listaFormaPagamento; track fp.id) {
+                <option [value]="fp.id">{{ fp.descricao }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6 col-12 mt-2">
+            <div class="form-group">
+              <label for="tipoPagamentoId" class="form-label"
+                >Tipo de Pagamento</label
+              >
+              <select
+                class="form-select form-select-sm"
+                id="tipoPagamentoId"
+                [(ngModel)]="tipoPagamentoId"
+                name="tipoPagamentoId"
+              >
+                <option value="">Selecione</option>
+                @for (tp of listaTipoPagamento; track tp.id) {
+                <option [value]="tp.id">{{ tp.descricao }}</option>
+                }
+              </select>
+            </div>
+          </div>
         </div>
+        } @else {
+        <p>
+          Esta parcela já foi paga em
+          <strong>{{ financPagarSub.dataPagamento | datePtBr }}</strong>
+          no valor de
+          <strong>{{ financPagarSub.valorPago | currencyPtBr }}</strong>.
+        </p>
+        <p>
+          Deseja estornar este pagamento? O valor pago será removido e a
+          parcela voltará a ficar em aberto.
+        </p>
+        }
       </div>
       <div class="modal-footer">
+        @if (!financPagarSub.dataPagamento) {
         <button
           type="button"
           (click)="handleConfirm()"
@@ -85,6 +140,17 @@
         >
           <i class="bi bi-check"></i> Confirmar
         </button>
+        } @else {
+        <button
+          type="button"
+          class="btn btn-outline-warning btn-sm"
+          *ngIf="financPagarSub?.dataPagamento != null"
+          (click)="estornarParcela()"
+          id="btn_estornar"
+        >
+          <i class="bi bi-arrow-counterclockwise"></i> Estornar
+        </button>
+        }
         <button
           type="button"
           class="btn btn-danger"

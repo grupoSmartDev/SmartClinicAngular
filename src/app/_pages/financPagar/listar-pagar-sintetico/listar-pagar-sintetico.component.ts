@@ -14,7 +14,7 @@ import { TabService } from '../../../_services/tabs.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 interface CacheData {
-  cacheList: FinancPagar[];
+  cacheList: SubFinancPagar[];
   totalItems: number;
   timestamp: number;
 }
@@ -134,7 +134,7 @@ export class ListarPagarSinteticoComponent {
 
     if (cachedData && this.isCacheValid(cachedData.timestamp)) {
       // Se temos dados em cache válidos, use-os
-      this.lista = cachedData.cacheList;
+      this.listaSintetico = cachedData.cacheList;
       this.totalItems = cachedData.totalItems;
       return;
     }
@@ -161,16 +161,16 @@ export class ListarPagarSinteticoComponent {
 
             // Armazena os dados no cache
             this.tabService.setCacheData(cacheKey, {
-              cacheList: this.lista,
+              cacheList: this.listaSintetico,
               totalItems: this.totalItems,
               timestamp: Date.now(),
             });
           }
         },
         error: (err) => {
-          console.error('Erro ao buscar exercicio:', err);
+          console.error('Erro ao buscar contas a pagar:', err);
           this.errorMessage =
-            'Erro ao carregar as exercicios. Tente novamente mais tarde.';
+            'Erro ao carregar as contas a pagar. Tente novamente mais tarde.';
         },
         complete: () => {
           this.spinner.hide();
@@ -211,21 +211,21 @@ export class ListarPagarSinteticoComponent {
 
     this.financPagarService.Deletar(id.toString()).subscribe({
       next: (response) => {
-        console.log('conta a receber excluído com sucesso:', response);
+        console.log('conta a pagar excluída com sucesso:', response);
         this.listaSintetico = this.listaSintetico.filter(
           (subFinancPagar) => subFinancPagar.financPagarId !== id
         );
         this.toast.success(
-          'Contas a receber excluído com sucesso!',
+          'Conta a pagar excluída com sucesso!',
           'Excluído'
         );
         this.invalidateCache();
       },
       error: (err) => {
-        console.error('Erro ao excluir contas a receber:', err);
+        console.error('Erro ao excluir conta a pagar:', err);
         this.toast.error(
           'Tente novamente ou fale com o suporte',
-          'Erro ao excluir uma contas a receber'
+          'Erro ao excluir uma conta a pagar'
         );
       },
     });

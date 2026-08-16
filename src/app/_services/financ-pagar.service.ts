@@ -72,9 +72,22 @@ export class FinancPagarService {
     );
   }
 
-  BaixarParcela(parcelaId: number, valorPago: number): Observable<ResponseModel<SubFinancPagar>> {
+  BaixarParcela(
+    parcelaId: number,
+    valorPago: number,
+    dataPagamento?: string,
+    formaPagamentoId?: number,
+    tipoPagamentoId?: number
+  ): Observable<ResponseModel<SubFinancPagar>> {
     return this.http.post<ResponseModel<SubFinancPagar>>(
-      `${this.baseURL}BaixarParcela/${parcelaId}`, valorPago
+      `${this.baseURL}BaixarParcela/${parcelaId}`,
+      { valorPago, dataPagamento, formaPagamentoId, tipoPagamentoId }
+    );
+  }
+
+  EstornarParcela(idSub: number): Observable<ResponseModel<string>> {
+    return this.http.post<ResponseModel<string>>(
+      `${this.baseURL}EstornarParcela/${idSub}`, {}
     );
   }
 
@@ -88,6 +101,7 @@ export class FinancPagarService {
     dataBaseFiltro?: string,
     dataFiltroInicio?: Date,
     dataFiltroFim?: Date,
+    statusFiltro?: string,
     paginar?: boolean
   ): Observable<ResponseModel<FinancPagar[]>> {
     let params = new HttpParams();
@@ -99,6 +113,7 @@ export class FinancPagarService {
     if (dataBaseFiltro) params = params.set('dataBaseFiltro', dataBaseFiltro);
     if (pacienteIdFiltro) params = params.set('pacienteIdFiltro', pacienteIdFiltro);
     if (ccFiltro) params = params.set('ccFiltro', ccFiltro);
+    if (statusFiltro) params = params.set('statusFiltro', statusFiltro);
     if (paginar) params = params.set('paginar', paginar);
 
     if (dataFiltroInicio) {

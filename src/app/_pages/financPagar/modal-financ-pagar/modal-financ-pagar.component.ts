@@ -187,41 +187,6 @@ export class ModalFinancPagarComponent {
     btnCancelar.click();
   }
 
-  onSubmi() {
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
-      this.toast.error(
-        'Por favor, preencha todos os campos obrigatórios',
-        'Erro'
-      );
-      return;
-    }
-
-    const dataToSave = this.formulario.value as FinancPagar;
-
-    const saveOperation = dataToSave.id
-      ? this.financPagarService.Atualizar(dataToSave)
-      : this.financPagarService.Criar(dataToSave);
-
-    saveOperation.subscribe({
-      next: (response) => {
-        const action = dataToSave.id ? 'atualizado' : 'criado';
-
-        if (!response.status) {
-          this.toast.error(response.mensagem, 'Erro');
-          return;
-        }
-
-        this.toast.success(`Contas a pagar ${action} com sucesso!`, 'Parabéns');
-        this.dadosAtualizado.emit();
-        this.fecharModal();
-      },
-      error: () => {
-        this.toast.error('Ocorreu um erro ao salvar. Tente novamente.', 'Erro');
-      },
-    });
-  }
-
   onSubmit() {
     const btnCancelar = document.querySelector('#btnCancelar') as HTMLElement;
     if (this.formulario.valid) {

@@ -9,6 +9,7 @@ import { CentroDeCustoService } from '../../../_services/centro-de-custo.service
 import { CentroDeCusto } from '../../../_module/centroDeCustoModule';
 import { SubFinancPagar } from '../../../_module/subFinancPagarModule';
 import { Paciente } from '../../../_module/pacienteModule';
+import { PacienteService } from '../../../_services/paciente.service';
 import { TabService } from '../../../_services/tabs.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 
@@ -44,6 +45,7 @@ export class ListarFinancPagarComponent {
   idFiltro?: string = '';
   pacienteIdFiltro?: string = '';
   ccFiltro?: string = '';
+  statusFiltro?: string = '';
   dataBaseFiltro: string = 'E';
   dataFiltroInicio: Date = new Date();
   dataFiltroFim: Date = new Date();
@@ -59,12 +61,14 @@ export class ListarFinancPagarComponent {
     private financPagarService: FinancPagarService,
     private toast: ToastrService,
     private ccService: CentroDeCustoService,
+    private pacienteService: PacienteService,
     private tabService: TabService,
     private spinner: NgxSpinnerService,
   ) { }
 
   ngOnInit(): void {
     this.loadData();
+    this.carregarPacientes();
 
     this.dataFiltroInicio = this.formatarDataParaInput(new Date());
     this.dataFiltroFim = this.formatarDataParaInput(new Date());
@@ -129,6 +133,7 @@ export class ListarFinancPagarComponent {
         this.dataBaseFiltro,
         this.dataFiltroInicio,
         this.dataFiltroFim,
+        this.statusFiltro,
         this.paginar
       )
       .subscribe({
@@ -155,6 +160,21 @@ export class ListarFinancPagarComponent {
         },
       });
 
+  }
+
+  carregarPacientes(): void {
+    // paginar=false é o 7º parâmetro de Listar() — traz a lista inteira, sem paginação,
+    // para popular o <select> de filtro (não é o 1º parâmetro, que é a página).
+    this.pacienteService
+      .Listar(undefined, undefined, undefined, undefined, undefined, undefined, false)
+      .subscribe({
+        next: (response) => {
+          this.pacienteLista = response.dados || [];
+        },
+        error: (err) => {
+          console.error('Erro ao buscar pacientes:', err);
+        },
+      });
   }
 
   loadCC(): void {
@@ -276,6 +296,7 @@ export class ListarFinancPagarComponent {
 
   limparFiltros() {
     this.idFiltro = undefined;
+    this.statusFiltro = '';
     this.dataBaseFiltro = 'V';
     this.dataFiltroInicio = this.formatarDataParaInput(new Date());
     this.dataFiltroFim = this.formatarDataParaInput(new Date());
