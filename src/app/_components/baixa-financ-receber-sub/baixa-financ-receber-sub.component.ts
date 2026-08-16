@@ -95,9 +95,17 @@ export class BaixaFinancReceberSubComponent implements OnInit, OnChanges {
 
   handleConfirm(): void {
     if (this.financReceberSub && this.financReceberSub.id) {
+      if (!this.valorPago || this.valorPago <= 0) {
+        this.toast.error(
+          'O valor do pagamento deve ser maior que zero.',
+          'Valor inválido'
+        );
+        return;
+      }
+
       if (this.valorPago > this.financReceberSub.valor) {
         this.toast.error(
-          `Valor informado (R$ ${this.valorPago}) é maior que o saldo da parcela (R$ ${this.financReceberSub.valor}).`,
+          `O valor informado (R$ ${this.valorPago.toFixed(2)}) é maior que o saldo da parcela (R$ ${this.financReceberSub.valor.toFixed(2)}).`,
           'Valor inválido'
         );
         return;

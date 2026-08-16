@@ -324,12 +324,34 @@
                   "
                   [formGroupName]="i"
                 >
-                  <td>{{ i + 1 }}</td>
+                  <td>
+                    {{ i + 1 }}
+                    <span
+                      *ngIf="parcela.get('dataPagamento')?.value != null"
+                      class="badge bg-success ms-1"
+                      >Pago</span
+                    >
+                    <span
+                      *ngIf="
+                        parcela.get('dataPagamento')?.value == null &&
+                        parcela.get('valor')?.value > 0
+                      "
+                      class="badge bg-warning ms-1"
+                      >Pendente</span
+                    >
+                  </td>
                   <td>
                     <input
                       type="date"
                       class="form-control form-control-sm"
                       formControlName="dataVencimento"
+                      [readonly]="parcela.get('dataPagamento')?.value != null"
+                      [class.bg-light]="parcela.get('dataPagamento')?.value != null"
+                      [title]="
+                        parcela.get('dataPagamento')?.value != null
+                          ? 'Parcela já paga — para estornar use o botão Estornar'
+                          : ''
+                      "
                     />
                   </td>
                   <td>
@@ -337,6 +359,13 @@
                       type="date"
                       class="form-control form-control-sm"
                       formControlName="dataPagamento"
+                      [readonly]="parcela.get('dataPagamento')?.value != null"
+                      [class.bg-light]="parcela.get('dataPagamento')?.value != null"
+                      [title]="
+                        parcela.get('dataPagamento')?.value != null
+                          ? 'Parcela já paga — para estornar use o botão Estornar'
+                          : ''
+                      "
                     />
                   </td>
                   <td>
@@ -353,6 +382,12 @@
                       class="form-control form-control-sm"
                       formControlName="valor"
                       readonly
+                      [class.bg-light]="parcela.get('dataPagamento')?.value != null"
+                      [title]="
+                        parcela.get('dataPagamento')?.value != null
+                          ? 'Parcela já paga — para estornar use o botão Estornar'
+                          : ''
+                      "
                     />
                   </td>
                   <td>
