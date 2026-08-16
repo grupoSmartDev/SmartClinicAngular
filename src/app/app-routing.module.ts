@@ -10,6 +10,8 @@ import { ListarConselhoComponent } from './_pages/conselho/listar-conselho/lista
 import { AgendaComponent } from './_pages/agenda/agenda.component';
 import { DashboardComponent } from './_pages/dashboard/dashboard.component';
 import { LoginComponent } from './_pages/login/login.component';
+import { RecuperarSenhaComponent } from './_pages/recuperar-senha/recuperar-senha.component';
+import { RedefinirSenhaComponent } from './_pages/redefinir-senha/redefinir-senha.component';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { LandinPageComponent } from './landin-page/landin-page.component';
 import { ListarBancoComponent } from './_pages/banco/listar-banco/listar-banco.component';
@@ -46,6 +48,8 @@ import { ListarPacoteComponent } from './_pages/pacote/listar-pacote/listar-paco
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent }, // Rota para a página de login
+  { path: 'recuperar-senha', component: RecuperarSenhaComponent },
+  { path: 'redefinir-senha', component: RedefinirSenhaComponent },
   { path: 'lp', component: LandinPageComponent },
   { path: 'cadastro', component: PaginaCadastroComponent },
 

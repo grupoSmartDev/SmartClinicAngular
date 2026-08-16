@@ -1,0 +1,76 @@
+<main class="recuperacao-container d-flex flex-column flex-lg-row">
+  <section class="col-lg-6 secao-logo" aria-label="ClinicSmart">
+    <img src="assets/image/logo.png" alt="ClinicSmart" class="logo" />
+    <a class="btn voltar-login rounded-pill mt-4" routerLink="/login">
+      Voltar para o login
+    </a>
+  </section>
+
+  <section class="col-lg-6 secao-formulario d-flex flex-column justify-content-center">
+    <div class="conteudo-formulario">
+      <h1>Recuperar senha</h1>
+      <p class="subtitulo">Informe os mesmos dados usados para entrar na ClinicSmart.</p>
+
+      <div
+        *ngIf="emailEnviado; else formularioSolicitacao"
+        class="cartao-estado sucesso"
+        role="status"
+        aria-live="polite"
+      >
+        <i class="bi bi-envelope-check" aria-hidden="true"></i>
+        <h2>Confira seu e-mail</h2>
+        <p>{{ mensagem }}</p>
+        <p class="small mb-4">O link é temporário. Verifique também a caixa de spam.</p>
+        <a routerLink="/login" class="btn acao-principal w-100 rounded-pill align-content-center">
+          Voltar para o login
+        </a>
+      </div>
+
+      <ng-template #formularioSolicitacao>
+        <form [formGroup]="formulario" (ngSubmit)="enviar()" novalidate>
+          <div class="mb-3">
+            <label for="chave-acesso-recuperacao" class="form-label">Chave de acesso</label>
+            <input
+              id="chave-acesso-recuperacao"
+              type="text"
+              formControlName="chaveAcesso"
+              class="form-control"
+              mask="000.000.000-00"
+              autocomplete="organization"
+              [class.is-invalid]="formularioEnviado && campoChaveAcesso.invalid"
+              aria-describedby="erro-chave-acesso"
+            />
+            <div id="erro-chave-acesso" class="invalid-feedback">
+              Informe a chave de acesso.
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="email-recuperacao" class="form-label">E-mail</label>
+            <input
+              id="email-recuperacao"
+              type="email"
+              formControlName="email"
+              class="form-control"
+              autocomplete="email"
+              [class.is-invalid]="formularioEnviado && campoEmail.invalid"
+              aria-describedby="erro-email"
+            />
+            <div id="erro-email" class="invalid-feedback">
+              Informe um e-mail válido.
+            </div>
+          </div>
+
+          <button type="submit" class="btn acao-principal w-100 rounded-pill" [disabled]="enviando">
+            <span *ngIf="enviando" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+            {{ enviando ? 'Enviando...' : 'Enviar link de recuperação' }}
+          </button>
+
+          <div *ngIf="erro" class="alert alert-danger mt-3" role="alert" aria-live="assertive">
+            {{ erro }}
+          </div>
+        </form>
+      </ng-template>
+    </div>
+  </section>
+</main>

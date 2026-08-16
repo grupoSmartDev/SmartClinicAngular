@@ -44,6 +44,8 @@ import { AgendamentoChartsComponent } from './_components/agendamento-charts/age
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { LoginComponent } from './_pages/login/login.component';
+import { RecuperarSenhaComponent } from './_pages/recuperar-senha/recuperar-senha.component';
+import { RedefinirSenhaComponent } from './_pages/redefinir-senha/redefinir-senha.component';
 import { MenuMobileComponent } from './_components/menu-mobile/menu-mobile.component';
 import { LandinPageComponent } from './landin-page/landin-page.component';
 import { HeaderLPComponent } from './landin-page/components/header-lp/header-lp.component';
@@ -179,6 +181,8 @@ import { ModalPacoteComponent } from './_pages/pacote/modal-pacote/modal-pacote.
     AgendamentoChartsComponent,
     MainLayoutComponent,
     LoginComponent,
+    RecuperarSenhaComponent,
+    RedefinirSenhaComponent,
     MenuComponent,
     MenuMobileComponent,
     LandinPageComponent,
@@ -293,6 +297,8 @@ import { ModalPacoteComponent } from './_pages/pacote/modal-pacote/modal-pacote.
         allowedDomains: [new URL(environment.apiUrl).host],
         disallowedRoutes: [
           `${new URL(environment.apiUrl).host}/Auth/login`,
+          `${new URL(environment.apiUrl).host}/Auth/solicitar-recuperacao-senha`,
+          `${new URL(environment.apiUrl).host}/Auth/redefinir-senha`,
           `${new URL(environment.apiUrl).host}/CadastroCliente/Criar`
         ]
       }

@@ -1,0 +1,7 @@
+interface:
+  display_name: "SmartClinic Frontend Workflow"
+  short_description: "Qualidade integral do frontend SmartClinic"
+  default_prompt: "Use $smartclinic-frontend-workflow para planejar, implementar e validar esta alteração no frontend com as quatro lentes obrigatórias."
+
+policy:
+  allow_implicit_invocation: true

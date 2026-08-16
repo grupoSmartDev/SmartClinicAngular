@@ -35,6 +35,10 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
+## Recuperação de senha
+
+As rotas públicas são `/recuperar-senha` e `/redefinir-senha`. O link enviado pela API mantém o token e a chave da clínica no fragmento da URL, evitando que esses valores sejam enviados à hospedagem durante o primeiro carregamento da página.
+
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).

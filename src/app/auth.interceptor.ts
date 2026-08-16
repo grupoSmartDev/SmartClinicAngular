@@ -18,26 +18,29 @@ export class AuthInterceptor implements HttpInterceptor {
     const token = sessionStorage.getItem('token') || localStorage.getItem('token');
     const userKey = this.authService.userKey; // Já está pegando corretamente do service atualizado
 
-    // Check if the request is for registration route
-    const isRegistrationRoute =
+    // Verifica se a requisição é de cadastro.
+    const ehRotaCadastro =
       request.url.includes('/cadastro') ||
       request.url.includes('/Cadastro');
 
-    // Check if it's a login route
-    const isLoginRoute = request.url.includes('/Auth/login');
+    const ehRotaPublicaAutenticacao = [
+      '/Auth/login',
+      '/Auth/solicitar-recuperacao-senha',
+      '/Auth/redefinir-senha'
+    ].some(route => request.url.includes(route));
 
-    // If it's a registration route, proceed without token
-    if (isRegistrationRoute) {
+    // Rotas de cadastro seguem sem token.
+    if (ehRotaCadastro) {
       return next.handle(request);
     }
 
-    // If it's a login route with UserKey already set, don't override it
-    if (isLoginRoute && request.headers.has('UserKey')) {
-      // Let the login request pass with its original UserKey
+    // O tenant do login/recuperação vem do próprio formulário ou do link.
+    // Nunca o sobrescrever com uma sessão antiga armazenada no navegador.
+    if (ehRotaPublicaAutenticacao && request.headers.has('UserKey')) {
       return next.handle(request);
     }
 
-    // Normal authentication flow for other routes
+    // Fluxo normal de autenticação das demais rotas.
     if (token && userKey) {
       request = request.clone({
         setHeaders: {
@@ -56,8 +59,8 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          // Only redirect to login for non-registration routes
-          if (!isRegistrationRoute) {
+          // Redireciona para o login somente nas rotas protegidas.
+          if (!ehRotaCadastro && !ehRotaPublicaAutenticacao) {
             this.authService.logout();
             this.router.navigate(['/login']);
           }

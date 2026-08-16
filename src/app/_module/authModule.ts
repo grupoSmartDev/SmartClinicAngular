@@ -25,3 +25,17 @@ export interface AuthResponse {
   };
   error: string;
 }
+
+export interface RespostaRecuperacaoSenha {
+  sucesso: boolean;
+  mensagem?: string;
+  erro?: string;
+  erros?: string[];
+}
+
+export interface DadosRedefinirSenha {
+  usuarioId: string;
+  token: string;
+  novaSenha: string;
+  confirmacaoSenha: string;
+}

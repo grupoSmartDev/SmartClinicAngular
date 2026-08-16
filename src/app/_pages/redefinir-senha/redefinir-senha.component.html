@@ -1,0 +1,108 @@
+<main class="recuperacao-container d-flex flex-column flex-lg-row">
+  <section class="col-lg-6 secao-logo" aria-label="ClinicSmart">
+    <img src="assets/image/logo.png" alt="ClinicSmart" class="logo" />
+    <a class="btn voltar-login rounded-pill mt-4" routerLink="/login">
+      Voltar para o login
+    </a>
+  </section>
+
+  <section class="col-lg-6 secao-formulario d-flex flex-column justify-content-center">
+    <div class="conteudo-formulario">
+      <h1>Criar nova senha</h1>
+      <p class="subtitulo">Escolha uma senha forte e diferente das que você usa em outros serviços.</p>
+
+      <div *ngIf="linkInvalido" class="cartao-estado perigo" role="alert">
+        <i class="bi bi-link-45deg" aria-hidden="true"></i>
+        <h2>Link incompleto</h2>
+        <p>Este link de recuperação não contém todas as informações necessárias.</p>
+        <a routerLink="/recuperar-senha" class="btn acao-principal w-100 rounded-pill">
+          Solicitar um novo link
+        </a>
+      </div>
+
+      <div *ngIf="senhaAlterada" class="cartao-estado sucesso" role="status" aria-live="polite">
+        <i class="bi bi-shield-check" aria-hidden="true"></i>
+        <h2>Senha atualizada</h2>
+        <p>{{ mensagem }}</p>
+        <a routerLink="/login" class="btn acao-principal w-100 rounded-pill">
+          Entrar na ClinicSmart
+        </a>
+      </div>
+
+      <form
+        *ngIf="!linkInvalido && !senhaAlterada"
+        [formGroup]="formulario"
+        (ngSubmit)="enviar()"
+        novalidate
+      >
+        <div class="mb-3 campo-senha">
+          <label for="nova-senha" class="form-label">Nova senha</label>
+          <input
+            id="nova-senha"
+            [type]="mostrarSenha ? 'text' : 'password'"
+            formControlName="novaSenha"
+            class="form-control pe-5"
+            autocomplete="new-password"
+            [class.is-invalid]="formularioEnviado && campoNovaSenha.invalid"
+            aria-describedby="requisitos-senha erro-nova-senha"
+          />
+          <button
+            type="button"
+            class="botao-visibilidade"
+            (click)="alternarVisibilidadeSenha()"
+            [attr.aria-label]="mostrarSenha ? 'Ocultar nova senha' : 'Mostrar nova senha'"
+          >
+            <i class="bi" [ngClass]="mostrarSenha ? 'bi-eye-slash' : 'bi-eye'" aria-hidden="true"></i>
+          </button>
+          <div id="erro-nova-senha" class="invalid-feedback">
+            A senha ainda não atende a todos os requisitos.
+          </div>
+        </div>
+
+        <p id="requisitos-senha" class="ajuda-senha">
+          Use ao menos 8 caracteres, incluindo maiúscula, minúscula, número e símbolo.
+        </p>
+
+        <div class="mb-4 campo-senha">
+          <label for="confirmacao-senha" class="form-label">Confirmar nova senha</label>
+          <input
+            id="confirmacao-senha"
+            [type]="mostrarConfirmacaoSenha ? 'text' : 'password'"
+            formControlName="confirmacaoSenha"
+            class="form-control pe-5"
+            autocomplete="new-password"
+            [class.is-invalid]="formularioEnviado && (campoConfirmacaoSenha.invalid || formulario.hasError('senhasDiferentes'))"
+            aria-describedby="erro-confirmacao-senha"
+          />
+          <button
+            type="button"
+            class="botao-visibilidade"
+            (click)="alternarVisibilidadeConfirmacao()"
+            [attr.aria-label]="mostrarConfirmacaoSenha ? 'Ocultar confirmação da senha' : 'Mostrar confirmação da senha'"
+          >
+            <i
+              class="bi"
+              [ngClass]="mostrarConfirmacaoSenha ? 'bi-eye-slash' : 'bi-eye'"
+              aria-hidden="true"
+            ></i>
+          </button>
+          <div id="erro-confirmacao-senha" class="invalid-feedback">
+            {{ formulario.hasError('senhasDiferentes') ? 'As senhas não conferem.' : 'Confirme a nova senha.' }}
+          </div>
+        </div>
+
+        <button type="submit" class="btn acao-principal w-100 rounded-pill" [disabled]="enviando">
+          <span *ngIf="enviando" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+          {{ enviando ? 'Atualizando...' : 'Salvar nova senha' }}
+        </button>
+
+        <div *ngIf="erro" class="alert alert-danger mt-3" role="alert" aria-live="assertive">
+          {{ erro }}
+          <a *ngIf="erro.includes('link')" routerLink="/recuperar-senha" class="alert-link d-block mt-2">
+            Solicitar um novo link
+          </a>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>

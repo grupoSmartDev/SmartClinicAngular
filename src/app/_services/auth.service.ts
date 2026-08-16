@@ -2,7 +2,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
-import { AuthResponse, UserLoginRequest, UserToken } from '../_module/authModule';
+import {
+  AuthResponse,
+  DadosRedefinirSenha,
+  RespostaRecuperacaoSenha,
+  UserLoginRequest,
+  UserToken
+} from '../_module/authModule';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from '../../environments/environment';
 
@@ -10,7 +16,8 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = environment.apiUrl + 'Auth/login';
+  private readonly AUTH_URL = environment.apiUrl + 'Auth';
+  private readonly API_URL = `${this.AUTH_URL}/login`;
   private currentUserSubject: BehaviorSubject<UserToken | null>;
   public currentUser: Observable<UserToken | null>;
   private jwtHelper = new JwtHelperService();
@@ -132,6 +139,27 @@ export class AuthService {
           return throwError(() => error);
         })
       );
+  }
+
+  solicitarRecuperacaoSenha(email: string, chaveAcesso: string): Observable<RespostaRecuperacaoSenha> {
+    const headers = new HttpHeaders().set('UserKey', chaveAcesso);
+    return this.http.post<RespostaRecuperacaoSenha>(
+      `${this.AUTH_URL}/solicitar-recuperacao-senha`,
+      { email },
+      { headers }
+    );
+  }
+
+  redefinirSenha(
+    dados: DadosRedefinirSenha,
+    chaveAcesso: string
+  ): Observable<RespostaRecuperacaoSenha> {
+    const headers = new HttpHeaders().set('UserKey', chaveAcesso);
+    return this.http.post<RespostaRecuperacaoSenha>(
+      `${this.AUTH_URL}/redefinir-senha`,
+      dados,
+      { headers }
+    );
   }
 
   logout(): void {
