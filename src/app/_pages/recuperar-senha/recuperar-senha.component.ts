@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 import { AuthService } from '../../_services/auth.service';
 
 @Component({
@@ -24,7 +23,7 @@ export class RecuperarSenhaComponent implements OnInit {
 
   ngOnInit(): void {
     this.formulario = this.construtorFormulario.group({
-      chaveAcesso: [environment.defaultUserKey, Validators.required],
+      chaveAcesso: ['', Validators.required],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(256)]]
     });
   }
