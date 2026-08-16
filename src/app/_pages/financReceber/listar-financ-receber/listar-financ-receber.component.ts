@@ -50,6 +50,7 @@ export class ListarFinancReceberComponent {
 
   pacienteIdFiltro?: string = '';
   ccFiltro?: string = '';
+  statusFiltro?: string = '';
   dataBaseFiltro: string = 'E';
   dataFiltroInicio: Date = new Date();
   dataFiltroFim: Date = new Date();
@@ -143,6 +144,7 @@ export class ListarFinancReceberComponent {
         this.dataBaseFiltro,
         this.dataFiltroInicio,
         this.dataFiltroFim,
+        this.statusFiltro,
         this.paginar
       )
       .subscribe({
@@ -324,6 +326,7 @@ export class ListarFinancReceberComponent {
   limparFiltros() {
     this.invalidateCache();
     this.idFiltro = undefined;
+    this.statusFiltro = '';
     this.dataBaseFiltro = 'V';
     this.dataFiltroInicio = this.formatarDataService.formatarDataParaInput(new Date());
     this.dataFiltroFim = this.formatarDataService.formatarDataParaInput(new Date());

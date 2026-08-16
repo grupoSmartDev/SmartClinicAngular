@@ -66,9 +66,10 @@ export class FinancReceberService {
     dataBaseFiltro?: string,
     dataFiltroInicio?: Date,
     dataFiltroFim?: Date,
+    statusFiltro?: string,
     paginar?: boolean
   ): Observable<ResponseModel<FinancReceber[]>> {
-    
+
     let params = new HttpParams()
 
     if (page) params = params.set('pageNumber', page.toString());
@@ -78,6 +79,7 @@ export class FinancReceberService {
     if (dataBaseFiltro) params = params.set('dataBaseFiltro', dataBaseFiltro);
     if (pacienteIdFiltro) params = params.set('pacienteIdFiltro', pacienteIdFiltro);
     if (ccFiltro) params = params.set('ccFiltro', ccFiltro);
+    if (statusFiltro) params = params.set('statusFiltro', statusFiltro);
     if (paginar) params = params.set('paginar', paginar);
 
     if (dataFiltroInicio) {
