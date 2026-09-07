@@ -1,0 +1,190 @@
+<div class="modal fade" #upgradePlanoModal tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-credit-card me-2"></i>Fazer Upgrade de Plano
+        </h5>
+        <button type="button" class="btn-close" (click)="fechar()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Stepper -->
+        <div class="upgrade-stepper mb-4">
+          <span class="upgrade-step" [class.active]="passo === 1">1. Escolha do plano</span>
+          <span class="upgrade-step" [class.active]="passo === 2">2. Forma de pagamento</span>
+          <span class="upgrade-step" [class.active]="passo === 3">3. Pagamento</span>
+        </div>
+
+        <!-- PASSO 1 — Escolha do plano -->
+        <div *ngIf="passo === 1">
+          <div class="row g-3 mb-4">
+            <div class="col-md-4" *ngFor="let plano of planosDisponiveis">
+              <div
+                class="card h-100 plano-opcao"
+                [class.selecionado]="plano.tipo === planoSelecionado.tipo"
+                (click)="selecionarPlano(plano)"
+              >
+                <div class="card-body text-center">
+                  <h6 class="mb-1">{{ plano.nome }}</h6>
+                  <div class="text-muted small">
+                    R$ {{ plano.precoMensal.toFixed(2).replace('.', ',') }}/mês
+                  </div>
+                  <div class="text-muted small">
+                    Semestral: R$ {{ plano.precoSemestral.toFixed(2).replace('.', ',') }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <label class="form-label">Período</label>
+          <div class="btn-group w-100 mb-4" role="group">
+            <button
+              type="button"
+              class="btn"
+              [class.btn-primary]="periodoSelecionado === 'mensal'"
+              [class.btn-outline-primary]="periodoSelecionado !== 'mensal'"
+              (click)="selecionarPeriodo('mensal')"
+            >
+              Mensal
+            </button>
+            <button
+              type="button"
+              class="btn"
+              [class.btn-primary]="periodoSelecionado === 'semestral'"
+              [class.btn-outline-primary]="periodoSelecionado !== 'semestral'"
+              (click)="selecionarPeriodo('semestral')"
+            >
+              Semestral
+            </button>
+          </div>
+
+          <div class="upgrade-valor-total mb-4">
+            Valor total: <strong>R$ {{ valorTotal.toFixed(2).replace('.', ',') }}</strong>
+            <span class="text-muted small" *ngIf="periodoSelecionado === 'semestral'">
+              (6x R$ {{ (valorTotal / 6).toFixed(2).replace('.', ',') }})
+            </span>
+          </div>
+
+          <button type="button" class="btn btn-primary w-100" (click)="continuar()">Continuar</button>
+        </div>
+
+        <!-- PASSO 2 — Forma de pagamento -->
+        <div *ngIf="passo === 2">
+          <div class="alert alert-light border mb-4">
+            <div><strong>Plano:</strong> {{ planoSelecionado.nome }}</div>
+            <div><strong>Período:</strong> {{ periodoSelecionado }}</div>
+            <div><strong>Valor total:</strong> R$ {{ valorTotal.toFixed(2).replace('.', ',') }}</div>
+          </div>
+
+          <div class="d-flex flex-column gap-2 mb-3">
+            <button type="button" class="btn btn-outline-primary" [disabled]="enviando" (click)="pagar('PIX')">
+              <span class="spinner-border spinner-border-sm me-2" *ngIf="enviando"></span>
+              Pagar via PIX
+            </button>
+            <button type="button" class="btn btn-outline-primary" [disabled]="enviando" (click)="pagar('BOLETO')">
+              <span class="spinner-border spinner-border-sm me-2" *ngIf="enviando"></span>
+              Pagar via Boleto
+            </button>
+          </div>
+
+          <div class="card mb-3">
+            <div class="card-body">
+              <h6 class="mb-3">Pagar via Cartão</h6>
+              <div class="row g-2">
+                <div class="col-12">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Nome no cartão"
+                    [(ngModel)]="dadosCartao.holderName"
+                    [ngModelOptions]="{ standalone: true }"
+                  />
+                </div>
+                <div class="col-12">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Número do cartão"
+                    [(ngModel)]="dadosCartao.number"
+                    [ngModelOptions]="{ standalone: true }"
+                  />
+                </div>
+                <div class="col-4">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="MM"
+                    [(ngModel)]="dadosCartao.expiryMonth"
+                    [ngModelOptions]="{ standalone: true }"
+                  />
+                </div>
+                <div class="col-4">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="AAAA"
+                    [(ngModel)]="dadosCartao.expiryYear"
+                    [ngModelOptions]="{ standalone: true }"
+                  />
+                </div>
+                <div class="col-4">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="CVV"
+                    [(ngModel)]="dadosCartao.ccv"
+                    [ngModelOptions]="{ standalone: true }"
+                  />
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn btn-primary w-100 mt-3"
+                [disabled]="enviando"
+                (click)="pagar('CREDIT_CARD')"
+              >
+                <span class="spinner-border spinner-border-sm me-2" *ngIf="enviando"></span>
+                Pagar com Cartão
+              </button>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-outline-secondary w-100" [disabled]="enviando" (click)="voltar()">
+            Voltar
+          </button>
+        </div>
+
+        <!-- PASSO 3 — Link de pagamento gerado -->
+        <div *ngIf="passo === 3" class="text-center">
+          <i class="bi bi-check-circle text-success d-block mb-2" style="font-size: 2.5rem;"></i>
+          <h5 class="mb-1">Seu link de pagamento foi gerado!</h5>
+          <p class="text-muted">
+            {{ planoSelecionado.nome }} — {{ periodoSelecionado }} — R$ {{ valorTotal.toFixed(2).replace('.', ',') }}
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-primary w-100 mb-2"
+            [disabled]="!invoiceUrl"
+            (click)="pagarAgora()"
+          >
+            <i class="bi bi-box-arrow-up-right me-2"></i>Pagar agora
+          </button>
+
+          <p class="text-muted small" *ngIf="!invoiceUrl">
+            O link ainda está sendo processado. Você também o receberá por e-mail.
+          </p>
+
+          <div class="alert alert-info small">
+            <i class="bi bi-info-circle me-2"></i>
+            Após confirmar o pagamento, seu plano será atualizado automaticamente em alguns minutos.
+          </div>
+
+          <button type="button" class="btn btn-outline-secondary w-100" (click)="fechar()">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

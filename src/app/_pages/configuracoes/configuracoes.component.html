@@ -42,6 +42,18 @@
           <i class="bi bi-people me-2"></i>Usuários
         </button>
       </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="planos-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#planos"
+          type="button"
+          role="tab"
+        >
+          <i class="bi bi-gem me-2"></i>Planos
+        </button>
+      </li>
     </ul>
 
     <!-- Conteúdo das Tabs -->
@@ -491,6 +503,11 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Tab: Planos -->
+      <div class="tab-pane fade" id="planos" role="tabpanel">
+        <app-planos-config></app-planos-config>
       </div>
     </div>
 

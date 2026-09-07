@@ -78,17 +78,25 @@ export class AuthService {
     return plano || 'Basic';
   }
 
-  // 👇 NOVO: Verifica se tem acesso a uma feature
-  public temAcessoFeature(plano: string, feature: string): boolean {
-    // Validação básica - você pode expandir isso
-    const featuresBasic = ['GestaoPaciente', 'Agenda', 'FichaAvaliacao'];
-    const featuresPlus = [...featuresBasic, 'RelatoriosFinanceiros', 'ContasPagar'];
+  // Data de fim do trial (dataFim vinda do login) — null quando a empresa não está em trial.
+  public getDataFimTrial(): Date | null {
+    const dataFim = this.getStorageItem('dataFim');
+    return dataFim ? new Date(dataFim) : null;
+  }
 
-    if (plano === 'Premium') return true;
-    if (plano === 'Plus') return featuresPlus.includes(feature);
-    if (plano === 'Basic') return featuresBasic.includes(feature);
+  public isTrialExpirado(): boolean {
+    const dataFim = this.getStorageItem('dataFim');
+    if (!dataFim) return false;
+    return new Date() > new Date(dataFim);
+  }
 
-    return false;
+  public isPeriodoTeste(): boolean {
+    return this.getStorageItem('periodoTeste') === 'true';
+  }
+
+  public getDiasRestantesTrial(): number | null {
+    const dias = this.getStorageItem('diasRestantesTrial');
+    return dias ? Number(dias) : null;
   }
 
   login(email: string, password: string, userKey: string): Observable<AuthResponse> {
@@ -118,18 +126,31 @@ export class AuthService {
             console.log('✅ Login bem-sucedido');
             console.log(`📋 Plano detectado: ${plano}`);
 
+            // Dados de trial retornados pelo login (ver AuthService.cs/GenerateJwtAsync no backend)
+            const periodoTeste = String(response.data.periodoTeste ?? false);
+            const dataFim = response.data.dataFim ?? '';
+            const diasRestantesTrial = response.data.diasRestantesTrial != null
+              ? String(response.data.diasRestantesTrial)
+              : '';
+
             // Salva dados em ambos storages
             localStorage.setItem('currentUser', JSON.stringify(response.data.userToken));
             localStorage.setItem('token', response.data.accessToken);
             localStorage.setItem('userKey', response.data.key);
             localStorage.setItem('plano', plano); // 👈 SALVA O PLANO
             localStorage.setItem('plano_hash', planoHash); // 👈 SALVA O HASH
+            localStorage.setItem('periodoTeste', periodoTeste);
+            localStorage.setItem('dataFim', dataFim);
+            localStorage.setItem('diasRestantesTrial', diasRestantesTrial);
 
             sessionStorage.setItem('currentUser', JSON.stringify(response.data.userToken));
             sessionStorage.setItem('token', response.data.accessToken);
             sessionStorage.setItem('userKey', response.data.key);
             sessionStorage.setItem('plano', plano); // 👈 SALVA O PLANO
             sessionStorage.setItem('plano_hash', planoHash); // 👈 SALVA O HASH
+            sessionStorage.setItem('periodoTeste', periodoTeste);
+            sessionStorage.setItem('dataFim', dataFim);
+            sessionStorage.setItem('diasRestantesTrial', diasRestantesTrial);
 
             this.currentUserSubject.next(response.data.userToken);
           }
@@ -174,12 +195,18 @@ export class AuthService {
     localStorage.removeItem('userKey');
     localStorage.removeItem('plano'); // 👈 REMOVE O PLANO
     localStorage.removeItem('plano_hash'); // 👈 REMOVE O HASH
+    localStorage.removeItem('periodoTeste');
+    localStorage.removeItem('dataFim');
+    localStorage.removeItem('diasRestantesTrial');
 
     sessionStorage.removeItem('currentUser');
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('userKey');
     sessionStorage.removeItem('plano'); // 👈 REMOVE O PLANO
     sessionStorage.removeItem('plano_hash'); // 👈 REMOVE O HASH
+    sessionStorage.removeItem('periodoTeste');
+    sessionStorage.removeItem('dataFim');
+    sessionStorage.removeItem('diasRestantesTrial');
   }
 
   isAuthenticated(): boolean {

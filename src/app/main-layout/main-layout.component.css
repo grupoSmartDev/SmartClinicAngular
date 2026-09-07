@@ -8,3 +8,9 @@
 .sidebar-link.inactive {
     color: var(--bs-success); /* text-success */
 }
+
+.trial-banner {
+    border-radius: 0;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}

@@ -1,11 +1,12 @@
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
-import { Component, Output, EventEmitter, OnInit, HostListener } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { fadeInOut, INavbarData } from './helper';
 import { navbarData } from './nav-data';
 import { TabService } from '../../_services/tabs.service';
 import { AuthService } from '../../_services/auth.service';
 import { PlanoTipo, PlanosService } from '../../_services/planos.service'; // 👈 IMPORTA
+import { PlanoBloqueadoComponent } from '../plano-bloqueado/plano-bloqueado.component';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -43,6 +44,8 @@ export class SidenavComponent implements OnInit {
   // 👇 ADICIONA ESTAS PROPRIEDADES
   planoAtual: PlanoTipo = PlanoTipo.Basic;
   PlanoTipo = PlanoTipo; // Para usar no template
+
+  @ViewChild(PlanoBloqueadoComponent) planoBloqueadoModal!: PlanoBloqueadoComponent;
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -110,41 +113,15 @@ export class SidenavComponent implements OnInit {
     return this.planoService.temAcesso(feature);
   }
 
-  // 👇 NOVO: Mostra modal de upgrade
+  // Mostra o modal de recurso bloqueado (substitui o confirm() nativo)
   mostrarModalUpgrade(feature: string, nomeFeature: string): void {
     const planoNecessario = this.getPlanoNecessario(feature);
-
-    const mensagem = `🔒 Recurso Bloqueado\n\n` +
-      `O recurso "${nomeFeature}" está disponível apenas no plano ${planoNecessario}.\n\n` +
-      `Seu plano atual: ${this.planoAtual}\n\n` +
-      `Deseja fazer upgrade?\n\n` +
-      `Entre em contato com o nosso suporte.`;
-
-    ;
-
-    if (confirm(mensagem)) {
-      // Redireciona para página de upgrade(você pode criar essa página depois)
-      this.router.navigate(['/upgrade'], {
-        queryParams: { plano: planoNecessario }
-      });
-    }
+    this.planoBloqueadoModal.abrir(nomeFeature, planoNecessario);
   }
 
-  // 👇 NOVO: Retorna qual plano é necessário
+  // Retorna qual plano é necessário — delega pra fonte única (PlanosService)
   getPlanoNecessario(feature: string): string {
-    const mapa: { [key: string]: string } = {
-      'ContasPagar': 'Plus',
-      'ContasReceber': 'Plus',
-      'TipoPagamento': 'Plus',
-      'FormaPagamento': 'Plus',
-      'CentroCusto': 'Plus',
-      'PlanoContas': 'Plus',
-      'DespesasFixas': 'Plus',
-      'Comissoes': 'Plus',
-      'RelatoriosFinanceiros': 'Plus'
-    };
-
-    return mapa[feature] || 'Premium';
+    return this.planoService.getPlanoNecessarioParaFeature(feature);
   }
 
   // 👇 MODIFICA O openTab para verificar acesso

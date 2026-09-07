@@ -1,0 +1,45 @@
+.plano-badge {
+  font-size: 0.85rem;
+  padding: 0.4em 0.8em;
+}
+
+.plano-badge-basic {
+  background-color: #7dd3fc;
+  color: #075985;
+}
+
+.plano-badge-plus {
+  background-color: #2563eb;
+  color: #fff;
+}
+
+.plano-badge-premium {
+  background-color: #764ba2;
+  color: #fff;
+}
+
+.planos-features-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.planos-features-list li {
+  padding: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.plano-preco {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.plano-card {
+  border: 1px solid #dee2e6;
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.plano-card-atual {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 1px #0d6efd;
+}

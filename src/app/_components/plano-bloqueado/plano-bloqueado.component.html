@@ -1,0 +1,36 @@
+<div class="modal fade" #planoBloqueadoModal tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center p-4">
+        <div class="plano-bloqueado-icone mb-3">🔒</div>
+        <h5 class="mb-2">Recurso não disponível no seu plano</h5>
+        <p class="mb-4">
+          O recurso <strong>{{ nomeFeature }}</strong> está disponível a partir do plano
+          <strong>{{ planoNecessario }}</strong>. Deseja fazer upgrade?
+        </p>
+        <div class="d-flex flex-column gap-2">
+          <button
+            *ngIf="isAdmin"
+            type="button"
+            class="btn btn-primary w-100 mb-2"
+            (click)="abrirPaginaPlanos()"
+          >
+            💳 Fazer Upgrade Agora
+          </button>
+          <a
+            [href]="whatsappUrl"
+            target="_blank"
+            rel="noopener"
+            class="btn btn-success"
+            (click)="fechar()"
+          >
+            Falar com a gente
+          </a>
+          <button type="button" class="btn btn-outline-secondary" (click)="fechar()">
+            Agora não
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

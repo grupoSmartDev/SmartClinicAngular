@@ -22,6 +22,9 @@ export interface AuthResponse {
     expiresIn: number;
     userToken: UserToken;
     plano: string;
+    periodoTeste?: boolean;
+    dataFim?: string | null;
+    diasRestantesTrial?: number | null;
   };
   error: string;
 }

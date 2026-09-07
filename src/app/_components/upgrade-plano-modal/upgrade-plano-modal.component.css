@@ -1,0 +1,31 @@
+.upgrade-stepper {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 12px;
+}
+
+.upgrade-step {
+  color: #adb5bd;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.upgrade-step.active {
+  color: #0d6efd;
+}
+
+.plano-opcao {
+  cursor: pointer;
+  border: 1px solid #dee2e6;
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.plano-opcao.selecionado {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 1px #0d6efd;
+}
+
+.upgrade-valor-total {
+  font-size: 1.1rem;
+}

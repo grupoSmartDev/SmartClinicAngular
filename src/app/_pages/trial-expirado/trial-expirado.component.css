@@ -1,0 +1,17 @@
+.trial-expirado-container {
+  min-height: 100vh;
+  padding: 24px;
+  text-align: center;
+}
+
+.logo {
+  max-width: 220px;
+}
+
+.cadeado-icone {
+  font-size: 3rem;
+}
+
+.subtitulo {
+  color: #6c757d;
+}

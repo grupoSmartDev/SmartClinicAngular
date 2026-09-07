@@ -146,6 +146,10 @@ import { ListarComissoesComponent } from './_pages/comissao/listar-comissoes/lis
 import { UpgradeComponent } from './_pages/upgrade/upgrade/upgrade.component';
 import { ListarPacoteComponent } from './_pages/pacote/listar-pacote/listar-pacote.component';
 import { ModalPacoteComponent } from './_pages/pacote/modal-pacote/modal-pacote.component';
+import { PlanoBloqueadoComponent } from './_components/plano-bloqueado/plano-bloqueado.component';
+import { TrialExpiradoComponent } from './_pages/trial-expirado/trial-expirado.component';
+import { PlanosConfigComponent } from './_pages/configuracoes/planos-config/planos-config.component';
+import { UpgradePlanoModalComponent } from './_components/upgrade-plano-modal/upgrade-plano-modal.component';
 
 @NgModule({
   declarations: [
@@ -276,6 +280,10 @@ import { ModalPacoteComponent } from './_pages/pacote/modal-pacote/modal-pacote.
     UpgradeComponent,
     ListarPacoteComponent,
     ModalPacoteComponent,
+    PlanoBloqueadoComponent,
+    TrialExpiradoComponent,
+    PlanosConfigComponent,
+    UpgradePlanoModalComponent,
   ],
   imports: [
     BrowserModule,

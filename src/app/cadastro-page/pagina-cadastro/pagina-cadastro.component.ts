@@ -95,7 +95,6 @@ export class PaginaCadastroComponent {
       _DataFim: [endDate],
       DataInicio: [today],
       _DataInicio: [today],
-      QtdeParcelas: [1],
       HolderName: [''],
       CardNumber: [''],
       ExpiryMonth: [''],
@@ -132,7 +131,6 @@ export class PaginaCadastroComponent {
   updateValidators(): void {
     const isPlan = this.selectedOption === 'plan';
     const isCartao = this.signupForm.get('TipoPagamentoId')?.value === '1';
-    const isMensal = this.signupForm.get('PeriodoCobranca')?.value === 'monthly';
 
     if (isPlan) {
       this.signupForm.get('TipoPagamentoId')!.setValidators(Validators.required);
@@ -140,11 +138,6 @@ export class PaginaCadastroComponent {
     } else {
       this.signupForm.get('TipoPagamentoId')!.clearValidators();
       this.signupForm.get('PeriodoCobranca')!.clearValidators();
-    }
-
-    // Se for mensal, força 1 parcela
-    if (isMensal && isCartao) {
-      this.signupForm.patchValue({ QtdeParcelas: 1 });
     }
 
     const cartaoFields = ['HolderName', 'CardNumber', 'ExpiryMonth', 'ExpiryYear', 'Ccv', 'PostalCode', 'AddressNumber'];

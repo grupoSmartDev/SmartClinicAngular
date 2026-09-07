@@ -602,47 +602,6 @@
                   </div>
                 </div>
 
-                <!-- PARCELAS - Só aparece se for semestral -->
-                <div class="mb-3" *ngIf="isSemestral()">
-                  <label for="parcelas" class="form-label"
-                    >Número de Parcelas</label
-                  >
-                  <select
-                    class="form-select"
-                    formControlName="QtdeParcelas"
-                    id="parcelas"
-                  >
-                    <option value="1">
-                      1x de R$ {{ getValorTotal() | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                    <option value="2">
-                      2x de R$ {{ getValorTotal() / 2 | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                    <option value="3">
-                      3x de R$ {{ getValorTotal() / 3 | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                    <option value="4">
-                      4x de R$ {{ getValorTotal() / 4 | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                    <option value="5">
-                      5x de R$ {{ getValorTotal() / 5 | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                    <option value="6">
-                      6x de R$ {{ getValorTotal() / 6 | number : "1.2-2" }} sem
-                      juros
-                    </option>
-                  </select>
-                  <small class="text-muted"
-                    >Parcelamento disponível apenas para pagamento
-                    semestral</small
-                  >
-                </div>
-
                 <!-- Aviso quando for mensal -->
                 <div class="alert alert-info mb-3" *ngIf="isMensal()">
                   <strong>Pagamento à vista:</strong> Planos mensais são

@@ -35,6 +35,8 @@ import { ListarProfissaoComponent } from './_pages/profissao/listar-profissao/li
 import { ListarPlanoContasSubComponent } from './_pages/planoContasSub/listar-plano-contas-sub/listar-plano-contas-sub.component';
 import { ListarPlanoContasComponent } from './_pages/planoContas/listar-plano-contas/listar-plano-contas.component';
 import { AuthGuard } from './auth.guard';
+import { TrialGuard } from './trial.guard';
+import { TrialExpiradoComponent } from './_pages/trial-expirado/trial-expirado.component';
 import { ListarReceberSinteticoComponent } from './_pages/financReceber/listar-receber-sintetico/listar-receber-sintetico.component';
 import { ListarPagarSinteticoComponent } from './_pages/financPagar/listar-pagar-sintetico/listar-pagar-sintetico.component';
 import { ListarDespesaComponent } from './_pages/despesaFixa/listar-despesa/listar-despesa.component';
@@ -44,6 +46,7 @@ import { AlterarDadosUsuarioComponent } from './_pages/configuracoes/alterar-dad
 import { AgendaListarComponent } from './_pages/agenda/agenda-listar/agenda-listar.component';
 import { ListarComissoesComponent } from './_pages/comissao/listar-comissoes/listar-comissoes.component';
 import { UpgradeComponent } from './_pages/upgrade/upgrade/upgrade.component';
+import { PlanosConfigComponent } from './_pages/configuracoes/planos-config/planos-config.component';
 import { ListarPacoteComponent } from './_pages/pacote/listar-pacote/listar-pacote.component';
 
 const routes: Routes = [
@@ -52,11 +55,12 @@ const routes: Routes = [
   { path: 'redefinir-senha', component: RedefinirSenhaComponent },
   { path: 'lp', component: LandinPageComponent },
   { path: 'cadastro', component: PaginaCadastroComponent },
+  { path: 'trial-expirado', component: TrialExpiradoComponent },
 
   {
     path: '',
     component: MainLayoutComponent,
-    canActivate: [AuthGuard], // ← APLICADO AQUI para proteger todas as rotas filhas
+    canActivate: [AuthGuard, TrialGuard], // ← APLICADO AQUI para proteger todas as rotas filhas
     children: [
       { path: '', component: DashboardComponent }, // Página inicial protegida
       { path: 'status/listar', component: ListarComponent },
@@ -117,6 +121,7 @@ const routes: Routes = [
       { path: 'Configuracoes/alterarDadosUsuario', component: AlterarDadosUsuarioComponent },
       { path: 'Comissoes/Listar', component: ListarComissoesComponent },
       { path: 'upgrade', component: UpgradeComponent },
+      { path: 'configuracoes/planos', component: PlanosConfigComponent },
       { path: 'Configuracoes/BuscarPorId', component: ConfiguracoesComponent },
     ],
   },

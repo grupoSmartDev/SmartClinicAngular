@@ -1,5 +1,7 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { TabService } from '../_services/tabs.service';
+import { AuthService } from '../_services/auth.service';
+import { environment } from '../../environments/environment';
 
 interface SideNavToggle {
   screenWidth: number;
@@ -11,11 +13,28 @@ interface SideNavToggle {
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   title = 'sidenav-with-multilevel-menu';
 
-  constructor(public tabService: TabService) {
-    this.tabService.openDefaultTab();  // Garante que a aba padrão será aberta na inicialização 
+  mostrarBannerTrial = false;
+  diasRestantesTrial: number | null = null;
+  whatsappUrl = `https://wa.me/${environment.whatsappUpgrade}?text=${encodeURIComponent(
+    'Olá! Gostaria de fazer upgrade do meu plano SmartClinic.'
+  )}`;
+
+  constructor(
+    public tabService: TabService,
+    private authService: AuthService
+  ) {
+    this.tabService.openDefaultTab();  // Garante que a aba padrão será aberta na inicialização
+  }
+
+  ngOnInit(): void {
+    this.diasRestantesTrial = this.authService.getDiasRestantesTrial();
+    this.mostrarBannerTrial =
+      !this.authService.isTrialExpirado() &&
+      this.diasRestantesTrial !== null &&
+      this.diasRestantesTrial <= 3;
   }
 
   isSideNavCollapsed = false;

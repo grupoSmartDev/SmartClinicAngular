@@ -65,6 +65,13 @@ export class AuthInterceptor implements HttpInterceptor {
             this.router.navigate(['/login']);
           }
         }
+
+        if (error.status === 402) {
+          // Trial expirado (ver EmpresaContextoMiddleware.cs, codigo "TRIAL_EXPIRADO") —
+          // redireciona sem deslogar, o usuário continua autenticado.
+          this.router.navigate(['/trial-expirado']);
+        }
+
         return throwError(() => error);
       })
     );

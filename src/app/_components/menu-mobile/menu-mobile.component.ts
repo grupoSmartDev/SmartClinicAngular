@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { TabService } from '../../_services/tabs.service';
 import { INavbarData, fadeInOut } from '../side-bar/helper';
 import { navbarData } from '../side-bar/nav-data';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 import { AuthService } from '../../_services/auth.service';
 import { PlanoTipo, PlanosService } from '../../_services/planos.service';
+import { PlanoBloqueadoComponent } from '../plano-bloqueado/plano-bloqueado.component';
 interface SideNavToggle {
   screenWidth: number;
   collapsed: boolean;
@@ -42,6 +43,8 @@ export class MenuMobileComponent implements OnInit {
   // Mesmo controle de plano/feature do desktop (side-bar) — ver temAcesso/openTab abaixo.
   planoAtual: PlanoTipo = PlanoTipo.Basic;
   PlanoTipo = PlanoTipo;
+
+  @ViewChild(PlanoBloqueadoComponent) planoBloqueadoModal!: PlanoBloqueadoComponent;
 
   constructor(
     private tabService: TabService,
@@ -107,38 +110,15 @@ export class MenuMobileComponent implements OnInit {
     return this.planoService.temAcesso(feature);
   }
 
-  // Mostra modal de upgrade — mesma lógica do desktop (side-bar).
+  // Mostra o modal de recurso bloqueado — mesma lógica do desktop (side-bar).
   mostrarModalUpgrade(feature: string, nomeFeature: string): void {
     const planoNecessario = this.getPlanoNecessario(feature);
-
-    const mensagem = `🔒 Recurso Bloqueado\n\n` +
-      `O recurso "${nomeFeature}" está disponível apenas no plano ${planoNecessario}.\n\n` +
-      `Seu plano atual: ${this.planoAtual}\n\n` +
-      `Deseja fazer upgrade?\n\n` +
-      `Entre em contato com o nosso suporte.`;
-
-    if (confirm(mensagem)) {
-      this.router.navigate(['/upgrade'], {
-        queryParams: { plano: planoNecessario }
-      });
-    }
+    this.planoBloqueadoModal.abrir(nomeFeature, planoNecessario);
   }
 
-  // Retorna qual plano é necessário — mesma lógica do desktop (side-bar).
+  // Retorna qual plano é necessário — delega pra fonte única (PlanosService).
   getPlanoNecessario(feature: string): string {
-    const mapa: { [key: string]: string } = {
-      'ContasPagar': 'Plus',
-      'ContasReceber': 'Plus',
-      'TipoPagamento': 'Plus',
-      'FormaPagamento': 'Plus',
-      'CentroCusto': 'Plus',
-      'PlanoContas': 'Plus',
-      'DespesasFixas': 'Plus',
-      'Comissoes': 'Plus',
-      'RelatoriosFinanceiros': 'Plus'
-    };
-
-    return mapa[feature] || 'Premium';
+    return this.planoService.getPlanoNecessarioParaFeature(feature);
   }
 
   // Abre a aba utilizando o TabService, verificando acesso por plano (igual ao desktop);

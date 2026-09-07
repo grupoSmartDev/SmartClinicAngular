@@ -2,7 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 
-import { PlanoTipo, PlanosService } from '../../../_services/planos.service';
+import {
+  PlanoTipo,
+  PlanosService,
+  FEATURES_BASIC,
+  FEATURES_PLUS,
+  FEATURES_PREMIUM_EXTRA,
+  FEATURE_LABELS,
+  LIMITE_PROFISSIONAIS
+} from '../../../_services/planos.service';
 import { AuthService } from '../../../_services/auth.service';
 
 interface Plano {
@@ -17,6 +25,11 @@ interface Plano {
   popular: boolean;
 }
 
+// Traduz as chaves de feature (fonte única em planos.service.ts) pro texto exibido ao usuário.
+function labels(chaves: string[]): string[] {
+  return chaves.map(chave => FEATURE_LABELS[chave] || chave);
+}
+
 @Component({
   selector: 'app-upgrade',
   templateUrl: './upgrade.component.html',
@@ -27,6 +40,9 @@ export class UpgradeComponent implements OnInit {
   planoSugerido: PlanoTipo | null = null;
   periodoSelecionado: 'mensal' | 'semestral' = 'mensal';
 
+  // Features de cada card vêm da mesma fonte única usada pelo controle de acesso
+  // (planos.service.ts) — nenhuma feature listada aqui deve divergir do que o
+  // sistema realmente libera.
   planos: Plano[] = [
     {
       nome: 'Basic',
@@ -38,15 +54,8 @@ export class UpgradeComponent implements OnInit {
       destaque: false,
       popular: false,
       features: [
-        'Gestão de Pacientes',
-        'Ficha de Avaliação',
-        'Evolução',
-        'Histórico de Evolução',
-        'Prontuário Digital Básico',
-        'Agenda',
-        'Gestão de Salas',
-        'Acesso para 1 profissional',
-        '+ R$35,90 por usuário/profissional'
+        ...labels(FEATURES_BASIC),
+        `Acesso para até ${LIMITE_PROFISSIONAIS[PlanoTipo.Basic]} profissionais`
       ]
     },
     {
@@ -60,17 +69,8 @@ export class UpgradeComponent implements OnInit {
       popular: true,
       features: [
         'Tudo do plano Basic',
-        'Prontuário Digital Completo',
-        'Gestão Financeira Avançada',
-        'Contas a Pagar',
-        'Contas a Receber',
-        'Tipo de Pagamento',
-        'Forma de Pagamento',
-        'Relatórios Financeiros',
-        'Relatórios de Clientes',
-        'Envio de Lembrete',
-        'Acesso para até 5 profissionais',
-        '+ R$ 29,90 por usuário/profissional'
+        ...labels(FEATURES_PLUS.filter(feature => !FEATURES_BASIC.includes(feature))),
+        `Acesso para até ${LIMITE_PROFISSIONAIS[PlanoTipo.Plus]} profissionais`
       ]
     },
     {
@@ -84,18 +84,8 @@ export class UpgradeComponent implements OnInit {
       popular: false,
       features: [
         'Tudo do plano Plus',
-        'CRM - Em breve',
-        'RH - Em breve',
-        'Gestão de Estoque',
-        'Integração com Calendário Externo',
-        'Módulo de BI com Relatórios Avançados',
-        'Integrações com APIs Externas',
-        'Suporte VIP 24h',
-        'Acesso para até 15 profissionais',
-        'Personalização de Fluxos de Trabalho',
-        'Módulo de Fidelização de Pacientes',
-        'Backup Diário na Nuvem',
-        '+ R$14,90 por usuário/profissional'
+        ...labels(FEATURES_PREMIUM_EXTRA),
+        'Profissionais ilimitados'
       ]
     }
   ];
