@@ -1,76 +1,27 @@
-<div class="container py-5">
-  <div class="text-center mb-5">
-    <h2>Torne o seu negócio referência para os clientes</h2>
-    <p>
-      Ofereça uma experiência moderna e prática usando tecnologia de ponta e as
-      melhores ferramentas de gestão para o seu negócio.
-    </p>
-    <a (click)="scrollTo('Assinaturas')" class="btn btn-success"
-      >Conheça nossos planos</a
-    >
-  </div>
-
-  <div class="row g-4">
-    <div class="col-md-4 text-center">
-      <app-card-beneficios
-        [icone]="'bi bi-calendar2-check'"
-        [tituloCard]="'Agendamento Online'"
-        [descricao]="
-          'Permita que seus clientes agendem atendimentos de forma prática e rápida.'
-        "
-      ></app-card-beneficios>
+<section class="features pad">
+  <div class="wrap">
+    <div class="feat-head" lpReveal>
+      <div class="txt">
+        <h2 class="lp-h2">Torne o seu negócio referência para os clientes</h2>
+        <p class="lp-lead">
+          Ofereça uma experiência moderna e prática usando tecnologia de ponta e
+          as melhores ferramentas de gestão para o seu negócio.
+        </p>
+      </div>
+      <a class="lp-btn light" (click)="scrollTo('Assinaturas')">
+        Conheça nossos planos
+        <svg class="ic"><use href="#i-arrow" /></svg>
+      </a>
     </div>
 
-    <div class="col-md-4 text-center">
-      <app-card-beneficios
-        [icone]="'bi bi-file-earmark-text'"
-        [tituloCard]="'Prescrição Digital'"
-        [descricao]="
-          'Envie orientações e prescrições digitais diretamente para os clientes.'
-        "
-      >
-      </app-card-beneficios>
-    </div>
-
-    <div class="col-md-4 text-center">
-      <app-card-beneficios
-        [icone]="'bi bi-cash-stack'"
-        [tituloCard]="'Gestão de Faturamento'"
-        [descricao]="
-          'Controle o faturamento de serviços e produtos de forma eficiente.'
-        "
-      ></app-card-beneficios>
-    </div>
-
-    <div class="col-md-4 text-center">
-      <app-card-beneficios
-        [icone]="'bi bi-file-earmark-medical'"
-        [tituloCard]="'Laudos Online'"
-        [descricao]="
-          'Disponibilize os resultados de exames de forma rapidez e segurança.'
-        "
-      ></app-card-beneficios>
-    </div>
-
-    <div class="col-md-4 text-center">
-      <app-card-beneficios
-        [icone]="'bi bi-graph-up'"
-        [tituloCard]="'Controle Financeiro'"
-        [descricao]="
-          'Monitore o fluxo de caixa e a saúde financeira do seu negócio.'
-        "
-      ></app-card-beneficios>
-    </div>
-
-    <div class="col-md-4 text-center">
-      <app-card-beneficios
-        [icone]="'bi bi-people'"
-        [tituloCard]="'Gestão de Clientes'"
-        [descricao]="
-          'Crie e gerencie clientes de forma eficiente. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;'
-        "
-      >
-      </app-card-beneficios>
+    <div class="bento">
+      @for (r of recursos; track r.titulo) {
+      <article class="bcard" [class.big]="r.grande" lpReveal lpSpot [style.--d]="r.atraso + 's'">
+        <div class="ico"><svg class="ic"><use [attr.href]="'#' + r.icone" /></svg></div>
+        <h3>{{ r.titulo }}</h3>
+        <p>{{ r.descricao }}</p>
+      </article>
+      }
     </div>
   </div>
-</div>
+</section>

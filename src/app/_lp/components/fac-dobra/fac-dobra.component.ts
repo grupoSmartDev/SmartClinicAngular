@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
 
+interface Faq { question: string; answer: string; isOpen: boolean; }
+
 @Component({
   selector: 'app-fac-dobra',
   templateUrl: './fac-dobra.component.html',
   styleUrl: './fac-dobra.component.css'
 })
 export class FacDobraComponent {
-  faqs = [
+  faqs: Faq[] = [
     {
       question: 'Como funciona a implementação?',
       answer: 'Nosso time de suporte acompanha todo o processo e sua clínica pode estar operando no sistema em menos de 7 dias!',
-      isOpen: false
+      isOpen: true
     },
     {
       question: 'E se minha equipe tiver dificuldades?',
@@ -28,8 +30,11 @@ export class FacDobraComponent {
       isOpen: false
     }
   ];
-  
-  toggleFaq(faq: any) {
-    faq.isOpen = !faq.isOpen;
+
+  // Acordeão: apenas uma pergunta aberta por vez.
+  toggleFaq(faq: Faq) {
+    const abrir = !faq.isOpen;
+    this.faqs.forEach(f => (f.isOpen = false));
+    faq.isOpen = abrir;
   }
 }

@@ -1,0 +1,5 @@
+.cta { padding-block: clamp(64px, 8vw, 104px); background: linear-gradient(120deg, var(--deep), #0b6b53, var(--deep)); background-size: 200% 100%; animation: lpSheen 14s linear infinite; color: #fff; overflow: hidden; text-align: center; }
+.cta::before { content: ""; position: absolute; inset: 0; background: radial-gradient(600px 220px at 50% 120%, rgba(94,232,160,.4), transparent 70%); }
+.cta .wrap { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+.cta h2 { font-size: clamp(1.9rem, 4.4vw, 3.3rem); font-weight: 800; max-width: 20ch; }
+.sub { font-size: 1.15rem; font-weight: 600; color: #9ff3c5; }

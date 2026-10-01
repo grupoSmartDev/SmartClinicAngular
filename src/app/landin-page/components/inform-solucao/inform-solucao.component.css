@@ -1,0 +1,26 @@
+.features { background: var(--deep); color: var(--on-deep); overflow: hidden; }
+.features::before { content: ""; position: absolute; width: 700px; height: 700px; border-radius: 50%; background: radial-gradient(circle, rgba(63,214,144,.28), transparent 65%); top: -280px; right: -200px; pointer-events: none; animation: lpDrift 18s ease-in-out infinite alternate; }
+.features::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.09) 1.2px, transparent 1.4px); background-size: 28px 28px; mask-image: linear-gradient(180deg, #000, transparent 70%); -webkit-mask-image: linear-gradient(180deg, #000, transparent 70%); pointer-events: none; }
+.features .wrap { position: relative; z-index: 1; }
+.feat-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: clamp(36px, 5vw, 60px); }
+.feat-head .txt { display: flex; flex-direction: column; gap: 18px; max-width: 640px; min-width: 0; }
+.features .lp-lead { color: var(--on-deep-muted); }
+
+.bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.bcard { position: relative; border-radius: 24px; padding: 28px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); display: flex; flex-direction: column; gap: 14px; overflow: hidden; transition: transform .35s cubic-bezier(.2,.7,.2,1), background .3s; min-width: 0; min-height: 210px; }
+.bcard:hover { transform: translateY(-6px); background: rgba(255,255,255,.1); }
+.bcard.spot::before { content: ""; position: absolute; inset: 0; background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 0%), rgba(94,232,160,.28), transparent 60%); opacity: 0; transition: opacity .3s; pointer-events: none; }
+.bcard.spot:hover::before { opacity: 1; }
+.bcard .ico { background: rgba(94,232,160,.16); color: #7ff0b4; }
+.bcard:hover .ico { transform: rotate(-8deg) scale(1.1); }
+.bcard h3 { font-size: 1.3rem; font-weight: 700; color: #fff; }
+.bcard p { color: var(--on-deep-muted); font-size: .95rem; }
+.bcard.big { grid-column: span 2; }
+
+@media (max-width: 980px) {
+  .bento { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .bento { grid-template-columns: 1fr; }
+  .bcard.big { grid-column: auto; }
+}

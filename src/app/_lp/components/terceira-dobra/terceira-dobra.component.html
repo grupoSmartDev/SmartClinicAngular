@@ -1,38 +1,45 @@
-<!-- features.component.html -->
-<section class="features-section py-5" style="background-color: #2c9d62">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-6">
-        <h2 class="display-6 text-white fw-bold mb-4">
-          Automatize processos e ganhe tempo para focar no crescimento da sua
-          clínica.
-        </h2>
+<section class="pad auto">
+  <div class="wrap auto-grid">
+    <div class="auto-copy" lpReveal>
+      <h2 class="lp-h2">
+        Automatize processos e ganhe tempo para focar no crescimento da sua
+        clínica.
+      </h2>
+      <p class="lp-lead">
+        Com o sistema ClinicSmart você automatiza tarefas e otimiza processos
+        como a gestão de agendamentos, controle de pacientes e gestão
+        financeira de forma integrada.
+      </p>
+      <a class="lp-btn" routerLink="/cadastro">
+        Comece agora
+        <svg class="ic"><use href="#i-arrow" /></svg>
+      </a>
+    </div>
 
-        <p class="text-white mb-4">
-          Com o sistema ClinicSmart você automatiza tarefas e otimiza processos
-          como a gestão de agendamentos, controle de pacientes e gestão
-          financeira de forma integrada.
-        </p>
-
-        <div class="mt-4">
-          <a
-            routerLink="/cadastro"
-            class="btn btn-light rounded-pill px-4 py-2 text-white"
-          >
-            Comece agora
-          </a>
+    <!-- Mini dashboard ilustrativo -->
+    <div class="dash" lpReveal style="--d: .15s" aria-hidden="true">
+      <div class="kpi">
+        <div class="krow"><svg class="ic"><use href="#i-cal" /></svg><div class="sk g" style="width: 30%"></div></div>
+        <div class="sched">
+          <div><i></i><div class="sk"></div></div>
+          <div><i></i><div class="sk" style="width: 80%"></div></div>
+          <div><i></i><div class="sk" style="width: 65%"></div></div>
         </div>
       </div>
-
-      <div class="col-lg-6">
-        <div class="dashboard-preview bg-white rounded-4 shadow p-3 ms-lg-4">
-          <img
-            src="assets/image/Clinic_Smart_Landing_Page_Dobra_02.jpg"
-            class="img-fluid rounded"
-            style="transform: scale(1.8); mix-blend-mode: multiply"
-            alt="Dashboard preview"
-          />
+      <div class="kpi">
+        <div class="krow">
+          <svg class="ic"><use href="#i-users" /></svg>
+          <svg class="donut" viewBox="0 0 62 62"><circle class="tr" cx="31" cy="31" r="24" /><circle class="pr" cx="31" cy="31" r="24" /></svg>
         </div>
+        <div class="sk"></div>
+        <div class="sk" style="width: 50%"></div>
+      </div>
+      <div class="kpi wide">
+        <div class="krow" style="color: #7ff0b4"><svg class="ic"><use href="#i-trend" /></svg><div class="sk" style="width: 22%"></div></div>
+        <svg class="spark" viewBox="0 0 400 90" preserveAspectRatio="none">
+          <path class="a" d="M0 70 C40 62 60 40 100 46 S160 72 200 50 S270 14 320 28 S380 8 400 6 V90 H0Z" />
+          <path class="l" d="M0 70 C40 62 60 40 100 46 S160 72 200 50 S270 14 320 28 S380 8 400 6" />
+        </svg>
       </div>
     </div>
   </div>

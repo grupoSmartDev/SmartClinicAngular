@@ -1,0 +1,23 @@
+.video { background: var(--surface); border-block: 1px solid var(--line); }
+.video-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+.video-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; min-width: 0; }
+
+.player { position: relative; aspect-ratio: 16/10; border-radius: 26px; overflow: hidden; background: linear-gradient(145deg, var(--deep) 0%, var(--deep-2) 60%, #0b6b53 100%); box-shadow: var(--shadow-lg); isolation: isolate; max-width: 100%; }
+.player::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px); background-size: 36px 36px; }
+.pl-card { position: absolute; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); border-radius: 14px; backdrop-filter: blur(6px); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.pl-card .sk { background: rgba(255,255,255,.22); }
+.pl-card .sk.g { background: rgba(94, 232, 160, .6); }
+.pc1 { left: 6%; top: 10%; width: 36%; height: 34%; animation: lpBob 7s ease-in-out infinite alternate; }
+.pc2 { right: 6%; top: 16%; width: 30%; height: 28%; animation: lpBob 8s ease-in-out infinite alternate-reverse; }
+.pc3 { left: 14%; bottom: 8%; width: 46%; height: 26%; animation: lpBob 9s ease-in-out infinite alternate; }
+.pc4 { right: 10%; bottom: 12%; width: 22%; height: 22%; animation: lpBob 6s ease-in-out infinite alternate-reverse; }
+.play { position: absolute; inset: 0; display: grid; place-items: center; z-index: 2; }
+.play button { width: 84px; height: 84px; border-radius: 50%; border: 0; background: #fff; color: var(--deep); display: grid; place-items: center; position: relative; box-shadow: 0 20px 50px -10px rgba(0,0,0,.5); transition: transform .3s; }
+.play button:hover { transform: scale(1.08); }
+.play button::before, .play button::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,255,255,.6); animation: lpRipple 2.4s ease-out infinite; }
+.play button::after { animation-delay: 1.2s; }
+.play .ic { width: 30px; height: 30px; fill: currentColor; stroke: none; margin-left: 4px; }
+
+@media (max-width: 980px) {
+  .video-grid { grid-template-columns: 1fr; }
+}

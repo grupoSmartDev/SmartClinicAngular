@@ -1,71 +1,35 @@
-<header class="container-fluid">
-  <nav class="container-fluid navbar navbar-expand-lg fixed-top">
-    <div class="container" style="background: #ffffffde; border-radius: 1rem">
-      <a class="navbar-brand" href="#">
-        <img src="assets/image/logo.png" alt="Logo" style="max-width: 120px" />
-      </a>
+<div class="lp-progress" #progress></div>
 
-      <!-- Menu hamburguer que aparece somente em telas menores -->
-      <button
-        class="navbar-toggler d-lg-none"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasNavbar"
-        aria-controls="offcanvasNavbar"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- Menu completo que aparece em telas maiores -->
-      <div
-        class="collapse navbar-collapse d-none d-lg-flex justify-content-evenly"
-        id="navbarNav"
-      >
-        <ul class="navbar-nav ms-auto">
-          @for (item of listaItensMenu; track $index) {
-          <li class="nav-item">
-            <a class="nav-link" (click)="scrollTo(item)">{{ item }}</a>
-          </li>
-          }
-        </ul>
-        <div class="d-flex ms-auto">
-          <a routerLink="/login" class="btn btn-success me-2">Login</a>
-          <a routerLink="/cadastro" class="btn btn-primary">Assinar agora</a>
-        </div>
-      </div>
-
-      <!-- Offcanvas que aparece apenas em telas pequenas -->
-      <div
-        class="offcanvas offcanvas-end d-lg-none"
-        tabindex="-1"
-        id="offcanvasNavbar"
-        aria-labelledby="offcanvasNavbarLabel"
-      >
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="offcanvas-body">
-          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-            @for (item of listaItensMenu; track $index) {
-            <li class="nav-item">
-              <a class="nav-link" (click)="scrollTo(item)" href="#{{ item }}">{{
-                item
-              }}</a>
-            </li>
-            }
-          </ul>
-          <div class="d-flex mt-3">
-            <a routerLink="/login" class="btn btn-success me-2">Login</a>
-            <a routerLink="/cadastro" class="btn btn-primary">Assinar agora</a>
-          </div>
-        </div>
-      </div>
+<header class="lp-nav" [class.stuck]="stuck">
+  <div class="nav-in">
+    <a class="logo" (click)="scrollTo('Início')" aria-label="ClinicSmart">
+      <img src="assets/image/logo.png" alt="ClinicSmart" />
+    </a>
+    <nav class="nav-links">
+      @for (item of listaItensMenu; track item) {
+      <a (click)="scrollTo(item)">{{ item }}</a>
+      }
+    </nav>
+    <div class="nav-cta">
+      <a class="lp-btn sm ghost" routerLink="/login">Login</a>
+      <a class="lp-btn sm" routerLink="/cadastro">Assinar agora</a>
     </div>
-  </nav>
+    <button
+      type="button"
+      class="burger"
+      [attr.aria-label]="menuAberto ? 'Fechar menu' : 'Abrir menu'"
+      [attr.aria-expanded]="menuAberto"
+      (click)="menuAberto = !menuAberto"
+    >
+      <svg class="ic"><use [attr.href]="menuAberto ? '#i-close' : '#i-menu'" /></svg>
+    </button>
+  </div>
+
+  <div class="menu" [class.open]="menuAberto">
+    @for (item of listaItensMenu; track item) {
+    <a (click)="scrollTo(item)">{{ item }}</a>
+    }
+    <a class="lp-btn ghost" routerLink="/login">Login</a>
+    <a class="lp-btn" routerLink="/cadastro">Assinar agora</a>
+  </div>
 </header>

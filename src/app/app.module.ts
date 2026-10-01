@@ -124,6 +124,7 @@ import { QuintaDobraComponent } from './_lp/components/quinta-dobra/quinta-dobra
 import { SextaDobraComponent } from './_lp/components/sexta-dobra/sexta-dobra.component';
 import { FacDobraComponent } from './_lp/components/fac-dobra/fac-dobra.component';
 import { PriceComponent } from './_lp/components/price/price.component';
+import { LpRevealDirective, LpSpotDirective } from './_lp/lp-animations.directive';
 import { CalendarioComponent } from './_components/calendario/calendario.component';
 import { ListarDespesaComponent } from './_pages/despesaFixa/listar-despesa/listar-despesa.component';
 import { ModalDespesaComponent } from './_pages/despesaFixa/modal-despesa/modal-despesa.component';
@@ -259,6 +260,8 @@ import { UpgradePlanoModalComponent } from './_components/upgrade-plano-modal/up
     SextaDobraComponent,
     FacDobraComponent,
     PriceComponent,
+    LpRevealDirective,
+    LpSpotDirective,
     CalendarioComponent,
     ListarDespesaComponent,
     ModalDespesaComponent,

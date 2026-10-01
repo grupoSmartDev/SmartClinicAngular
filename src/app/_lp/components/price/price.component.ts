@@ -1,16 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { lpReduzMovimento } from '../../lp-animations.directive';
 
 @Component({
   selector: 'app-price',
   templateUrl: './price.component.html',
   styleUrl: './price.component.css',
 })
-export class PriceComponent {
+export class PriceComponent implements OnDestroy {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    this.displayPrices = this.plans.map(p => this.priceOf(p));
+  }
 
   isMonthly = false; // Por padrão, mostra preços semestral
+
+  // Valores exibidos nos cards (animados na troca de periodicidade)
+  displayPrices: number[] = [];
+  private frame = 0;
 
   plans = [
     {
@@ -86,8 +93,43 @@ export class PriceComponent {
     },
   ];
 
-  togglePeriod() {
-    this.isMonthly = !this.isMonthly;
+  setPeriod(monthly: boolean) {
+    if (monthly === this.isMonthly) return;
+    this.isMonthly = monthly;
+    this.animatePrices();
+  }
+
+  isSoon(feature: string): boolean {
+    return feature.includes('Em breve');
+  }
+
+  isExtra(feature: string): boolean {
+    return feature.startsWith('+');
+  }
+
+  private priceOf(plan: { priceMonthly: number; priceSemiannual: number }): number {
+    return Math.round(this.isMonthly ? plan.priceMonthly : plan.priceSemiannual);
+  }
+
+  // Contagem animada do preço atual até o novo (easing cúbico, ~650ms).
+  private animatePrices() {
+    cancelAnimationFrame(this.frame);
+    const from = [...this.displayPrices];
+    const to = this.plans.map(p => this.priceOf(p));
+    const dur = lpReduzMovimento() ? 0 : 650;
+    const t0 = performance.now();
+
+    const step = (t: number) => {
+      const k = dur ? Math.min(1, (t - t0) / dur) : 1;
+      const e = 1 - Math.pow(1 - k, 3);
+      this.displayPrices = from.map((f, i) => Math.round(f + (to[i] - f) * e));
+      if (k < 1) this.frame = requestAnimationFrame(step);
+    };
+    step(t0);
+  }
+
+  ngOnDestroy(): void {
+    cancelAnimationFrame(this.frame);
   }
 
   // Calcula a economia semestral (para mostrar no toggle)
