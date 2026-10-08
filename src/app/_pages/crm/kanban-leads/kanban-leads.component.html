@@ -1,0 +1,143 @@
+<div class="row align-items-center mb-2">
+  <div class="col-8">
+    <h4 class="page-title mb-0">CRM — Leads</h4>
+    <small class="text-muted">{{ totalItems }} lead{{ totalItems === 1 ? "" : "s" }} no funil</small>
+  </div>
+  <div class="col-4 text-end">
+    <button type="button" class="btn btn-success" (click)="novoLead()">
+      <i class="bi bi-plus-lg"></i> Novo Lead
+    </button>
+  </div>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-3">
+  <div
+    class="card-header bg-light d-flex justify-content-between align-items-center"
+    (click)="toggleFiltros()"
+    style="cursor: pointer"
+  >
+    <h6 class="mb-0"><i class="bi bi-funnel"></i> Filtros de Pesquisa</h6>
+    <button class="btn btn-sm btn-link text-dark p-0">
+      <i class="bi" [ngClass]="mostrarFiltros ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+    </button>
+  </div>
+  <div class="card-body py-3" [ngClass]="{ 'd-none': !mostrarFiltros }">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small fw-bold">Buscar</label>
+        <input
+          type="text"
+          [(ngModel)]="filtros.search"
+          placeholder="Nome, telefone ou email"
+          class="form-control form-control-sm"
+        />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-bold">Profissional</label>
+        <select class="form-select form-select-sm" [(ngModel)]="filtros.profissionalId">
+          <option [ngValue]="null">Todos</option>
+          <option *ngFor="let p of listaProfissionais" [ngValue]="p.id">{{ p.nome }} {{ p.sobrenome }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small fw-bold">Canal</label>
+        <select class="form-select form-select-sm" [(ngModel)]="filtros.canalOrigem">
+          <option [ngValue]="null">Todos</option>
+          <option *ngFor="let c of canaisOrigem" [ngValue]="c">{{ c }}</option>
+        </select>
+      </div>
+      <div class="col-md-3 text-end">
+        <button type="button" class="btn btn-sm btn-primary me-2" (click)="filtrar()">
+          <i class="bi bi-search me-1"></i> Pesquisar
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="limparFiltros()">
+          <i class="bi bi-x-circle me-1"></i> Limpar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (errorMessage) {
+<div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+}
+
+<!-- Board -->
+<div class="kanban-board">
+  @for (coluna of colunas; track coluna.etapaFunilId) {
+  <div
+    class="kanban-coluna"
+    [class.kanban-coluna-hover]="colunaHoverId === coluna.etapaFunilId"
+    (dragover)="onDragOver($event, coluna.etapaFunilId)"
+    (dragleave)="onDragLeave(coluna.etapaFunilId)"
+    (drop)="onDrop($event, coluna)"
+  >
+    <div class="kanban-coluna-header" [style.border-top-color]="coluna.cor || '#6c757d'">
+      <span class="fw-bold text-truncate" [title]="coluna.nome">{{ coluna.nome }}</span>
+      <span
+        class="badge rounded-pill"
+        [style.background-color]="coluna.cor || '#6c757d'"
+        [style.color]="helpers.corTexto(coluna.cor)"
+        >{{ coluna.total }}</span
+      >
+    </div>
+
+    <div class="kanban-coluna-body">
+      @for (lead of coluna.leads; track lead.id) {
+      <div
+        class="kanban-card"
+        [class.kanban-card-arrastando]="leadArrastado?.id === lead.id"
+        draggable="true"
+        (dragstart)="onDragStart($event, lead, coluna.etapaFunilId)"
+        (dragend)="onDragEnd()"
+        (click)="abrirLead(lead)"
+        [title]="'Clique para abrir • arraste para mover de etapa'"
+      >
+        <div class="d-flex justify-content-between align-items-start">
+          <strong class="kanban-card-nome">{{ lead.nome }}</strong>
+          @if (lead.pacienteId) {
+          <i class="bi bi-person-check-fill text-success" title="Convertido em paciente"></i>
+          }
+        </div>
+
+        <a
+          class="kanban-card-telefone small"
+          [href]="helpers.whatsappLink(lead.telefone)"
+          target="_blank"
+          rel="noopener"
+          (click)="$event.stopPropagation()"
+          title="Abrir no WhatsApp"
+        >
+          <i class="bi bi-whatsapp text-success"></i> {{ lead.telefone | telefonePipe }}
+        </a>
+
+        <div class="d-flex justify-content-between align-items-center mt-1">
+          @if (lead.canalOrigem) {
+          <span class="badge" [ngClass]="helpers.badgeCanal(lead.canalOrigem)">{{ lead.canalOrigem }}</span>
+          } @else {
+          <span></span>
+          }
+          @if (lead.dataUltimaInteracao) {
+          <small class="text-muted" title="Última interação">
+            <i class="bi bi-clock-history"></i>
+            {{ helpers.paraLocal(lead.dataUltimaInteracao) | datePtBr }}
+          </small>
+          }
+        </div>
+
+        @if (lead.dataCriacao) {
+        <div class="kanban-card-rodape">
+          <small class="text-muted">Cadastrado: {{ helpers.paraLocal(lead.dataCriacao) | datePtBr }}</small>
+        </div>
+        }
+      </div>
+      } @empty {
+      <div class="kanban-vazio small text-muted">Nenhum lead</div>
+      }
+    </div>
+  </div>
+  }
+</div>
+
+<app-modal-lead (dataAtualizado)="atualizarLista()"></app-modal-lead>

@@ -1,0 +1,491 @@
+<!-- Modal Lead (criar / editar / detalhe) -->
+<div
+  class="modal fade"
+  id="modalLead"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="modalLeadLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+        <h1 class="modal-title fs-5" id="modalLeadLabel">
+          {{ isEdicao ? lead?.nome : "Novo Lead" }}
+          @if (lead?.etapaFunil) {
+          <span
+            class="badge ms-2 align-middle"
+            [style.background-color]="lead?.etapaFunil?.cor || '#6c757d'"
+            [style.color]="helpers.corTexto(lead?.etapaFunil?.cor)"
+            >{{ lead?.etapaFunil?.nome }}</span
+          >
+          }
+          @if (lead?.pacienteId) {
+          <span class="badge bg-success ms-1 align-middle">
+            <i class="bi bi-person-check"></i> Paciente
+          </span>
+          }
+        </h1>
+        @if (lead?.dataCriacao) {
+        <small class="text-muted">
+          Lead cadastrado em {{ helpers.paraLocal(lead?.dataCriacao) | datePtBr: "datetime" }}
+        </small>
+        }
+        </div>
+        <button type="button" class="btn-close" (click)="fecharModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Abas -->
+        <ul class="nav nav-tabs mb-3">
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="javascript:void(0)"
+              [class.active]="abaAtiva === 'dados'"
+              (click)="abaAtiva = 'dados'"
+              ><i class="bi bi-person-lines-fill me-1"></i> Dados do Lead</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="javascript:void(0)"
+              [class.active]="abaAtiva === 'followups'"
+              [class.disabled]="!isEdicao"
+              (click)="isEdicao && (abaAtiva = 'followups')"
+              ><i class="bi bi-chat-dots me-1"></i> Follow-ups
+              @if (isEdicao) {
+              <span class="badge bg-secondary ms-1">{{ followUps.length }}</span>
+              }
+            </a>
+          </li>
+        </ul>
+
+        <!-- ===================== ABA 1 — DADOS ===================== -->
+        @if (abaAtiva === 'dados') {
+        <form [formGroup]="formulario">
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Nome <span class="text-danger">*</span></label>
+              <input type="text" class="form-control form-control-sm" formControlName="nome" placeholder="Nome do lead" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Telefone <span class="text-danger">*</span></label>
+              <div class="input-group input-group-sm">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="telefone"
+                  mask="(00) 0000-0000||(00) 00000-0000"
+                  placeholder="(00) 00000-0000"
+                />
+                @if (formulario.get('telefone')?.value) {
+                <a
+                  class="btn btn-outline-success"
+                  [href]="helpers.whatsappLink(formulario.get('telefone')?.value)"
+                  target="_blank"
+                  rel="noopener"
+                  title="Abrir no WhatsApp"
+                  ><i class="bi bi-whatsapp"></i
+                ></a>
+                }
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Email</label>
+              <input type="email" class="form-control form-control-sm" formControlName="email" placeholder="email@exemplo.com" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Canal de origem</label>
+              <select class="form-select form-select-sm" formControlName="canalOrigem">
+                <option [ngValue]="null">Selecione</option>
+                <option *ngFor="let c of canaisOrigem" [ngValue]="c">{{ c }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Campanha</label>
+              <select class="form-select form-select-sm" formControlName="campanhaId">
+                <option [ngValue]="null">Nenhuma</option>
+                <option *ngFor="let c of listaCampanhas" [ngValue]="c.id">
+                  {{ c.nome }}{{ c.plataforma ? " (" + c.plataforma + ")" : "" }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Profissional responsável</label>
+              <select class="form-select form-select-sm" formControlName="profissionalId">
+                <option [ngValue]="null">Nenhum</option>
+                <option *ngFor="let p of listaProfissionais" [ngValue]="p.id">
+                  {{ p.nome }} {{ p.sobrenome }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Etapa atual</label>
+              <div class="input-group input-group-sm">
+                <select class="form-select form-select-sm" formControlName="etapaFunilId">
+                  <option *ngFor="let e of listaEtapas" [ngValue]="e.id">{{ e.nome }}</option>
+                </select>
+                @if (etapaMudou) {
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  [disabled]="isMovendo"
+                  (click)="moverEtapa()"
+                  title="Move só a etapa, sem salvar os demais campos"
+                >
+                  @if (isMovendo) {
+                  <span class="spinner-border spinner-border-sm"></span>
+                  } @else {
+                  <i class="bi bi-arrow-right-circle"></i>
+                  }
+                  Mover etapa
+                </button>
+                }
+              </div>
+            </div>
+
+            @if (isEtapaPerdido) {
+            <div class="col-md-6">
+              <label class="form-label small fw-bold">Motivo da perda <span class="text-danger">*</span></label>
+              <select class="form-select form-select-sm" formControlName="motivoPerdaId">
+                <option [ngValue]="null">Selecione o motivo</option>
+                <option *ngFor="let m of motivosPerda" [ngValue]="m">{{ m }}</option>
+              </select>
+            </div>
+            }
+
+            <div class="col-12">
+              <label class="form-label small fw-bold">Observação</label>
+              <textarea class="form-control form-control-sm" rows="3" formControlName="observacao"></textarea>
+            </div>
+          </div>
+        </form>
+
+        <!-- Script sugerido da etapa -->
+        @if (scriptSugerido) {
+        <div class="alert alert-light border mt-3 mb-0 small">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <strong><i class="bi bi-chat-quote me-1"></i> Script sugerido para esta etapa</strong>
+            <button type="button" class="btn btn-sm btn-outline-secondary py-0" (click)="copiarScript()">
+              <i class="bi bi-clipboard"></i> Copiar
+            </button>
+          </div>
+          <span class="script-texto">{{ scriptSugerido }}</span>
+        </div>
+        }
+
+        <!-- Conversão em paciente -->
+        @if (podeConverter) {
+        <div class="alert alert-success d-flex justify-content-between align-items-center mt-3 mb-0">
+          <span><i class="bi bi-trophy me-1"></i> Lead ganho! Converta-o em paciente para iniciar o atendimento.</span>
+          <button type="button" class="btn btn-sm btn-success" [disabled]="isConvertendo" (click)="converterEmPaciente()">
+            @if (isConvertendo) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+            }
+            <i class="bi bi-person-plus"></i> Converter em Paciente
+          </button>
+        </div>
+        }
+        @if (lead?.pacienteId) {
+        <div class="alert alert-info d-flex justify-content-between align-items-center mt-3 mb-0">
+          <span>
+            <i class="bi bi-person-check me-1"></i> Convertido no paciente #{{ lead?.pacienteId }}.
+            Complete o cadastro (CPF e demais dados).
+          </span>
+          <button type="button" class="btn btn-sm btn-outline-primary" (click)="abrirPaciente()">
+            Abrir paciente <i class="bi bi-box-arrow-up-right"></i>
+          </button>
+        </div>
+        }
+        }
+
+        <!-- ===================== ABA 2 — FOLLOW-UPS ===================== -->
+        @if (abaAtiva === 'followups') {
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="mb-0">Histórico de contatos</h6>
+          <button type="button" class="btn btn-sm" [ngClass]="mostrarFormFollowUp ? 'btn-outline-secondary' : 'btn-success'" (click)="toggleFormFollowUp()">
+            @if (mostrarFormFollowUp) {
+            <i class="bi bi-x"></i> Cancelar
+            } @else {
+            <i class="bi bi-plus"></i> Registrar Follow-up
+            }
+          </button>
+        </div>
+
+        <!-- Sub-formulário inline -->
+        @if (mostrarFormFollowUp) {
+        <div class="card mb-3 border-success">
+          <div class="card-body">
+            <form [formGroup]="formFollowUp" class="row g-2">
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">Canal</label>
+                <select class="form-select form-select-sm" formControlName="canal">
+                  <option *ngFor="let c of canaisFollowUp" [ngValue]="c">{{ c }}</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold">Mensagem enviada</label>
+                <textarea class="form-control form-control-sm" rows="5" formControlName="mensagemEnviada" placeholder="Cole aqui a mensagem enviada pelo WhatsApp..."></textarea>
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold">Resposta recebida</label>
+                <textarea class="form-control form-control-sm" rows="3" formControlName="respostaRecebida"></textarea>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">Próxima ação — data</label>
+                <input type="date" class="form-control form-control-sm" formControlName="proximaAcaoData" />
+              </div>
+              <div class="col-md-8">
+                <label class="form-label small fw-bold">Próxima ação — descrição</label>
+                <input type="text" class="form-control form-control-sm" formControlName="proximaAcaoDescricao" placeholder="Ex.: Ligar para confirmar avaliação" />
+              </div>
+              <div class="col-12 text-end">
+                <app-button-action
+                  text="Salvar follow-up"
+                  loadingText="Salvando..."
+                  [loading]="isLoadingFollowUp"
+                  variant="success"
+                  size="sm"
+                  (clicked)="salvarFollowUp()"
+                  [type]="'button'"
+                ></app-button-action>
+              </div>
+            </form>
+          </div>
+        </div>
+        }
+
+        @if (followUps.length > 0) {
+        <div class="followup-lista">
+          @for (f of followUps; track f.id) {
+          <div
+            class="card mb-2 followup-card"
+            [ngClass]="'followup-' + statusFollowUp(f)"
+            [class.followup-expandido]="followUpExpandidoId === f.id"
+          >
+            <div class="card-body py-2">
+              <!-- Cabeçalho clicável: expande/recolhe a edição (não editável depois de concluído) -->
+              <div
+                class="d-flex justify-content-between align-items-start mb-2"
+                [class.followup-cabecalho]="!f.concluido"
+                (click)="toggleFollowUp(f)"
+              >
+                <div class="small">
+                  @if (!f.concluido) {
+                  <i class="bi me-1" [ngClass]="followUpExpandidoId === f.id ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                  }
+                  <strong>{{ helpers.paraLocal(f.dataContato) | datePtBr: "datetime" }}</strong>
+                  @switch (statusFollowUp(f)) {
+                    @case ('concluido') {
+                    <span class="badge bg-success ms-2">
+                      <i class="bi bi-check2-all"></i> Concluído
+                      @if (f.dataConclusao) {
+                      em {{ helpers.paraLocal(f.dataConclusao) | datePtBr: "datetime" }}
+                      }
+                    </span>
+                    }
+                    @case ('respondido') {
+                    <span class="badge bg-success ms-2"><i class="bi bi-check2"></i> Respondido</span>
+                    }
+                    @case ('agendado') {
+                    <span class="badge bg-warning text-dark ms-2">
+                      <i class="bi bi-calendar-event"></i> {{ f.proximaAcaoData ?? undefined | datePtBr }}
+                    </span>
+                    }
+                    @default {
+                    <span class="badge bg-secondary ms-2">Pendente</span>
+                    }
+                  }
+                  @if (f.etapaFunil) {
+                  <span
+                    class="badge ms-2"
+                    [style.background-color]="f.etapaFunil.cor || '#6c757d'"
+                    [style.color]="helpers.corTexto(f.etapaFunil.cor)"
+                    >{{ f.etapaFunil.nome }}</span
+                  >
+                  }
+                  @if (f.canal) {
+                  <span class="badge bg-light text-dark border ms-1">{{ f.canal }}</span>
+                  }
+                </div>
+                @if (followUpParaExcluir === f.id) {
+                <div class="small" (click)="$event.stopPropagation()">
+                  Excluir?
+                  <button type="button" class="btn btn-sm btn-danger py-0 ms-1" (click)="excluirFollowUp(f.id)">Sim</button>
+                  <button type="button" class="btn btn-sm btn-secondary py-0 ms-1" (click)="followUpParaExcluir = null">Não</button>
+                </div>
+                } @else {
+                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                  @if (!f.concluido && followUpConcluindoId !== f.id) {
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-success py-0"
+                    title="Concluir follow-up"
+                    (click)="$event.stopPropagation(); iniciarConclusao(f)"
+                  >
+                    <i class="bi bi-check2"></i> Concluir
+                  </button>
+                  }
+                  <a
+                    href="javascript:void(0)"
+                    class="text-danger"
+                    title="Excluir follow-up"
+                    (click)="$event.stopPropagation(); followUpParaExcluir = f.id"
+                  >
+                    <i class="bi bi-trash3"></i>
+                  </a>
+                </div>
+                }
+              </div>
+
+              <!-- Mensagem enviada: sempre somente leitura -->
+              @if (f.mensagemEnviada) {
+              <div class="balao balao-enviado">{{ f.mensagemEnviada }}</div>
+              }
+
+              @if (followUpConcluindoId === f.id) {
+              <!-- Conclusão inline + próxima ação opcional -->
+              @if (f.respostaRecebida) {
+              <div class="balao balao-recebido">{{ f.respostaRecebida }}</div>
+              }
+              <form [formGroup]="formProximaAcao" class="row g-2 mt-2 pt-2 border-top border-success">
+                <div class="col-12">
+                  <h6 class="small fw-bold text-success mb-0">
+                    <i class="bi bi-arrow-return-right"></i> Registrar próxima ação
+                  </h6>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-bold">Data da próxima ação</label>
+                  <input type="date" class="form-control form-control-sm" formControlName="proximaAcaoData" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-bold">Canal</label>
+                  <select class="form-select form-select-sm" formControlName="canal">
+                    <option *ngFor="let c of canaisFollowUp" [ngValue]="c">{{ c }}</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label small fw-bold">O que será feito</label>
+                  <textarea
+                    class="form-control form-control-sm"
+                    rows="2"
+                    formControlName="proximaAcaoDescricao"
+                    placeholder="Ex.: Ligar para confirmar o horário da avaliação"
+                  ></textarea>
+                </div>
+                <div class="col-12 d-flex flex-wrap justify-content-end gap-2">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="isConcluindoFollowUp" (click)="cancelarConclusao()">
+                    Cancelar
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-success" [disabled]="isConcluindoFollowUp" (click)="concluirFollowUp(f, false)">
+                    Concluir sem próxima ação
+                  </button>
+                  <button type="button" class="btn btn-sm btn-success" [disabled]="isConcluindoFollowUp" (click)="concluirFollowUp(f, true)">
+                    @if (isConcluindoFollowUp) {
+                    <span class="spinner-border spinner-border-sm me-1"></span>
+                    }
+                    Salvar e criar próxima ação
+                  </button>
+                </div>
+              </form>
+              } @else if (followUpExpandidoId === f.id) {
+              <!-- Accordion: edição do desfecho e da próxima ação -->
+              <form [formGroup]="formEdicaoFollowUp" class="row g-2 mt-2 pt-2 border-top">
+                <div class="col-12">
+                  <label class="form-label small fw-bold">O que aconteceu / Resposta recebida</label>
+                  <textarea
+                    class="form-control form-control-sm"
+                    rows="3"
+                    formControlName="respostaRecebida"
+                    placeholder="Ex.: Respondeu que tem interesse, pediu valores da avaliação..."
+                  ></textarea>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-bold">Próxima ação — data</label>
+                  <input type="date" class="form-control form-control-sm" formControlName="proximaAcaoData" />
+                </div>
+                <div class="col-md-8">
+                  <label class="form-label small fw-bold">Próxima ação — descrição</label>
+                  <textarea class="form-control form-control-sm" rows="2" formControlName="proximaAcaoDescricao"></textarea>
+                </div>
+                <div class="col-12 text-end">
+                  <button type="button" class="btn btn-sm btn-outline-secondary me-2" (click)="fecharEdicaoFollowUp()">
+                    Fechar
+                  </button>
+                  <app-button-action
+                    text="Salvar alterações"
+                    loadingText="Salvando..."
+                    [loading]="isSalvandoEdicaoFollowUp"
+                    variant="success"
+                    size="sm"
+                    (clicked)="salvarEdicaoFollowUp(f)"
+                    [type]="'button'"
+                  ></app-button-action>
+                </div>
+              </form>
+              } @else {
+              @if (f.respostaRecebida) {
+              <div class="balao balao-recebido">{{ f.respostaRecebida }}</div>
+              }
+
+              @if (f.proximaAcaoData || f.proximaAcaoDescricao) {
+              <div class="small text-primary mt-2 followup-proxima">
+                <i class="bi bi-calendar-event me-1"></i>
+                <strong>Próxima ação:</strong>
+                {{ f.proximaAcaoData ?? undefined | datePtBr }}
+                {{ f.proximaAcaoDescricao ? "— " + f.proximaAcaoDescricao : "" }}
+              </div>
+              }
+              }
+            </div>
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="alert alert-light border text-center small mb-0">
+          Nenhum follow-up registrado para este lead.
+        </div>
+        }
+        }
+      </div>
+
+      <div class="modal-footer">
+        @if (isEdicao) {
+        <div class="me-auto">
+          @if (confirmandoExclusao) {
+          <span class="small me-2">Confirmar exclusão do lead?</span>
+          <button type="button" class="btn btn-sm btn-danger me-1" [disabled]="isLoading" (click)="excluir()">Sim, excluir</button>
+          <button type="button" class="btn btn-sm btn-secondary" (click)="confirmandoExclusao = false">Não</button>
+          } @else {
+          <button type="button" class="btn btn-outline-danger" (click)="confirmandoExclusao = true">
+            <i class="bi bi-trash3"></i> Excluir
+          </button>
+          }
+        </div>
+        }
+        @if (abaAtiva === 'dados') {
+        <app-button-action
+          text="Salvar"
+          loadingText="Salvando..."
+          [loading]="isLoading"
+          variant="success"
+          id="btnSalvarLead"
+          (clicked)="onSubmit()"
+          [type]="'button'"
+        ></app-button-action>
+        }
+        <button type="button" class="btn btn-danger" id="btnCancelarLead" (click)="fecharModal()">
+          <i class="bi bi-x"></i>Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

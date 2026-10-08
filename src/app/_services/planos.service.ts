@@ -21,7 +21,7 @@ export const FEATURES_PLUS: string[] = [
   'ContasReceber', 'ContasPagar', 'DespesasFixas',
   'Comissoes', 'TipoPagamento', 'FormaPagamento',
   'CentroCusto', 'PlanoContas', 'Fornecedor',
-  'RelatoriosFinanceiros', 'WhatsAppAIAgent'
+  'RelatoriosFinanceiros', 'WhatsAppAIAgent', 'CRM'
 ];
 
 export const FEATURES_PREMIUM_EXTRA: string[] = [
@@ -61,6 +61,7 @@ export const FEATURE_LABELS: Record<string, string> = {
   Fornecedor: 'Fornecedores',
   RelatoriosFinanceiros: 'Relatórios Financeiros',
   WhatsAppAIAgent: 'Agente de IA no WhatsApp',
+  CRM: 'CRM — Funil de Leads',
   MultiEmpresa: 'Múltiplas Empresas/Filiais',
   IntegracoesExternas: 'Integrações Externas',
   SuportePrioritario: 'Suporte Prioritário'

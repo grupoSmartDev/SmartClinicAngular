@@ -1,0 +1,113 @@
+<!-- Modal Campanhas -->
+<div
+  class="modal fade"
+  id="modalCampanha"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="modalCampanhaLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCampanhaLabel">
+          <i class="bi bi-megaphone me-1"></i> Campanhas
+        </h1>
+        <button type="button" class="btn-close" (click)="fecharModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Formulário criar / editar -->
+        <div class="card mb-3" [ngClass]="isEdicao ? 'border-warning' : 'border-success'">
+          <div class="card-header py-2">
+            <h6 class="mb-0">{{ isEdicao ? "Editar campanha" : "Nova campanha" }}</h6>
+          </div>
+          <div class="card-body">
+            <form [formGroup]="formulario" class="row g-2">
+              <div class="col-md-5">
+                <label class="form-label small fw-bold">Nome <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-sm" formControlName="nome" placeholder="Ex.: Pilates Outubro" />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small fw-bold">Plataforma</label>
+                <select class="form-select form-select-sm" formControlName="plataforma">
+                  <option [ngValue]="null">Selecione</option>
+                  <option *ngFor="let p of plataformas" [ngValue]="p">{{ p }}</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">ID Externo (Meta Ads)</label>
+                <input type="text" class="form-control form-control-sm" formControlName="idExterno" placeholder="ID da campanha no Meta Ads" />
+              </div>
+              <div class="col-12 text-end">
+                @if (isEdicao) {
+                <button type="button" class="btn btn-sm btn-outline-secondary me-2" (click)="limparFormulario()">
+                  Cancelar edição
+                </button>
+                }
+                <app-button-action
+                  [text]="isEdicao ? 'Salvar alterações' : 'Adicionar campanha'"
+                  loadingText="Salvando..."
+                  [loading]="isLoading"
+                  variant="success"
+                  size="sm"
+                  (clicked)="onSubmit()"
+                  [type]="'button'"
+                ></app-button-action>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Lista de campanhas -->
+        @if (lista.length > 0) {
+        <div class="table-responsive">
+          <table class="table table-sm table-striped table-centered align-middle mb-0">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Plataforma</th>
+                <th>ID Externo</th>
+                <th class="text-end" style="width: 140px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of lista; track c.id) {
+              <tr [class.table-warning]="formulario.get('id')?.value === c.id">
+                <td>{{ c.nome }}</td>
+                <td>{{ c.plataforma || "-" }}</td>
+                <td class="small text-muted">{{ c.idExterno || "-" }}</td>
+                <td class="text-end">
+                  @if (campanhaParaExcluir === c.id) {
+                  <span class="small">Excluir?</span>
+                  <button type="button" class="btn btn-sm btn-danger py-0 ms-1" (click)="excluir(c.id)">Sim</button>
+                  <button type="button" class="btn btn-sm btn-secondary py-0 ms-1" (click)="campanhaParaExcluir = null">Não</button>
+                  } @else {
+                  <a href="javascript:void(0);" class="action-icon me-2" title="Editar" (click)="editar(c)">
+                    <i class="bi bi-pencil text-warning"></i>
+                  </a>
+                  <a href="javascript:void(0);" class="action-icon" title="Excluir" (click)="campanhaParaExcluir = c.id">
+                    <i class="bi bi-trash3 text-danger"></i>
+                  </a>
+                  }
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        } @else {
+        <div class="alert alert-light border text-center small mb-0">Nenhuma campanha cadastrada</div>
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="btnCancelarCampanha" (click)="fecharModal()">
+          <i class="bi bi-x"></i>Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

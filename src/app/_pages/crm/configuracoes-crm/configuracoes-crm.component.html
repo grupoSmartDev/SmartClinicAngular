@@ -1,0 +1,36 @@
+<app-label-nome [nomeTela]="'CRM — Configurações'" [exibirBotaoAdicionar]="false"></app-label-nome>
+
+<div class="row g-3 mt-1">
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100 config-card" (click)="abrirEtapas()">
+      <div class="card-body d-flex align-items-start">
+        <i class="bi bi-funnel config-icone text-primary me-3"></i>
+        <div>
+          <h5 class="card-title mb-1">Etapas do Funil</h5>
+          <p class="card-text small text-muted mb-2">
+            Crie etapas personalizadas, defina cores, ordem e o script sugerido de mensagem para cada etapa.
+          </p>
+          <span class="btn btn-sm btn-outline-primary">Configurar etapas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100 config-card" (click)="abrirCampanhas()">
+      <div class="card-body d-flex align-items-start">
+        <i class="bi bi-megaphone config-icone text-success me-3"></i>
+        <div>
+          <h5 class="card-title mb-1">Campanhas</h5>
+          <p class="card-text small text-muted mb-2">
+            Cadastre as campanhas de marketing (Facebook, Instagram, Google) para saber de onde vêm seus leads.
+          </p>
+          <span class="btn btn-sm btn-outline-success">Gerenciar campanhas</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-modal-etapa-funil></app-modal-etapa-funil>
+<app-modal-campanha></app-modal-campanha>

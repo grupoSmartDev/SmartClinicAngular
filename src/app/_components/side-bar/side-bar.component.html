@@ -271,6 +271,38 @@
       </a>
     </li>
 
+    <!-- CRM (bloqueado para Basic) -->
+    <li class="sidebar-item" [class.menu-bloqueado]="!temAcesso('CRM')">
+      <a
+        href="#"
+        class="sidebar-link collapsed has-dropdown"
+        (click)="toggleSubmenu('crm')"
+        data-bs-toggle="collapse"
+      >
+        <i class="bi bi-funnel"></i>
+        <span>CRM</span>
+      </a>
+      <ul
+        [ngClass]="{
+          'sidebar-dropdown': true,
+          collapse: !isMenuOpen['crm'],
+          show: isMenuOpen['crm']
+        }"
+        id="crmMenu"
+      >
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/crm/leads', 'Leads', 'CRM')">
+            Leads
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" (click)="openTab('/crm/configuracoes', 'Config. CRM', 'CRM')">
+            Configurações
+          </a>
+        </li>
+      </ul>
+    </li>
+
     <!-- CONTAS A PAGAR (bloqueado para Basic) -->
     <li class="sidebar-item" [class.menu-bloqueado]="!temAcesso('ContasPagar')">
       <a

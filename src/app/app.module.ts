@@ -151,6 +151,11 @@ import { PlanoBloqueadoComponent } from './_components/plano-bloqueado/plano-blo
 import { TrialExpiradoComponent } from './_pages/trial-expirado/trial-expirado.component';
 import { PlanosConfigComponent } from './_pages/configuracoes/planos-config/planos-config.component';
 import { UpgradePlanoModalComponent } from './_components/upgrade-plano-modal/upgrade-plano-modal.component';
+import { KanbanLeadsComponent } from './_pages/crm/kanban-leads/kanban-leads.component';
+import { ModalLeadComponent } from './_pages/crm/modal-lead/modal-lead.component';
+import { ModalEtapaFunilComponent } from './_pages/crm/modal-etapa-funil/modal-etapa-funil.component';
+import { ModalCampanhaComponent } from './_pages/crm/modal-campanha/modal-campanha.component';
+import { ConfiguracoesCrmComponent } from './_pages/crm/configuracoes-crm/configuracoes-crm.component';
 
 @NgModule({
   declarations: [
@@ -287,6 +292,11 @@ import { UpgradePlanoModalComponent } from './_components/upgrade-plano-modal/up
     TrialExpiradoComponent,
     PlanosConfigComponent,
     UpgradePlanoModalComponent,
+    KanbanLeadsComponent,
+    ModalLeadComponent,
+    ModalEtapaFunilComponent,
+    ModalCampanhaComponent,
+    ConfiguracoesCrmComponent,
   ],
   imports: [
     BrowserModule,

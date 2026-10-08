@@ -1,0 +1,191 @@
+<!-- Modal Etapas do Funil -->
+<div
+  class="modal fade"
+  id="modalEtapaFunil"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="modalEtapaFunilLabel"
+  aria-modal="true"
+  role="dialog"
+>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalEtapaFunilLabel">
+          <i class="bi bi-funnel me-1"></i> Etapas do Funil
+        </h1>
+        <button type="button" class="btn-close" (click)="fecharModal()" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Formulário criar / editar -->
+        <div class="card mb-3" [ngClass]="isEdicao ? 'border-warning' : 'border-success'">
+          <div class="card-header py-2">
+            <h6 class="mb-0">
+              {{ isFixaEmEdicao ? "Editar etapa fixa (cor e script)" : isEdicao ? "Editar etapa" : "Nova etapa" }}
+              @if (isFixaEmEdicao) {
+              <span class="badge bg-light text-secondary border ms-1"><i class="bi bi-lock-fill"></i> Fixo</span>
+              }
+            </h6>
+          </div>
+          <div class="card-body">
+            <form [formGroup]="formulario" class="row g-2">
+              <div class="col-md-6">
+                <label class="form-label small fw-bold">Nome <span class="text-danger">*</span></label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  formControlName="nome"
+                  placeholder="Ex.: Avaliação agendada"
+                  [readonly]="isFixaEmEdicao"
+                  [class.campo-fixo]="isFixaEmEdicao"
+                  [attr.tabindex]="isFixaEmEdicao ? -1 : null"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label small fw-bold">Cor</label>
+                <input
+                  type="color"
+                  class="form-control form-control-sm form-control-color w-100"
+                  formControlName="cor"
+                />
+              </div>
+              @if (isEdicao) {
+              <div class="col-md-3">
+                <label class="form-label small fw-bold">Ordem</label>
+                <input
+                  type="number"
+                  min="1"
+                  class="form-control form-control-sm"
+                  formControlName="ordem"
+                  [readonly]="isFixaEmEdicao"
+                  [class.campo-fixo]="isFixaEmEdicao"
+                  [attr.tabindex]="isFixaEmEdicao ? -1 : null"
+                />
+              </div>
+              }
+              @if (isFixaEmEdicao) {
+              <div class="col-12">
+                <small class="text-warning-emphasis">
+                  <i class="bi bi-exclamation-triangle"></i> Etapas fixas são compartilhadas entre todas as empresas:
+                  a cor e o script alterados aqui valem para todas elas.
+                </small>
+              </div>
+              }
+              <div class="col-12">
+                <label class="form-label small fw-bold">Script sugerido</label>
+                <textarea
+                  class="form-control form-control-sm"
+                  rows="3"
+                  formControlName="scriptSugerido"
+                  placeholder="Mensagem padrão para o atendente copiar. Use [Nome] para o primeiro nome do lead."
+                ></textarea>
+              </div>
+              <div class="col-12 text-end">
+                @if (isEdicao) {
+                <button type="button" class="btn btn-sm btn-outline-secondary me-2" (click)="limparFormulario()">
+                  Cancelar edição
+                </button>
+                }
+                <app-button-action
+                  [text]="isEdicao ? 'Salvar alterações' : 'Adicionar etapa'"
+                  loadingText="Salvando..."
+                  [loading]="isLoading"
+                  variant="success"
+                  size="sm"
+                  (clicked)="onSubmit()"
+                  [type]="'button'"
+                ></app-button-action>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Lista de etapas -->
+        <div class="table-responsive">
+          <table class="table table-sm table-centered align-middle mb-0">
+            <thead>
+              <tr>
+                <th style="width: 60px">Ordem</th>
+                <th>Etapa</th>
+                <th class="text-end" style="width: 190px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (etapa of lista; track etapa.id) {
+              <tr [class.table-warning]="formulario.get('id')?.value === etapa.id">
+                <td>{{ etapa.ordem }}</td>
+                <td>
+                  <span
+                    class="badge me-2"
+                    [style.background-color]="etapa.cor || '#6c757d'"
+                    [style.color]="helpers.corTexto(etapa.cor)"
+                    >{{ etapa.nome }}</span
+                  >
+                  @if (etapa.isFixa) {
+                  <span class="badge bg-light text-secondary border"><i class="bi bi-lock-fill"></i> Fixo</span>
+                  }
+                  @if (etapa.scriptSugerido) {
+                  <i class="bi bi-chat-quote text-muted ms-1" [title]="etapa.scriptSugerido"></i>
+                  }
+                </td>
+                <td class="text-end">
+                  @if (etapa.isFixa) {
+                  <!-- Fixa: só o script é editável (sem reordenar/excluir) -->
+                  <a href="javascript:void(0);" class="action-icon" title="Editar cor e script sugerido" (click)="editar(etapa)">
+                    <i class="bi bi-chat-quote text-warning"></i>
+                  </a>
+                  } @else {
+                    @if (etapaParaExcluir === etapa.id) {
+                    <span class="small">Excluir?</span>
+                    <button type="button" class="btn btn-sm btn-danger py-0 ms-1" (click)="excluir(etapa.id)">Sim</button>
+                    <button type="button" class="btn btn-sm btn-secondary py-0 ms-1" (click)="etapaParaExcluir = null">Não</button>
+                    } @else {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-link p-0 me-2"
+                      title="Subir"
+                      [disabled]="!podeMover(etapa, -1) || isReordenando"
+                      (click)="mover(etapa, -1)"
+                    ><i class="bi bi-arrow-up"></i></button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-link p-0 me-3"
+                      title="Descer"
+                      [disabled]="!podeMover(etapa, 1) || isReordenando"
+                      (click)="mover(etapa, 1)"
+                    ><i class="bi bi-arrow-down"></i></button>
+                    <a href="javascript:void(0);" class="action-icon me-2" title="Editar" (click)="editar(etapa)">
+                      <i class="bi bi-pencil text-warning"></i>
+                    </a>
+                    <a href="javascript:void(0);" class="action-icon" title="Excluir" (click)="etapaParaExcluir = etapa.id">
+                      <i class="bi bi-trash3 text-danger"></i>
+                    </a>
+                    }
+                  }
+                </td>
+              </tr>
+              } @empty {
+              <tr>
+                <td colspan="3" class="text-center text-muted small">Nenhuma etapa encontrada</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <small class="text-muted d-block mt-2">
+          <i class="bi bi-info-circle"></i> Etapas fixas são padrão do sistema: só a cor e o script sugerido podem ser editados
+          (nome e ordem não mudam, e elas não podem ser reordenadas ou excluídas).
+          Uma etapa só pode ser excluída se não houver leads nela.
+        </small>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="btnCancelarEtapaFunil" (click)="fecharModal()">
+          <i class="bi bi-x"></i>Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -48,6 +48,8 @@ import { ListarComissoesComponent } from './_pages/comissao/listar-comissoes/lis
 import { UpgradeComponent } from './_pages/upgrade/upgrade/upgrade.component';
 import { PlanosConfigComponent } from './_pages/configuracoes/planos-config/planos-config.component';
 import { ListarPacoteComponent } from './_pages/pacote/listar-pacote/listar-pacote.component';
+import { KanbanLeadsComponent } from './_pages/crm/kanban-leads/kanban-leads.component';
+import { ConfiguracoesCrmComponent } from './_pages/crm/configuracoes-crm/configuracoes-crm.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent }, // Rota para a página de login
@@ -123,6 +125,8 @@ const routes: Routes = [
       { path: 'upgrade', component: UpgradeComponent },
       { path: 'configuracoes/planos', component: PlanosConfigComponent },
       { path: 'Configuracoes/BuscarPorId', component: ConfiguracoesComponent },
+      { path: 'crm/leads', component: KanbanLeadsComponent },
+      { path: 'crm/configuracoes', component: ConfiguracoesCrmComponent },
     ],
   },
 

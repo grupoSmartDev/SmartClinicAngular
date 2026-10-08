@@ -1,0 +1,7 @@
+/* Campos de etapa fixa: readonly (continuam no FormGroup.value) com aparência de bloqueado.
+   pointer-events: none também impede abrir o seletor do input type="color", onde readonly não tem efeito. */
+.campo-fixo {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  pointer-events: none;
+}

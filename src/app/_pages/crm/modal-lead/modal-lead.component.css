@@ -1,0 +1,60 @@
+.script-texto {
+  white-space: pre-wrap;
+}
+
+.followup-card {
+  border-left: 3px solid #6c757d;
+}
+
+/* Borda acompanha o indicador: respondido / próxima ação / pendente */
+.followup-concluido {
+  border-left-color: #198754;
+  background-color: #f6fbf8;
+}
+
+/* Concluído = somente leitura: conteúdo sem interação (a lixeira continua ativa) */
+.followup-concluido .balao,
+.followup-concluido .followup-proxima {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.followup-respondido {
+  border-left-color: #198754;
+}
+
+.followup-agendado {
+  border-left-color: #ffc107;
+}
+
+.followup-expandido {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.followup-cabecalho {
+  cursor: pointer;
+}
+
+/* Balões estilo WhatsApp */
+.balao {
+  max-width: 85%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+.balao-enviado {
+  background: #dcf8c6;
+  margin-left: auto;
+  border-top-right-radius: 0;
+}
+
+.balao-recebido {
+  background: #f1f0f0;
+  margin-right: auto;
+  border-top-left-radius: 0;
+}
